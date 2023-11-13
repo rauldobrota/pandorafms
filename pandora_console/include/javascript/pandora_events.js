@@ -52,7 +52,7 @@ function show_event_dialog(event, dialog_page) {
         .empty()
         .append(data)
         .dialog({
-          title: event.evento,
+          title: event.event_title,
           resizable: true,
           draggable: true,
           modal: false,
@@ -322,7 +322,7 @@ function perform_response(response, response_id, index = "") {
 }
 
 // Change the status of an event to new, in process or validated.
-function event_change_status(event_ids, server_id) {
+function event_change_status(event_ids, server_id, group_rep) {
   var new_status = $("#estado").val();
 
   $("#button-status_button").attr("disabled", "disabled");
@@ -334,7 +334,8 @@ function event_change_status(event_ids, server_id) {
       change_status: 1,
       event_ids: event_ids,
       new_status: new_status,
-      server_id: server_id
+      server_id: server_id,
+      group_rep: group_rep
     },
     type: "POST",
     url: getUrlAjax(),
@@ -1496,7 +1497,11 @@ function show_dialog(dialog) {
 $(document).ajaxSend(function(event, jqXHR, ajaxOptions) {
   const requestBody = ajaxOptions.data;
   try {
-    if (requestBody && requestBody.includes("drawConsoleSound=1")) {
+    if (
+      requestBody &&
+      typeof requestBody.includes === "function" &&
+      requestBody.includes("drawConsoleSound=1")
+    ) {
       console.log(
         "AJAX request sent with drawConsoleSound=1:",
         ajaxOptions.url
@@ -1658,7 +1663,11 @@ $(document).ajaxSend(function(event, jqXHR, ajaxOptions) {
 $(document).ajaxSend(function(event, jqXHR, ajaxOptions) {
   const requestBody = ajaxOptions.data;
   try {
-    if (requestBody && requestBody.includes("drawConsoleSound=1")) {
+    if (
+      requestBody &&
+      typeof requestBody.includes === "function" &&
+      requestBody.includes("drawConsoleSound=1")
+    ) {
       console.log(
         "AJAX request sent with drawConsoleSound=1:",
         ajaxOptions.url

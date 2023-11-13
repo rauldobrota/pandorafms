@@ -36,7 +36,7 @@ use Encode::Locale;
 Encode::Locale::decode_argv;
 
 # version: define current version
-my $version = "7.0NG.773.3 Build 230830";
+my $version = "7.0NG.774 Build 231113";
 
 # save program name for logging
 my $progname = basename($0);
@@ -5411,7 +5411,7 @@ sub cli_create_synthetic() {
 
 	my @module_data;
 
-	if (@ARGV[$#ARGV] == "use_alias") {
+	if (@ARGV[$#ARGV] eq "use_alias") {
 		@module_data = @ARGV[5..$#ARGV-1];
 	} else {
 		@module_data = @ARGV[5..$#ARGV];
@@ -5531,7 +5531,7 @@ sub cli_create_synthetic() {
 		}
 	} else {
 		my $id_agent = int(get_agent_id($dbh,$agent_name));
-		
+
 		if ($id_agent > 0) {
 			foreach my $i (0 .. $#module_data) {
 				my @split_data = split(',',$module_data[$i]);
@@ -6669,6 +6669,19 @@ sub cli_set_event_storm_protection () {
 
 	# Set the value of event
 	db_do ($dbh, 'UPDATE tconfig SET value=? WHERE token=?', $value, 'event_storm_protection');
+}
+
+##############################################################################
+# Set existing OS and OS version for a specific agent
+# Related option: --agent_set_os
+##############################################################################
+sub cli_agent_set_os() {
+	my ($id_agente,$id_os,$os_version) = @ARGV[2..4];
+
+	my $os_name = get_db_value($dbh, 'SELECT name FROM tconfig_os WHERE id_os = ?',$id_os);
+	exist_check($id_os,'tconfig_os',$os_name);
+
+	db_process_update($dbh, 'tagente', {'id_os' => $id_os, 'os_version' => $os_version}, {'id_agente' => $id_agente});
 }
 
 ##############################################################################
@@ -8147,7 +8160,11 @@ sub pandora_manage_main ($$$) {
 		elsif ($param eq '--set_event_storm_protection') {
 			param_check($ltotal, 1);
 			cli_set_event_storm_protection();
-		} 
+		}
+		elsif ($param eq '--agent_set_os') {
+			param_check($ltotal, 3, 1);
+			cli_agent_set_os();
+		}
 		elsif ($param eq '--create_custom_graph') {
 			param_check($ltotal, 11);
 			cli_create_custom_graph();

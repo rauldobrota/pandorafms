@@ -441,6 +441,8 @@ define('SERVER_TYPE_ALERT', 21);
 define('SERVER_TYPE_CORRELATION', 22);
 define('SERVER_TYPE_NCM', 23);
 define('SERVER_TYPE_NETFLOW', 24);
+define('SERVER_TYPE_LOG', 25);
+define('SERVER_TYPE_MADE', 26);
 
 // REPORTS.
 define('REPORT_TOP_N_MAX', 1);
@@ -807,6 +809,7 @@ define('AUDIT_LOG_FILE_MANAGER', 'File manager');
 define('AUDIT_LOG_ALERT_MANAGEMENT', 'Alert management');
 define('AUDIT_LOG_ALERT_CORRELATION_MANAGEMENT', 'Alert correlation management');
 define('AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT', 'Visual Console Management');
+define('AUDIT_LOG_GRAPH_ANALYTICS_PUBLIC', 'Graph Analytics Public');
 define('AUDIT_LOG_TAG_MANAGEMENT', 'Tag management');
 define('AUDIT_LOG_SNMP_MANAGEMENT', 'SNMP management');
 define('AUDIT_LOG_DASHBOARD_MANAGEMENT', 'Dashboard management');
@@ -886,3 +889,8 @@ define('HOME_SCREEN_ALERT_DETAIL', 'alert_detail');
 define('HOME_SCREEN_EXTERNAL_LINK', 'external_link');
 define('HOME_SCREEN_OTHER', 'other');
 define('HOME_SCREEN_DASHBOARD', 'dashboard');
+
+
+// Alert correlation.
+define('EVENT_ALERTS', 1);
+define('LOG_ALERTS', 2);
