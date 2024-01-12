@@ -68,7 +68,7 @@ if ($renew_license_result !== null) {
 }
 
 if ($update_settings) {
-    if (!is_metaconsole()) {
+    if (is_metaconsole() === false) {
         // Node.
         foreach ($_POST['keys'] as $key => $value) {
             db_process_sql_update(
@@ -76,6 +76,20 @@ if ($update_settings) {
                 [db_escape_key_identifier('value') => $value],
                 [db_escape_key_identifier('key') => $key]
             );
+
+            if ($value === LICENSE_FREE) {
+                $exist = db_get_value('token', 'tconfig', 'token', 'expiry_date');
+                if ($exist === false) {
+                    $expiry_date = date('Ymd', strtotime(date('Ymd').'+ 1 month'));
+                    db_process_sql_insert(
+                        'tconfig',
+                        [
+                            db_escape_key_identifier('value') => base64_encode($expiry_date),
+                            db_escape_key_identifier('token') => 'expiry_date',
+                        ]
+                    );
+                }
+            }
         }
 
         $customer_key = $_POST['keys']['customer_key'];
