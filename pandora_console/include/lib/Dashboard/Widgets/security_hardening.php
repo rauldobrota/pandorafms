@@ -252,7 +252,7 @@ class SecurityHardening extends Widget
         ];
 
         $inputs[] = [
-            'label'     => __('Ingore skipped'),
+            'label'     => __('Ignore skipped'),
             'id'        => 'row_ignore_skipped',
             'class'     => 'row_input',
             'arguments' => [
@@ -274,9 +274,9 @@ class SecurityHardening extends Widget
                 'name'      => 'range',
                 'type'      => 'date_range',
                 'selected'  => 'chose_range',
-                'date_init' => date('Y-m-d', $values['date_init']),
+                'date_init' => date('Y/m/d', $values['date_init']),
                 'time_init' => date('H:i:s', $values['date_init']),
-                'date_end'  => date('Y-m-d', $values['date_end']),
+                'date_end'  => date('Y/m/d', $values['date_end']),
                 'time_end'  => date('H:i:s', $values['date_end']),
                 'return'    => true,
             ],
@@ -446,7 +446,7 @@ class SecurityHardening extends Widget
     {
         global $config;
 
-        $id_groups = explode(',', $group);
+        $id_groups = explode(',', ($group ?? ''));
         if (in_array(0, $id_groups) === true) {
             $id_groups = array_keys(users_get_groups($config['id_user'], 'AR', false));
         }
