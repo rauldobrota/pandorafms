@@ -3031,7 +3031,7 @@ class ConsoleSupervisor
                         'type'              => 'NOTIF.HAMASTER.MESSAGE',
                         'title'             => __('Desynchronized operation on the node '.$node['host']),
                         'message'           => __($message),
-                        'url'               => '__url__/index.php?sec=gservers&sec2=enterprise/godmode/servers/HA_cluster',
+                        'url'               => '__url__/index.php?sec=gservers&sec2=enterprise/godmode/servers/new_HA_cluster',
                         'icon_notification' => self::ICON_ERROR,
                     ]
                 );
