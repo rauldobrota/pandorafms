@@ -879,11 +879,11 @@ define(
 // Pandora FMS Enterprise license.
 define('LICENSE_FILE', 'customer_key');
 // Pandora FMS license free.
-define('LICENSE_FREE', 'PANDORA-FREE');
+define('OTHER_LICENSE', 'PANDORA-FREE');
 // Total number of agents for free licence.
-define('TOTAL_AGENTS_FREE', 50);
+define('TOTAL_AGENTS_LICENSE', 50);
 // Total number of modules for free licence.
-define('TOTAL_MODULES_FREE', 600);
+define('TOTAL_MODULES_LICENSE', 600);
 // Pandora HA database list.
 define('PANDORA_HA_FILE', 'pandora_ha_hosts.conf');
 

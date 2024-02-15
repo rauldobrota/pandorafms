@@ -77,10 +77,10 @@ if ($update_settings) {
                 [db_escape_key_identifier('key') => $key]
             );
 
-            if ($value === LICENSE_FREE) {
+            if ($value === OTHER_LICENSE) {
                 $exist = db_get_value('token', 'tconfig', 'token', 'expiry_date');
                 if ($exist === false) {
-                    $expiry_date = date('Ymd', strtotime(date('Ymd').'+ 1 month'));
+                    $expiry_date = date('Ymd', strtotime('+30 days'));
                     db_process_sql_insert(
                         'tconfig',
                         [
