@@ -86,4 +86,6 @@ INSERT IGNORE INTO `tcredential_store` (`identifier`, `id_group`, `product`, `ex
 ;
 UPDATE `trecon_task` SET `auth_strings` = IF(`auth_strings` = '',CONCAT(@creds_name,`id_rt`),CONCAT(@creds_name,`id_rt`,',',`auth_strings`)) WHERE `snmp_version` = 3 AND `snmp_enabled` = 1;
 
+DELETE FROM tconfig WHERE `token` = 'legacy_database_ha'
+
 COMMIT;

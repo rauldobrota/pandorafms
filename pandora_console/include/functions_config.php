@@ -503,10 +503,6 @@ function config_update_config()
                             $error_update[] = __('Enable Update Manager');
                         }
 
-                        if (config_update_value('legacy_database_ha', get_parameter('legacy_database_ha'), true) === false) {
-                            $error_update[] = __('Legacy database HA');
-                        }
-
                         if (config_update_value('agent_vulnerabilities', get_parameter('agent_vulnerabilities'), true) === false) {
                             $error_update[] = __('agent_vulnerabilities');
                         }
@@ -2422,10 +2418,6 @@ function config_process_config()
 
     if (!isset($config['enable_update_manager'])) {
         config_update_value('enable_update_manager', 1);
-    }
-
-    if (!isset($config['legacy_database_ha'])) {
-        config_update_value('legacy_database_ha', 0);
     }
 
     if (!isset($config['disabled_newsletter'])) {

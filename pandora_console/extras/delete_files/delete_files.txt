@@ -1738,3 +1738,5 @@ extensions/files_repo/sql/files_repo.sql
 extensions/files_repo
 extensions/resource_exportation.php
 extensions/resource_registration.php
+enterprise/include/class/DatabaseHA.class.php
+enterprise/godmode/servers/HA_cluster.php

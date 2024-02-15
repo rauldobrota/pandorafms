@@ -3008,7 +3008,7 @@ class ConsoleSupervisor
     public function checkHaStatus()
     {
         global $config;
-        enterprise_include_once('include/class/DatabaseHA.class.php');
+        enterprise_include_once('include/class/NewDatabaseHA.class.php');
 
         $cluster = new DatabaseHA();
         $nodes = $cluster->getNodes();
