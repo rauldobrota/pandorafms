@@ -76,20 +76,6 @@ if ($update_settings) {
                 [db_escape_key_identifier('value') => $value],
                 [db_escape_key_identifier('key') => $key]
             );
-
-            if ($value === OTHER_LICENSE) {
-                $exist = db_get_value('token', 'tconfig', 'token', 'expiry_date');
-                if ($exist === false) {
-                    $expiry_date = date('Ymd', strtotime('+30 days'));
-                    db_process_sql_insert(
-                        'tconfig',
-                        [
-                            db_escape_key_identifier('value') => base64_encode($expiry_date),
-                            db_escape_key_identifier('token') => 'expiry_date',
-                        ]
-                    );
-                }
-            }
         }
 
         $customer_key = $_POST['keys']['customer_key'];
