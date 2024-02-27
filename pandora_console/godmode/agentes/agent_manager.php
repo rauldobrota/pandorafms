@@ -558,7 +558,7 @@ if ($broker === false) {
     $tableAgent->data['caption_interval'][0] = __('Interval');
     // $tableAgent->rowstyle['interval'] = 'width: 260px';
     $tableAgent->rowclass['interval'] = 'w540px';
-    $tableAgent->data['interval'][0] = html_print_extended_select_for_time(
+    $tableAgent->data['interval'][0] = html_print_select_agentmodule_interval(
         'intervalo',
         $intervalo,
         '',

@@ -744,7 +744,7 @@ $table->data[1][1] .= '</div>';
 
 $table->data[2][0] = __('Interval');
 
-$table->data[2][1] = html_print_extended_select_for_time(
+$table->data[2][1] = html_print_select_agentmodule_interval(
     'interval',
     -2,
     '',
@@ -1155,7 +1155,7 @@ $table->data[6][1] = html_print_select(
     true
 );
 
-$table->data[7][0] = __('Safe operation mode').': '.ui_print_help_tip(
+$table->data[7][0] = __('Safe operation mode').ui_print_help_tip(
     __(
         'This mode allow %s to disable all modules of this agent while the selected module is on CRITICAL status',
         get_product_name()

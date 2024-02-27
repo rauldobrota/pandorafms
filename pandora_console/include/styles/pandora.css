@@ -995,6 +995,10 @@ select:-internal-list-box {
   display: flex;
 }
 
+.align-self-center {
+  align-self: center;
+}
+
 .flex_important {
   display: flex !important;
 }

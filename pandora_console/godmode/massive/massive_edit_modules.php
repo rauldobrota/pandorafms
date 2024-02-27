@@ -865,7 +865,7 @@ $table->data[15][0] = html_print_label_input_block(
 
 $table->data[16][0] = html_print_label_input_block(
     __('Interval'),
-    html_print_extended_select_for_time(
+    html_print_select_agentmodule_interval(
         'module_interval',
         0,
         '',

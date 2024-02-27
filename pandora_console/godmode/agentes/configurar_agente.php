@@ -878,7 +878,7 @@ if ($id_agente) {
             ],
         ],
         [],
-        $dots
+        $dots ?? ''
     );
 }
 
@@ -1472,6 +1472,11 @@ if ($update_module === true || $create_module === true) {
     $min = (int) get_parameter('min');
     $max = (int) get_parameter('max');
     $interval = (int) get_parameter('module_interval', $intervalo);
+    // Limit module interval to at least 60 secs.
+    if ($interval > 0) {
+        $interval = max($interval, 60);
+    }
+
     $ff_interval = (int) get_parameter('module_ff_interval');
     $quiet_module = (int) get_parameter('quiet_module');
     $cps_module = (int) get_parameter('cps_module');
