@@ -356,6 +356,6 @@ function clippy_context_help($help=null)
         });
         </script>
         ';
-hd($return, true);
+
     return $return;
 }

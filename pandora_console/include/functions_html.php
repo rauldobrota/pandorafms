@@ -2439,13 +2439,10 @@ function html_print_select_agentmodule_interval(
 
     $output .= "<script type='text/javascript'>
 		$(document).ready (function () {
-            console.log('outputExecutionIntervaloutputExecutionInterval');
-            console.log('".$unique_id."');
             // Trigger first check.
             $('#text-".$name."_text').trigger('change');
 
             $('#text-".$name."_text').on('keyup change', function() {
-                console.log('change1');
                 var unit_multiplier = parseInt($('#".$name."_units').val());
                 var numeric_value = parseInt($(this).val());
 
@@ -2461,20 +2458,16 @@ function html_print_select_agentmodule_interval(
                     $('#agent_module_interval_clippy".$unique_id."').hide();
                 }
             });
-console.log('.".$name."_toggler');
+
             $('.".$name."_toggler').on('click', function() {
-                console.log('clickk');
-                console.log('".$name."_default');
                 if ($('#".$name."_default').css('display') != 'none') {
                     $('#agent_module_interval_clippy".$unique_id."').hide();
                 } else {
-                    console.log('triggggg');
                     $('#text-".$name."_text').trigger('change');
                 }
             });
 
             $('#".$name."_units').on('input change', function() {
-                console.log('change2');
                 var numeric_value = parseInt($('#text-".$name."_text').val());
                 var unit_multiplier = parseInt($(this).val());
 
