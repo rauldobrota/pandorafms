@@ -3948,6 +3948,10 @@ CREATE TABLE IF NOT EXISTS `tdeployment_hosts` (
   `deployed` BIGINT NOT NULL DEFAULT 0 COMMENT 'When it was deployed',
   `server_ip` VARCHAR(100) DEFAULT NULL COMMENT 'Where to point target agent',
   `last_err` TEXT,
+  `deploy_method` ENUM('SSH', 'HTTP', 'HTTPS') DEFAULT 'SSH',
+  `deploy_port` INT UNSIGNED NOT NULL DEFAULT 22,
+  `server_port` INT UNSIGNED NOT NULL DEFAULT 41121,
+  `temp_folder` VARCHAR(500) DEFAULT '/tmp',
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id_cs`) REFERENCES `tcredential_store`(`identifier`)
   ON UPDATE CASCADE ON DELETE SET NULL,
