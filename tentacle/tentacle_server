@@ -1785,10 +1785,10 @@ sub check_ssleay_version {
 ################################################################################
 
 # Never run as root
-if ($> == 0 && $^O ne 'MSWin32') {
-	print ("Error: for safety reasons $0 cannot be run with root privileges.\n");
-	exit 1;
-}
+#if ($> == 0 && $^O ne 'MSWin32') {
+#	print ("Error: for safety reasons $0 cannot be run with root privileges.\n");
+#	exit 1;
+#}
 
 # Parse command line options
 parse_options ();
