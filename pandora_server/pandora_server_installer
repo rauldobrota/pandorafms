@@ -346,6 +346,8 @@ install () {
 	chmod 2770 $DESTDIR$PANDORA_SPOOL/data_in/commands
 	mkdir $DESTDIR$PANDORA_SPOOL/data_in/discovery 2> /dev/null
 	chmod 2770 $DESTDIR$PANDORA_SPOOL/data_in/discovery
+	mkdir $DESTDIR$PANDORA_SPOOL/data_in/agent 2> /dev/null
+	chmod 2770 $DESTDIR$PANDORA_SPOOL/data_in/agent
 	mkdir -p $DESTDIR$PANDORA_LOG 2> /dev/null	
 	chown -R pandora:apache $DESTDIR$PANDORA_LOG 2> /dev/null
 	chmod 2774 $DESTDIR$PANDORA_LOG 2> /dev/null
