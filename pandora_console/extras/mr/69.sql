@@ -11,7 +11,7 @@ UPDATE
 SET
     `tdeployment_hosts`.`deploy_method` = 'HTTP',
     `tdeployment_hosts`.`deploy_port` = 5985,
-    `tdeployment_hosts`.`temp_folder` = 'C:\\Widnows\\Temp'
+    `tdeployment_hosts`.`temp_folder` = 'C:&#92;Widnows&#92;Temp'
 WHERE
     `tdeployment_hosts`.`id_os` = `tconfig_os`.`id_os` AND `tconfig_os`.`name` = 'Windows' AND `tdeployment_hosts`.`deployed` = 0;
 
