@@ -267,32 +267,6 @@ function groups_check_used($idGroup)
         $return['tables'][] = __('SNMP alerts');
     }
 
-    switch ($config['dbtype']) {
-        case 'mysql':
-        case 'postgresql':
-            $numRows = db_get_num_rows(
-                'SELECT *
-				FROM tusuario_perfil WHERE id_grupo = '.$idGroup.';'
-            );
-        break;
-
-        case 'oracle':
-            $numRows = db_get_num_rows(
-                'SELECT *
-				FROM tusuario_perfil WHERE id_grupo = '.$idGroup
-            );
-        break;
-
-        default:
-            // Ignore.
-        break;
-    }
-
-    if ($numRows > 0) {
-        $return['return'] = true;
-        $return['tables'][] = __('User profile');
-    }
-
     $hookEnterprise = enterprise_include_once('include/functions_groups.php');
     if ($hookEnterprise !== ENTERPRISE_NOT_HOOK) {
         $returnEnterprise = enterprise_hook('groups_check_used_group_enterprise', [$idGroup]);

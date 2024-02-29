@@ -50,6 +50,7 @@ class Group extends Entity
         'loadInfoAgent',
         'getAgentsByGroup',
         'getGroupsName',
+        'checkGroupIsLinkedToElement',
     ];
 
 
@@ -774,6 +775,36 @@ class Group extends Entity
         }
 
         echo json_encode($array_groups);
+        exit;
+    }
+
+    /**
+     * Check whether group is linked to a database element (needed for ajax check).
+     *
+     * @return void
+     */
+    public static function checkGroupIsLinkedToElement()
+    {
+        $group_id = get_parameter('group_id', null);
+        $table_name = get_parameter('table_name', null);
+        $field_name = get_parameter('field_name', null);
+
+        if (count(array_filter([$group_id, $table_name, $field_name])) < 3) {
+            $result['result'] = 0;
+        } else {
+            $sql = sprintf(
+                'SELECT * FROM %s WHERE %s = %s',
+                $table_name,
+                $field_name,
+                $group_id
+            );
+
+            $count = db_get_num_rows($sql);
+
+            $result['result'] = (int) ($count > 0);
+        }
+
+        echo json_encode($result);
         exit;
     }
 
