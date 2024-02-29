@@ -29,6 +29,5 @@ ul.wizard li.flex-indep {
 }
 
 .datatable_filter.content li input[type="text"] {
-  width: 150px;
   margin: 0 1em 0 0;
 }
