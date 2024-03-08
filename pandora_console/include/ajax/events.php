@@ -103,9 +103,9 @@ $playAsteroids = (bool) get_parameter('playAsteroids', false);
 
 if ($get_comments === true) {
     global $config;
-    $event = json_decode(io_safe_output(base64_decode(get_parameter('event', ''))), true);
+    $event = json_decode(base64_decode(get_parameter('event', '')), true);
     $filter = json_decode(io_safe_output(base64_decode(get_parameter('filter', ''))), true);
-
+    
     $default_hour = (int) $filter['event_view_hr'];
     if (isset($config['max_hours_old_event_comment']) === true
         && empty($config['max_hours_old_event_comment']) === false
@@ -1515,7 +1515,7 @@ if ($add_comment === true) {
                 $node = new Node($server_id);
                 $node->connect();
             }
-
+            echo($eventId);
             $return = events_comment(
                 $eventId,
                 $comment,
