@@ -64,6 +64,16 @@ if ($dashboards === false) {
     }
 }
 
+$layouts = visual_map_get_user_layouts($config['id_user'], true);
+$layouts_aux = [];
+if ($layouts === false) {
+    $layouts_aux = ['None' => 'None'];
+} else {
+    foreach ($layouts as $layout) {
+        $layouts_aux[$layout] = $layout;
+    }
+}
+
 // Custom Home Screen controls.
 $customHomeScreenAddition = [];
 // Home screen. Dashboard.
@@ -81,21 +91,11 @@ $customHomeScreenAddition[HOME_SCREEN_DASHBOARD] = html_print_select(
     false,
     'width: 100%'
 );
+
 // Home screen. Visual consoles.
 $customHomeScreenAddition[HOME_SCREEN_VISUAL_CONSOLE] = html_print_select($layouts_aux, 'visual_console', $user_info['data_section'], '', '', '', true, false, true, 'w100p', false, 'width: 100%');
 // Home screen. External link and Other.
-$customHomeScreenAddition[HOME_SCREEN_EXTERNAL_LINK] = html_print_input_text('data_section_external', $user_info['data_section'], '', 60, 255, true);
-$customHomeScreenAddition[HOME_SCREEN_OTHER] = html_print_input_text('data_section_other', $user_info['data_section'], '', 60, 255, true);
-
-$layouts = visual_map_get_user_layouts($config['id_user'], true);
-$layouts_aux = [];
-if ($layouts === false) {
-    $layouts_aux = ['None' => 'None'];
-} else {
-    foreach ($layouts as $layout) {
-        $layouts_aux[$layout] = $layout;
-    }
-}
+$customHomeScreenAddition[HOME_SCREEN_EXTERNAL_LINK] = html_print_input_text('data_section', $user_info['data_section'], '', 60, 400, true);
 
 // Home screen. Visual consoles.
 $customHomeScreenAddition[HOME_SCREEN_VISUAL_CONSOLE] = html_print_select(
@@ -118,7 +118,7 @@ $customHomeScreenAddition[HOME_SCREEN_EXTERNAL_LINK] = html_print_input_text(
     $user_info['data_section'],
     '',
     60,
-    255,
+    999,
     true
 );
 $customHomeScreenDataField = '';
@@ -249,7 +249,7 @@ $userManagementTable->data['fields_fullname'][0] = html_print_input_text_extende
 // User Email.
 $userManagementTable->rowclass['captions_email'] = 'field_half_width';
 $userManagementTable->rowclass['fields_email'] = 'field_half_width';
-$userManagementTable->data['captions_email'][0] = __('Email');
+$userManagementTable->data['captions_email'][0] = __('Email').ui_print_help_tip(__('This will be the email used in those alert actions that the email makes use of. It will also be the email used for user notifications that wer configured in this way.'), true);
 $userManagementTable->data['fields_email'][0] = html_print_input_text_extended(
     'email',
     $user_info['email'],
@@ -296,7 +296,7 @@ if (empty($doubleAuthentication) === false) {
 
 if (users_is_admin() === true) {
     $globalProfileContent = [];
-    $globalProfileContent[] = '<span>'.__('Administrator user').'</span>';
+    $globalProfileContent[] = '<span>'.__('Administrator user').ui_print_help_tip(__('This type of \'superadmin\' has no restrictions whatsoever. If you want to create partial administrators, use the profile and group-based privilege system.'), true).'</span>';
     $globalProfileContent[] = html_print_checkbox_switch(
         'is_admin',
         0,
@@ -890,7 +890,7 @@ if (users_is_admin($config['id_user']) === true || (bool) check_acl($config['id_
         true
     );
 
-    $userManagementTable->data['fields_addSettings'][1] .= html_print_div(
+    $userManagementTable->data['fields_addSettings'][1] = html_print_div(
         [
             'class'   => 'edit_user_allowed_ip '.(((int) $user_info['allowed_ip_active'] === 1) ? '' : 'invisible'),
             'content' => html_print_textarea(
@@ -915,6 +915,7 @@ if (users_is_admin($config['id_user']) === true || (bool) check_acl($config['id_
     );
 }
 
+$ITSM_host = '';
 if ($config['ITSM_enabled'] && $config['ITSM_user_level_conf']) {
     // Pandora ITSM user remote login.
     $table_ITSM = new StdClass();
@@ -986,7 +987,7 @@ html_print_table($userManagementTable);
 
 $vcard_data = [];
 $vcard_data['version'] = '3.0';
-$vcard_data['firstName'] = $user_info['fullname'];
+$vcard_data['firstName'] = io_safe_output($user_info['fullname']);
 $vcard_data['lastName'] = '';
 $vcard_data['middleName'] = '';
 $vcard_data['workPhone'] = $user_info['phone'];

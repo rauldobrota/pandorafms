@@ -26,6 +26,14 @@
  * ============================================================================
  */
 
+if (isset($preview) === false) {
+    $preview = '';
+}
+
+if (isset($id) === false) {
+    $id = '';
+}
+
 $output = '';
 $output .= '<script>var idTips = ['.$id.'];</script>';
 $output .= '<div class="window">';
@@ -41,7 +49,7 @@ $output .= '<p>'.html_print_checkbox(
     false,
     '',
     ($preview === true) ? '' : 'checkbox_tips_startup'
-).__('Show usage tips at startup').'</p>';
+).'&nbsp;'.__('Show usage tips at startup').'</p>';
 $output .= '</div>';
 $output .= '<div class="carousel '.((empty($files) === true && empty($files64) === true) ? 'invisible' : '').'">';
 $output .= '<div class="images">';
@@ -58,9 +66,11 @@ if ($files !== false) {
     }
 }
 
-if ($files64 !== false) {
-    foreach ($files64 as $key => $file) {
-        $output .= '<img src="'.$file.'" />';
+if (isset($files64) === true) {
+    if ($files64 !== false) {
+        foreach ($files64 as $key => $file) {
+            $output .= '<img src="'.$file.'" />';
+        }
     }
 }
 

@@ -37,6 +37,20 @@ class Custom extends Wizard
      */
     public $mode;
 
+    /**
+     * Task properties.
+     *
+     * @var array
+     */
+    public $task;
+
+    /**
+     * Class of styles.
+     *
+     * @var string
+     */
+    public $class;
+
 
     /**
      * Constructor.
@@ -52,7 +66,8 @@ class Custom extends Wizard
         int $page=0,
         string $msg='Default message. Not set.',
         string $icon='/images/wizard/Custom_apps@svg.svg',
-        string $label='Custom'
+        string $label='Custom',
+        string $class_style='',
     ) {
         $this->setBreadcrum([]);
 

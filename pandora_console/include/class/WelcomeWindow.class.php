@@ -156,11 +156,14 @@ class WelcomeWindow extends Wizard
             modal: {
                 title: "<?php echo __('Welcome to').' '.io_safe_output(get_product_name()); ?>",
                 cancel: '<?php echo __('Do not show anymore'); ?>',
-                ok: '<?php echo __('Close'); ?>'
+                ok: '<?php echo __('Close wizard'); ?>',
+                overlay: true,
+                overlayExtraClass: 'welcome-overlay',
             },
             onshow: {
                 page: '<?php echo $this->ajaxController; ?>',
                 method: 'loadWelcomeWindow',
+                width: 1000,
             },
             oncancel: {
                 page: '<?php echo $this->ajaxController; ?>',
@@ -178,6 +181,34 @@ class WelcomeWindow extends Wizard
                         }
                     })
                 }
+            },
+            onload: () => {
+                $(document).ready(function () {
+                    var buttonpane = $("div[aria-describedby='welcome_modal_window'] .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix");
+                    $(buttonpane).append(`
+                    <div class="welcome-wizard-buttons">
+                        <label>
+                            <input type="checkbox" class="welcome-wizard-do-not-show" value="1" />
+                            <?php echo __('Do not show anymore'); ?>
+                        </label>
+                        <button class="close-wizard-button"><?php echo __('Close wizard'); ?></button>
+                    </div>
+                    `);
+
+                    var closeWizard = $("button.close-wizard-button");
+
+                    $(closeWizard).click(function (e) {
+                        var close = $("div[aria-describedby='welcome_modal_window'] button.sub.ok.submit-next.ui-button");
+                        var cancel = $("div[aria-describedby='welcome_modal_window'] button.sub.upd.submit-cancel.ui-button");
+                        var checkbox = $("div[aria-describedby='welcome_modal_window'] .welcome-wizard-do-not-show:checked").length;
+
+                        if (checkbox === 1) {
+                            $(cancel).click();
+                        } else {
+                            $(close).click()
+                        }
+                    });
+                });
             }
         });
 
@@ -345,10 +376,6 @@ class WelcomeWindow extends Wizard
             'class'    => 'modal',
         ];
 
-        if (enterprise_installed() === true) {
-            $logo_url = ENTERPRISE_DIR.'/'.$logo_url;
-        }
-
         if (check_acl($config['id_user'], 0, 'PM')) {
             $flag_um = false;
             $flag_cm = false;
@@ -412,11 +439,11 @@ class WelcomeWindow extends Wizard
             $inputs[] = [
                 'wrapper'       => 'div',
                 'block_id'      => 'div_diagnosis',
-                'class'         => 'flex-row flex-items-center w98p ',
+                'class'         => 'flex-row flex-items-center ',
                 'direct'        => 1,
                 'block_content' => [
                     [
-                        'label'     => __('Post-installation status diagnostic'),
+                        'label'     => __('This is your post-installation status diagnostic:'),
                         'arguments' => [
                             'class' => 'first_lbl',
                             'name'  => 'lbl_diagnosis',
@@ -434,7 +461,7 @@ class WelcomeWindow extends Wizard
                     'direct'        => 1,
                     'block_content' => [
                         [
-                            'label'     => __('Warp Update registration'),
+                            'label'     => '<span class="status"></span>'.__('Warp Update registration'),
                             'arguments' => [
                                 'class' => 'first_lbl',
                                 'name'  => 'lbl_update_manager',
@@ -443,7 +470,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => '',
+                                'label'      => __('Cancel'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_update_manager_class) === false) ? $btn_update_manager_class : 'invisible_important',
@@ -462,7 +489,7 @@ class WelcomeWindow extends Wizard
                     'direct'        => 1,
                     'block_content' => [
                         [
-                            'label'     => __('Default mail to send alerts'),
+                            'label'     => '<span class="status"></span>'.__('Default mail to send alerts'),
                             'arguments' => [
                                 'class' => 'first_lbl',
                                 'name'  => 'lbl_create_agent',
@@ -471,7 +498,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => '',
+                                'label'      => __('Cancel'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_configure_mail_class) === false) ? $btn_configure_mail_class : 'invisible_important',
@@ -490,7 +517,7 @@ class WelcomeWindow extends Wizard
                     'direct'        => 1,
                     'block_content' => [
                         [
-                            'label'     => __('All servers running'),
+                            'label'     => '<span class="status"></span>'.__('All servers running'),
                             'arguments' => [
                                 'class' => 'first_lbl',
                                 'name'  => 'lbl_servers_up',
@@ -499,7 +526,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => '',
+                                'label'      => __('Cancel'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_servers_up_class) === false) ? $btn_servers_up_class : 'invisible_important',
@@ -518,7 +545,7 @@ class WelcomeWindow extends Wizard
                     'direct'        => 1,
                     'block_content' => [
                         [
-                            'label'     => __('Enterprise licence valid'),
+                            'label'     => '<span class="status"></span>'.__('Enterprise licence valid'),
                             'arguments' => [
                                 'class' => 'first_lbl',
                                 'name'  => 'lbl_license_valid',
@@ -527,7 +554,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => '',
+                                'label'      => __('Cancel'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_license_valid_class) === false) ? $btn_license_valid_class : 'invisible_important',
@@ -567,7 +594,7 @@ class WelcomeWindow extends Wizard
         $inputs[] = [
             'wrapper'       => 'div',
             'block_id'      => 'div_task_todo',
-            'class'         => 'flex-row flex-items-center w98p',
+            'class'         => 'flex-row flex-items-center',
             'direct'        => 1,
             'block_content' => [
                 [
@@ -591,7 +618,7 @@ class WelcomeWindow extends Wizard
         $inputs[] = [
             'wrapper'       => 'div',
             'block_id'      => 'div_wizard_agent',
-            'class'         => 'flex space-between w98p',
+            'class'         => 'flex space-between',
             'direct'        => 1,
             'block_content' => [
                 [
@@ -599,7 +626,7 @@ class WelcomeWindow extends Wizard
                         'type'          => 'select',
                         'fields'        => $fields,
                         'name'          => 'task_to_perform',
-                        'selected'      => '',
+                        'selected'      => 'check_net',
                         'return'        => true,
                         'nothing'       => \__('Please select one'),
                         'nothing_value' => '',
@@ -630,6 +657,24 @@ class WelcomeWindow extends Wizard
 
         $output .= $this->loadJS($flag_task);
         echo $output;
+
+        echo '
+            <div class="welcome-wizard-right-content">
+                <ul class="welcome-circles">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                </ul>
+                <img src="images/welcome-wizard-image.png" />
+            </div>
+        ';
         ?>
         <div id="dialog_goliat" class="invisible">
             <?php
@@ -719,6 +764,10 @@ class WelcomeWindow extends Wizard
                 ],
                 true
             );
+            if (isset($agents_num) === false) {
+                $agents_num = '';
+            }
+
             echo html_print_label_input_block(
                 __('Number of agents to be created'),
                 html_print_div(
@@ -799,13 +848,22 @@ class WelcomeWindow extends Wizard
         </div>
         <div id="dialog_basic_net" class="invisible">
             <?php
+            $serverIP = $_SERVER['SERVER_ADDR'];
+            $ipParts = explode('.', $serverIP);
+            if (count($ipParts) === 4) {
+                $ipParts[3] = '0/24';
+                $network = implode('.', $ipParts);
+            } else {
+                $network = '192.168.10.0/24';
+            }
+
             echo html_print_input_hidden('create_net_scan', 1);
             echo html_print_label_input_block(
                 __('Ip target'),
                 html_print_input_text(
                     'ip_target_discovery',
-                    '192.168.10.0/24',
-                    '192.168.10.0/24',
+                    $network,
+                    $network,
                     false,
                     18,
                     true,
@@ -825,8 +883,320 @@ class WelcomeWindow extends Wizard
                 )
             );
 
+            echo html_print_div(
+                [
+                    'class'   => '',
+                    'content' => '<br>To detect and find systems on your network we will need access credentials. The SNMP community for network devices, and at least one set of credentials for Linux and Windows environments (they do not need to be super administrators, but they do need to be able to connect remotely). Without the credentials, we will only be able to detect if the devices are connected to the network.<br><br>',
+                ],
+                true
+            );
+
+            // SNMP Communities
+            echo html_print_label_input_block(
+                __('SNMP communities to try with').ui_print_help_tip(
+                    __(
+                        'You can specify several values, separated by commas, for example: public,mysecret,1234'
+                    ),
+                    true
+                ),
+                html_print_input(
+                    [
+                        'name'   => 'community',
+                        'type'   => 'text',
+                        'value'  => 'public',
+                        'size'   => 25,
+                        'return' => true,
+                    ],
+                    'div',
+                    true
+                ),
+                ['div_id' => 'snmp-communities-div']
+            );
+            ui_require_jquery_file('tag-editor.min', 'include/javascript/', true);
+            ui_require_jquery_file('caret.min', 'include/javascript/', true);
+            ui_require_css_file('jquery.tag-editor', 'include/styles/', true);
+
+            echo '<br>';
+
+            $spacing = '';
+            for ($i = 0; $i < 12; $i++) {
+                $spacing .= '&nbsp;';
+            }
+
+            // WMI Credentials
+            echo '<fieldset style="padding: 10px; padding-top: 0px">';
+            echo '<legend>'.__('WMI credentials').'</legend>';
+            echo html_print_div(
+                [
+                    'id'      => 'wmi-creds',
+                    'content' => '',
+                ],
+                true
+            );
+            echo html_print_div(
+                [
+                    'id'      => 'wmi-cred-form',
+                    'hidden'  => true,
+                    'style'   => 'margin: 10px; display: flex; align-items: center;',
+                    'content' => html_print_div(
+                        [
+                            'id'      => 'wmi-cred-user-div',
+                            'style'   => 'width: 260px;',
+                            'content' => html_print_label_input_block(
+                                __('User').'&nbsp;',
+                                html_print_input_text(
+                                    'wmi-cred-user',
+                                    '',
+                                    '',
+                                    false,
+                                    50,
+                                    // Max length
+                                        true,
+                                    false,
+                                    true,
+                                    '',
+                                    'w100p',
+                                    '',
+                                    'off',
+                                    false,
+                                    '',
+                                    '',
+                                    '',
+                                    false,
+                                    '',
+                                    'Username'
+                                ),
+                                ['div_style' => 'display: flex; align-items: center;']
+                            ),
+                        ],
+                        true
+                    ).html_print_div(
+                        [
+                            'id'      => 'wmi-cred-pass-div',
+                            'style'   => 'width: 260px;',
+                            'content' => html_print_label_input_block(
+                                $spacing.__('Password').'&nbsp;',
+                                html_print_input_password(
+                                    'wmi-cred-pass',
+                                    '',
+                                    '',
+                                    false,
+                                    50,
+                                    // Max length
+                                        true,
+                                    false,
+                                    true,
+                                    'w100p',
+                                    'off',
+                                    false,
+                                    ''
+                                ),
+                                ['div_style' => 'display: flex; align-items: center;']
+                            ),
+                        ],
+                        true
+                    ).html_print_div(
+                        [
+                            'id'      => 'wmi-cred-namespace-div',
+                            'style'   => 'width: 260px;',
+                            'content' => html_print_label_input_block(
+                                $spacing.__('Namespace').'&nbsp;',
+                                html_print_input_text(
+                                    'wmi-cred-namespace',
+                                    '',
+                                    '',
+                                    false,
+                                    50,
+                                    // Max length
+                                        true,
+                                    false,
+                                    true,
+                                    '',
+                                    'w100p',
+                                    '',
+                                    'off',
+                                    false,
+                                    '',
+                                    '',
+                                    '',
+                                    false,
+                                    '',
+                                    'Namespace'
+                                ),
+                                ['div_style' => 'display: flex; align-items: center;']
+                            ),
+                        ],
+                        true
+                    ).'<a onClick="delete_discovery_credential(this);">'.html_print_image(
+                        'images/delete.svg',
+                        true,
+                        [
+                            'title' => __('Delete'),
+                            'style' => 'cursor: pointer;',
+                            'class' => 'main_menu_icon invert_filter',
+                        ]
+                    ).'</a>',
+                ],
+                true
+            );
+            echo '<div style="height: 10px;"></div>';
+            echo html_print_button(
+                __('Add'),
+                'add-wmi-cred',
+                false,
+                'add_discovery_credential("wmi-cred-form","wmi-creds");',
+                [
+                    'icon'  => 'plus',
+                    'mode'  => 'secondary',
+                    'class' => 'mini',
+                ],
+                true,
+                false,
+                false,
+                ''
+            );
+            echo '</fieldset>';
+
+            echo '<br>';
+
+            // RCM Credentials
+            echo '<fieldset style="padding: 10px; padding-top: 0px">';
+            echo '<legend>'.__('Remote commands credentials').'</legend>';
+            echo html_print_div(
+                [
+                    'id'      => 'rcmd-creds',
+                    'content' => '',
+                ],
+                true
+            );
+            echo html_print_div(
+                [
+                    'id'      => 'rcmd-cred-form',
+                    'hidden'  => true,
+                    'style'   => 'margin: 10px; display: flex; align-items: center;',
+                    'content' => html_print_div(
+                        [
+                            'id'      => 'rcmd-cred-user-div',
+                            'style'   => 'width: 260px;',
+                            'content' => html_print_label_input_block(
+                                __('User').'&nbsp;',
+                                html_print_input_text(
+                                    'rcmd-cred-user',
+                                    '',
+                                    '',
+                                    false,
+                                    50,
+                                    // Max length
+                                        true,
+                                    false,
+                                    true,
+                                    '',
+                                    'w100p',
+                                    '',
+                                    'off',
+                                    false,
+                                    '',
+                                    '',
+                                    '',
+                                    false,
+                                    '',
+                                    'Username'
+                                ),
+                                ['div_style' => 'display: flex; align-items: center;']
+                            ),
+                        ],
+                        true
+                    ).html_print_div(
+                        [
+                            'id'      => 'rcmd-cred-pass-div',
+                            'style'   => 'width: 260px;',
+                            'content' => html_print_label_input_block(
+                                $spacing.__('Password').'&nbsp;',
+                                html_print_input_password(
+                                    'rcmd-cred-pass',
+                                    '',
+                                    '',
+                                    false,
+                                    50,
+                                    // Max length
+                                        true,
+                                    false,
+                                    true,
+                                    'w100p',
+                                    'off',
+                                    false,
+                                    ''
+                                ),
+                                ['div_style' => 'display: flex; align-items: center;']
+                            ),
+                        ],
+                        true
+                    ).'<a onClick="delete_discovery_credential(this);">'.html_print_image(
+                        'images/delete.svg',
+                        true,
+                        [
+                            'title' => __('Delete'),
+                            'style' => 'cursor: pointer;',
+                            'class' => 'main_menu_icon invert_filter',
+                        ]
+                    ).'</a>',
+                ],
+                true
+            );
+            echo '<div style="height: 10px;"></div>';
+            echo html_print_button(
+                __('Add'),
+                'add-rcmd-cred',
+                false,
+                'add_discovery_credential("rcmd-cred-form","rcmd-creds");',
+                [
+                    'icon'  => 'plus',
+                    'mode'  => 'secondary',
+                    'class' => 'mini',
+                ],
+                true,
+                false,
+                false,
+                ''
+            );
+            echo '</fieldset>';
+
             echo html_print_submit_button(__('Create'), 'basic_net', false, ['icon' => 'next', 'style' => 'margin-top:15px; float:right;']);
             ?>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('#snmp-communities-div .tag-editor').remove();
+                    $('#text-community').tagEditor({
+                        forceLowercase: false
+                    });
+                });
+
+                var credentialCounters = {};
+
+                function add_discovery_credential(sourceFormId, targetDivId) {
+                    // Increment the counter for this type of credential
+                    credentialCounters[targetDivId] = (credentialCounters[targetDivId] || 0) + 1;
+
+                    // Clone the source form
+                    var newCredential = $("#" + sourceFormId).clone();
+
+                    // Generate a unique ID for the new credential
+                    var uniqueId = targetDivId + "-" + credentialCounters[targetDivId];
+
+                    // Set a new ID for the cloned form
+                    newCredential.attr("id", uniqueId);
+
+                    // Append the cloned form to the target div
+                    $("#" + targetDivId).append(newCredential);
+
+                    // Ensure the cloned div is visible
+                    newCredential.show().css("display", "flex");
+                }
+
+                function delete_discovery_credential(clickedElement) {
+                    $(clickedElement).parent().remove();
+                }
+            </script>
         </div>
         <div id="dialog_alert_mail" class="invisible">
             <?php
@@ -844,6 +1214,10 @@ class WelcomeWindow extends Wizard
                 __('Agent'),
                 ui_print_agent_autocomplete_input($params)
             );
+            if (isset($modules) === false) {
+                $modules = '';
+            }
+
             echo html_print_label_input_block(
                 __('Module'),
                 html_print_select(
@@ -1208,8 +1582,8 @@ class WelcomeWindow extends Wizard
                 draggable: true,
                 modal: true,
                 close: false,
-                height: 375,
-                width: 480,
+                height: 400,
+                width: 500,
                 overlay: {
                     opacity: 0.5,
                     background: "black"
@@ -1225,7 +1599,7 @@ class WelcomeWindow extends Wizard
                 draggable: true,
                 modal: true,
                 close: false,
-                height: 265,
+                height: 300,
                 width: 480,
                 overlay: {
                     opacity: 0.5,
@@ -1259,8 +1633,8 @@ class WelcomeWindow extends Wizard
                 draggable: true,
                 modal: true,
                 close: false,
-                height: 200,
-                width: 480,
+                height: 590,
+                width: 925,
                 overlay: {
                     opacity: 0.5,
                     background: "black"
@@ -1358,6 +1732,35 @@ class WelcomeWindow extends Wizard
         });
 
         $('#button-basic_net').click(function(){
+            var wmi_credentials = [];
+            $("#wmi-creds [id^='wmi-creds-']").each(function() {
+                var credentialId = $(this).attr("id");
+                var credentialValues = {
+                    user: $(this).find('[name="wmi-cred-user"]').val(),
+                    pass: $(this).find('[name="wmi-cred-pass"]').val(),
+                    namespace: $(this).find('[name="wmi-cred-namespace"]').val()
+                };
+
+                wmi_credentials.push({
+                    id: credentialId,
+                    credential: credentialValues
+                });
+            });
+
+            var rcmd_credentials = [];
+            $("#rcmd-creds [id^='rcmd-creds-']").each(function() {
+                var credentialId = $(this).attr("id");
+                var credentialValues = {
+                    user: $(this).find('[name="rcmd-cred-user"]').val(),
+                    pass: $(this).find('[name="rcmd-cred-pass"]').val()
+                };
+
+                rcmd_credentials.push({
+                    id: credentialId,
+                    credential: credentialValues
+                });
+            });
+
             $.ajax({
                 async: false,
                 type: "POST",
@@ -1365,6 +1768,10 @@ class WelcomeWindow extends Wizard
                 data: {
                     create_net_scan: 1,
                     ip_target: $('#text-ip_target_discovery').val(),
+                    snmp_version: 1,
+                    snmp_communities: $('#text-community').val(),
+                    wmi_credentials: wmi_credentials,
+                    rcmd_credentials: rcmd_credentials
                 },
                 success: function(data) {
                     if (data !== 0) {

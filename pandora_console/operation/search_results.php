@@ -33,7 +33,7 @@ foreach ($arrayKeywords as $keyword) {
     array_push($temp, '%'.$keyword.'%');
 }
 
-$stringSearchSQL = implode('&#x20;', $temp);
+$stringSearchSQL = implode('', $temp);
 $stringSearchSQL = str_replace('_', '\_', $stringSearchSQL);
 
 $_SESSION['stringSearchSQL'] = $stringSearchSQL;

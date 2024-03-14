@@ -496,8 +496,8 @@ if (isset($_GET['server']) === true) {
 <script language="javascript" type="text/javascript">
 
 $(document).ready (function () {
-    var id_server = '<?php echo $id_server; ?>';
-    var server_type = '<?php echo $row['server_type']; ?>';
+    var id_server = '<?php echo ($id_server ?? ''); ?>';
+    var server_type = '<?php echo ($row['server_type'] ?? ''); ?>';
     $("#check_exec_server img").on("click", function () {
         $("#check_exec_server img").attr("src", "images/spinner.gif");
 
@@ -521,7 +521,7 @@ $(document).ready (function () {
             function (data) {
                 $(".white-box-content").html(data);
 
-                $("#submit-add").click(function (e) {
+                $("#button-add").click(function (e) {
                     add_credential_boxes();
                 });
 
@@ -550,7 +550,7 @@ $(document).ready (function () {
                 $(".white-box-content").html(data2);
 
                 // Insert credential
-                $("#submit-add").click(function (e) {
+                $("#button-add").click(function (e) {
                     save_credential_boxes();
                 })
             },
@@ -609,7 +609,7 @@ $(document).ready (function () {
             function (data) {
                 $(".white-box-content").html(data);
 
-                $("#submit-update").click(function (e) {
+                $("#button-update").click(function (e) {
                     update_credential_boxes(datas);
                 });
             },

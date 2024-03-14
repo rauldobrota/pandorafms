@@ -123,7 +123,7 @@ $table_remote->data['ITSM_user_level_conf'] = $row;
 $row = [];
 $row['hostname'] = html_print_label_input_block(
     __('URL to Pandora ITSM setup').ui_print_help_tip(
-        __('Full URL to your Pandora ITSM setup (e.g., http://192.168.1.20/integria/api/v1).'),
+        __('Full URL to your Pandora ITSM setup (e.g., http://192.168.1.20/integria/api/v2).'),
         true
     ),
     html_print_input_text(
@@ -136,6 +136,10 @@ $row['hostname'] = html_print_label_input_block(
     ),
     ['div_class' => 'ITSM-remote-setup-ITSM_hostname']
 );
+
+if (isset($config['ITSM_token']) === false) {
+    $config['ITSM_token'] = '';
+}
 
 // ITSM token.
 $row['password'] = html_print_label_input_block(
@@ -559,7 +563,7 @@ $table_cr_settings->data[4][0] = html_print_label_input_block(
 
 // Print.
 echo '<div class="center pdd_b_10px mrgn_btn_20px white_box max_floating_element_size">';
-echo '<a target="_blank" rel="noopener noreferrer" href="https://pandorafms.com/es/itsm/">';
+echo '<a target="_blank" rel="noopener noreferrer" href="https://pandorafms.com/itsm/">';
 html_print_image(
     'images/pandoraITSM_logo.png',
     false,
@@ -570,8 +574,8 @@ echo '<br />';
 echo '<div class="ITSM_title">';
 echo __('Pandora ITSM');
 echo '</div>';
-echo '<a target="_blank" rel="noopener noreferrer" href="https://pandorafms.com/es/itsm/">';
-echo 'https://pandorafms.com/es/itsm/';
+echo '<a target="_blank" rel="noopener noreferrer" href="https://pandorafms.com/itsm/">';
+echo 'https://pandorafms.com/itsm/';
 echo '</a>';
 echo '</div>';
 

@@ -2366,7 +2366,7 @@ $(document).ready(function() {
     // Hidden  tips modal.
     $(".window").css("display", "none");
 
-    var type_about = "about_operation";
+    var type_about = "about";
     if ($(this).attr("id") === "icon_about") {
       type_about = "about";
     }
@@ -2450,6 +2450,33 @@ $(document).ready(function() {
       });
     }
   }
+
+  $("[id^='div_tip_']").click(function() {
+    var id = $(this)
+      .attr("id")
+      .split("_")[2];
+
+    $("#tip_dialog_" + id).dialog({
+      title: $("#tip_dialog_" + id).data("title"),
+      modal: true,
+      maxWidth: 600,
+      minWidth: 400,
+      show: {
+        effect: "fade",
+        duration: 200
+      },
+      hide: {
+        effect: "fade",
+        duration: 200
+      },
+      closeOnEscape: true,
+      buttons: {
+        Close: function() {
+          $(this).dialog("close");
+        }
+      }
+    });
+  });
 });
 
 function close_info_box(id) {
@@ -2620,4 +2647,61 @@ function christmas_click(flagEasternEgg) {
       $("#container-snow").addClass("invisible");
     }, 120000);
   }
+}
+
+function perform_email_test() {
+  $("#email_test_sent_message").hide();
+  $("#email_test_failure_message").hide();
+
+  var test_address = $("#text-email_test_address").val();
+  var params = {
+    email_smtpServer: $("#text-email_smtpServer").val(),
+    email_smtpPort: $("#text-email_smtpPort").val(),
+    email_username: $("#text-email_username").val(),
+    email_password: $("#password-email_password").val(),
+    email_encryption: $("#email_encryption option:selected").val(),
+    email_from_dir: $("#text-email_from_dir").val(),
+    email_from_name: $("#text-email_from_name").val()
+  };
+
+  $.ajax({
+    type: "POST",
+    url: "ajax.php",
+    data: {
+      page: "godmode/setup/setup_general",
+      test_address: test_address,
+      params: params
+    },
+    dataType: "json",
+    success: function(data) {
+      if (parseInt(data) === 1) {
+        $("#email_test_sent_message").show();
+        $("#email_test_failure_message").hide();
+      } else {
+        console.log($("#email_test_failure_message"));
+        $("#email_test_failure_message").show();
+        $("#email_test_sent_message").hide();
+      }
+    },
+    error: function() {
+      $("#email_test_failure_message").show();
+      $("#email_test_sent_message").hide();
+    }
+  });
+}
+
+function show_email_test(id) {
+  $("#email_test_sent_message").hide();
+  $("#email_test_failure_message").hide();
+
+  $("#email_test_" + id).dialog({
+    resizable: true,
+    draggable: true,
+    modal: true,
+    width: 450,
+    overlay: {
+      opacity: 0.5,
+      background: "black"
+    }
+  });
 }

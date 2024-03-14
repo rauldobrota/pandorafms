@@ -2428,7 +2428,7 @@ sub pandora_process_module ($$$$$$$$$;$) {
 			}
 
 			# Active ff interval
-			if ($module->{'module_ff_interval'} != 0) {
+			if ($module->{'module_ff_interval'} != 0 && $min_ff_event > 0 && $last_known_status != $status) {
 				$current_interval = $module->{'module_ff_interval'};
 			}
 		}
@@ -3374,12 +3374,14 @@ Update server status:
 
 =cut
 ##########################################################################
-sub pandora_update_server ($$$$$$;$$$$) {
+sub pandora_update_server ($$$$$$;$$$$$$) {
 	my ($pa_config, $dbh, $server_name, $server_id, $status,
-		$server_type, $num_threads, $queue_size, $version, $keepalive) = @_;
+		$server_type, $num_threads, $queue_size, $version, $keepalive, $disabled, $remote_config) = @_;
 	
 	$num_threads = 0 unless defined ($num_threads);
 	$queue_size = 0 unless defined ($queue_size);
+	$remote_config = 0 unless defined($remote_config);
+	$disabled = 0 unless defined($disabled);
 	$keepalive = $pa_config->{'keepalive'} unless defined ($keepalive);
 
 	my $timestamp = strftime ("%Y-%m-%d %H:%M:%S", localtime());
@@ -3393,13 +3395,12 @@ sub pandora_update_server ($$$$$$;$$$$) {
 
 	# First run
 	if ($server_id == 0) { 
-		
 		# Create an entry in tserver if needed
 		my $server = get_db_single_row ($dbh, 'SELECT id_server FROM tserver WHERE BINARY name = ? AND server_type = ?', $server_name, $server_type);
 		if (! defined ($server)) {
-			$server_id = db_insert ($dbh, 'id_server', 'INSERT INTO tserver (name, server_type, description, version, threads, queued_modules, server_keepalive, server_keepalive_utimestamp)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)', $server_name, $server_type,
-						'Autocreated at startup', $version, $num_threads, $queue_size, $keepalive, $keepalive_utimestamp);
+			$server_id = db_insert ($dbh, 'id_server', 'INSERT INTO tserver (name, server_type, description, version, threads, queued_modules, server_keepalive, server_keepalive_utimestamp, disabled)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', $server_name, $server_type,
+						'Autocreated at startup', $version, $num_threads, $queue_size, $keepalive, $keepalive_utimestamp, $disabled);
 		
 			$server = get_db_single_row ($dbh, 'SELECT status FROM tserver WHERE id_server = ?', $server_id);
 			if (! defined ($server)) {
@@ -3408,6 +3409,10 @@ sub pandora_update_server ($$$$$$;$$$$) {
 			}
 		} else {
 			$server_id = $server->{'id_server'};
+
+			if(!$remote_config){
+				db_do ($dbh, 'UPDATE tserver SET disabled = ? WHERE id_server = ?', $disabled, $server_id);
+			}
 		}
 
 		db_do ($dbh, 'UPDATE tserver SET status = ?, keepalive = ?, master = ?, laststart = ?, version = ?, threads = ?, queued_modules = ?, server_keepalive = ?, server_keepalive_utimestamp = ?
@@ -4273,13 +4278,15 @@ Generate an event.
 
 =cut
 ##########################################################################
-#sub pandora_event ($$$$$$$$$$;$$$$$$$$$$$$) {
+#sub pandora_event ($$$$$$$$$$;$$$$$$$$$$$$$) {
 sub pandora_event {
 	my ($pa_config, $evento, $id_grupo, $id_agente, $severity,
 		$id_alert_am, $id_agentmodule, $event_type, $event_status, $dbh,
 		$source, $user_name, $comment, $id_extra, $tags,
 		$critical_instructions, $warning_instructions, $unknown_instructions, $custom_data,
-		$module_data, $module_status, $server_id) = @_;
+		$module_data, $module_status, $server_id, $event_custom_id) = @_;
+
+	$event_custom_id //= "";
 
 	my $agent = undef;
 	if (defined($id_agente) && $id_agente != 0) {
@@ -4332,7 +4339,7 @@ sub pandora_event {
 	
 	my $utimestamp = time ();
 	my $timestamp = strftime ("%Y-%m-%d %H:%M:%S", localtime ($utimestamp));
-	my $event_custom_id = undef;
+
 	$id_agentmodule = 0 unless defined ($id_agentmodule);
 	
 	# Validate events with the same event id
@@ -7189,10 +7196,22 @@ Puts all autodisable agents with all modules unknown on disabled mode
 sub pandora_disable_autodisable_agents ($$) {
 	my ($pa_config, $dbh) = @_;
 	
-	my $sql = 'SELECT id_agente FROM tagente
-			WHERE disabled=0 AND 
-			tagente.unknown_count>0 AND 
-			tagente.modo=2';
+
+	my $sql = 'SELECT id_agente
+				FROM (
+					SELECT tm.id_agente, count(*) as sync_modules, ta.unknown_count 
+					FROM tagente_modulo tm
+					JOIN tagente ta ON ta.id_agente = tm.id_agente 
+					LEFT JOIN tagente_estado te ON tm.id_agente_modulo = te.id_agente_modulo
+					WHERE ta.disabled = 0
+					AND ta.modo=2
+					AND te.estado != 4
+					AND tm.delete_pending=0
+					AND NOT ((id_tipo_modulo >= 21 AND id_tipo_modulo <= 23) OR id_tipo_modulo = 100)
+					GROUP BY tm.id_agente
+				) AS subquery
+			WHERE subquery.unknown_count >= subquery.sync_modules;';
+	
 	my @agents_autodisabled = get_db_rows ($dbh, $sql);
 	return if ($#agents_autodisabled < 0);
 	
@@ -7757,12 +7776,12 @@ sub safe_mode($$$$$$) {
 	# Going to critical. Disable the rest of the modules.
 	if ($new_status == MODULE_CRITICAL) {
 		logger($pa_config, "Enabling safe mode for agent " . $agent->{'nombre'}, 10);
-		db_do($dbh, 'UPDATE tagente_modulo SET disabled=1 WHERE id_agente=? AND id_agente_modulo!=?', $agent->{'id_agente'}, $module->{'id_agente_modulo'});
+		db_do($dbh, 'UPDATE tagente_modulo SET disabled=1, disabled_by_safe_mode=1 WHERE id_agente=? AND id_agente_modulo!=? AND disabled=0', $agent->{'id_agente'}, $module->{'id_agente_modulo'});
 	}
 	# Coming back from critical. Enable the rest of the modules.
 	elsif ($known_status == MODULE_CRITICAL) {
 		logger($pa_config, "Disabling safe mode for agent " . $agent->{'nombre'}, 10);
-		db_do($dbh, 'UPDATE tagente_modulo SET disabled=0 WHERE id_agente=? AND id_agente_modulo!=?', $agent->{'id_agente'}, $module->{'id_agente_modulo'});
+		db_do($dbh, 'UPDATE tagente_modulo SET disabled=0, disabled_by_safe_mode=0 WHERE id_agente=? AND id_agente_modulo!=? AND disabled_by_safe_mode=1', $agent->{'id_agente'}, $module->{'id_agente_modulo'});
 
 		# Prevent the modules from becoming unknown!
 		db_do ($dbh, 'UPDATE tagente_estado SET utimestamp = ? WHERE id_agente = ? AND id_agente_modulo!=?', time(), $agent->{'id_agente'}, $module->{'id_agente_modulo'});
@@ -7788,7 +7807,7 @@ sub pandora_safe_mode_modules_update {
 	# If status is critical, disable the rest of the modules.
 	if ($status == MODULE_CRITICAL) {
 		logger($pa_config, "Update modules for safe mode agent with alias:" . $agent->{'alias'} . ".", 10);
-		db_do($dbh, 'UPDATE tagente_modulo SET disabled=1 WHERE id_agente=? AND id_agente_modulo!=?', $agent_id, $agent->{'safe_mode_module'});
+		db_do($dbh, 'UPDATE tagente_modulo SET disabled=1, disabled_by_safe_mode=1 WHERE id_agente=? AND id_agente_modulo!=? AND disabled=0', $agent_id, $agent->{'safe_mode_module'});
 	}
 }
 

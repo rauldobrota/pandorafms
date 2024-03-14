@@ -54,6 +54,13 @@ class Diagnostics extends Wizard
      */
     public $pdf;
 
+    /**
+     * Product name.
+     *
+     * @var string
+     */
+    public $product_name;
+
 
     /**
      * Constructor.
@@ -403,7 +410,7 @@ class Diagnostics extends Wizard
                 ],
             ];
 
-            $return .= '<div class="title-self-monitoring">';
+            $return = '<div class="title-self-monitoring">';
             $return .= __(
                 'Graphs modules that represent the self-monitoring system'
             );
@@ -416,7 +423,7 @@ class Diagnostics extends Wizard
             $return .= '</div>';
         }
 
-        return $return;
+        return ($return ?? '');
     }
 
 
@@ -483,7 +490,7 @@ class Diagnostics extends Wizard
                 ],
                 'isEnterprise'  => [
                     'name'  => __('Enterprise installed'),
-                    'value' => (enterprise_installed()) ? __('true') : __('false'),
+                    'value' => $this->getStatusLicense(),
                 ],
                 'customerKey'   => [
                     'name'  => __('Update Key'),
@@ -506,6 +513,29 @@ class Diagnostics extends Wizard
 
 
     /**
+     * Return status of license.
+     *
+     * @return string
+     */
+    private function getStatusLicense():string
+    {
+        global $config;
+
+        if (enterprise_installed() === true) {
+            if (isset($config['license_mode'])
+                && (int) $config['license_mode'] === 1
+            ) {
+                return __('FREE/TRIAL');
+            } else {
+                return __('LICENSED');
+            }
+        } else {
+            return __('OpenSource');
+        }
+    }
+
+
+    /**
      * PHP Status.
      *
      * @return string
@@ -517,23 +547,31 @@ class Diagnostics extends Wizard
         $result = [
             'error' => false,
             'data'  => [
-                'phpVersion'       => [
+                'phpVersion'        => [
                     'name'  => __('PHP Version'),
                     'value' => phpversion(),
                 ],
-                'maxExecutionTime' => [
+                'maxExecutionTime'  => [
                     'name'  => __('PHP Max execution time'),
                     'value' => ini_get('max_execution_time'),
                 ],
-                'maxInputTime'     => [
+                'maxInputTime'      => [
                     'name'  => __('PHP Max input time'),
                     'value' => ini_get('max_input_time'),
                 ],
-                'memoryLimit'      => [
+                'memoryLimit'       => [
                     'name'  => __('PHP Memory limit'),
                     'value' => ini_get('memory_limit'),
                 ],
-                'sessionLifetime'  => [
+                'postMaxSize'       => [
+                    'name'  => __('PHP Post max size'),
+                    'value' => ini_get('post_max_size'),
+                ],
+                'uploadMaxFilesize' => [
+                    'name'  => __('PHP Upload max file size'),
+                    'value' => ini_get('upload_max_filesize'),
+                ],
+                'sessionLifetime'   => [
                     'name'  => __('Session cookie lifetime'),
                     'value' => ini_get('session.cookie_lifetime'),
                 ],
@@ -656,7 +694,7 @@ class Diagnostics extends Wizard
             WHERE tagente_estado.estado = 4';
         $notInitAgents = db_get_sql($sqlNotInitAgents);
 
-        $dateDbMantenaince = $config['db_maintance'];
+        $dateDbMantenaince = ($config['db_maintance'] ?? '');
 
         $currentTime = time();
 
@@ -1019,6 +1057,10 @@ class Diagnostics extends Wizard
         } else {
             $tFragmentationMsg = __('Table fragmentation is correct.');
             $tFragmentationStatus = 1;
+        }
+
+        if (isset($config['thousand_separator']) === false) {
+            $config['thousand_separator'] = '';
         }
 
         $result = [
@@ -1805,6 +1847,10 @@ class Diagnostics extends Wizard
             $fileSize = filesize($path);
             $sizeServerLog = number_format($fileSize);
             $sizeServerLog = (0 + str_replace(',', '', $sizeServerLog));
+
+            if (isset($config['thousand_separator']) === false) {
+                $config['thousand_separator'] = '';
+            }
 
             $value = number_format(($fileSize / $mega), 3, $config['decimal_separator'], $config['thousand_separator']);
             $message = __('You have more than 10 MB of logs');

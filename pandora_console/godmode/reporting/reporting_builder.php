@@ -626,7 +626,7 @@ switch ($action) {
 
             db_pandora_audit(
                 AUDIT_LOG_REPORT_MANAGEMENT,
-                sprintf('%s #%s', $auditMessage, $idReport)
+                sprintf('%s %s #%s', $auditMessage, $report['name'], $idReport)
             );
 
             ui_print_result_message(
@@ -750,7 +750,7 @@ switch ($action) {
                 true
             ),
             html_print_input_text(
-                __('search'),
+                'search',
                 $search,
                 '',
                 30,
@@ -1259,6 +1259,10 @@ switch ($action) {
             $reports_table .= html_print_table($table, true);
             $reports_table .= '<br></div>';
             echo $reports_table;
+            $show_count = false;
+            if (is_metaconsole() === true) {
+                $show_count = true;
+            }
 
             $tablePagination = ui_pagination(
                 $total_reports,
@@ -1267,7 +1271,7 @@ switch ($action) {
                 $pagination,
                 true,
                 'offset',
-                false
+                $show_count
             );
         } else {
             ui_print_info_message(
@@ -1276,24 +1280,6 @@ switch ($action) {
                     'message'  => __('No data found.'),
                 ]
             );
-        }
-
-        $discovery_tasklist = new DiscoveryTaskList();
-        $report_task_data = $discovery_tasklist->showListConsoleTask(true);
-        if (is_array($report_task_data) === true || (strpos($report_task_data, 'class="nf"') === false && $report_task_data !== -1)) {
-            $task_table = '<div class="mrgn_top_15px white_box">';
-            $task_table .= '<span class="white_table_graph_header">'.__('Report tasks');
-            $task_table .= ui_print_help_tip(__('To schedule a report, do it from the editing view of each report.'), true);
-            $task_table .= '</span><div>';
-            $task_table .= $report_task_data;
-            $task_table .= '</div></div>';
-            echo $task_table;
-        } else {
-            if ($report_task_data === -1) {
-                $report_task_data = '';
-            }
-
-            ui_print_info_message($report_task_data.__('To schedule a report, do it from the editing view of each report.'));
         }
 
         if (check_acl($config['id_user'], 0, 'RW')
@@ -1461,7 +1447,7 @@ switch ($action) {
                         $auditMessage = ($resultOperationDB === true) ? 'Update report' : 'Fail try to update report';
                         db_pandora_audit(
                             AUDIT_LOG_REPORT_MANAGEMENT,
-                            sprintf('%s #%s', $auditMessage, $idReport)
+                            sprintf('%s %s #%s', $auditMessage, $new_values['name'], $idReport),
                         );
                     } else {
                         $resultOperationDB = false;
@@ -1513,7 +1499,7 @@ switch ($action) {
                             ]
                         );
 
-                        $auditMessage = ((bool) $idOrResult === true) ? sprintf('Create report #%s', $idOrResult) : 'Fail try to create report';
+                        $auditMessage = ((bool) $idOrResult === true) ? sprintf('Create report %s #%s', $reportName, $idOrResult) : 'Fail try to create report';
                         db_pandora_audit(
                             AUDIT_LOG_REPORT_MANAGEMENT,
                             $auditMessage
@@ -1874,6 +1860,13 @@ switch ($action) {
                                 $values['top_n_value'] = get_parameter(
                                     'max_values'
                                 );
+
+                                $es['top_n_type'] = get_parameter('top_n_type', '');
+                                $es['display_graph'] = get_parameter('display_graph', '');
+                                $es['display_summary'] = get_parameter('display_summary', '');
+                                $es['display_data_table'] = get_parameter('display_data_table', '');
+                                $values['external_source'] = json_encode($es);
+
                                 $good_format = true;
                             break;
 
@@ -2958,6 +2951,12 @@ switch ($action) {
                                 $values['top_n_value'] = get_parameter(
                                     'max_values'
                                 );
+
+                                $es['top_n_type'] = get_parameter('top_n_type', '');
+                                $es['display_graph'] = get_parameter('display_graph', '');
+                                $es['display_summary'] = get_parameter('display_summary', '');
+                                $es['display_data_table'] = get_parameter('display_data_table', '');
+                                $values['external_source'] = json_encode($es);
                                 $good_format = true;
                             break;
 

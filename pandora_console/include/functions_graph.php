@@ -737,6 +737,10 @@ function grafico_modulo_sparse($params)
         $params['backgroundColor'] = 'white';
     }
 
+    if (isset($params['vconsole']) === false) {
+        $params['vconsole'] = false;
+    }
+
     if (isset($params['only_image']) === true && $params['vconsole'] !== true) {
         $params['backgroundColor'] = 'transparent';
     }
@@ -903,6 +907,10 @@ function grafico_modulo_sparse($params)
 
     // Format of the graph.
     if (empty($params['unit']) === true) {
+        if (isset($module_data['unit']) === false) {
+            $module_data['unit'] = '';
+        }
+
         $params['unit'] = $module_data['unit'];
         if (modules_is_unit_macro($params['unit'])) {
             $params['unit'] = '';
@@ -1006,6 +1014,10 @@ function grafico_modulo_sparse($params)
 
     if ($data_module_graph === false) {
         $data_module_graph = [];
+    }
+
+    if (isset($series_suffix) === false) {
+        $series_suffix = '';
     }
 
     $data_module_graph['series_suffix'] = $series_suffix;
@@ -4701,11 +4713,13 @@ function graph_nodata_image($options)
 {
     global $config;
 
-    if ($options['base64'] === true) {
-        $dataImg = file_get_contents(
-            $config['homedir'].'/images/image_problem_area_150.png'
-        );
-        return base64_encode($dataImg);
+    if (isset($options['base64']) === true) {
+        if ($options['base64'] === true) {
+            $dataImg = file_get_contents(
+                $config['homedir'].'/images/image_problem_area_150.png'
+            );
+            return base64_encode($dataImg);
+        }
     }
 
     $style = '';
@@ -5261,7 +5275,8 @@ function graph_so_by_group($id_group, $width=300, $height=200, $recursive=true, 
         FROM tagente a
         LEFT JOIN tagent_secondary_group g ON g.id_agent = a.id_agente
         LEFT JOIN tconfig_os os ON a.id_os = os.id_os
-        WHERE a.id_grupo IN (%s) OR g.id_group IN (%s)
+        WHERE (a.id_grupo IN (%s) OR g.id_group IN (%s))
+        AND a.disabled = 0
         GROUP BY os.id_os',
         implode(',', $id_groups),
         implode(',', $id_groups)
@@ -5351,13 +5366,14 @@ function graph_events_agent_by_group($id_group, $width=300, $height=200, $noWate
     // with it and then the number of times it occured. GROUP BY statement
     // is required if both DISTINCT() and COUNT() are in the statement.
     $sql = sprintf(
-        'SELECT DISTINCT(id_agente) AS id_agente,
-                COUNT(id_agente) AS count
+        'SELECT DISTINCT(te.id_agente) AS id_agente,
+                COUNT(te.id_agente) AS count
             FROM tevento te
+            LEFT JOIN tagente a ON a.id_agente = te.id_agente
             LEFT JOIN tagent_secondary_group g ON g.id_agent = te.id_agente
             WHERE 1=1 AND estado = 0
-            %s %s
-            GROUP BY id_agente
+            %s %s AND a.disabled = 0
+            GROUP BY te.id_agente
             ORDER BY count DESC LIMIT 8',
         $tags_condition,
         $filter_groups
@@ -5598,6 +5614,24 @@ function draw_form_stat_win(array $form_data, string $tab_active)
                 false,
                 false
             ).'</div>';
+
+            $table->data[7][0] = __('Type graph');
+            $table->data[7][1] = '<div class="small-input-select2">'.html_print_select(
+                [
+                    'tabs-chart-module-graph' => __('Module Graph'),
+                    'tabs-chart-period-graph' => __('Sliced'),
+                ],
+                'graph_tab',
+                $form_data['graph_tab'],
+                '',
+                '',
+                0,
+                true,
+                false,
+                false
+            ).'</div>';
+            $table->data[7][2] = '';
+            $table->data[7][3] = '';
         }
     } else {
         $table->data[0][0] = __('Refresh time');
@@ -5769,6 +5803,22 @@ function draw_form_stat_win(array $form_data, string $tab_active)
             0,
             7,
             true
+        ).'</div>';
+
+        $table->data[8][0] = __('Type graph');
+        $table->data[8][1] = '<div class="small-input-select2">'.html_print_select(
+            [
+                'tabs-chart-module-graph' => __('Module Graph'),
+                'tabs-chart-period-graph' => __('Sliced'),
+            ],
+            'graph_tab',
+            $form_data['graph_tab'],
+            '',
+            '',
+            0,
+            true,
+            false,
+            false
         ).'</div>';
     }
 

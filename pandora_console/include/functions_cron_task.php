@@ -383,6 +383,13 @@ function cron_task_run(
                             $nameday = strtolower($datetime->format('l'));
                         }
                     }
+                } else if (empty($old_args['first_execution']) === false) {
+                    $datetime = new DateTime();
+                    $datetime->setTimestamp($old_args['first_execution']);
+                    $datetime->modify('+7 day');
+                    $weekly_date = $datetime->format('Y-m-d');
+                    $weekly_time = $datetime->format('H:i:s');
+                    $old_args['first_execution'] = strtotime($weekly_date.' '.$weekly_time);
                 }
             } else {
                 // Add it to next execution.
@@ -418,6 +425,14 @@ function cron_task_run(
 			SET args = '".$new_args."'
 			WHERE id=".$id_user_task;
     }
+
+    db_pandora_audit(
+        AUDIT_LOG_CRON_TASK,
+        'Executed cron task: '.$task['name'].' #'.$task['id'],
+        false,
+        false,
+        ''
+    );
 
     db_process_sql($sql);
     db_process_sql($sql2);
@@ -489,7 +504,7 @@ function cron_task_start_gotty(bool $restart_mode=true)
         }
     }
 
-    if ($start_proc === true) {
+    if ($start_proc === true && file_exists('/usr/bin/pandora_gotty') === true) {
         $logFilePath = $config['homedir'].'/log/gotty_cron_tmp.log';
         shell_exec('touch '.$logFilePath);
 
@@ -512,7 +527,7 @@ function cron_task_start_gotty(bool $restart_mode=true)
     while ((time() - $startTime) < $maxWaitTime) {
         if ($start_proc === true) {
             // Read command output.
-            $log_content = file_get_contents($logFilePath);
+            $log_content = @file_get_contents($logFilePath);
         }
 
         if ($start_proc === true

@@ -285,7 +285,11 @@ switch ($activeTab) {
                 }
 
                 // If the background is changed the size is reseted
-                $background_now = $visualConsole['background'];
+                if (isset($visualConsole['background']) === true) {
+                    $background_now = $visualConsole['background'];
+                } else {
+                    $background_now = '';
+                }
 
                 $values['width'] = $width;
                 $values['height'] = $height;
@@ -300,7 +304,7 @@ switch ($activeTab) {
                             ui_update_name_fav_element($idVisualConsole, 'Visual_Console', $values['name']);
                             db_pandora_audit(
                                 AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT,
-                                sprintf('Update visual console #%s', $idVisualConsole)
+                                sprintf('Update visual console %s #%s', io_safe_output($values['name']), $idVisualConsole)
                             );
                             $action = 'edit';
                             $statusProcessInDB = [
@@ -320,7 +324,7 @@ switch ($activeTab) {
                         } else {
                             db_pandora_audit(
                                 AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT,
-                                sprintf('Fail update visual console #%s', $idVisualConsole)
+                                sprintf('Fail update visual console %s #%s', $values['name'], $idVisualConsole)
                             );
                             $statusProcessInDB = [
                                 'flag'    => false,
@@ -339,7 +343,7 @@ switch ($activeTab) {
                         if ($idVisualConsole !== false) {
                             db_pandora_audit(
                                 AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT,
-                                sprintf('Create visual console #%s', $idVisualConsole)
+                                sprintf('Create visual console %s #%s', io_safe_output($values['name']), $idVisualConsole)
                             );
                             $action = 'edit';
                             $statusProcessInDB = [
@@ -359,7 +363,7 @@ switch ($activeTab) {
                         } else {
                             db_pandora_audit(
                                 AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT,
-                                'Fail try to create visual console'
+                                sprintf('Fail try to create visual console %s #%s', io_safe_output($values['name']), $idVisualConsole)
                             );
                             $statusProcessInDB = [
                                 'flag'    => false,

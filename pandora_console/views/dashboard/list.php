@@ -112,7 +112,11 @@ if (empty($dashboards) === true) {
                 'manageDashboards' => $manageDashboards,
             ],
             'default_pagination'  => $config['block_size'],
-            'no_sortable_columns' => [],
+            'no_sortable_columns' => [
+                4,
+                5,
+                6,
+            ],
             'order'               => [
                 'field'     => 'name',
                 'direction' => 'desc',
@@ -166,12 +170,20 @@ if ($writeDashboards === 1) {
         true
     );
 
+    if (isset($output) === false) {
+        $output = '<div>';
+    }
+
     $output .= '</div>';
 
     echo $output;
 
     // Div for modal update dashboard.
     echo '<div id="modal-update-dashboard" class="invisible"></div>';
+}
+
+if (isset($tablePagination) === false) {
+    $tablePagination = '';
 }
 
 html_print_action_buttons(

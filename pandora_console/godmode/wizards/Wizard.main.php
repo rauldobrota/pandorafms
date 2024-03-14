@@ -97,6 +97,27 @@ class Wizard
      */
     public $access = 'AR';
 
+    /**
+     * Root url.
+     *
+     * @var string
+     */
+    public $rootUrl;
+
+    /**
+     * Task.
+     *
+     * @var mixed
+     */
+    public $task;
+
+    /**
+     * Max pages net scan.
+     *
+     * @var mixed
+     */
+    public $maxPagesNetScan;
+
 
     /**
      * Setter for breadcrum
@@ -214,6 +235,10 @@ class Wizard
         $i = 0;
 
         foreach ($urls as $url) {
+            if (isset($url['selected']) === false) {
+                $url['selected'] = 0;
+            }
+
             if ($url['selected'] == 1) {
                 $class = 'selected';
             } else {
@@ -550,7 +575,7 @@ class Wizard
         }
 
         echo '<ul class="bigbuttonlist">';
-        array_map('self::printBigButtonElement', $list_data);
+        array_map(['Wizard', 'printBigButtonElement'], $list_data);
         echo '</ul>';
 
         if ($return === true) {

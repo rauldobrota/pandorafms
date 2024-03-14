@@ -219,6 +219,7 @@ CREATE TABLE IF NOT EXISTS `tagente_modulo` (
   `flag` TINYINT UNSIGNED DEFAULT 1,
   `id_modulo` INT UNSIGNED DEFAULT 0,
   `disabled` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `disabled_by_safe_mode` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `id_export` SMALLINT UNSIGNED DEFAULT 0,
   `plugin_user` TEXT,
   `plugin_pass` TEXT,
@@ -1156,6 +1157,7 @@ CREATE TABLE IF NOT EXISTS `tserver` (
   `exec_proxy` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `port` INT UNSIGNED NOT NULL DEFAULT 0,
   `server_keepalive_utimestamp` BIGINT NOT NULL DEFAULT 0,
+  `disabled` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY  (`id_server`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -1264,7 +1266,7 @@ CREATE TABLE IF NOT EXISTS `tevent_filter` (
   `custom_data_filter_type` TINYINT UNSIGNED DEFAULT 0,
   `owner_user` TEXT,
   `private_filter_user` TEXT,
-  `regex` TEXT,
+  `regex` TINYINT unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY  (`id_filter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
@@ -1294,7 +1296,7 @@ CREATE TABLE IF NOT EXISTS `tusuario` (
   `section` TEXT,
   `data_section` TEXT,
   `metaconsole_section` VARCHAR(255) NOT NULL DEFAULT 'Default',
-  `metaconsole_data_section` VARCHAR(255) NOT NULL DEFAULT '',
+  `metaconsole_data_section` TEXT,
   `force_change_pass` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `last_pass_change` DATETIME,
   `last_failed_login` DATETIME,
@@ -1395,6 +1397,7 @@ CREATE TABLE IF NOT EXISTS `tmensajes` (
   `subject` VARCHAR(255) NOT NULL DEFAULT '',
   `estado` INT UNSIGNED NOT NULL DEFAULT 0,
   `url` TEXT,
+  `icon_notification` VARCHAR(250) DEFAULT NULL,
   `response_mode` VARCHAR(200) DEFAULT NULL,
   `citicity` INT UNSIGNED DEFAULT 0,
   `id_source` BIGINT UNSIGNED NOT NULL,
@@ -2666,6 +2669,7 @@ CREATE TABLE IF NOT EXISTS `tdatabase` (
   `utimestamp` BIGINT DEFAULT 0,
   `mysql_version` VARCHAR(10) DEFAULT '',
   `pandora_version` VARCHAR(10) DEFAULT '',
+  `disabled` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
@@ -3881,6 +3885,8 @@ CREATE TABLE IF NOT EXISTS `tuser_task_scheduled` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_usuario` VARCHAR(255) NOT NULL DEFAULT '0',
   `id_user_task` INT UNSIGNED NOT NULL DEFAULT 0,
+  `id_report` INT NULL,
+  `name` VARCHAR(255) NULL,
   `args` TEXT,
   `scheduled` ENUM('no','hourly','daily','weekly','monthly','yearly','custom') DEFAULT 'no',
   `last_run` INT UNSIGNED DEFAULT 0,
@@ -4555,16 +4561,16 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- ---------------------------------------------------------------------
-
 -- Table `tdemo_data`
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tdemo_data` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `item_id` INT UNSIGNED NULL DEFAULT NULL,
+  `item_id` TEXT NOT NULL DEFAULT '',
   `table_name` VARCHAR(64) NULL DEFAULT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
+-- ---------------------------------------------------------------------
 -- Table `tpandora_cve`
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tpandora_cve` (
@@ -4596,7 +4602,6 @@ CREATE TABLE IF NOT EXISTS `tfiles_repo_group` (
 	FOREIGN KEY (`id_file`) REFERENCES tfiles_repo(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- -----------------------------------------------------
 -- Table `tmodule_synth`
 -- -----------------------------------------------------
@@ -4610,4 +4615,72 @@ CREATE TABLE IF NOT EXISTS `tpolicy_modules_synth` (
   FOREIGN KEY (`id_agent_module_target`) REFERENCES tpolicy_modules(`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+-- -----------------------------------------------------
+-- Table `tmerge_error`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tmerge_error` (
+    `id` int(10) NOT NULL auto_increment,
+    `id_node` int(10) default 0,
+    `phase` int(10) default 0,
+    `step` int(10) default 0,
+    `msg` LONGTEXT default "",
+    `action` text default "",
+    `utimestamp` int(20) unsigned NOT NULL default 0,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+-- ---------------------------------------------------------------------
+-- Table `tmerge_steps`
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tmerge_steps` (
+    `id` int(10) NOT NULL auto_increment,
+    `id_node` int(10) default 0,
+    `phase` int(10) default 0,
+    `total` int(10) default 0,
+    `step` int(10) default 0,
+    `debug` varchar(1024) default "",
+    `action` varchar(100) default "",
+    `affected` varchar(100) default "",
+    `query` mediumtext default "",
+    `utimestamp` int(20) unsigned NOT NULL default 0,
+    PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+-- ---------------------------------------------------------------------
+-- Table `tmerge_queries`
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tmerge_queries` (
+    `steps` int(10) NOT NULL auto_increment,
+    `action` varchar(100) default "",
+    `affected` varchar(100) default "",
+    `utimestamp` int(20) unsigned NOT NULL default 0,
+    `query` LONGTEXT NOT NULL default "",
+    PRIMARY KEY  (`steps`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+-- ---------------------------------------------------------------------
+-- Table `ttoken`
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ttoken` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` TEXT NOT NULL,
+  `uuid` TEXT NOT NULL,
+  `challenge` TEXT NOT NULL,
+  `id_user` varchar(60) NOT NULL default '',
+  `validity` datetime,
+  `last_usage` datetime,
+  PRIMARY KEY(`id`),
+  FOREIGN KEY (`id_user`) REFERENCES `tusuario` (`id_user`) ON DELETE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET=UTF8MB4;
+
+-- ---------------------------------------------------------------------
+-- Table `tmetaconsole_ha_databases`
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tmetaconsole_ha_databases` (
+  `node_id` int NOT NULL,
+  `host` varchar(255) DEFAULT '',
+  `master` tinyint unsigned DEFAULT '0',
+  PRIMARY KEY (`node_id`, `host`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;

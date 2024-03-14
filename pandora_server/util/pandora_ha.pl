@@ -58,6 +58,9 @@ my $Restart = 0;
 # Controlled exit
 my $Running = 0;
 
+# License
+my $License;
+
 ########################################################################
 # Print the given message with a preceding timestamp.
 ########################################################################
@@ -359,6 +362,27 @@ sub ha_update_server($$) {
 
 }
 
+###############################################################################
+# Restart pandora server on demand.
+###############################################################################
+sub ha_restart_server($$) {
+  my ($config, $dbh) = @_;
+  my $OSNAME = $^O;
+
+  my $current_license;
+  if (!defined($License)) {
+    $License = get_db_value($dbh, 'SELECT `value` FROM `tupdate_settings` WHERE `key` = "customer_key"');
+    $current_license = $License;
+  } else {
+    $current_license = get_db_value($dbh, 'SELECT `value` FROM `tupdate_settings` WHERE `key` = "customer_key"');
+  }
+
+  if($License ne $current_license) {
+    ha_restart_pandora($config);
+    $License = $current_license;
+  }
+}
+
 ################################################################################
 # Dump the list of known databases to disk.
 ################################################################################
@@ -387,7 +411,7 @@ sub ha_load_databases($) {
     return unless defined($conf->{'ha_hosts'});
 
     @HA_DB_Hosts = grep { !/^#/ } map { s/^\s+|\s+$//g; $_; } split(/,/, $conf->{'ha_hosts'});
-    log_message($conf, 'DEBUG', "Loaded databases from disk (@HA_DB_Hosts)");
+    log_message($conf, 'DEBUG', "Loaded databases from disk (@HA_DB_Hosts)");  
 }
 
 ###############################################################################
@@ -414,9 +438,10 @@ sub ha_database_connect_pandora($) {
 
 	# Load the list of HA databases.
 	ha_load_databases($conf);
-
+  
 	# Select a new master database.
 	my ($dbh, $utimestamp, $max_utimestamp) = (undef, undef, -1);
+
 	foreach my $ha_dbhost (@HA_DB_Hosts) {
 
 		# Retry each database ha_connect_retries times.
@@ -443,6 +468,13 @@ sub ha_database_connect_pandora($) {
 		# No luck. Try the next database.
 		next unless defined($dbh);
 
+    # Check if database is disabled.
+    if (defined(get_db_value($dbh, 'SELECT `id` FROM `tdatabase` WHERE `host` = "' . $ha_dbhost . '" AND disabled = 1')))
+    {
+      log_message($conf, 'LOG', "Ignoring disabled host: " . $ha_dbhost);
+      db_disconnect($dbh);
+      next;
+    }
 		eval {
 		   # Get the most recent utimestamp from the database.
 		   $utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
@@ -650,6 +682,9 @@ sub ha_main_pandora($) {
       # Check if there are updates pending.
       ha_update_server($conf, $dbh);
 
+      # Check restart server on demand.
+      ha_restart_server($conf, $dbh);
+
       # Keep pandora running
       ha_keep_pandora_running($conf, $dbh);
 
@@ -674,6 +709,9 @@ sub ha_main_pandora($) {
 
       # Execute resync actions.
       enterprise_hook('pandoraha_resync_dbs', [$conf, $dbh, $DB_Host, \@HA_DB_Hosts]);
+
+      # Update and push HA databases info to Metaconsole or nodes.
+      enterprise_hook('pandoraha_update_and_push_databases_info', [$conf, $dbh]);
 
       # Synchronize nodes.
       enterprise_hook('pandoraha_sync_node', [$conf, $dbh]);

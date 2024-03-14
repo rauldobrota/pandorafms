@@ -678,6 +678,7 @@ function events_update_status($id_evento, $status, $filter=null)
  */
 function get_filter_date(array $filter)
 {
+    $sql_filters = [];
     if (isset($filter['date_from']) === true
         && empty($filter['date_from']) === false
         && $filter['date_from'] !== '0000-00-00'
@@ -825,6 +826,13 @@ function events_get_all(
     }
 
     $sql_filters = get_filter_date($filter);
+
+    if (isset($filter['id_event']) === true && $filter['id_event'] > 0) {
+        $sql_filters[] = sprintf(
+            ' AND te.id_evento = %d ',
+            $filter['id_event']
+        );
+    }
 
     if (isset($filter['id_agent']) === true && $filter['id_agent'] > 0) {
         $sql_filters[] = sprintf(
@@ -1147,7 +1155,7 @@ function events_get_all(
     }
 
     // Free search.
-    if (empty($filter['search']) === false) {
+    if (empty($filter['search']) === false && (bool) $filter['regex'] === false) {
         if (isset($config['dbconnection']->server_version) === true
             && $config['dbconnection']->server_version > 50600
         ) {
@@ -1177,14 +1185,17 @@ function events_get_all(
             $array_search[] = 'lower(ta.alias)';
         }
 
+        // Disregard repeated whitespaces when searching.
+        $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+
         $sql_search = ' AND (';
         foreach ($array_search as $key => $field) {
             $sql_search .= sprintf(
-                '%s %s %s like lower("%%%s%%")',
+                '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
                 ($key === 0) ? '' : $nexo,
                 $field,
                 $not_search,
-                $filter['search']
+                $collapsed_spaces_search
             );
             $sql_search .= ' ';
         }
@@ -1318,7 +1329,7 @@ function events_get_all(
                 if ($tags[0] === $id_tag) {
                     $_tmp .= ' AND (( ';
                 } else {
-                    $_tmp .= ' OR ( ';
+                    $_tmp .= ' AND ( ';
                 }
 
                 $_tmp .= sprintf(
@@ -1921,7 +1932,7 @@ function events_get_all(
                 && $sort_field !== 'server_name'
                 && $sort_field !== 'timestamp'
             ) {
-                $sort_field = explode('.', $sort_field)[1];
+                $sort_field = (explode('.', $sort_field)[1] ?? $sort_field);
                 if ($sort_field === 'user_comment') {
                     $sort_field = 'comments';
                 }
@@ -1969,7 +1980,7 @@ function events_get_all(
                 // -1 For pagination 'All'.
                 ((int) $limit === -1)
                     ? $end = count($data)
-                    : $end = ((int) $offset !== 0) ? ($offset + $limit) : $limit;
+                    : $end = $limit;
                 $finally = array_slice($data, $offset, $end, true);
                 $return = [
                     'buffers' => $buffers,
@@ -3804,7 +3815,7 @@ function events_get_response_target(
     }
 
     $event = db_get_row('tevento', 'id_evento', $event_id);
-    $target = io_safe_output($event_response['target']);
+    $target = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
 
     // Replace parameters response.
     if (isset($response_parameters) === true
@@ -6468,10 +6479,10 @@ function event_print_graph(
             $color[] = '#82b92f';
         }
     } else {
+        $interval_length = 0;
+
         if ($num_intervals > 0) {
             $interval_length = (int) ($period / $num_intervals);
-        } else {
-            $interval_length = 0;
         }
 
         $intervals = [];

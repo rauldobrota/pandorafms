@@ -98,6 +98,8 @@ $draw_events_graph = get_parameter('drawEventsGraph', false);
 // User private filter.
 $current_filter = get_parameter('current_filter', 0);
 $private_filter_event = get_parameter('private_filter_event', 0);
+// Asteroids.
+$playAsteroids = (bool) get_parameter('playAsteroids', false);
 
 if ($get_comments === true) {
     global $config;
@@ -644,7 +646,7 @@ function load_form_filter() {
                 if (i == 'search')
                     $('#text-search').val(val);
                 if (i == 'regex')
-                    $('#text-regex').val(val);
+                    $('#checkbox-regex').val(val);
                 if (i == 'not_search')
                     $('#checkbox-not_search').val(val);
                 if (i == 'text_agent')
@@ -975,7 +977,7 @@ function save_new_filter() {
             "severity" : $("#severity").val(),
             "status" : $("#status").val(),
             "search" : $("#text-search").val(),
-            "regex" : $('#text-regex').val(),
+            "regex" : $('#checkbox-regex').val(),
             "not_search" : $("#checkbox-not_search").val(),
             "text_agent" : $("#text_id_agent").val(),
             "id_agent" : $('input:hidden[name=id_agent]').val(),
@@ -1056,7 +1058,7 @@ function save_update_filter() {
         "severity" : $("#severity").val(),
         "status" : $("#status").val(),
         "search" : $("#text-search").val(),
-        "regex" : $('#text-regex').val(),
+        "regex" : $('#checkbox-regex').val(),
         "not_search" : $("#checkbox-not_search").val(),
         "text_agent" : $("#text_id_agent").val(),
         "id_agent" : $('input:hidden[name=id_agent]').val(),
@@ -1333,6 +1335,15 @@ if ($perform_event_response === true) {
     }
 
     $command = $event_response['target'];
+
+    // Prevent OS command injection.
+    $prev_command = get_events_get_response_target($event_id, $event_response, $server_id);
+
+    if ($command !== $prev_command) {
+        echo __('unauthorized');
+        return;
+    }
+
     $command_timeout = ($event_response !== false) ? $event_response['command_timeout'] : 90;
     if (enterprise_installed() === true) {
         if ($event_response !== false
@@ -2038,7 +2049,9 @@ if ($get_extended_event) {
 
     $js .= '});';
 
-    $js .= '$("#link_comments").click(get_table_events_tabs(\''.base64_encode(json_encode($event)).'\',\''.base64_encode(json_encode($filter)).'\'));';
+    $js .= '$("#link_comments").on("click", () => {
+        get_table_events_tabs(\''.base64_encode(json_encode($event)).'\',\''.base64_encode(json_encode($filter)).'\')
+    });';
 
     if (events_has_extended_info($event['id_evento']) === true) {
         $js .= '
@@ -2531,15 +2544,12 @@ if ($drawConsoleSound === true) {
         $output .= '<div id="progressbar_time"></div>';
         $output .= '<div class="buttons-sound-modal">';
             $output .= '<div class="container-button-play">';
-            $output .= html_print_input(
-                [
-                    'label'      => __('Start'),
-                    'type'       => 'button',
-                    'name'       => 'start-search',
-                    'attributes' => [ 'class' => 'play secondary' ],
-                    'return'     => true,
-                ],
-                'div',
+            $output .= html_print_button(
+                __('Start'),
+                'start-search',
+                false,
+                '',
+                ['icon' => 'play'],
                 true
             );
             $output .= '</div>';
@@ -2586,6 +2596,7 @@ if ($get_events_fired) {
             'severity'                => -1,
             'status'                  => -1,
             'search'                  => '',
+            'regex'                   => 0,
             'not_search'              => 0,
             'text_agent'              => '',
             'id_agent'                => 0,
@@ -2758,6 +2769,17 @@ if ($draw_row_response_info === true) {
             }
         }
     }
+
+    echo $output;
+    return;
+}
+
+// Asteroids.
+if ($playAsteroids === true) {
+    echo ui_require_css_file('asteroids', 'include/styles/', true);
+    echo ui_require_javascript_file('asteroids', 'include/asteroids/', true);
+
+    $output = '<div id="asteroids">Asteroids game goes here!</div>';
 
     echo $output;
     return;

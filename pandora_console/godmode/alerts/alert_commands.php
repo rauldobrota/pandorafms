@@ -109,7 +109,7 @@ if (is_ajax()) {
         for ($i = 1; $i <= $config['max_macro_fields']; $i++) {
             $field_description = $fields_descriptions[($i - 1)];
             $field_value = $fields_values[($i - 1)];
-            $field_hidden = $fields_hidden_checked[($i - 1)];
+            $field_hidden = (isset($fields_hidden_checked[($i - 1)]) === true) ? $fields_hidden_checked[($i - 1)] : '';
 
 
             if (!empty($field_description)) {
@@ -1080,7 +1080,12 @@ foreach ($commands as $command) {
 
 if (isset($data) === true && count($table->data) > 0) {
     html_print_table($table);
-    $pagination = ui_pagination($total_commands, $url, 0, 0, true, 'offset', false, '');
+    $show_count = false;
+    if (is_metaconsole() === true) {
+        $show_count = true;
+    }
+
+    $pagination = ui_pagination($total_commands, $url, 0, 0, true, 'offset', $show_count, '');
 } else {
     ui_print_info_message(
         [

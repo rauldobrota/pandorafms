@@ -240,72 +240,9 @@ if (is_metaconsole() === true) {
     user_meta_print_header();
     $sec = 'advanced';
 } else {
-    if (check_acl($config['id_user'], 0, 'PM')) {
-        $buttons = [
-            'user'    => [
-                'active' => false,
-                'text'   => '<a href="index.php?sec=gusuarios&sec2=godmode/users/user_list&tab=user&pure='.$pure.'">'.html_print_image(
-                    'images/user.svg',
-                    true,
-                    [
-                        'title' => __('User management'),
-                        'class' => 'invert_filter main_menu_icon',
-                    ]
-                ).'</a>',
-            ],
-            'profile' => [
-                'active' => false,
-                'text'   => '<a href="index.php?sec=gusuarios&sec2=godmode/users/profile_list&tab=profile&pure='.$pure.'">'.html_print_image(
-                    'images/suitcase@svg.svg',
-                    true,
-                    [
-                        'title' => __('Profile management'),
-                        'class' => 'invert_filter main_menu_icon',
-                    ]
-                ).'</a>',
-            ],
-        ];
-    } else {
-        $buttons = [
-            'user' => [
-                'active' => false,
-                'text'   => '<a href="index.php?sec=gusuarios&sec2=godmode/users/user_list&tab=user&pure='.$pure.'">'.html_print_image(
-                    'images/user.svg',
-                    true,
-                    [
-                        'title' => __('User management'),
-                        'class' => 'invert_filter main_menu_icon',
-                    ]
-                ).'</a>',
-            ],
-        ];
-    }
-
-    $buttons[$tab]['active'] = true;
-
-    // Header.
-    ui_print_standard_header(
-        __('Users management'),
-        'images/user.svg',
-        false,
-        '',
-        false,
-        $buttons,
-        [
-            [
-                'link'  => '',
-                'label' => __('Profiles'),
-            ],
-            [
-                'link'  => '',
-                'label' => __('Manage users'),
-            ],
-        ]
-    );
-
+    user_print_header($pure, $tab);
     $sec = 'gusuarios';
 }
-
 
 $disable_user = get_parameter('disable_user', false);
 $delete_user = (bool) get_parameter('user_del', false);
@@ -689,7 +626,7 @@ foreach ($info as $user_id => $user_info) {
     // User profiles.
     if ($user_is_admin || $user_id == $config['id_user'] || isset($group_um[0])) {
         $user_profiles = db_get_all_rows_sql(
-            'SELECT * FROM tusuario_perfil where id_usuario LIKE "'.$user_id.'" LIMIT 5'
+            'SELECT * FROM tusuario_perfil where id_usuario LIKE "'.$user_id.'"'
         );
     } else {
         $user_profiles_aux = users_get_user_profile($user_id, 'LIMIT 5');
@@ -778,17 +715,25 @@ foreach ($info as $user_id => $user_info) {
     if ($user_profiles !== false) {
         $total_profile = 0;
 
-        $data[4] .= '<div class="text_end">';
+        $data[4] .= '<div class="flex-column-start">';
         foreach ($user_profiles as $row) {
+            $total_profile++;
+            if ($total_profile > 5) {
+                $data[4] .= "<div class='invisible checkhide_".str_replace(' ', '_', io_safe_output($row['id_usuario']))."'>";
+            }
+
             $data[4] .= "<div class='float-left'>";
             $data[4] .= profile_get_name($row['id_perfil']);
-            $data[4] .= ' / </div>';
-            $data[4] .= "<div class='float-left pdd_l_5px'>";
+            $data[4] .= ' / ';
             $data[4] .= groups_get_name($row['id_grupo'], true);
             $data[4] .= '</div>';
 
-            if ($total_profile == 0 && count($user_profiles) >= 5) {
-                $data[4] .= '<span onclick="showGroups(`'.$row['id_usuario'].'`)">'.html_print_image(
+            if ($total_profile > 5) {
+                $data[4] .= '</div>';
+            }
+
+            if ($total_profile == 1 && count($user_profiles) > 5) {
+                $data[4] .= '<span class="show-profiles" onclick="showGroups(`'.str_replace(' ', '_', io_safe_output($row['id_usuario'])).'`)">'.html_print_image(
                     'images/zoom.png',
                     true,
                     [
@@ -803,10 +748,6 @@ foreach ($info as $user_id => $user_info) {
                     true
                 );
             }
-
-            $data[4] .= '<br/>';
-
-            $total_profile++;
         }
 
         if (isset($user_info['not_delete']) === true) {
@@ -1023,8 +964,13 @@ foreach ($info as $user_id => $user_info) {
     array_push($table->data, $data);
 }
 
+$show_count = false;
+if (is_metaconsole() === true) {
+    $show_count = true;
+}
+
 html_print_table($table);
-$tablePagination = ui_pagination(count($info), false, 0, 0, true, 'offset', false, 'dataTables_paginate paging_simple_numbers');
+$tablePagination = ui_pagination(count($info), false, 0, 0, true, 'offset', $show_count, 'dataTables_paginate paging_simple_numbers');
 unset($table);
 if ($is_management_allowed === true) {
     if ($config['admin_can_add_user'] !== false) {
@@ -1052,43 +998,13 @@ if ($is_management_allowed === true) {
 ?>
 <script type="text/javascript">
     function showGroups(id_user) {
-        if ($(`#hidden-show_groups_${id_user}`).val() === '-1') {
-            var request = $.ajax({
-                url: "<?php echo ui_get_full_url('ajax.php', false, false, false); ?>",
-                type: 'GET',
-                dataType: 'json',
-                data: {
-                    page: 'godmode/users/user_list',
-                    get_user_profile_group: 1,
-                    id_user: id_user
-                },
-                success: function (data, textStatus, xhr) {
-                    let count = 1;
-                    data.forEach( function(valor, indice, array) {
-                        if (count >= 6) {
-                            let main_div = $(`#profiles_${id_user}`);
-                            main_div.append(
-                                `<div id="left_${id_user}_${count}" class='float-left'>${valor.id_perfil} / </div>`,
-                                `<div id="right_${id_user}_${count}" class='float-left pdd_l_5px'>${valor.id_grupo}</div>`,
-                                `<br/><br/>`
-                            );
-                        }
-                        count ++;
-                    });
-                },
-                error: function (e, textStatus) {
-                    console.error(textStatus);
-                }
-            });
-            $(`#hidden-show_groups_${id_user}`).val('1');
-            $(`#profiles_${id_user}`).show();
-        } else if ($(`#hidden-show_groups_${id_user}`).val() === '1') {
-            $(`#hidden-show_groups_${id_user}`).val('0');
-            $(`#profiles_${id_user}`).hide();
-        } else {
-            $(`#hidden-show_groups_${id_user}`).val('1');
-            $(`#profiles_${id_user}`).show();
-        }
+        $('.checkhide_'+id_user).each(function(){
+            if ($(this).hasClass('invisible') === true) {
+                $(this).removeClass('invisible');
+            } else {
+                $(this).addClass('invisible');
+            }
+        });
     }
 
 </script>

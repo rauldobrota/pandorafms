@@ -421,7 +421,7 @@ $table->data[4][0] = html_print_label_input_block(
     html_print_select(
         $tags,
         'tags[]',
-        $tags_name,
+        ($tags_name ?? ''),
         false,
         __('Any'),
         -1,
@@ -537,7 +537,7 @@ $table->data[8][0] = html_print_label_input_block(
     html_print_select(
         $tags,
         'tags[]',
-        $tags_name,
+        ($tags_name ?? ''),
         false,
         __('Any'),
         -1,
@@ -768,7 +768,7 @@ $table_critical->tdid[0][0] = 'edit1-3-min';
 $table_critical->data[0][0] = html_print_label_input_block(
     __('Min.'),
     html_print_input_text(
-        'min_warning',
+        'min_critical',
         '',
         '',
         false,
@@ -781,7 +781,7 @@ $table_critical->tdid[0][1] = 'edit1-3-max';
 $table_critical->data[0][1] = html_print_label_input_block(
     __('Max.'),
     html_print_input_text(
-        'max_warning',
+        'max_critical',
         '',
         '',
         false,
@@ -1304,7 +1304,7 @@ $table->data[29][0] = html_print_label_input_block(
     html_print_select_from_sql(
         'SELECT id_tag, name FROM ttag ORDER BY name',
         'id_tag[]',
-        $id_tag,
+        ($id_tag ?? ''),
         '',
         __('None'),
         '0',
@@ -1500,7 +1500,7 @@ $table->data[39][0] = html_print_label_input_block(
         '',
         '',
         true
-    ).html_print_input_hidden('macros', base64_encode($macros), true)
+    ).html_print_input_hidden('macros', base64_encode(($macros ?? '')), true)
 );
 
 require_once $config['homedir'].'/include/class/CredentialStore.class.php';
@@ -1529,7 +1529,7 @@ $array_os = [
     'windows'   => __('Windows'),
 ];
 $table->data[40][0] = html_print_label_input_block(
-    __('rget OS'),
+    __('Target OS'),
     html_print_select(
         $array_os,
         'custom_string_2',

@@ -246,6 +246,7 @@ if ($new_agent === true) {
 
 
 // QR Code table.
+$CodeQRContent = '';
 if ($new_agent === false) {
     $CodeQRContent .= html_print_div(['id' => 'qr_container_image'], true);
     $CodeQRContent .= html_print_anchor(
@@ -354,10 +355,21 @@ $tableAgent->rowspan = [];
 
 // Agent name.
 if ($new_agent === false) {
-    $tableAgent->data['caption_name'][0] = __('Agent name');
+    $tableAgent->data['caption_name'][0] = __('Agent name').ui_print_help_tip(__('The agent name is a unique identifier (which is automatically generated in software agents). If you set it manually, make sure it is not duplicated. Although it accepts spaces, we do not recommend you to use them in the agent name, you may use them in the agent alias. The agent name is not displayed in the interface, it is an internal name.'), true);
     $tableAgent->rowclass['name'] = 'w540px';
     $tableAgent->cellstyle['name'][0] = 'width: 100%;';
-    $tableAgent->data['name'][0] = html_print_input_text('agente', $nombre_agente, '', 76, 100, true, false, false, '', 'w100p');
+    $tableAgent->data['name'][0] = html_print_input_text(
+        'agente',
+        $nombre_agente,
+        '',
+        76,
+        100,
+        true,
+        true,
+        false,
+        '',
+        'w100p'
+    );
     $tableAgent->data['name'][0] .= html_print_div(
         [
             'class'   => 'moduleIdBox',
@@ -365,12 +377,35 @@ if ($new_agent === false) {
         ],
         true
     );
+
+    // Other than Linux, Solaris, AIX, BSD, HPUX, MacOs, and Windows.
+    if ($id_os !== LINUX && $id_os !== SOLARIS && $id_os !== AIX
+        && $id_os !== BSD && $id_os !== HPUX && $id_os !== MACOS
+        && $id_os !== WINDOWS
+    ) {
+        $tableAgent->data['name'][0] .= html_print_anchor(
+            [
+                'content' => html_print_image(
+                    'images/edit.svg',
+                    true,
+                    [
+                        'border'  => 0,
+                        'title'   => __('Edit agent name'),
+                        'class'   => 'main_menu_icon invert_filter after_input_icon forced_title clickable',
+                        'onclick' => 'editAgent()',
+                    ]
+                ),
+            ],
+            true
+        );
+    }
+
     // Agent options for QR code.
     $agent_options_update = 'agent_options_update';
 }
 
 // Alias.
-$tableAgent->data['caption_alias'][0] = __('Alias');
+$tableAgent->data['caption_alias'][0] = __('Alias').ui_print_help_tip(__('This will be the text label that will represent the agent on all types of screens and reports. It may be duplicated, contain spaces and non-ASCII characters.'), true);
 $tableAgent->rowclass['alias'] = 'w540px';
 $tableAgent->data['alias'][0] = html_print_input_text('alias', $alias, '', 50, 100, true, false, true, '', 'w540px');
 if ($new_agent === true) {
@@ -399,12 +434,12 @@ if ($new_agent === true) {
 
 // Ip adress.
 $tableAgent->data['caption_ip_address'] = __('IP Address');
-$tableAgent->rowclass['ip_address'] = 'w540px';
+$tableAgent->rowclass['ip_address'] = 'w400px';
 $tableAgent->data['ip_address'][0] = html_print_input_text('direccion', $direccion_agente, '', 16, 100, true, false, false, '', 'w540px');
+$tableAgent->data['ip_address'][1] = html_print_button(__('Check unique IP'), 'check_unique_ip', false, '', ['class' => 'secondary w130px'], true);
+$tableAgent->data['message_check_ip'][0] = html_print_div(['id' => 'message_check_ip'], true);
 
 $tableAgent->rowclass['additional_ip_address'] = 'subinput';
-$tableAgent->data['additional_ip_address'][0] = html_print_checkbox_switch('unique_ip', 1, $config['unique_ip'], true);
-$tableAgent->data['additional_ip_address'][1] = __('Unique IP');
 $tableAgent->cellclass['additional_ip_address'][1] = 'w120px';
 $tableAgent->data['additional_ip_address'][2] = html_print_input(
     [
@@ -453,7 +488,7 @@ if ($new_agent === false) {
 }
 
 // Select primary group.
-$tableAgent->data['caption_primary_group'][0] = __('Primary group');
+$tableAgent->data['caption_primary_group'][0] = __('Primary group').ui_print_help_tip(__('Although an agent can belong to multiple groups, it can only have a parent group.'), true);
 if (isset($groups[$grupo]) === true || $new_agent === true) {
     $tableAgent->rowclass['primary_group'] = 'w540px';
     // Cannot change primary group if user have not permission for that group.
@@ -500,21 +535,42 @@ $tableAgent->data['primary_group'][0] .= ui_print_group_icon(
 );
 $tableAgent->data['primary_group'][0] .= '</span>';
 
-$tableAgent->data['caption_interval'][0] = __('Interval');
-// $tableAgent->rowstyle['interval'] = 'width: 260px';
-$tableAgent->rowclass['interval'] = 'w540px';
-$tableAgent->data['interval'][0] = html_print_extended_select_for_time(
-    'intervalo',
-    $intervalo,
-    '',
-    '',
-    '0',
-    10,
-    true,
-    false,
-    true,
-    'w33p'
-);
+$broker = false;
+if (enterprise_installed()) {
+    // CHECK BROKER FOR SHOW INTERVAL.
+    enterprise_include('include/functions_config_agents.php');
+    // Read configuration file.
+    $files = config_agents_get_agent_config_filenames($id_agente);
+    $file_name = $files['conf'];
+    if (empty($file_name) === false) {
+        $agent_config = file_get_contents($file_name);
+        $encoding = 'UTF-8';
+        $agent_config_utf8 = mb_convert_encoding($agent_config, 'UTF-8', $encoding);
+        if ($agent_config_utf8 !== false) {
+            $agent_config = $agent_config_utf8;
+        }
+
+        $broker = str_contains($agent_config, '#broker active');
+    }
+}
+
+if ($broker === false) {
+    $tableAgent->data['caption_interval'][0] = __('Interval').ui_print_help_tip(__('Time that elapses when updating data in the agent. Remote modules have their own interval, but this time is used to find out if an agent stopped responding (unknown state). When twice the time interval defined in an agent goes by, it is considered to be in unknown state (or also if all its remote modules are in unknown state). An agent may be in unknown state if all of its local (software agent-based) modules have a last contact time longer than twice the agent interval, even if it has updated remote modules.'), true);
+    // $tableAgent->rowstyle['interval'] = 'width: 260px';
+    $tableAgent->rowclass['interval'] = 'w540px';
+    $tableAgent->data['interval'][0] = html_print_extended_select_for_time(
+        'intervalo',
+        $intervalo,
+        '',
+        '',
+        '0',
+        10,
+        true,
+        false,
+        true,
+        'w33p'
+    );
+}
 
 if ($intervalo < SECONDS_5MINUTES) {
     $tableAgent->data['interval'][0] .= clippy_context_help('interval_agent_min');
@@ -563,7 +619,7 @@ $tableAgent->data['os_version'][0] = html_print_input_text(
     'w540px'
 );
 
-$tableAgent->data['caption_server'][0] = __('Server');
+$tableAgent->data['caption_server'][0] = __('Server').ui_print_help_tip(__('Server that will preferentially execute remote tasks.'), true);
 $tableAgent->rowclass['server'] = 'w540px';
 $tableAgent->data['server'][0] = html_print_select(
     $servers,
@@ -648,6 +704,19 @@ if (enterprise_installed()) {
                     $enable_inventory = 0;
                 } else {
                     $enable_inventory = 1;
+                }
+            }
+        }
+    }
+
+    if ($id_os === '1') {
+        $modules = $agent_plugin->getModules();
+        foreach ($modules as $key => $row) {
+            if (preg_match('/Syslog/', $row['raw']) === 1) {
+                if ($row['disabled'] === 1) {
+                    $enable_log_collector = 0;
+                } else {
+                    $enable_log_collector = 1;
                 }
             }
         }
@@ -867,7 +936,7 @@ $switchButtons[] = html_print_radio_button_extended(
 );
 
 $tableAdvancedAgent->data['module_definition'][] = html_print_label_input_block(
-    __('Module definition'),
+    __('Module definition').ui_print_help_tip(__('Three working modes can be selected for module definition. Learning mode: Default mode, if an XML arrives with new modules, they will be created automatically; it is a learning behavior. Normal mode: If an XML arrives with new modules, they will only be created if they are previously declared in the Console. Autodisable mode: It is the same as learning mode, but if all modules go into unknown, the agent will be disabled until information arrives again.'), true),
     html_print_div(
         [
             'class'   => 'switch_radio_button',
@@ -879,7 +948,7 @@ $tableAdvancedAgent->data['module_definition'][] = html_print_label_input_block(
 
 // CPS - Cascade Protection Services.
 $tableAdvancedAgent->data['cps_value'][] = html_print_label_input_block(
-    __('Cascade protection services'),
+    __('Cascade protection services').ui_print_help_tip(__('To avoid an avalanche of cascading alerts. You may choose any agent module (any) or a specific module. In the first case, when there is at least one module in critical, that event/alert will be launched, but no other of another module of the same agent. In the second case, when the specified module is in critical, the agent will not generate alerts/events.'), true),
     html_print_checkbox_switch('cps', $cps_val, ($cps >= 0), true)
 );
 
@@ -968,7 +1037,7 @@ $tableAdvancedAgent->data['url_description'][] = html_print_label_input_block(
 
 // Agent status.
 $tableAdvancedAgent->data['agent_status'][] = html_print_label_input_block(
-    __('Disabled mode'),
+    __('Disabled mode').ui_print_help_tip(__('A deactivated agent does not generate activity (or issue events/alerts) or process data or actively generate monitoring. In many listings it does not even appear.'), true),
     html_print_checkbox_switch(
         'disabled',
         1,
@@ -979,7 +1048,7 @@ $tableAdvancedAgent->data['agent_status'][] = html_print_label_input_block(
 
 // Quiet mode.
 $tableAdvancedAgent->data['agent_quiet'][] = html_print_label_input_block(
-    __('Quiet'),
+    __('Quiet').ui_print_help_tip(__('A \'silent\' agent continues to process monitoring data, but does not generate events or alerts.'), true),
     html_print_checkbox_switch('quiet', 1, $quiet, true)
 );
 
@@ -1045,7 +1114,7 @@ $safeOperationElements[] = html_print_select(
 );
 
 $tableAdvancedAgent->data['safe_operation'][] = html_print_label_input_block(
-    __('Safe operation mode'),
+    __('Safe operation mode').ui_print_help_tip(__('When the module set in this option goes into critical state, the other modules of the agent are automatically deactivated. This option can be very useful to avoid wasting resources, especially in remote checks. For example, if a Host alive module is chosen, SNMP checks will not be performed on the device when there is no connectivity with it.'), true),
     html_print_div(
         [
             'class'   => 'flex-row-center',
@@ -1130,17 +1199,12 @@ foreach ($fields as $field) {
     }
 
     if ((bool) $field['is_password_type'] === true) {
-        $customContent = html_print_input_text_extended(
+        $customContent = html_print_input_password(
             'customvalue_'.$field['id_field'],
             $custom_value,
-            'customvalue_'.$field['id_field'],
             '',
-            30,
-            100,
-            $view_mode,
-            '',
-            '',
-            true,
+            45,
+            255,
             true
         );
     } else if ($field['is_link_enabled']) {
@@ -1301,6 +1365,7 @@ ui_require_jquery_file('bgiframe');
 ?>
 
 <script type="text/javascript">
+    let unique_ip_trigger = false;
     // Show/Hide custom field row.
     function show_custom_field_row(id){
         if( $('#field-'+id).css('display') == 'none'){
@@ -1461,26 +1526,42 @@ ui_require_jquery_file('bgiframe');
                 128
             );
         }
-        $("#text-agente").prop('readonly', true);
 
 
-        // Disable fixed ip button if empty.
-        if($("#text-direccion").val() == '') {
-                $("#fixed_ip").prop('disabled',true);
-        }
-
-        $("#text-direccion").on('input',function(e){
-            if($("#text-direccion").val() == '') {
-                $("#fixed_ip").prop('disabled',true);
-            } else {
-                $("#fixed_ip").prop('disabled',false);
+        $("#text-direccion").on('change',function(e){
+            const unique_ip_token = '<?php echo $config['unique_ip']; ?>';
+            unique_ip_trigger = false;
+            if (unique_ip_token == 1) {
+                check_unique_ip();
             }
         });
 
         check_basic_options();
         $('#id_os').on('change', function(){
             check_basic_options();
-        })
+        });
+
+        $('#button-check_unique_ip').on('click', function() {
+            check_unique_ip();
+        });
+
+        $('#form_agent').on('submit', function(e) {
+            if (unique_ip_trigger) {
+                e.preventDefault();
+                const form = this;
+                confirmDialog(
+                    {
+                        title: '<?php echo __('Are you sure?'); ?>',
+                        message: '<?php echo __('This IP address is in use. Are you sure you want to save it?'); ?>',
+                        ok: '<?php echo __('Yes'); ?>',
+                        cancel: '<?php echo __('Cancel'); ?>',
+                        onAccept: function() {
+                            form.submit();
+                        }
+                    }
+                );
+            }
+        });
     });
 
     function check_basic_options(){
@@ -1489,5 +1570,74 @@ ui_require_jquery_file('bgiframe');
         } else {
             $('#basic_options').addClass('invisible');
         }
+    }
+
+    function editAgent() {
+        $(`#text-agente`).attr(`readonly`, false);
+        const title = '<?php echo __('Warning'); ?>';
+        const text = '<?php echo __('Change the internal name of the agent may cause duplicity and malfunction'); ?>';
+        const id = uniqId();
+        $("body").append('<div title="' + title + '" id="' + id + '"></div>');
+        $("#" + id).empty();
+        $("#" + id).append(text);
+        $("#" + id).dialog({
+            height: 150,
+            width: 528,
+            opacity: 1,
+            modal: true,
+            position: {
+                my: "center",
+                at: "center",
+                of: window,
+                collision: "fit"
+            },
+            title: title,
+            closeOnEscape: true,
+            buttons: [{
+                text: "OK",
+                click: function() {
+                    $(this).dialog("close");
+                }
+            }],
+            open: function(event, ui) {
+                $(".ui-dialog-titlebar-close").hide();
+            },
+        }).show();
+    }
+
+
+    function check_unique_ip() {
+        const direccion = $('#text-direccion').val();
+        let ip_all = <?php echo json_encode($ip_all); ?>;
+        if (ip_all) {
+            ip_all = Object.keys(ip_all);
+        }
+        $.ajax({
+                method: "POST",
+                url: "<?php echo ui_get_full_url('ajax.php'); ?>",
+                dataType: 'json',
+                data: {
+                    page: "include/ajax/agent",
+                    check_unique_ip: 1,
+                    direccion,
+                    ip_all
+                },
+                success: function(data) {
+                    if (data.success) {
+                        $('#message_check_ip').attr('class', 'success');
+                    } else {
+                        $('#message_check_ip').attr('class', 'error');
+                    }
+
+                    if(data.exist_ip) {
+                        unique_ip_trigger = true;
+                    } else {
+                        unique_ip_trigger = false;
+                    }
+
+                    $('#message_check_ip').html(data.message);
+                }
+        });
+
     }
 </script>

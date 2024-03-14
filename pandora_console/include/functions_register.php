@@ -144,7 +144,7 @@ function config_wiz_modal(
         'UTC'        => __('UTC'),
     ];
 
-    if ($zone_selected == '') {
+    if (isset($zone_selected) === false) {
         if ($config['timezone'] != '') {
             $zone_array = explode('/', $config['timezone']);
             $zone_selected = $zone_array[0];
@@ -293,7 +293,7 @@ function show_configuration_wizard() {
             buttons: [
                 {
                     "text": "No",
-                    "class": 'submit-cancel',
+                    "class": 'submit-cancel secondaryButton',
                     "click" : function() {
                         $(this).dialog("close");
                     }

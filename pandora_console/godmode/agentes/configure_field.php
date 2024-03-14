@@ -55,7 +55,7 @@ if ($id_field) {
     $display_on_front = $field['display_on_front'];
     $is_password_type = $field['is_password_type'];
     $combo_values = $field['combo_values'] ? $field['combo_values'] : '';
-    $is_combo_enable = $config['is_combo_enable'];
+    $is_combo_enable = (isset($config['is_combo_enable']) === true) ? $config['is_combo_enable'] : false;
     $is_link_enabled = $field['is_link_enabled'];
     $header_title = __('Update agent custom field');
 } else {
@@ -161,6 +161,10 @@ $table->data[2][0] = html_print_label_input_block(
         true
     )
 );
+
+if (isset($config['is_combo_enable']) === false) {
+    $config['is_combo_enable'] = false;
+}
 
 $table->data[2][1] = html_print_label_input_block(
     __('Enabled combo'),
@@ -275,21 +279,27 @@ $(document).ready (function () {
           $('#configure_field-3').show();
           dialog_message("#message_no_set_password");
           $('#configure_field-1').hide();
+          $('#configure_field-2-0').hide();
         }
         else{
           $('#configure_field-3').hide();
           $('#configure_field-1').show();
+          $('#configure_field-2-0').show();
         }
     });
     $('input[type=checkbox][name=is_password_type]').change(function () {
         if( $('input[type=checkbox][name=is_password_type]').prop('checked')){
+            $('#configure_field-1').hide();
             dialog_message("#message_no_set_combo");
             $('#configure_field-3').hide();
+            $('#configure_field-2-1').hide();
         }
         else{
             if($('input[type=checkbox][name=is_combo_enable]').prop('checked') === true) {
                 $('#configure_field-3').show();
             }
+            $('#configure_field-1').show();
+            $('#configure_field-2-1').show();
         }
     });
 });

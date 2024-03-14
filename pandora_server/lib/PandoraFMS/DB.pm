@@ -156,7 +156,7 @@ sub db_connect ($$$$$$) {
 		$RDBMS_QUOTE_STRING = '"';
 		
 		# Connect to MySQL
-		my $dbh = DBI->connect("DBI:mysql:$db_name:$db_host:$db_port;$SSL_OPTS", $db_user, $db_pass, { RaiseError => 1, AutoCommit => 1 });
+		my $dbh = DBI->connect("DBI:mysql:$db_name:$db_host:$db_port;$SSL_OPTS", $db_user, $db_pass, { RaiseError => 1, AutoCommit => 1, AutoInactiveDestroy => 1 });
 		return undef unless defined ($dbh);
 		
 		# Enable auto reconnect
@@ -1533,7 +1533,7 @@ sub get_agent_addr_id ($$$) {
 ########################################################################
 sub db_do ($$;@) {
 	my ($dbh, $query, @values) = @_;
-	
+
 	#DBI->trace( 3, '/tmp/dbitrace.log' );
 	eval {
 		$dbh->do($query, undef, @values);
