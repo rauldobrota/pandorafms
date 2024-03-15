@@ -1493,4 +1493,8 @@ if (defined($history_dbh)) {
 db_disconnect ($history_dbh) if defined ($history_dbh);
 db_disconnect ($dbh);
 
+# Delete netflow's .current junk files.
+my $command = 'ls -t /var/spool/pandora/data_in/netflow/*.current* | head -n -1 | xargs rm -f';
+system($command) == 0 or die " [ERROR] Failed to clean .current junk files: $!\n";
+
 exit 0;
