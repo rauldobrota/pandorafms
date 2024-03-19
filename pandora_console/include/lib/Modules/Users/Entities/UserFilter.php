@@ -18,13 +18,14 @@ use PandoraFMS\Modules\Users\Validators\UserValidator;
  *         nullable=true,
  *         default=null,
  *         description="Find word in fullname and comments fields."
- *       ),
+ *       )
+ *     ),
+ *     @OA\Schema(
  *       @OA\Property(
  *         property="multipleSearchString",
- *         type="string",
- *         nullable=true,
- *         default=null,
- *         description="search string in field."
+ *         type="object",
+ *         ref="#/components/schemas/multipleSearch",
+ *         description="Multiple search object",
  *       )
  *     )
  *   }

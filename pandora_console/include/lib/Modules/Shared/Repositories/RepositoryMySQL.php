@@ -165,15 +165,31 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
-    public function buildQueryFilters(FilterAbstract $filter, DataMapperAbstract $mapper): string
+    public function buildQueryFilters(FilterAbstract $filter, ?DataMapperAbstract $mapper = null): string
     {
         $where_clause = '1=1';
 
-        if ($filter->getEntityFilter() !== null) {
+        if ($mapper !== null && $filter->getEntityFilter() !== null) {
             $searchEntity = $mapper->toDatabase($filter->getEntityFilter());
             $searchEntity = array_filter($searchEntity, fn ($value) => !is_null($value) && $value !== '' && $value !== 'null');
             if (empty($searchEntity) === false) {
                 $where_clause .= ' AND '.$this->dbFormatWhereClauseSQL($searchEntity, '`'.$mapper->getTableName().'`.');
+            }
+        } else {
+            $searchEntity = $filter->getEntityFilter()->toArray();
+            $translates = $filter->fieldsTranslate();
+            $searchEntity = array_filter($searchEntity, fn ($value) => !is_null($value) && $value !== '' && $value !== 'null');
+            if(empty($searchEntity) === false) {
+                $resultEntity = [];
+                foreach ($searchEntity as $key => $value) {
+                    if (isset($translates[$key]) === true) {
+                        $resultEntity[$translates[$key]] = $value;
+                    }
+                }
+
+                if (empty($resultEntity) === false) {
+                    $where_clause .= ' AND '.$this->dbFormatWhereClauseSQL($resultEntity);
+                }
             }
         }
 
@@ -222,8 +238,16 @@ class RepositoryMySQL extends Repository
     {
         $fields = $filter->fieldsTranslate();
         $field = '';
-        if (empty($fields) === false) {
+        if (empty($fields) === false
+          && isset($fields[($filter->getMultipleSearch()['field'])]) === true) {
             $field = ($fields[($filter->getMultipleSearch()['field'] ?? '')] ?? '');
+        } else {
+            throw new Exception(
+                __(
+                    'Bad request, multiple field %s is not a valid field',
+                    $filter->getMultipleSearch()['field']
+                )
+            );
         }
 
         if (empty($field) === true) {
@@ -238,8 +262,17 @@ class RepositoryMySQL extends Repository
     {
         $fields = $filter->fieldsTranslate();
         $field = '';
-        if (empty($fields) === false) {
+        if (empty($fields) === false
+            && isset($fields[($filter->getMultipleSearchString()['field'])]) === true
+        ) {
             $field = ($fields[($filter->getMultipleSearchString()['field'] ?? '')] ?? '');
+        } else {
+            throw new Exception(
+                __(
+                    'Bad request, multiple field %s is not a valid field',
+                    $filter->getMultipleSearchString()['field']
+                )
+            );
         }
 
         if (empty($field) === true) {

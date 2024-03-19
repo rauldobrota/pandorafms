@@ -60,6 +60,10 @@ More useful links:
  *   name="Users",
  *   description="API Endpoints of users"
  * ),
+* @OA\Tag(
+ *   name="PandoraITSM",
+ *   description="API Endpoints of integration pandoraITSM"
+ * ),
  * @OA\Parameter(
  *   parameter="parameterPage",
  *   name="page",
@@ -223,7 +227,43 @@ More useful links:
  *     )
  *   }
  * )
- *
+ * 
+ * @OA\Schema(
+ *   schema="multipleSearch",
+ *   type="object",
+ *   @OA\Property(
+ *     property="field",
+ *     type="string",
+ *     nullable=true,
+ *     description="Field to search of query"
+ *   ),
+ *   @OA\Property(
+ *     property="data",
+ *     type="array",
+ *     nullable=true,
+ *     @OA\Items(type="integer"),
+ *     description="Values to search of query IN()"
+ *   )
+ * )
+ * 
+ * @OA\Schema(
+ *   schema="multipleSearchString",
+ *   type="object",
+ *   @OA\Property(
+ *     property="field",
+ *     type="string",
+ *     nullable=true,
+ *     description="Field to search of query"
+ *   ),
+ *   @OA\Property(
+ *     property="data",
+ *     type="array",
+ *     nullable=true,
+ *     @OA\Items(type="string"),
+ *     description="Values to search of query IN()"
+ *   )
+ * )
+ * 
  * @OA\Schema(
  *   schema="paginationData",
  *   type="object",
