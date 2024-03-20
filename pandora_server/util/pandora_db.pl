@@ -1491,10 +1491,12 @@ if (defined($history_dbh)) {
 
 # Cleanup and exit
 db_disconnect ($history_dbh) if defined ($history_dbh);
-db_disconnect ($dbh);
 
 # Delete netflow's .current junk files.
-my $command = 'ls -t /var/spool/pandora/data_in/netflow/*.current* | head -n -1 | xargs rm -f';
+my $network_path = pandora_get_tconfig_token($dbh, 'general_network_path', '/var/spool/pandora/data_in/');
+my $name_dir = pandora_get_tconfig_token($dbh, 'netflow_name_dir', 'netflow');
+db_disconnect ($dbh);
+my $command = 'ls -t '.$network_path.'/'.$name_dir.'/*.current* | head -n -1 | xargs rm -f';
 system($command) == 0 or die " [ERROR] Failed to clean .current junk files: $!\n";
 
 exit 0;
