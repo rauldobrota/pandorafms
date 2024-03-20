@@ -909,23 +909,30 @@ if ($modules !== false) {
 
                 if ((bool) $linked !== false) {
                     if ((bool) $adopt === true) {
-                        $img = 'images/policies_brick.png';
+                        $img = 'images/policies_brick.svg';
                         $title = '('.__('Adopted').') '.$policyInfo['name_policy'];
                     } else {
-                        $img = 'images/policies_mc.png';
+                        $img = 'images/policy@svg.svg';
                         $title = $policyInfo['name_policy'];
                     }
                 } else {
                     if ((bool) $adopt === true) {
-                        $img = 'images/policies_not_brick.png';
+                        $img = 'images/policies_not_brick.svg';
                         $title = '('.__('Unlinked').') ('.__('Adopted').') '.$policyInfo['name_policy'];
                     } else {
-                        $img = 'images/unlinkpolicy.png';
+                        $img = 'images/unlinkpolicy.svg';
                         $title = '('.__('Unlinked').') '.$policyInfo['name_policy'];
                     }
                 }
 
-                $data[1] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
+                $data[1] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image(
+                    $img,
+                    true,
+                    [
+                        'title' => $title,
+                        'class' => 'main_menu_icon',
+                    ]
+                ).'</a>';
             }
         }
 

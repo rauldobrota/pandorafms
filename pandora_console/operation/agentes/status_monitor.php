@@ -1682,24 +1682,31 @@ if (empty($result) === false) {
 
                     if ($linked) {
                         if ($adopt) {
-                            $img = 'images/policies_brick.png';
+                            $img = 'images/policies_brick.svg';
                             $title = __('(Adopt) ').$policyInfo['name_policy'];
                         } else {
-                            $img = 'images/policies_mc.png';
+                            $img = 'images/policy@svg.svg';
                             $title = $policyInfo['name_policy'];
                         }
                     } else {
                         if ($adopt) {
-                            $img = 'images/policies_not_brick.png';
+                            $img = 'images/policies_not_brick.svg';
                             $title = __('(Unlinked) (Adopt) ').$policyInfo['name_policy'];
                         } else {
-                            $img = 'images/unlinkpolicy.png';
+                            $img = 'images/unlinkpolicy.svg';
                             $title = __('(Unlinked) ').$policyInfo['name_policy'];
                         }
                     }
 
                     if (is_metaconsole()) {
-                        $data[0] = '<a href="?sec=gmodules&sec2=advanced/policymanager&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
+                        $data[0] = '<a href="?sec=gmodules&sec2=advanced/policymanager&id='.$policyInfo['id_policy'].'">'.html_print_image(
+                            $img,
+                            true,
+                            [
+                                'title' => $title,
+                                'class' => 'main_menu_icon',
+                            ]
+                        ).'</a>';
                     } else {
                         $data[0] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
                     }
