@@ -13804,3 +13804,8 @@ button.disabled {
   margin-top: 10px;
   padding-top: 15px;
 }
+
+#wizard_table span#image_prev img {
+  height: 48px;
+  cursor: pointer;
+}
