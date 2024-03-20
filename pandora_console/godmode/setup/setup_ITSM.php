@@ -130,7 +130,7 @@ $table_remote->data['ITSM_user_level_conf'] = $row;
 $row = [];
 $row['hostname'] = html_print_label_input_block(
     __('URL to Pandora ITSM setup').ui_print_help_tip(
-        __('Full URL to your Pandora ITSM setup (e.g., http://192.168.1.20/integria/api/v2).'),
+        __('Full URL (e.g., http://192.168.1.20/XXX/api/v2).'),
         true
     ),
     html_print_input_text(
@@ -214,7 +214,7 @@ if (empty($itsm_public_url) === true) {
 
 $row['publicUrl'] = html_print_label_input_block(
     __('URL conect to API %s', get_product_name()).ui_print_help_tip(
-        __('Full URL to your Pandora (e.g., http://192.168.1.20/XXX/api/v2).'),
+        __('Full URL (e.g., http://192.168.1.20/XXX/api/v2).'),
         true
     ),
     html_print_input_text(
@@ -259,7 +259,7 @@ $mode_values = [
 ];
 
 $row['modeAgentsSync'] = html_print_label_input_block(
-    __('Mode Agents to synchronize'),
+    __('Synchronize agents mode'),
     html_print_select(
         $mode_values,
         'ITSM_mode_agents_sync',
@@ -276,7 +276,7 @@ $row['modeAgentsSync'] = html_print_label_input_block(
 );
 
 $row['groupsAgentsSync'] = html_print_label_input_block(
-    __('Groups Agents to synchronize'),
+    __('Agent groups to synchronize'),
     html_print_select_groups(
         false,
         'AW',
