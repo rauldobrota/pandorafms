@@ -2322,9 +2322,9 @@ sub PandoraFMS::Recon::Base::create_agents($$) {
     );
 
     my $parent_id;
-	if (defined($agent->{'id_parent'})) {
-		$parent_id = $agent->{'id_parent'};
-	} elsif (defined($agent->{'parent_agent_name'})) {
+  	if (defined($agent->{'id_parent'})) {
+  		$parent_id = $agent->{'id_parent'};
+  	} elsif (defined($agent->{'parent_agent_name'})) {
       $parent_id = PandoraFMS::Core::locate_agent(
         $pa_config, $dbh, $agent->{'parent_agent_name'}
       );
@@ -2346,7 +2346,10 @@ sub PandoraFMS::Recon::Base::create_agents($$) {
         $pa_config, $pa_config->{'servername'}, $agent->{'agent_name'},
         $agent->{'address'}, $agent->{'id_group'}, $parent_id,
         $os_id, $agent->{'description'},
-        $agent->{'interval'}, $dbh, $agent->{'timezone_offset'}
+        $agent->{'interval'}, $dbh, $agent->{'timezone_offset'},
+        $agent->{'longitude'}, $agent->{'latitude'}, $agent->{'altitude'},
+        $agent->{'position_description'}, $agent->{'custom_id'}, $agent->{'url_address'},
+        $agent->{'agent_mode'}, $agent->{'agent_alias'}
       );
 
       $current_agent = $parent_id = PandoraFMS::Core::locate_agent(
@@ -2401,13 +2404,13 @@ sub PandoraFMS::Recon::Base::create_agents($$) {
     # Add inventory data.
     if (ref($inventory) eq "HASH") {
       PandoraFMS::Core::process_inventory_data (
-	  	$pa_config,
-	  	$inventory,
-	  	0, # Does not seem to be used.
-	  	$agent->{'agent_name'},
-	  	$agent->{'interval'},
-	  	strftime ("%Y/%m/%d %H:%M:%S", localtime()),
-	  	$dbh
+    	$pa_config,
+    	$inventory,
+    	0, # Does not seem to be used.
+    	$agent->{'agent_name'},
+    	$agent->{'interval'},
+    	strftime ("%Y/%m/%d %H:%M:%S", localtime()),
+    	$dbh
       );
     }
   }
