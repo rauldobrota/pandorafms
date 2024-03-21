@@ -242,10 +242,6 @@ class DiscoveryTaskList extends HTML
             html_print_action_buttons($this->printForm($form, true));
         }
 
-        // Warning Message.
-        $wizar_main = new Wizard();
-        $wizar_main->printWarningMessage();
-
         return $ret;
     }
 
