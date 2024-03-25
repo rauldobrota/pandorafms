@@ -65,6 +65,8 @@ ALTER TABLE `tmerge_queries` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_09
 UPDATE `tdiscovery_apps` SET `version` = '1.2' WHERE `short_name` = 'pandorafms.oracle';
 -- Update version for plugin oracle
 UPDATE `tdiscovery_apps` SET `version` = '1.3' WHERE `short_name` = 'pandorafms.vmware';
+-- Update version for plugin rds
+UPDATE `tdiscovery_apps` SET `version` = '1.1' WHERE `short_name` = 'pandorafms.aws.rds';
 
 ALTER TABLE `tevent_sound` MODIFY COLUMN `name` text NULL;
 ALTER TABLE `tevent_sound` MODIFY COLUMN `sound` text NULL;
