@@ -4630,10 +4630,12 @@ function ui_toggle(
         $imageRotate = $rotateB;
         $style .= 'height:0;position:absolute;';
         $original = $img_b;
+        $data_close = 'true';
     } else {
         $imageRotate = $rotateA;
         $style .= 'height:auto;position:relative;';
         $original = $img_a;
+        $data_close = 'false';
     }
 
     $header_class = '';
@@ -4652,7 +4654,7 @@ function ui_toggle(
 
     // Link to toggle.
     $output = '<div class="'.$main_class.'" id="'.$id.'" '.$toggl_attr.'>';
-    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'">';
+    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'" data-close="'.$data_close.'">';
     if ($reverseImg === false) {
         if ($switch === true) {
             if (empty($switch_name) === true) {
@@ -4767,6 +4769,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', '".$position_div."');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateA."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', true);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'false');\n";
         $output .= $class_table;
         $output .= "			    }\n";
         $output .= "			    else {\n";
@@ -4775,6 +4778,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', 'absolute');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateB."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', false);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'true');\n";
         $output .= "			    }\n";
         $output .= "		    });\n";
         $output .= "	    }\n";
