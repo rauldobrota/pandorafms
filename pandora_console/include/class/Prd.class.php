@@ -759,21 +759,21 @@ class Prd
                     'conditional_refs' => [
                         [
                             'when' => ['type' => 'netflow_area'],
-                            'ref' => $this->tnetflowFilter,
+                            'ref'  => $this->tnetflowFilter,
                         ],
                         [
                             'when' => ['type' => 'netflow_data'],
-                            'ref' => $this->tnetflowFilter,
+                            'ref'  => $this->tnetflowFilter,
                         ],
                         [
                             'when' => ['type' => 'netflow_summary'],
-                            'ref' => $this->tnetflowFilter,
+                            'ref'  => $this->tnetflowFilter,
                         ],
                         [
                             'when' => ['type' => 'netflow_top_N'],
-                            'ref' => $this->tnetflowFilter,
-                        ]
-                    ]
+                            'ref'  => $this->tnetflowFilter,
+                        ],
+                    ],
                 ],
             ],
             'treport_content_item'         => [
@@ -790,11 +790,11 @@ class Prd
                                     'when'  => ['type' => 'SLA_services'],
                                 ],
                             ],
-                            'ref' => $this->tservice,
-                        ]
+                            'ref'  => $this->tservice,
+                        ],
                     ],
-                    'ref' => $this->tagenteModulo
-                ]
+                    'ref'              => $this->tagenteModulo,
+                ],
             ],
             'tpolicies'                    => [
                 'id_group' => ['ref' => $this->tgrupo],
@@ -952,12 +952,14 @@ class Prd
                     'id_agent'   => ['ref' => $this->tagente],
                 ],
             ],
-            'treport_content' => [
+            'treport_content'   => [
                 'external_source' => [
-                    'module'    => ['ref' => $this->tagenteModulo + ['array' => true, 'values_as_keys' => true]],
-                    'id_agents' => ['ref' => $this->tagente + ['array' => true]],
-                    'templates' => ['ref' => $this->talertTemplates + ['array' => true]],
-                    'actions'   => ['ref' => $this->talertActions + ['array' => true]],
+                    'module'    => [
+                        'ref' => ($this->tagenteModulo + ['array' => true, 'values_as_keys' => true]),
+                    ],
+                    'id_agents' => ['ref' => ($this->tagente + ['array' => true])],
+                    'templates' => ['ref' => ($this->talertTemplates + ['array' => true])],
+                    'actions'   => ['ref' => ($this->talertActions + ['array' => true])],
                 ],
             ],
             'twidget_dashboard' => [
@@ -1956,6 +1958,7 @@ class Prd
         return $value;
     }
 
+
     /**
      * Function that checks if a value is a base64.
      *
@@ -1967,10 +1970,11 @@ class Prd
     {
         // Check if the string is valid base64 by decoding it
         $decoded = base64_decode($string, true);
-        
+
         // Check if decoding was successful and if the decoded string matches the original
         return ($decoded !== false && base64_encode($decoded) === $string);
     }
+
 
     /**
      * Function that checks if a value is a json.
@@ -2175,6 +2179,7 @@ class Prd
                                     } else {
                                         $value_arr = json_decode($value, true);
                                     }
+
                                     if (is_array($value_arr)) {
                                         $ref_arr = [];
                                         foreach ($value_arr as $val) {
@@ -2226,6 +2231,7 @@ class Prd
                                     } else {
                                         $value_arr = json_decode($value, true);
                                     }
+
                                     if (is_array($value_arr)) {
                                         $ref_arr = [];
                                         foreach ($value_arr as $val) {
@@ -2270,6 +2276,7 @@ class Prd
                                         if (is_array($ref_val) === true) {
                                             $ref_val = json_encode($ref_val);
                                         }
+
                                         $ref_arr[] = $ref_val;
                                     }
 
@@ -2303,6 +2310,7 @@ class Prd
                     } else {
                         $value_arr = json_decode($value, true);
                     }
+
                     if (is_array($value_arr)) {
                         $ref_arr = [];
                         foreach ($value_arr as $val) {
@@ -2354,6 +2362,7 @@ class Prd
                     } else {
                         $value_arr = json_decode($value, true);
                     }
+
                     if (is_array($value_arr)) {
                         $ref_arr = [];
                         foreach ($value_arr as $val) {
@@ -2398,6 +2407,7 @@ class Prd
                         if (is_array($ref_val) === true) {
                             $ref_val = json_encode($ref_val);
                         }
+
                         $ref_arr[] = $ref_val;
                     }
 
@@ -2449,6 +2459,7 @@ class Prd
                                 } else {
                                     $value_arr = json_decode($value, true);
                                 }
+
                                 if (is_array($value_arr)) {
                                     $ref_arr = [];
                                     foreach ($value_arr as $val) {
@@ -2460,12 +2471,14 @@ class Prd
                                         if ($ref_val === false && $ref_val != $val) {
                                             if ($this->evalAutocreateItem($condition['ref'], is_array($val) ? json_encode($val) : $val, $column) === false) {
                                                 return false;
+                                            } else {
+                                                return true;
                                             }
                                         }
 
                                         if ($ref_val !== false) {
-                                            if (isset($ref['values_as_keys']) === true
-                                                && $ref['values_as_keys'] === true
+                                            if (isset($condition['ref']['values_as_keys']) === true
+                                                && $condition['ref']['values_as_keys'] === true
                                             ) {
                                                 $ref_arr[$ref_val] = $ref_val;
                                             } else {
@@ -2497,6 +2510,8 @@ class Prd
                                     if ($ref_val === false && $ref_val != $val) {
                                         if ($this->evalAutocreateItem($condition['ref'], $val, $column) === false) {
                                             return false;
+                                        } else {
+                                            return true;
                                         }
                                     }
 
@@ -2513,6 +2528,8 @@ class Prd
                                 if ($prd_item === false && $prd_item != $value) {
                                     if ($this->evalAutocreateItem($condition['ref'], is_array($value) ? json_encode($value) : $value, $column) === false) {
                                         return false;
+                                    } else {
+                                        return true;
                                     }
                                 }
 
@@ -2536,6 +2553,7 @@ class Prd
                 } else {
                     $value_arr = json_decode($value, true);
                 }
+
                 if (is_array($value_arr)) {
                     $ref_arr = [];
                     foreach ($value_arr as $val) {
@@ -2547,6 +2565,8 @@ class Prd
                         if ($ref_val === false && $ref_val != $val) {
                             if ($this->evalAutocreateItem($ref, is_array($val) ? json_encode($val) : $val, $column) === false) {
                                 return false;
+                            } else {
+                                return true;
                             }
                         }
 
@@ -2584,6 +2604,8 @@ class Prd
                     if ($ref_val === false && $ref_val != $val) {
                         if ($this->evalAutocreateItem($ref, $val, $column) === false) {
                             return false;
+                        } else {
+                            return true;
                         }
                     }
 
@@ -2600,6 +2622,8 @@ class Prd
                 if ($prd_item === false && $prd_item != $value) {
                     if ($this->evalAutocreateItem($ref, is_array($value) ? json_encode($value) : $value, $column) === false) {
                         return false;
+                    } else {
+                        return true;
                     }
                 }
 
@@ -2719,6 +2743,7 @@ class Prd
                             $value = base64_decode($value);
                             $isBase64 = true;
                         }
+
                         // The column is inside column refs.
                         $this->getReferenceFromValue(
                             $element['table'],
@@ -2740,6 +2765,7 @@ class Prd
                                     $json_value = base64_decode($json_value);
                                     $isBase64 = true;
                                 }
+
                                 $this->getReferenceFromValue(
                                     $element['table'],
                                     $column,
@@ -2751,8 +2777,10 @@ class Prd
                                     if (is_array($json_value) === true) {
                                         $json_value = json_encode($json_value);
                                     }
+
                                     $json_value = base64_encode($json_value);
                                 }
+
                                 $this->updateJsonArrayValue($array_value, $json_key, $json_value);
                             }
                         }
@@ -2908,6 +2936,7 @@ class Prd
                                         $value = base64_decode($value);
                                         $isBase64 = true;
                                     }
+
                                     $create_item = $this->getValueFromReference(
                                         $table,
                                         $column,
@@ -2934,6 +2963,7 @@ class Prd
                                                 $json_value = base64_decode($json_value);
                                                 $isBase64 = true;
                                             }
+
                                             if ($this->getValueFromReference(
                                                 $table,
                                                 $column,
@@ -2945,8 +2975,10 @@ class Prd
                                                     if (is_array($json_value) === true) {
                                                         $json_value = json_encode($json_value);
                                                     }
+
                                                     $json_value = base64_encode($json_value);
                                                 }
+
                                                 $this->updateJsonArrayValue($array_value, $json_key, $json_value);
                                             } else {
                                                 $create_item = false;
@@ -2958,7 +2990,7 @@ class Prd
                                     $value = json_encode($array_value);
                                 }
 
-                                if($create_item === false){
+                                if ($create_item === false) {
                                     break;
                                 }
 
@@ -3519,7 +3551,7 @@ class Prd
     /**
      * Function to create item in database.
      *
-     * @param string $table        Table.
+     * @param string $table Table.
      *
      * @return mixed
      */

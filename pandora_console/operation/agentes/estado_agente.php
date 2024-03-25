@@ -206,6 +206,10 @@ if ($load_filter_id > 0) {
     $loaded_filter = db_get_row_sql($sql);
 }
 
+if (isset($loaded_filter) === false) {
+    $loaded_filter['id_filter'] = 0;
+}
+
 if ($loaded_filter['id_filter'] > 0) {
     $query_filter['id_filter'] = $load_filter_id;
     $filter = db_get_row_filter('tagent_filter', $query_filter, false);
@@ -329,7 +333,7 @@ $table->data['group'][0] = html_print_label_input_block(
         true,
         'group_id',
         $group_id,
-        'this.form.submit()',
+        '',
         '',
         '',
         true,
@@ -357,7 +361,7 @@ $table->data['group'][1] = html_print_label_input_block(
         $fields,
         'status',
         $status,
-        'this.form.submit()',
+        '',
         __('All'),
         AGENT_STATUS_ALL,
         true,
@@ -432,7 +436,7 @@ $table->data[2][1] = html_print_label_input_block(
         $fields,
         'policies',
         $policies,
-        'this.form.submit()',
+        '',
         __('All'),
         0,
         true,

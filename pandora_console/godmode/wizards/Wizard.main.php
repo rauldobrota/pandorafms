@@ -104,6 +104,20 @@ class Wizard
      */
     public $rootUrl;
 
+    /**
+     * Task.
+     *
+     * @var mixed
+     */
+    public $task;
+
+    /**
+     * Max pages net scan.
+     *
+     * @var mixed
+     */
+    public $maxPagesNetScan;
+
 
     /**
      * Setter for breadcrum
@@ -221,6 +235,10 @@ class Wizard
         $i = 0;
 
         foreach ($urls as $url) {
+            if (isset($url['selected']) === false) {
+                $url['selected'] = 0;
+            }
+
             if ($url['selected'] == 1) {
                 $class = 'selected';
             } else {
@@ -563,30 +581,6 @@ class Wizard
         if ($return === true) {
             return ob_get_clean();
         }
-    }
-
-
-    /**
-     * Generates warning message.
-     *
-     * @return void  Warning message.
-     */
-    public function printWarningMessage()
-    {
-        return ui_print_warning_message(
-            __(
-                'Starting with version 773, the new modular system of discovery 2.0 has been implemented. The current
-                discovery (1.0) and its defined tasks will continue to function normally until the next LTS version,
-                in which migration to the new system will be mandatory.
-                The tasks of the current discovery (1.0) will be marked as legacy although it will not affect their
-                operation, it will only be a visual indicator to identify and differentiate the tasks of discovery 1.0
-                from those of the new version 2.0.
-                In the intermediate versions between the 773 and the next LTS version, more applications of the new
-                discovery 2.0 will be added. Both new and those that will come to replace the applications of the
-                current discovery 1.0. In addition, an automatic migration tool for legacy (1.0) tasks to the new 2.0
-                model will be included.'
-            )
-        );
     }
 
 

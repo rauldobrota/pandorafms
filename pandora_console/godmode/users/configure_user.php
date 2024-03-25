@@ -40,8 +40,6 @@ require_once $config['homedir'].'/include/functions_visual_map.php';
 require_once $config['homedir'].'/include/functions_custom_fields.php';
 enterprise_include_once('include/functions_profile.php');
 
-$isFunctionSkins = enterprise_include_once('include/functions_skins.php');
-
 // Add the columns for the enterprise Pandora edition.
 $enterprise_include = false;
 if (ENTERPRISE_NOT_HOOK !== enterprise_include('include/functions_policies.php')) {
@@ -246,60 +244,9 @@ if (is_metaconsole() === true) {
     user_meta_print_header();
     $sec = 'advanced';
 } else {
-    if ((bool) check_acl($config['id_user'], 0, 'UM') === false) {
-        $buttons = [];
-    } else {
-        $buttons = [
-            'user'    => [
-                'active' => false,
-                'text'   => '<a href="index.php?sec=gusuarios&sec2=godmode/users/user_list&tab=user&pure='.$pure.'">'.html_print_image(
-                    'images/user.svg',
-                    true,
-                    [
-                        'title' => __('User management'),
-                        'class' => 'invert_filter main_menu_icon',
-                    ]
-                ).'</a>',
-            ],
-            'profile' => [
-                'active' => false,
-                'text'   => '<a href="index.php?sec=gusuarios&sec2=godmode/users/profile_list&tab=profile&pure='.$pure.'">'.html_print_image(
-                    'images/suitcase@svg.svg',
-                    true,
-                    [
-                        'title' => __('Profile management'),
-                        'class' => 'invert_filter main_menu_icon',
-                    ]
-                ).'</a>',
-            ],
-        ];
-        $buttons[$tab]['active'] = true;
-    }
-
     $edit_user = get_parameter('edit_user');
-
-    ui_print_standard_header(
-        ($edit_user) ? sprintf('%s [ %s ]', __('Update User'), $id) : __('Create User'),
-        'images/gm_users.png',
-        false,
-        '',
-        true,
-        $buttons,
-        [
-            [
-                'link'  => '',
-                'label' => __('Profiles'),
-            ],
-            [
-                'link'  => ui_get_full_url('index.php?sec=gusuarios&sec2=godmode/users/user_list'),
-                'label' => __('Manage users'),
-            ],
-            [
-                'link'  => '',
-                'label' => __('User Detail Editor'),
-            ],
-        ]
-    );
+    $title = ($edit_user) ? sprintf('%s [ %s ]', __('Update User'), $id) : __('Create User');
+    user_print_header($pure, $tab, $title);
     $sec = 'gusuarios';
 }
 
@@ -1113,11 +1060,15 @@ if (!$new_user) {
 
     $user_id .= $apiTokenContent;
 
-    $CodeQRContent .= html_print_div(['id' => 'qr_container_image', 'class' => 'scale-0-8'], true);
+    $CodeQRContent = html_print_div(['id' => 'qr_container_image', 'class' => 'scale-0-8'], true);
     $CodeQRContent .= html_print_anchor(
         ['id' => 'qr_code_agent_view'],
         true
     );
+    if (isset($custom_id_div) === false) {
+        $custom_id_div = '';
+    }
+
     $CodeQRContent .= '<br/>'.$custom_id_div;
 
     // QR code div.
@@ -1353,12 +1304,12 @@ if ($new_user) {
 
 if (is_metaconsole() === false) {
     // User only can change skins if has more than one group.
-    if (function_exists('skins_print_select')) {
-        if (count($usr_groups) > 1) {
-            if ($isFunctionSkins !== ENTERPRISE_NOT_HOOK) {
-                $skin = '<div class="label_select"><p class="edit_user_labels">'.__('Skin').'</p>';
-                $skin .= skins_print_select($id_usr, 'skin', $user_info['id_skin'], '', __('None'), 0, true).'</div>';
-            }
+    if (count($usr_groups) > 1) {
+        if ($isFunctionSkins !== ENTERPRISE_NOT_HOOK) {
+            $skin = '<div class="label_select"><p class="edit_user_labels">'.__('Skin').'</p>';
+            $skins[DEFAULT_THEME] = __('Default theme');
+            $skins[BLACK_THEME] = __('Black theme');
+            $skin .= html_print_select($skins, 'skin', $user_info['id_skin'], '', __('None'), 0, true).'</div>';
         }
     }
 }

@@ -376,6 +376,7 @@ $img_style = [
 ];
 
 if ($id_agente) {
+    $menu_tabs = [];
     // View tab.
     $viewtab['text'] = html_print_anchor(
         [
@@ -391,6 +392,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=estado&amp;sec2=operation/agentes/ver_agente&amp;id_agente='.$id_agente.'">'.__('View').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $viewtab['active'] = ($tab === 'view');
     $viewtab['operation'] = 1;
@@ -410,6 +413,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=gagente&amp;sec2=godmode/agentes/configurar_agente&amp;tab=main&amp;id_agente='.$id_agente.'">'.__('Setup').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $maintab['active'] = ($tab === 'main');
 
@@ -428,6 +433,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=gagente&amp;sec2=godmode/agentes/configurar_agente&amp;tab=module&amp;id_agente='.$id_agente.'">'.__('Modules').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $moduletab['active'] = ($tab === 'module');
 
@@ -446,6 +453,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=gagente&amp;sec2=godmode/agentes/configurar_agente&amp;tab=alert&amp;id_agente='.$id_agente.'">'.__('Alerts').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $alerttab['active'] = ($tab === 'alert');
 
@@ -458,6 +467,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=gagente&amp;sec2=godmode/agentes/configurar_agente&amp;tab=template&amp;id_agente='.$id_agente.'">'.__('Module templates').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $templatetab['active'] = ($tab === 'template');
 
@@ -470,6 +481,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=gagente&amp;sec2=godmode/agentes/configurar_agente&amp;tab=policy&amp;id_agente='.$id_agente.'">'.__('Manage policy').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $policyTab['active'] = ($tab === 'policy');
 
@@ -482,6 +495,8 @@ if ($id_agente) {
             'class' => 'main_menu_icon invert_filter',
         ]
     ).'</a>';
+    $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=inventory&id_agente='.$id_agente.'">'.__('Inventory').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     if ($tab == 'inventory') {
         $inventorytab['active'] = true;
@@ -502,6 +517,9 @@ if ($id_agente) {
         $pluginstab = enterprise_hook('plugins_tab');
         if ($pluginstab === ENTERPRISE_NOT_HOOK) {
             $pluginstab = '';
+        } else {
+            $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=plugins&id_agente='.$id_agente.'">'.__('Plugins').'</a>';
+            array_push($menu_tabs, $menu_tab_url);
         }
     } else {
         $pluginstab = '';
@@ -512,6 +530,9 @@ if ($id_agente) {
         $collectiontab = enterprise_hook('collection_tab');
         if ($collectiontab === ENTERPRISE_NOT_HOOK) {
             $collectiontab = '';
+        } else {
+            $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=collection&id_agente='.$id_agente.'">'.__('Collection').'</a>';
+            array_push($menu_tabs, $menu_tab_url);
         }
     } else {
         $collectiontab = '';
@@ -532,6 +553,8 @@ if ($id_agente) {
         ],
         true
     );
+    $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/modificar_agente&ag_group='.$group.'">'.__('Group').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
     $grouptab['active'] = false;
 
@@ -550,6 +573,8 @@ if ($id_agente) {
             ],
             true
         );
+        $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=gis&id_agente='.$id_agente.'">'.__('GIS data').'</a>';
+        array_push($menu_tabs, $menu_tab_url);
 
         $gistab['active'] = ($tab === 'gis');
     }
@@ -598,6 +623,12 @@ if ($id_agente) {
     ).'</a>';
     $agent_wizard['sub_menu'] .= '</li>';
     $agent_wizard['sub_menu'] .= '</ul>';
+    $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=agent_wizard&wizard_section=snmp_explorer&id_agente='.$id_agente.'">'.__('SNMP Wizard').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
+    $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=agent_wizard&wizard_section=snmp_interfaces_explorer&id_agente='.$id_agente.'">'.__('SNMP Interfaces wizard').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
+    $menu_tab_url = '<a href="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=agent_wizard&wizard_section=wmi_explorer&id_agente='.$id_agente.'">'.__('WMI Wizard').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 
 
     if ($tab == 'agent_wizard') {
@@ -816,6 +847,7 @@ if ($id_agente) {
 
     $helper = ($help_header === 'main_tab') ? 'main_tab' : '';
     $pure = (int) get_parameter('pure');
+    $dots = dot_tab($menu_tabs);
     if ($pure === 0) {
         ui_print_standard_header(
             __('Agent setup view').' ( '.strtolower(agents_get_alias($id_agente)).' )',
@@ -837,7 +869,9 @@ if ($id_agente) {
                     'link'  => '',
                     'label' => $tab_name,
                 ],
-            ]
+            ],
+            [],
+            $dots
         );
     }
 } else {
@@ -857,7 +891,9 @@ if ($id_agente) {
                 'link'  => 'index.php?sec=gagente&sec2=godmode/agentes/modificar_agente',
                 'label' => __('Manage agents'),
             ],
-        ]
+        ],
+        [],
+        ($dots ?? '')
     );
 }
 
@@ -949,6 +985,13 @@ if ($update_agent) {
     $mssg_warning = 0;
     $id_agente = (int) get_parameter_post('id_agente');
     $nombre_agente = str_replace('`', '&lsquo;', (string) get_parameter_post('agente', ''));
+    $repeated_name = db_get_row_sql(
+        sprintf(
+            'SELECT nombre FROM tagente WHERE id_agente <> %s AND nombre like "%s"',
+            $id_agente,
+            $nombre_agente
+        )
+    );
     $alias_safe_output = strip_tags(io_safe_output(get_parameter('alias', '')));
     $alias = io_safe_input(trim(preg_replace('/[\/\\\|%#&$]/', '', $alias_safe_output)));
     $alias_as_name = (int) get_parameter_post('alias_as_name', 0);
@@ -1077,14 +1120,17 @@ if ($update_agent) {
         }
     }
 
+    // Verify if there is another agent with the same name but different ID.
+    if (empty($repeated_name) === false) {
+        ui_print_error_message(__('Agent with repeated name'));
+    }
+
     if ($mssg_warning) {
         ui_print_warning_message(__('The ip or dns name entered cannot be resolved'));
     }
 
-    // Verify if there is another agent with the same name but different ID.
     if ($alias == '') {
         ui_print_error_message(__('No agent alias specified'));
-        // If there is an agent with the same name, but a different ID.
     }
 
     $old_group = agents_get_agent_group($id_agente);
@@ -1139,13 +1185,16 @@ if ($update_agent) {
             'ignore_unknown'            => $ignore_unknown,
         ];
 
+        if (empty($repeated_name) === true) {
+            $values['nombre'] = $nombre_agente;
+        }
+
         if ($config['metaconsole_agent_cache'] == 1) {
             $values['update_module_count'] = 1;
             // Force an update of the agent cache.
         }
 
-        $result = db_process_sql_update('tagente', $values, ['id_agente' => $id_agente]);
-
+        $result = (bool) db_process_sql_update('tagente', $values, ['id_agente' => $id_agente]);
         if ($result === false && $update_custom_result == false) {
             ui_print_error_message(
                 __('There was a problem updating the agent')
@@ -1464,6 +1513,7 @@ if ($update_module === true || $create_module === true) {
 
     $old_configuration_data = (string) get_parameter('old_configuration_data');
     $new_configuration_data = '';
+
 
     $custom_string_1_default = '';
     $custom_string_2_default = '';
@@ -1930,6 +1980,19 @@ if ($update_module) {
         }
     }
 
+    $def_msg = __('There was a problem updating module. Processing error');
+
+    if (preg_match('/module_type\s+([^\\n]+)/', io_safe_output($configuration_data), $matches)) {
+        $config_module_type = $matches[1];
+
+        $type_id = (int) db_get_value('id_tipo', 'ttipo_modulo', 'nombre', $config_module_type);
+
+        if ($type_id !== $id_module_type) {
+            $def_msg = __('There was a problem updating module: module type cannot be edited');
+            $result = ERR_GENERIC;
+        }
+    }
+
     if (is_error($result) === true) {
         switch ($result) {
             case ERR_EXIST:
@@ -1947,7 +2010,7 @@ if ($update_module) {
             case ERR_DB:
             case ERR_GENERIC:
             default:
-                $msg = __('There was a problem updating module. Processing error');
+                $msg = $def_msg;
             break;
         }
 
@@ -2319,6 +2382,23 @@ if ($delete_module) {
         include 'general/noaccess.php';
 
         exit;
+    }
+
+    // Check if module is used by agent for Safe mode.
+    $is_safe_mode_module = modules_check_safe_mode($id_borrar_modulo);
+    if ($is_safe_mode_module === true && isset($id_agente) === true) {
+        db_process_sql_update('tagente', ['safe_mode_module' => '0'], ['id_agente' => $id_agente]);
+        db_process_sql_update(
+            'tagente_modulo',
+            [
+                'disabled'              => 0,
+                'disabled_by_safe_mode' => 0,
+            ],
+            [
+                'id_agente'             => $id_agente,
+                'disabled_by_safe_mode' => 1,
+            ]
+        );
     }
 
     // Before delete the main module, check and delete the childrens from the original module.

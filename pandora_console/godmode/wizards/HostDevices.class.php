@@ -90,7 +90,7 @@ class HostDevices extends Wizard
         $this->task = [];
         $this->msg = $msg;
         $this->icon = $icon;
-        $this->label = $label;
+        $this->label = __($label);
         $this->page = $page;
         $this->url = ui_get_full_url(
             'index.php?sec=gservers&sec2=godmode/servers/discovery&wiz=hd'
@@ -454,18 +454,27 @@ class HostDevices extends Wizard
                         io_safe_input('Linux System'),
                         io_safe_input('Windows System'),
                         io_safe_input('Windows Hardware'),
-                        io_safe_input('Network Management')
+                        io_safe_input('Network Management'),
                     ];
 
-                    $default_templates_ids = db_get_all_rows_sql('SELECT id_np
+                    $default_templates_ids = db_get_all_rows_sql(
+                        'SELECT id_np
                                                               FROM tnetwork_profile
-                                                              WHERE name IN ('.implode(',', array_map(function($template) {
-                                                                                return "'" . $template . "'";
-                                                                            }, $default_templates)).')
-                                                              ORDER BY name');
+                                                              WHERE name IN ('.implode(
+                            ',',
+                            array_map(
+                                function ($template) {
+                                                                                        return "'".$template."'";
+                                },
+                                $default_templates
+                            )
+                        ).')
+                                                              ORDER BY name'
+                    );
 
-                    if($default_templates_ids !== false) {
-                        $this->task['id_network_profile'] = implode(',',
+                    if ($default_templates_ids !== false) {
+                        $this->task['id_network_profile'] = implode(
+                            ',',
                             array_column($default_templates_ids, 'id_np'),
                         );
                     }
@@ -804,8 +813,36 @@ class HostDevices extends Wizard
 
                 // Interval and schedules.
                 $interv_manual = 0;
-                if ((int) $this->task['interval_sweep'] == 0) {
-                    $interv_manual = 1;
+                if (isset($this->task['interval_sweep']) === true) {
+                    if ((int) $this->task['interval_sweep'] == 0) {
+                        $interv_manual = 1;
+                    }
+                } else {
+                    $this->task['interval_sweep'] = '';
+                }
+
+                if (isset($this->task['name']) === false) {
+                    $this->task['name'] = '';
+                }
+
+                if (isset($this->task['id_recon_server']) === false) {
+                    $this->task['id_recon_server'] = '';
+                }
+
+                if (isset($this->task['subnet_csv']) === false) {
+                    $this->task['subnet_csv'] = '';
+                }
+
+                if (isset($this->task['subnet']) === false) {
+                    $this->task['subnet'] = '';
+                }
+
+                if (isset($this->task['id_group']) === false) {
+                    $this->task['id_group'] = 0;
+                }
+
+                if (isset($this->task['description']) === false) {
+                    $this->task['description'] = '';
                 }
 
                 $form['rows'][0]['new_form_block'] = true;
@@ -906,11 +943,12 @@ class HostDevices extends Wizard
                                         true
                                     ),
                                     'arguments' => [
-                                        'name'    => 'network_csv',
-                                        'type'    => 'file',
-                                        'columns' => 25,
-                                        'rows'    => 10,
-                                        'class'   => 'discovery_full_width_input',
+                                        'name'        => 'network_csv',
+                                        'type'        => 'file',
+                                        'columns'     => 25,
+                                        'rows'        => 10,
+                                        'class'       => 'discovery_full_width_input',
+                                        'class_label' => 'label_csv',
                                     ],
                                 ],
                                 [
@@ -1314,10 +1352,10 @@ class HostDevices extends Wizard
                         $item['extra_1'] = io_output_password($item['extra_1']);
 
                         $extra1 = json_decode($item['extra_1'], true);
-                        if($extra1 !== null && $extra1['version'] == 3) {
+                        if ($extra1 !== null && $extra1['version'] == 3) {
                             $carry[$item['identifier']] = $item['identifier'];
                         }
-                        
+
                         return $carry;
                     },
                     []

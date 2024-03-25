@@ -71,7 +71,7 @@ if ((bool) check_acl($config['id_user'], 0, 'AR') === true
                 $sub2['godmode/servers/discovery&wiz=hd&mode=managenetscanscripts']['text'] = __('Manage scan scripts');
             }
 
-            $sub['godmode/servers/discovery&wiz=hd']['text'] = __('Host & devices');
+            $sub['godmode/servers/discovery&wiz=hd']['text'] = __('Host & Devices');
             $sub['godmode/servers/discovery&wiz=hd']['id'] = 'hd';
             $sub['godmode/servers/discovery&wiz=hd']['type'] = 'direct';
             $sub['godmode/servers/discovery&wiz=hd']['subtype'] = 'nolink';
@@ -81,16 +81,6 @@ if ((bool) check_acl($config['id_user'], 0, 'AR') === true
         if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
             // Applications.
             $sub2 = [];
-            // Check if app has been migrated.
-            if (enterprise_installed() === true) {
-                (ManageExtensions::isMigrated('pandorafms.mssql') === true) ?: ($sub2['godmode/servers/discovery&wiz=app&mode=MicrosoftSQLServer']['text'] = __('Microsoft SQL Server (legacy)'));
-                (ManageExtensions::isMigrated('pandorafms.mysql') === true) ?: ($sub2['godmode/servers/discovery&wiz=app&mode=mysql']['text'] = __('Mysql (legacy)'));
-                (ManageExtensions::isMigrated('pandorafms.oracle') === true) ?: ($sub2['godmode/servers/discovery&wiz=app&mode=oracle']['text'] = __('Oracle (legacy)'));
-                (ManageExtensions::isMigrated('pandorafms.vmware') === true) ?: ($sub2['godmode/servers/discovery&wiz=app&mode=vmware']['text'] = __('VMware (legacy)'));
-                (ManageExtensions::isMigrated('pandorafms.sap.desert') === true) ?: ($sub2['godmode/servers/discovery&wiz=app&mode=SAP']['text'] = __('SAP (legacy)'));
-                (ManageExtensions::isMigrated('pandorafms.db2') === true) ?: ($sub2['godmode/servers/discovery&wiz=app&mode=DB2']['text'] = __('DB2 (legacy)'));
-            }
-
             $extensions = ManageExtensions::getExtensionBySection('app');
             if ($extensions !== false) {
                 foreach ($extensions as $key => $extension) {
@@ -112,13 +102,6 @@ if ((bool) check_acl($config['id_user'], 0, 'AR') === true
 
             // Cloud.
             $sub2 = [];
-            if (enterprise_installed() === true) {
-                 (ManageExtensions::isMigrated('pandorafms.aws.ec2') === true) ?: (ManageExtensions::isMigrated('pandorafms.aws.s3') === true) ?: (ManageExtensions::isMigrated('pandorafms.aws.rds') === true) ?: ($sub2['godmode/servers/discovery&wiz=cloud&mode=amazonws']['text'] = __('Amazon Web Services (legacy)'));
-                 (ManageExtensions::isMigrated('pandorafms.azure.mc') === true) ?: ($sub2['godmode/servers/discovery&wiz=cloud&mode=azure']['text'] = __('Microsoft Azure (legacy)'));
-                 (ManageExtensions::isMigrated('pandorafms.azure.gcp.ce') === true) ?: ($sub2['godmode/servers/discovery&wiz=cloud&mode=gcp']['text'] = __('Google Compute Platform (legacy)'));
-            }
-
-
             $extensions = ManageExtensions::getExtensionBySection('cloud');
             if ($extensions !== false) {
                 foreach ($extensions as $key => $extension) {
@@ -251,6 +234,11 @@ if ($access_console_node === true) {
     if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
         $sub['godmode/users/profile_list']['text'] = __('Profile management');
         $sub['godmode/users/profile_list']['id'] = 'Profile_management';
+    }
+
+    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
+        $sub['godmode/users/token_list']['text'] = __('Token management');
+        $sub['godmode/users/token_list']['id'] = 'token_management';
     }
 
     if (empty($sub) === false) {
@@ -512,8 +500,6 @@ if ($access_console_node === true) {
         $sub['godmode/setup/license']['text'] = __('License');
         $sub['godmode/setup/license']['id'] = 'license';
 
-        enterprise_hook('skins_submenu');
-
         enterprise_hook('translate_string_submenu');
 
         $menu_godmode['gsetup']['sub'] = $sub;
@@ -524,10 +510,12 @@ if ($access_console_node === true) {
 if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
     $show_ipam = false;
     $ipam = db_get_all_rows_sql('SELECT users_operator FROM tipam_network');
-    foreach ($ipam as $row) {
-        if (str_contains($row['users_operator'], '-1') || str_contains($row['users_operator'], $config['id_user'])) {
-            $show_ipam = true;
-            break;
+    if ($ipam !== false) {
+        foreach ($ipam as $row) {
+            if (str_contains($row['users_operator'], '-1') || str_contains($row['users_operator'], $config['id_user'])) {
+                $show_ipam = true;
+                break;
+            }
         }
     }
 }
