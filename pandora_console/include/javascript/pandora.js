@@ -2738,6 +2738,6 @@ function menuTabsShowHide() {
 }
 
 function resizeSearchHeader() {
-  $(".show_result_interpreter").width($("#keywords").outerWidth() - 14);
-  $(".show_result_interpreter").css("left", $("#keywords").position().left + 3);
+  $(".show_result_interpreter").width($("#keywords").outerWidth() - 12);
+  $(".show_result_interpreter").css("left", $("#keywords").position().left + 2);
 }

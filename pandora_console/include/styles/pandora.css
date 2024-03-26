@@ -10488,6 +10488,11 @@ select:focus {
   border: 2px solid #8a96a6;
 }
 
+#keywords.results-found {
+  border: 1px solid var(--border-color);
+  border-bottom: 0px;
+}
+
 :focus {
   outline: #8a96a6;
 }

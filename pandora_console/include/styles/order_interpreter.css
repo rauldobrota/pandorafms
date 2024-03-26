@@ -45,7 +45,15 @@ div.show_result_interpreter {
 }
 
 .list_found {
-  padding-top: 5px;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.list_found img {
+  padding: 0 5px;
 }
 
 .active {
