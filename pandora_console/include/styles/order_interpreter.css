@@ -2,16 +2,18 @@ div.show_result_interpreter {
   background-color: #fff;
   color: #000;
   border: 1px solid #e2e2e2;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top: 0;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
   padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
   box-shadow: 0px 0px 15px -4px #dadada;
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   width: 300px;
-  top: 45px;
+  top: 48px;
+  left: 50%;
 }
 
 .more_results {
@@ -21,22 +23,24 @@ div.show_result_interpreter {
 }
 
 .results-found {
-  background-image: url("../../images/input_zoom_gray.png");
-  background-position: center right 10px;
+  background-image: url("../../images/details.svg");
+  background-position: center left 20px;
   background-repeat: no-repeat;
   background-size: 17px;
-  background-color: #f2f6f7;
+  background-color: #f6f7fb;
   padding: 0px;
   margin: 0;
-  width: 300px;
-  height: 30px;
+  width: 150px;
+  height: 36px;
   margin-left: 2px;
-  padding-left: 15px;
-  padding-right: 40px;
+  padding-right: 15px;
+  padding-left: 45px;
   color: #777;
   font-size: 8.5pt;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
   border-color: transparent;
 }
 

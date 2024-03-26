@@ -2794,6 +2794,10 @@ div#pandora_logo_header {
 .header_left {
   display: flex;
   flex-direction: column;
+}
+
+#head,
+#header {
   text-wrap: nowrap;
 }
 
@@ -2807,6 +2811,12 @@ div#pandora_logo_header {
 #header_searchbar {
   width: 100%;
   padding: 0 100px;
+}
+
+@media screen and (max-width: 1300px) {
+  #header_searchbar {
+    padding: 0 30px;
+  }
 }
 
 #header_searchbar #keywords {
