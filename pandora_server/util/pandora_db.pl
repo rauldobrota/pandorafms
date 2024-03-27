@@ -381,6 +381,13 @@ sub pandora_purgedb ($$$) {
 		log_message ('PURGE', 'netflow_max_lifetime is set to 0. Old netflow data will not be deleted.');
 	}
 
+	# Delete old nfcapd .current files
+	log_message ('PURGE', 'Deleting old nfcapd .current files.');
+	my $network_path = pandora_get_tconfig_token($dbh, 'general_network_path', '/var/spool/pandora/data_in/');
+	my $name_dir = pandora_get_tconfig_token($dbh, 'netflow_name_dir', 'netflow');
+	my $command = 'ls -t ' . $network_path . '/' . $name_dir . '/*.current* | tail -n +2 | xargs rm -f';
+	system($command) == 0 or log_message('!', $!);
+
 	# Delete old sflow data
 	if (!defined($conf->{'_sflow_max_lifetime'})){
 		log_message ('PURGE', 'sflow_max_lifetime is not defined. Old sflow data will not be deleted.');
@@ -1491,12 +1498,5 @@ if (defined($history_dbh)) {
 
 # Cleanup and exit
 db_disconnect ($history_dbh) if defined ($history_dbh);
-
-# Delete netflow's .current junk files.
-my $network_path = pandora_get_tconfig_token($dbh, 'general_network_path', '/var/spool/pandora/data_in/');
-my $name_dir = pandora_get_tconfig_token($dbh, 'netflow_name_dir', 'netflow');
 db_disconnect ($dbh);
-my $command = 'ls -t '.$network_path.'/'.$name_dir.'/*.current* | head -n -1 | xargs rm -f';
-system($command) == 0 or die " [ERROR] Failed to clean .current junk files: $!\n";
-
 exit 0;
