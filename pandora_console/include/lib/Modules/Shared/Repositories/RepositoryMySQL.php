@@ -254,7 +254,15 @@ class RepositoryMySQL extends Repository
             return '';
         }
 
-        $clause = ' AND '.$field.' IN ('.implode(',', $filter->getMultipleSearch()['data']).')';
+        $clause = ' AND ('.$field.' IN ('.implode(',', $filter->getMultipleSearch()['data']).')';
+
+        if(isset($filter->getMultipleSearch()['secondaryGroup']) === true 
+            && $filter->getMultipleSearch()['secondaryGroup'] === true
+        ) {
+            $clause .= ' OR tagent_secondary_group.id_group IN ('.implode(',', $filter->getMultipleSearch()['data']).')';
+        }
+        $clause .= ')';
+
         return $clause;
     }
 
