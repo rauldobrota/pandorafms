@@ -182,8 +182,10 @@ class WelcomeWindow extends Wizard
                     })
                 }
             },
+            closeOnEscape: true,
             onload: () => {
                 $(document).ready(function () {
+                    $(".ui-dialog-titlebar-close").hide();
                     var buttonpane = $("div[aria-describedby='welcome_modal_window'] .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix");
                     $(buttonpane).append(`
                     <div class="welcome-wizard-buttons">
@@ -470,7 +472,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_update_manager_class) === false) ? $btn_update_manager_class : 'invisible_important',
@@ -498,7 +500,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_configure_mail_class) === false) ? $btn_configure_mail_class : 'invisible_important',
@@ -526,7 +528,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_servers_up_class) === false) ? $btn_servers_up_class : 'invisible_important',
@@ -554,7 +556,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_license_valid_class) === false) ? $btn_license_valid_class : 'invisible_important',

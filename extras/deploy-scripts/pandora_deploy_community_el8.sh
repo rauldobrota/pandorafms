@@ -417,7 +417,6 @@ server_dependencies=" \
     perl(Sys::Syslog) \
     perl(DBI) \
     perl(XML::Simple) \
-    perl(Geo::IP) \
     perl(IO::Socket::INET6) \
     perl(XML::Twig) \
     expect \
@@ -457,7 +456,6 @@ ipam_dependencies=" \
     perl(Sys::Syslog) \
     perl(DBI) \
     perl(XML::Simple) \
-    perl(Geo::IP) \
     perl(IO::Socket::INET6) \
     perl(XML::Twig)"
 execute_cmd "dnf install -y $ipam_dependencies" "Installing IPAM Instant client"
@@ -632,8 +630,9 @@ include (\$ownDir . "config_process.php");
 EO_CONFIG_F
 
 cat > /etc/httpd/conf.d/pandora.conf << EO_CONFIG_F
+ServerTokens Prod
 <Directory "/var/www/html">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride All
     Require all granted
 </Directory>

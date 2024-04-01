@@ -500,8 +500,6 @@ if ($access_console_node === true) {
         $sub['godmode/setup/license']['text'] = __('License');
         $sub['godmode/setup/license']['id'] = 'license';
 
-        enterprise_hook('skins_submenu');
-
         enterprise_hook('translate_string_submenu');
 
         $menu_godmode['gsetup']['sub'] = $sub;
@@ -538,7 +536,7 @@ if ((bool) check_acl($config['id_user'], 0, 'PM') === true || (bool) check_acl($
             $sub['godmode/setup/links']['id'] = 'links';
             $sub['tools/diagnostics']['text'] = __('Diagnostic info');
             $sub['tools/diagnostics']['id'] = 'diagnostic_info';
-            enterprise_hook('omnishell');
+            // enterprise_hook('omnishell');
             $sub['godmode/setup/news']['text'] = __('Site news');
             $sub['godmode/setup/news']['id'] = 'site_news';
         }
@@ -806,8 +804,10 @@ $("#conf_wizard").click(function() {
                 })
             }
         },
+        closeOnEscape: true,
         onload: () => {
             $(document).ready(function () {
+                $(".ui-dialog-titlebar-close").hide();
                 var buttonpane = $("div[aria-describedby='welcome_modal_window'] .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix");
                 $(buttonpane).append(`
                 <div class="welcome-wizard-buttons">
