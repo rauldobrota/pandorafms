@@ -1292,10 +1292,18 @@ if ($update_agent) {
         // Get all plugins (BASIC OPTIONS).
         $agent = new PandoraFMS\Agent($id_agente);
         $plugins = $agent->getPlugins();
+        $pluginsToWrite = [
+            'security_hardening' => [
+                'write' => $security_hardening,
+                'raw'   => "module_begin \nmodule_plugin /usr/share/pandora_agent/plugins/pandora_hardening -t 150 \nmodule_absoluteinterval 7d \nmodule_end",
+            ],
+        ];
+
         foreach ($plugins as $key => $row) {
             // Only check plugins when agent package is bigger than 774.
             if ($options_package === '1') {
                 if (preg_match('/pandora_hardening/', $row['raw']) === 1) {
+                    $pluginsToWrite['security_hardening']['write'] = 0;
                     if ($security_hardening === 1) {
                         if ($row['disabled'] === 1) {
                             $agent->enablePlugins($row['raw']);
@@ -1344,6 +1352,12 @@ if ($update_agent) {
                         $agent->disablePlugins($row['raw']);
                     }
                 }
+            }
+        }
+
+        foreach ($pluginsToWrite as $name => $val) {
+            if ($val['write'] === 1) {
+                $result = $agent->addPlugins(io_safe_output($val['raw']), true);
             }
         }
 
