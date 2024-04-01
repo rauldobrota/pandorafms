@@ -30,22 +30,23 @@ final class UserTokenMiddleware
         $token = null;
         try {
             $authorization = str_replace('Bearer ', '', $authorization);
-            preg_match(
-                '/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/',
-                $authorization,
-                $matches
-            );
-
-            $uuid = ($matches[0] ?? '');
-            if (empty($uuid) === true) {
-                return false;
-            }
-            $strToken = str_replace($uuid.'-', '', $authorization);
-            $validTokenUiniqueServerIdentifier = $this->validateServerIdentifierTokenService->__invoke($strToken);
+            $validTokenUiniqueServerIdentifier = $this->validateServerIdentifierTokenService->__invoke($authorization);
             if ($validTokenUiniqueServerIdentifier === false) {
+                preg_match(
+                    '/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/',
+                    $authorization,
+                    $matches
+                );
+    
+                $uuid = ($matches[0] ?? '');
+                if (empty($uuid) === true) {
+                    return false;
+                }
+                $strToken = str_replace($uuid.'-', '', $authorization);
                 $validToken = $this->validateUserTokenService->__invoke($uuid, $strToken);
                 $token = $this->getUserTokenService->__invoke($uuid);
                 if ($token !== null && $validToken) {
+                    $this->config->set('id_user', $token->getIdUser());
                     $oldToken = clone $token;
                     $token->setLastUsage($this->timestamp->getMysqlCurrentTimestamp(0));
                     $this->updateTokenService->__invoke($token, $oldToken);

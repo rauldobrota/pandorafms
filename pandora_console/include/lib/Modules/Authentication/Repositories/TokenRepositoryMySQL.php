@@ -136,7 +136,7 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
         $filters = $this->buildQueryFilters($filter, $mapper);
 
         // Check ACL for user list.
-        if (\users_is_admin() === false) {
+        if (empty($this->config->get('id_user')) === false && \users_is_admin() === false) {
             // No admin.
             $filters .= sprintf(
                 ' AND ttoken.id_user = "%s"',

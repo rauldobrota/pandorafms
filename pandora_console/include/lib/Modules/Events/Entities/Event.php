@@ -16,7 +16,7 @@ use PandoraFMS\Modules\Shared\Entities\Entity;
  *     property="idEvent",
  *     type="integer",
  *     nullable=false,
- *     description="Id event"
+ *     description="Id event",
  *     readOnly=true
  *   ),
  *   @OA\Property(
@@ -212,7 +212,7 @@ use PandoraFMS\Modules\Shared\Entities\Entity;
  *     nullable=true,
  *     default=null,
  *     description="Module status",
- *     readonly=true
+ *     readOnly=true
  *   ),
  *   @OA\Property(
  *      property="eventCustomId",

@@ -1,28 +1,33 @@
 <?php
 
-namespace PandoraFMS\Modules\Users\Entities;
+namespace PandoraFMS\Modules\PandoraITSM\Inventories\Entities;
 
 use PandoraFMS\Modules\Shared\Core\FilterAbstract;
-use PandoraFMS\Modules\Users\Validators\UserValidator;
+use PandoraFMS\Modules\Shared\Validators\Validator;
 
 /**
  * @OA\Schema(
- *   schema="UserFilter",
+ *   schema="PandoraITSMInventoryFilter",
  *   type="object",
  *   allOf={
- *     @OA\Schema(ref="#/components/schemas/User"),
+ *     @OA\Schema(ref="#/components/schemas/PandoraITSMInventory"),
  *     @OA\Schema(
+ *       @OA\Property(
+ *         property="idPandoraITSMInventory",
+ *         default=null,
+ *         readOnly=false
+ *       ),
  *       @OA\Property(
  *         property="freeSearch",
  *         type="string",
  *         nullable=true,
  *         default=null,
- *         description="Find word in fullname and comments fields."
+ *         description="Find word in name field."
  *       )
  *     ),
  *     @OA\Schema(
  *       @OA\Property(
- *         property="multipleSearchString",
+ *         property="multipleSearch",
  *         type="object",
  *         ref="#/components/schemas/multipleSearch",
  *         description="Multiple search object",
@@ -32,31 +37,38 @@ use PandoraFMS\Modules\Users\Validators\UserValidator;
  * )
  *
  * @OA\RequestBody(
- *   request="requestBodyUserFilter",
+ *   request="requestBodyPandoraITSMInventoryFilter",
  *   required=true,
  *   @OA\MediaType(
  *     mediaType="application/json",
- *     @OA\Schema(ref="#/components/schemas/UserFilter")
+ *     @OA\Schema(ref="#/components/schemas/PandoraITSMInventoryFilter")
  *   ),
  * )
  */
-final class UserFilter extends FilterAbstract
+final class PandoraITSMInventoryFilter extends FilterAbstract
 {
     private ?string $freeSearch = null;
-    private ?array $multipleSearchString = null;
+    private ?array $multipleSearch = null;
 
     public function __construct()
     {
-        $this->setDefaultFieldOrder(UserDataMapper::ID_USER);
+        $this->setDefaultFieldOrder('tagente.id_agente');
         $this->setDefaultDirectionOrder($this::ASC);
-        $this->setEntityFilter(new User());
+        $this->setEntityFilter(new PandoraITSMInventory());
     }
 
     public function fieldsTranslate(): array
     {
         return [
-            'idUser'   => UserDataMapper::TABLE_NAME.'.'.UserDataMapper::ID_USER,
-            'fullName' => UserDataMapper::TABLE_NAME.'.'.UserDataMapper::FULLNAME,
+            'idPandoraITSMInventory' => 'tagente.id_agente',
+            'agentAlias'             => 'tagente.alias',
+            'osVersion'              => 'tagente.os_version',
+            'agentAddress'           => 'tagente.direccion',
+            'agentUrlAddress'        => 'tagente.url_address',
+            'agentDisabled'          => 'tagente.disabled',
+            'groupId'                => 'tgrupo.id_grupo',
+            'groupName'              => 'tgrupo.nombre',
+            'osName'                 => 'tconfig_os.name',
         ];
     }
 
@@ -68,24 +80,25 @@ final class UserFilter extends FilterAbstract
     public function jsonSerialize(): mixed
     {
         return [
-            'freeSearch' => $this->getFreeSearch(),
+            'freeSearch'     => $this->getFreeSearch(),
+            'multipleSearch' => $this->getMultipleSearch(),
         ];
     }
 
     public function getValidations(): array
     {
         $validations = [];
-        if ($this->getEntityFilter() !== null) {
+        if($this->getEntityFilter() !== null) {
             $validations = $this->getEntityFilter()->getValidations();
         }
-
-        $validations['freeSearch'] = UserValidator::STRING;
+        $validations['freeSearch'] = Validator::STRING;
+        $validations['multipleSearch'] = Validator::ARRAY;
         return $validations;
     }
 
     public function validateFields(array $filters): array
     {
-        return (new UserValidator())->validate($filters);
+        return (new Validator())->validate($filters);
     }
 
     /**
@@ -102,6 +115,7 @@ final class UserFilter extends FilterAbstract
      * Set the value of freeSearch.
      *
      * @param ?string $freeSearch
+     *
      */
     public function setFreeSearch(?string $freeSearch): self
     {
@@ -117,8 +131,8 @@ final class UserFilter extends FilterAbstract
     public function getFieldsFreeSearch(): ?array
     {
         return [
-            UserDataMapper::TABLE_NAME.'.'.UserDataMapper::FULLNAME,
-            UserDataMapper::TABLE_NAME.'.'.UserDataMapper::ID_USER,
+            'tagente.alias',
+            'tagente.id_agente',
         ];
     }
 
@@ -127,19 +141,19 @@ final class UserFilter extends FilterAbstract
      *
      * @return ?array
      */
-    public function getMultipleSearchString(): ?array
+    public function getMultipleSearch(): ?array
     {
-        return $this->multipleSearchString;
+        return $this->multipleSearch;
     }
 
     /**
      * Set the value of multipleSearchString.
      *
-     * @param ?array $multipleSearchString
+     * @param ?array $multipleSearch
      */
-    public function setMultipleSearchString(?array $multipleSearchString): self
+    public function setMultipleSearch(?array $multipleSearch): self
     {
-        $this->multipleSearchString = $multipleSearchString;
+        $this->multipleSearch = $multipleSearch;
         return $this;
     }
 }
