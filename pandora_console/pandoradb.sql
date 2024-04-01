@@ -1326,6 +1326,7 @@ CREATE TABLE IF NOT EXISTS `tusuario` (
   `allowed_ip_list` TEXT,
   `auth_token_secret` VARCHAR(45) DEFAULT NULL,
   `session_max_time_expire` INT NOT NULL DEFAULT 0,
+  `stop_lts_modal` TINYINT NOT NULL DEFAULT 0,
   CONSTRAINT `fk_filter_id` FOREIGN KEY (`id_filter`) REFERENCES tevent_filter (`id_filter`) ON DELETE SET NULL,
   UNIQUE KEY `id_user` (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -2989,18 +2990,6 @@ CREATE TABLE IF NOT EXISTS `tsesion_extended` (
   `hash` VARCHAR(255) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY idx_session (id_sesion)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
-
--- -----------------------------------------------------
--- Table `tskin`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tskin` ( 
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `name` TEXT ,
-  `relative_path` TEXT , 
-  `description` TEXT ,
-  `disabled` TINYINT NOT NULL DEFAULT 0, 
-  PRIMARY KEY  (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- ---------------------------------------------------------------------

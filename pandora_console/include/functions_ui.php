@@ -2946,7 +2946,7 @@ function ui_print_help_tip(
 
     $id = random_int(1, 99999);
     $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" >';
-    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.$text.'</span></div>';
+    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.io_safe_output($text).'</span></div>';
     $output .= html_print_image(
         $img,
         true,
@@ -5419,6 +5419,18 @@ function ui_print_page_header(
 
     if (is_array($options)) {
         $buffer .= '<div id="menu_tab"><ul class="mn">';
+
+        $menu_dots_class = 'menu-dots-hide';
+        if (isset($dots) === true && $dots !== '' && $config['tabs_menu'] !== 'icons') {
+            $menu_dots_class = 'menu-dots-show';
+        }
+
+        if (isset($dots) === true && $dots !== '') {
+            $buffer .= '<li class="nomn menu-dots-li '.$menu_dots_class.'">';
+            $buffer .= '<div id="menu_dots">'.$dots.'</div>';
+            $buffer .= '</li>';
+        }
+
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
@@ -5428,6 +5440,13 @@ function ui_print_page_header(
                 // $buffer .= '</li>';
             } else {
                 if (is_array($option)) {
+                    if ($config['tabs_menu'] === 'menu' && (isset($dots) === true && $dots !== '')) {
+                        $tabs_class = 'tabs-hide';
+                        if (isset($option['active']) === true && (bool) $option['active'] === true) {
+                            $tabs_class = 'tabs-show';
+                        }
+                    }
+
                     $class = 'nomn';
                     if (isset($option['active'])) {
                         if ($option['active']) {
@@ -5444,7 +5463,7 @@ function ui_print_page_header(
                         $class .= ($godmode) ? ' tab_godmode' : ' tab_operation';
                     }
 
-                    $buffer .= '<li class="'.$class.' ">';
+                    $buffer .= '<li class="'.$class.' '.$tabs_class.'">';
                     $buffer .= $option['text'];
                     if (isset($option['sub_menu'])) {
                         $buffer .= $option['sub_menu'];
@@ -5460,11 +5479,19 @@ function ui_print_page_header(
         }
 
         $buffer .= '</ul>';
-        if (isset($dots) === true) {
-            $buffer .= '<div id="menu_dots">'.$dots.'</div>';
-        }
-
         $buffer .= '</div>';
+
+        if (is_metaconsole() === false) {
+            $buffer .= '
+            <script>
+                menuTabsShowHide();
+                
+                $(window).on("resize", function() {
+                menuTabsShowHide();
+                });
+            </script>
+        ';
+        }
     } else {
         if ($options != '') {
             $buffer .= '<div id="menu_tab"><ul class="mn"><li>';
@@ -7303,7 +7330,7 @@ function ui_print_message_dialog($title, $text, $id='', $img='', $text_button=''
  *
  * @return null
  */
-function ui_query_result_editor($name='default')
+function ui_query_result_editor($name='default', $button_in_action_buttons=true)
 {
     $editorSubContainer = html_print_div(
         [
@@ -7379,9 +7406,22 @@ function ui_query_result_editor($name='default')
         ]
     );
 
-    $execute_button = html_print_submit_button(__('Execute query'), 'execute_query', false, ['icon' => 'update'], true);
-    html_print_action_buttons($execute_button);
+    $execute_button = html_print_submit_button(
+        __('Execute query'),
+        'execute_query',
+        false,
+        [
+            'icon'  => 'update',
+            'class' => 'float-right',
+        ],
+        true
+    );
 
+    if ($button_in_action_buttons === true) {
+        html_print_action_buttons($execute_button);
+    } else {
+        echo $execute_button;
+    }
 }
 
 
