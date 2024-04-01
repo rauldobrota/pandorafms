@@ -158,6 +158,8 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
                 ON tgrupo.id_grupo = tagente.id_grupo
             INNER JOIN tconfig_os
                 ON tconfig_os.id_os = tagente.id_os
+            LEFT JOIN tagent_secondary_group
+                ON tagente.id_agente = tagent_secondary_group.id_agent
             WHERE %s
             %s
             %s
