@@ -112,6 +112,20 @@ if ($license_data !== ENTERPRISE_NOT_HOOK) {
         );
         return;
     }
+
+    if (rtrim($license_data['licensed_to']) === Manager::PANDORA_TRIAL_ISSUER) {
+        $product_name = get_product_name();
+
+        ui_print_info_message(
+            __(
+                'You cannot use update manager %s. This license is a trial license to test all %s features. Please update your license to unlock all %s features.',
+                $mode_str,
+                $product_name,
+                $product_name
+            )
+        );
+        return;
+    }
 } else {
     $license_data = [];
     $license_data['count_enabled'] = db_get_value(

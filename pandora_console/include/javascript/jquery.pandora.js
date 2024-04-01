@@ -221,10 +221,10 @@ $(document).ready(function() {
     }
   }
 
-  if ($("#license_dialog").length) {
-    let height = 300;
+  if ($("#license_dialog_message").length) {
+    let height = 350;
 
-    $("#license_dialog").dialog({
+    $("#license_dialog_message").dialog({
       dialogClass: "no-close",
       closeOnEscape: false,
       resizable: false,
@@ -242,7 +242,7 @@ $(document).ready(function() {
     });
 
     $("#ok_buttom").click(function() {
-      $("#license_dialog").dialog("close");
+      $("#license_dialog_message").dialog("close");
     });
   }
 
