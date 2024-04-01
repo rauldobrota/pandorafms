@@ -1228,6 +1228,18 @@ sub param_error ($$) {
 }
 
 ###############################################################################
+# Print a 'length' error and exit the program.
+# Param 0: field name
+# Param 1: field max size
+# Param 2: field current size
+###############################################################################
+sub length_error ($$$) {
+    print (STDERR "[ERROR] Error: The $_[0] after insertion will exceed the allowed length ($_[1]), current length ($_[2]).\n\n");
+    logger( $conf, "($progname) [ERROR] Error: The $_[0] after insertion will exceed the allowed length ($_[1]), current length ($_[2]).", 10);
+    exit 1;
+}
+
+###############################################################################
 # Print a 'does not exist' error and exit the program.
 ###############################################################################
 sub notexists_error ($$) {
@@ -1286,6 +1298,20 @@ sub param_check ($$;$) {
 		}
 	}
 }
+
+###############################################################################
+# Check the length and call the error if exeeds the allowed.
+# Param 0: field name
+# Param 1: field content
+# Param 2: field max size
+###############################################################################
+sub length_check ($$$) {
+	my $field_length = length(safe_input($_[0]));
+    if($field_length > $_[2]) {
+		length_error($_[1],$_[2],$field_length);
+	}
+}
+
 
 ##############################################################################
 # Print a help line.
@@ -4465,6 +4491,10 @@ sub cli_create_event() {
 
 	$event_status = 0 unless defined($event_status);
 	$severity = 0 unless defined($severity);
+
+	if (defined($id_extra) && $id_extra ne '') {
+		length_check($id_extra, 'id_extra', 255);
+	}
 
 	my $id_user;
 	
