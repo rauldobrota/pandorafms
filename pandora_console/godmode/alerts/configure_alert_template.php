@@ -1821,5 +1821,11 @@ if ($step == 2) {
 }
 ?>
 })
+
+$(document).ready(function () {
+    $("#default_action").select2({
+        closeOnSelect: true
+    });
+});
 /* ]]> */
 </script>
