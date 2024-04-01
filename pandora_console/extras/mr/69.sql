@@ -7706,6 +7706,7 @@ UPDATE `twelcome_tip` SET url = 'https://pandorafms.com/manual/!current/start?id
 UPDATE `twelcome_tip` SET url = 'https://pandorafms.com/manual/!current/start?id=en/documentation/02_installation/05_configuration_agents#conf' WHERE title = 'Automatic&#x20;agent&#x20;provision&#x20;system';
 UPDATE `twelcome_tip` SET url = 'https://pandorafms.com/manual/!current/start?id=en/documentation/04_using/05_data_presentation_visual_maps' WHERE title = 'Using&#x20;custom&#x20;icons&#x20;in&#x20;visual&#x20;consoles';
 
+DELETE FROM tconfig WHERE `token` = 'legacy_database_ha';
 
 -- Add new columns in tdeployment_hosts
 ALTER TABLE `tdeployment_hosts` ADD COLUMN `deploy_method` ENUM('SSH', 'HTTP', 'HTTPS') DEFAULT 'SSH';
