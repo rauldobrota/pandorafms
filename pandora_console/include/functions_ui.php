@@ -5407,7 +5407,7 @@ function ui_print_page_header(
 
     if (is_metaconsole() === true) {
         if ($help != '') {
-            $buffer .= "<div class='head_help'>".ui_print_help_icon($help, true, '', 'images/help_30.png').'</div>';
+            $buffer .= "<div class='head_help rounded-icon-header'>".ui_print_help_icon($help, true, '', 'images/help@header.svg').'</div>';
         }
     }
 
