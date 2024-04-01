@@ -936,7 +936,7 @@ $switchButtons[] = html_print_radio_button_extended(
 );
 
 $tableAdvancedAgent->data['module_definition'][] = html_print_label_input_block(
-    __('Module definition').ui_print_help_tip(__('Three working modes can be selected for module definition. Learning mode: Default mode, if an XML arrives with new modules, they will be created automatically; it is a learning behavior. Normal mode: If an XML arrives with new modules, they will only be created if they are previously declared in the Console. Autodisable mode: It is the same as learning mode, but if all modules go into unknown, the agent will be disabled until information arrives again.'), true),
+    __('Module definition').ui_print_help_tip(__('Three working modes can be selected for module definition. Learning mode: Default mode, if an XML arrives with new modules, they will be created automatically; it is a learning behavior. Normal mode: If an XML arrives with new modules, they will only be created if they are previously declared in the Console. Autodisable mode: It is the same as learning mode, but if all modules go into unknown, the agent will be disabled until information arrives again.'), true).clippy_context_help('modules_not_learning_mode'),
     html_print_div(
         [
             'class'   => 'switch_radio_button',
@@ -1297,7 +1297,6 @@ if ($modo == 0) {
     echo "<span id='modules_not_learning_mode_context_help' class='invisible'>";
 }
 
-echo clippy_context_help('modules_not_learning_mode');
 echo '</span>';
 
 if ($new_agent === false) {

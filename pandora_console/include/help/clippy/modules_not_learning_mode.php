@@ -43,7 +43,16 @@ function clippy_modules_not_learning_mode()
     $return_tours['tours']['modules_not_learning_mode']['steps'][] = [
         'init_step_context' => true,
         'position'          => 'left',
-        'intro'             => '<table><tr><td class="context_help_body">'.__('Please note that you have your agent setup to do not add new modules coming from the data XML.').'<br />'.__('That means if you have a local plugin or add manually new modules to the configuration file, you won\'t have it in your agent, unless you first create manually in the interface (with the exact name and type as coming in the XML file).').'<br />'.__('You should use the "normal" mode (non learn) only when you don\'t intend to add more modules to the agent.').'</td></tr></table>',
+        'intro'             => __('Please note that you have your agent setup to do not add new modules coming from the data XML.').'<br />'.__('That means if you have a local plugin or add manually new modules to the configuration file, you won\'t have it in your agent, unless you first create manually in the interface (with the exact name and type as coming in the XML file).').'<br />'.__('You should use the "normal" mode (non learn) only when you don\'t intend to add more modules to the agent.'),
+        'title'             => __('Modules not learning mode.'),
+        'img'               => html_print_image(
+            'images/info-warning.svg',
+            true,
+            [
+                'class' => 'main_menu_icon invert_filter',
+                'style' => 'margin-left: 5px; width: 16px; height: 16px;',
+            ]
+        ),
     ];
     $return_tours['tours']['modules_not_learning_mode']['conf'] = [];
     $return_tours['tours']['modules_not_learning_mode']['conf']['autostart'] = false;
