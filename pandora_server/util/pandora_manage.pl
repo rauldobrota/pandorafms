@@ -3404,9 +3404,14 @@ sub cli_agent_update_custom_fields() {
 		}
 	}
 
+	if(!defined($new_value)) {
+		print_log "[ERROR] Error updating field '$field' no new value has been provided\n\n";
+		exit;
+	}
+
 	print_log "\n[INFO] Updating field '$field' in agent with ID '$id_agent'\n\n";
 
-	my $result = 	pandora_agent_update_custom_field ($dbh, $new_value, $custom_field, $id_agent);
+	my $result = 	pandora_update_agent_custom_field ($dbh, $new_value, $custom_field, $id_agent);
 
 	if($result == "0E0"){
 			print_log "[ERROR] Error updating field '$field'\n\n";
