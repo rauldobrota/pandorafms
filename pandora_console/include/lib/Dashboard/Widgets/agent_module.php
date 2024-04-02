@@ -297,10 +297,10 @@ class AgentModuleWidget extends Widget
         }
 
         $inputs[] = [
-            'class'     => 'flex flex-row',
-            'id'        => 'select_multiple_modules_filtered',
+            'class'     => 'flex flex-column',
+            'id'        => 'select_multiple_modules_filtered_formated',
             'arguments' => [
-                'type'                     => 'select_multiple_modules_filtered',
+                'type'                     => 'select_multiple_modules_filtered_formated',
                 'uniqId'                   => $this->cellId,
                 'mGroup'                   => (isset($this->values['mGroup']) === true) ? $this->values['mGroup'] : $mgroup,
                 'mRecursion'               => (isset($this->values['mRecursion']) === true) ? $this->values['mRecursion'] : '',

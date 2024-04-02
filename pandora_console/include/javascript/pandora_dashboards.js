@@ -1,6 +1,7 @@
 /* globals $, GridStack, load_modal, TreeController, forced_title_callback, createVisualConsole, UndefineTinyMCE*/
 // eslint-disable-next-line no-unused-vars
 function show_option_dialog(settings) {
+  $("#modal-config-widget").html("");
   load_modal({
     target: $("#modal-update-dashboard"),
     form: "form-update-dashboard",
