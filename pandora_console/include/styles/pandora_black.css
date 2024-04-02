@@ -75,10 +75,6 @@ table.agent_info_table tr {
   color: var(--text-color) !important;
 }
 
-div#head {
-  border-bottom: 1px solid #1a1a1a;
-}
-
 .menu_full_classic #menu_tabs {
   height: 49px;
   border-bottom: 1px solid var(--border-color);
@@ -1889,7 +1885,7 @@ a.link-bold {
   font-weight: bold;
 }
 
-#menu_tab_frame_view::after,
+#menu_full::after,
 .white_table_graph.fixed_filter_bar::before {
   background-color: #111;
 }

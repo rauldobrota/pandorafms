@@ -1984,23 +1984,26 @@ div.title_line {
   margin: -25px -25px 25px -25px;
 }
 
-#menu_tab_frame_view::before {
+#menu_full::before {
   content: "";
   width: 16px;
   height: 16px;
   background-color: var(--secondary-color);
   position: absolute;
-  top: 0;
-  z-index: -1;
+  top: 60px;
+  right: -16px;
+  z-index: 0;
 }
-#menu_tab_frame_view::after {
+
+#menu_full::after {
   content: "";
   width: 16px;
   height: 16px;
   background-color: #f6f7fb;
   position: absolute;
-  top: 0;
-  z-index: -1;
+  top: 60px;
+  right: -16px;
+  z-index: 0;
   border-top-left-radius: 16px;
 }
 
