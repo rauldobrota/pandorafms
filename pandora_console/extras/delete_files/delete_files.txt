@@ -1747,3 +1747,5 @@ enterprise/include/class/MySQL.app.php
 enterprise/include/class/Oracle.app.php
 enterprise/include/class/SAP.app.php
 enterprise/include/class/VMware.app.php
+enterprise/include/class/DatabaseHA.class.php
+enterprise/godmode/servers/HA_cluster.php

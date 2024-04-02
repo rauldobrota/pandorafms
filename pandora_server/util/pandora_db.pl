@@ -38,7 +38,7 @@ use PandoraFMS::Config;
 use PandoraFMS::DB;
 
 # version: define current version
-my $version = "7.0NG.776 Build 240326";
+my $version = "7.0NG.776 Build 240402";
 
 # Pandora server configuration
 my %conf;
@@ -380,6 +380,13 @@ sub pandora_purgedb ($$$) {
 	else {
 		log_message ('PURGE', 'netflow_max_lifetime is set to 0. Old netflow data will not be deleted.');
 	}
+
+	# Delete old nfcapd .current files
+	log_message ('PURGE', 'Deleting old nfcapd .current files.');
+	my $network_path = pandora_get_tconfig_token($dbh, 'general_network_path', '/var/spool/pandora/data_in/');
+	my $name_dir = pandora_get_tconfig_token($dbh, 'netflow_name_dir', 'netflow');
+	my $command = 'ls -t ' . $network_path . '/' . $name_dir . '/*.current* | tail -n +2 | xargs rm -f';
+	system($command) == 0 or log_message('!', $!);
 
 	# Delete old sflow data
 	if (!defined($conf->{'_sflow_max_lifetime'})){
@@ -1492,5 +1499,4 @@ if (defined($history_dbh)) {
 # Cleanup and exit
 db_disconnect ($history_dbh) if defined ($history_dbh);
 db_disconnect ($dbh);
-
 exit 0;

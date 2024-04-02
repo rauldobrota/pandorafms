@@ -15,11 +15,14 @@ use PandoraFMS\Modules\Shared\Services\Config;
 
 final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenRepository
 {
+
+
     public function __construct(
         private TokenDataMapper $tokenDataMapper,
         private Config $config
     ) {
     }
+
 
     /**
      * @return Token[],
@@ -49,6 +52,7 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
         return $result;
     }
 
+
     public function count(TokenFilter $tokenFilter): int
     {
         $sql = $this->getAuthenticationQuery($tokenFilter, $this->tokenDataMapper, true);
@@ -64,6 +68,7 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
 
         return (int) $count;
     }
+
 
     public function getOne(TokenFilter $tokenFilter): Token
     {
@@ -85,6 +90,7 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
         return $this->tokenDataMapper->fromDatabase($result);
     }
 
+
     public function getExistToken(string $label): Token
     {
         try {
@@ -105,11 +111,13 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
         return $this->tokenDataMapper->fromDatabase($result);
     }
 
+
     public function create(Token $token): Token
     {
         $idToken = $this->__create($token, $this->tokenDataMapper);
         return $token->setIdToken($idToken);
     }
+
 
     public function update(Token $token): Token
     {
@@ -120,15 +128,17 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
         );
     }
 
+
     public function delete(int $id): void
     {
         $this->__delete($id, $this->tokenDataMapper);
     }
 
+
     private function getAuthenticationQuery(
         FilterAbstract $filter,
         DataMapperAbstract $mapper,
-        bool $count = false
+        bool $count=false
     ): string {
         $pagination = '';
         $orderBy = '';
@@ -136,7 +146,7 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
         $filters = $this->buildQueryFilters($filter, $mapper);
 
         // Check ACL for user list.
-        if (\users_is_admin() === false) {
+        if (empty($this->config->get('id_user')) === false && \users_is_admin() === false) {
             // No admin.
             $filters .= sprintf(
                 ' AND ttoken.id_user = "%s"',
@@ -179,4 +189,6 @@ final class TokenRepositoryMySQL extends RepositoryMySQL implements TokenReposit
 
         return $sql;
     }
+
+
 }

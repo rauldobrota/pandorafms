@@ -16,7 +16,7 @@ use PandoraFMS\Modules\Shared\Entities\Entity;
  *     property="idEvent",
  *     type="integer",
  *     nullable=false,
- *     description="Id event"
+ *     description="Id event",
  *     readOnly=true
  *   ),
  *   @OA\Property(
@@ -212,7 +212,7 @@ use PandoraFMS\Modules\Shared\Entities\Entity;
  *     nullable=true,
  *     default=null,
  *     description="Module status",
- *     readonly=true
+ *     readOnly=true
  *   ),
  *   @OA\Property(
  *      property="eventCustomId",
@@ -261,34 +261,60 @@ use PandoraFMS\Modules\Shared\Entities\Entity;
  */
 final class Event extends Entity
 {
+
     private ?int $idEvent = null;
+
     private ?int $idAgent = null;
+
     private ?string $idUser = null;
+
     private ?int $idGroup = null;
+
     private ?EventStatusEnum $status = null;
+
     private ?string $timestamp = null;
+
     private ?string $event = null;
+
     private ?int $utimestamp = null;
+
     private ?EventTypeEnum $eventType = null;
+
     private ?int $idAgentModule = null;
+
     private ?int $idAlertAm = null;
+
     private ?EventSeverityEnum $severity = null;
+
     private ?string $tags = null;
+
     private ?string $source = null;
+
     private ?string $idExtra = null;
+
     private ?string $criticalInstructions = null;
+
     private ?string $warningInstructions = null;
+
     private ?string $unknownInstructions = null;
+
     private ?string $ownerUser = null;
+
     private ?int $ackUtimestamp = null;
+
     private ?string $customData = null;
+
     private ?string $data = null;
+
     private ?int $moduleStatus = null;
+
     private ?string $eventCustomId = null;
+
 
     public function __construct()
     {
     }
+
 
     public function fieldsReadOnly(): array
     {
@@ -300,6 +326,7 @@ final class Event extends Entity
             'moduleStatus'  => 1,
         ];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -331,35 +358,36 @@ final class Event extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
-            'idEvent' => [
+            'idEvent'              => [
                 EventValidator::INTEGER,
                 EventValidator::GREATERTHAN,
             ],
-            'idAgent' => [
+            'idAgent'              => [
                 EventValidator::INTEGER,
                 EventValidator::GREATEREQUALTHAN,
             ],
-            'idUser'  => EventValidator::STRING,
-            'idGroup' => [
+            'idUser'               => EventValidator::STRING,
+            'idGroup'              => [
                 EventValidator::INTEGER,
                 EventValidator::GREATEREQUALTHAN,
             ],
-            'status'     => EventValidator::VALIDSTATUS,
-            'timestamp'  => EventValidator::DATETIME,
-            'event'      => EventValidator::STRING,
-            'utimestamp' => [
+            'status'               => EventValidator::VALIDSTATUS,
+            'timestamp'            => EventValidator::DATETIME,
+            'event'                => EventValidator::STRING,
+            'utimestamp'           => [
                 EventValidator::INTEGER,
                 EventValidator::GREATEREQUALTHAN,
             ],
-            'eventType'     => EventValidator::VALIDTYPE,
-            'idAgentModule' => [
+            'eventType'            => EventValidator::VALIDTYPE,
+            'idAgentModule'        => [
                 EventValidator::INTEGER,
                 EventValidator::GREATEREQUALTHAN,
             ],
-            'idAlertAm' => [
+            'idAlertAm'            => [
                 EventValidator::INTEGER,
                 EventValidator::GREATEREQUALTHAN,
             ],
@@ -375,62 +403,78 @@ final class Event extends Entity
                 EventValidator::INTEGER,
                 EventValidator::GREATEREQUALTHAN,
             ],
-            'customData'    => EventValidator::STRING,
-            'data'          => EventValidator::STRING,
-            'moduleStatus'  => EventValidator::INTEGER,
-            'eventCustomId' => EventValidator::STRING,
+            'customData'           => EventValidator::STRING,
+            'data'                 => EventValidator::STRING,
+            'moduleStatus'         => EventValidator::INTEGER,
+            'eventCustomId'        => EventValidator::STRING,
         ];
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new EventValidator())->validate($filters);
     }
 
+
     public function getIdEvent(): ?int
     {
         return $this->idEvent;
     }
+
+
     public function setIdEvent(?int $idEvent): self
     {
         $this->idEvent = $idEvent;
         return $this;
     }
 
+
     public function getIdAgent(): ?int
     {
         return $this->idAgent;
     }
+
+
     public function setIdAgent(?int $idAgent): self
     {
         $this->idAgent = $idAgent;
         return $this;
     }
 
+
     public function getIdUser(): ?string
     {
         return $this->idUser;
     }
+
+
     public function setIdUser(?string $idUser): self
     {
         $this->idUser = $idUser;
         return $this;
     }
 
+
     public function getIdGroup(): ?int
     {
         return $this->idGroup;
     }
+
+
     public function setIdGroup(?int $idGroup): self
     {
         $this->idGroup = $idGroup;
         return $this;
     }
 
+
     public function getStatus(): ?EventStatusEnum
     {
         return $this->status;
     }
+
+
     public function setStatus(null|string|EventStatusEnum $status): self
     {
         if (is_string($status) === true) {
@@ -442,40 +486,52 @@ final class Event extends Entity
         return $this;
     }
 
+
     public function getTimestamp(): ?string
     {
         return $this->timestamp;
     }
+
+
     public function setTimestamp(?string $timestamp): self
     {
         $this->timestamp = $timestamp;
         return $this;
     }
 
+
     public function getEvent(): ?string
     {
         return $this->event;
     }
+
+
     public function setEvent(?string $event): self
     {
         $this->event = $event;
         return $this;
     }
 
+
     public function getUtimestamp(): ?int
     {
         return $this->utimestamp;
     }
+
+
     public function setUtimestamp(?int $utimestamp): self
     {
         $this->utimestamp = $utimestamp;
         return $this;
     }
 
+
     public function getEventType(): ?EventTypeEnum
     {
         return $this->eventType;
     }
+
+
     public function setEventType(null|string|EventTypeEnum $eventType): self
     {
         if (is_string($eventType) === true) {
@@ -487,30 +543,39 @@ final class Event extends Entity
         return $this;
     }
 
+
     public function getIdAgentModule(): ?int
     {
         return $this->idAgentModule;
     }
+
+
     public function setIdAgentModule(?int $idAgentModule): self
     {
         $this->idAgentModule = $idAgentModule;
         return $this;
     }
 
+
     public function getIdAlertAm(): ?int
     {
         return $this->idAlertAm;
     }
+
+
     public function setIdAlertAm(?int $idAlertAm): self
     {
         $this->idAlertAm = $idAlertAm;
         return $this;
     }
 
+
     public function getSeverity(): ?EventSeverityEnum
     {
         return $this->severity;
     }
+
+
     public function setSeverity(null|string|EventSeverityEnum $severity): self
     {
         if (is_string($severity) === true) {
@@ -522,123 +587,161 @@ final class Event extends Entity
         return $this;
     }
 
+
     public function getTags(): ?string
     {
         return $this->tags;
     }
+
+
     public function setTags(?string $tags): self
     {
         $this->tags = $tags;
         return $this;
     }
 
+
     public function getSource(): ?string
     {
         return $this->source;
     }
+
+
     public function setSource(?string $source): self
     {
         $this->source = $source;
         return $this;
     }
 
+
     public function getIdExtra(): ?string
     {
         return $this->idExtra;
     }
+
+
     public function setIdExtra(?string $idExtra): self
     {
         $this->idExtra = $idExtra;
         return $this;
     }
 
+
     public function getCriticalInstructions(): ?string
     {
         return $this->criticalInstructions;
     }
+
+
     public function setCriticalInstructions(?string $criticalInstructions): self
     {
         $this->criticalInstructions = $criticalInstructions;
         return $this;
     }
 
+
     public function getWarningInstructions(): ?string
     {
         return $this->warningInstructions;
     }
+
+
     public function setWarningInstructions(?string $warningInstructions): self
     {
         $this->warningInstructions = $warningInstructions;
         return $this;
     }
 
+
     public function getUnknownInstructions(): ?string
     {
         return $this->unknownInstructions;
     }
+
+
     public function setUnknownInstructions(?string $unknownInstructions): self
     {
         $this->unknownInstructions = $unknownInstructions;
         return $this;
     }
 
+
     public function getOwnerUser(): ?string
     {
         return $this->ownerUser;
     }
+
+
     public function setOwnerUser(?string $ownerUser): self
     {
         $this->ownerUser = $ownerUser;
         return $this;
     }
 
+
     public function getAckUtimestamp(): ?int
     {
         return $this->ackUtimestamp;
     }
+
+
     public function setAckUtimestamp(?int $ackUtimestamp): self
     {
         $this->ackUtimestamp = $ackUtimestamp;
         return $this;
     }
 
+
     public function getCustomData(): ?string
     {
         return $this->customData;
     }
+
+
     public function setCustomData(?string $customData): self
     {
         $this->customData = $customData;
         return $this;
     }
 
+
     public function getData(): ?string
     {
         return $this->data;
     }
+
+
     public function setData(?string $data): self
     {
         $this->data = $data;
         return $this;
     }
 
+
     public function getModuleStatus(): ?int
     {
         return $this->moduleStatus;
     }
+
+
     public function setModuleStatus(?int $moduleStatus): self
     {
         $this->moduleStatus = $moduleStatus;
         return $this;
     }
 
+
     public function getEventCustomId(): ?string
     {
         return $this->eventCustomId;
     }
+
+
     public function setEventCustomId(?string $eventCustomId): self
     {
         $this->eventCustomId = $eventCustomId;
         return $this;
     }
+
+
 }

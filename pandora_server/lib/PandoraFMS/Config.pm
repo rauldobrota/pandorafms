@@ -46,7 +46,7 @@ our @EXPORT = qw(
 
 # version: Defines actual version of Pandora Server for this module only
 my $pandora_version = "7.0NG.776";
-my $pandora_build = "240326";
+my $pandora_build = "240402";
 our $VERSION = $pandora_version." ".$pandora_build;
 
 # Setup hash
@@ -566,7 +566,6 @@ sub pandora_load_config {
 
 	$pa_config->{"netflowserver"} = 0; # 7.0.770
 	$pa_config->{"netflowserver_threads"} = 1; # 7.0.770
-	$pa_config->{"ha_mode"} = "pacemaker"; # 7.0.770
 	$pa_config->{"ha_file"} = undef; # 7.0.770
 	$pa_config->{"ha_hosts_file"} = '/var/spool/pandora/data_in/conf/pandora_ha_hosts.conf'; # 7.0.770
 	$pa_config->{"ha_connect_retries"} = 2; # 7.0.770
@@ -1337,11 +1336,6 @@ sub pandora_load_config {
 		}
 		elsif ($parametro =~ m/^ncm_ssh_utility\s+(.*)/i) {
 			$pa_config->{'ncm_ssh_utility'}= clean_blank($1);
-		}
-
-		# Pandora HA extra
-		elsif ($parametro =~ m/^ha_mode\s(.*)/i) {
-			$pa_config->{'ha_mode'} = clean_blank($1);
 		}
 		elsif ($parametro =~ m/^ha_file\s(.*)/i) {
 			$pa_config->{'ha_file'} = clean_blank($1);
