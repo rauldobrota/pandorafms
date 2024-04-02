@@ -1344,7 +1344,11 @@ $tab = 'group_edition';
                             }
                         });
                     } else {
-                        if (!confirm(confirm_text)) return false;
+                        if (!confirm(confirm_text)) {
+                            return false;
+                        } else {
+                            window.location.assign(delete_URL);
+                        }
                     }
                 },
                 dataType: "json"
