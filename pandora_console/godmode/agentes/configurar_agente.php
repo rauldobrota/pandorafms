@@ -2411,10 +2411,7 @@ if ($delete_module) {
     if ($error != 0) {
         ui_print_error_message(__('There was a problem deleting the module'));
     } else {
-        echo '<script type="text/javascript">
-		location="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=module&id_agente='.$id_agente.'";
-		alert("'.__('Module deleted succesfully').'");
-		</script>';
+        ui_print_success_message(__('Module deleted succesfully'));
 
         $agent = db_get_row('tagente', 'id_agente', $id_agente);
         db_pandora_audit(
