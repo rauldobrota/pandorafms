@@ -1337,7 +1337,7 @@ function ui_format_alert_row(
         } else {
             $module_linked = policies_is_module_linked($alert['id_agent_module']);
             if ($module_linked === '0') {
-                $img = 'images/unlinkpolicy.png';
+                $img = 'images/unlinkpolicy.svg';
             } else {
                 $img = 'images/policy@svg.svg';
             }

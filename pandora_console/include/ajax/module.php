@@ -1135,7 +1135,7 @@ if (check_login()) {
 
                     if ((bool) $linked === true) {
                         if ((bool) $adopt === true) {
-                            $img = 'images/policies_brick.png';
+                            $img = 'images/policies_brick.svg';
                             $title = '('.__('Adopted').') '.$name_policy;
                         } else {
                             $img = 'images/policy@svg.svg';
@@ -1143,10 +1143,10 @@ if (check_login()) {
                         }
                     } else {
                         if ((bool) $adopt === true) {
-                            $img = 'images/policies_not_brick.png';
+                            $img = 'images/policies_not_brick.svg';
                             $title = '('.__('Unlinked').') ('.__('Adopted').') '.$name_policy;
                         } else {
-                            $img = 'images/unlinkpolicy.png';
+                            $img = 'images/unlinkpolicy.svg';
                             $title = '('.__('Unlinked').') '.$name_policy;
                         }
                     }

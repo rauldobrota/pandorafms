@@ -56,11 +56,11 @@ if (is_ajax() === true) {
             echo '<td>';
             if (tags_get_module_policy_tags($tag, $id_agente_modulo)) {
                 html_print_image(
-                    'images/policies_mc.png',
+                    'images/policy@svg.svg',
                     false,
                     [
                         'style' => 'vertical-align: middle;',
-                        'class' => 'invert_filter',
+                        'class' => 'invert_filter main_menu_icon',
                     ]
                 );
             }
