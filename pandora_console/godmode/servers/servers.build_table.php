@@ -49,8 +49,8 @@ $date = time();
 
 $servers = servers_get_info();
 if ($servers === false) {
-    $server_clippy = clippy_context_help('servers_down');
-    echo "<div class='nf'>".__('There are no servers configured into the database').$server_clippy.'</div>';
+    $no_data_msg = __('There are no servers configured into the database').'<br>'.__('All servers down. Can you up all servers. You go to terminal in linux and execute the next command: "sudo /etc/init.d/pandora_server restart". It\'s possible need introduce root pass.');
+    ui_print_info_message($no_data_msg);
     return;
 }
 
