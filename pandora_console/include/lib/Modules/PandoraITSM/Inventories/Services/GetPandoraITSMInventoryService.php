@@ -8,18 +8,25 @@ use PandoraFMS\Modules\PandoraITSM\Inventories\Repositories\PandoraITSMInventory
 
 final class GetPandoraITSMInventoryService
 {
+
+
     public function __construct(
         private PandoraITSMInventoryRepository $pandoraITSMInventoryRepository,
     ) {
     }
 
+
     public function __invoke(int $idPandoraITSMInventory): array
     {
         $pandoraITSMInventoryFilter = new PandoraITSMInventoryFilter();
-        /** @var PandoraITSMInventory $entityFilter */
+        /*
+            @var PandoraITSMInventory $entityFilter
+        */
         $entityFilter = $pandoraITSMInventoryFilter->getEntityFilter();
         $entityFilter->setIdPandoraITSMInventory($idPandoraITSMInventory);
 
         return $this->pandoraITSMInventoryRepository->getOne($pandoraITSMInventoryFilter);
     }
+
+
 }

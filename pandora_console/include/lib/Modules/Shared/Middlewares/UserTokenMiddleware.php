@@ -13,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class UserTokenMiddleware
 {
+
+
     public function __construct(
         private readonly ValidateServerIdentifierTokenService $validateServerIdentifierTokenService,
         private readonly ValidateUserTokenService $validateUserTokenService,
@@ -23,10 +25,11 @@ final class UserTokenMiddleware
     ) {
     }
 
+
     public function check(Request $request): bool
     {
         $authorization = ($request->getHeader('Authorization')[0] ?? '');
-        
+
         $token = null;
         try {
             $authorization = str_replace('Bearer ', '', $authorization);
@@ -37,11 +40,12 @@ final class UserTokenMiddleware
                     $authorization,
                     $matches
                 );
-    
+
                 $uuid = ($matches[0] ?? '');
                 if (empty($uuid) === true) {
                     return false;
                 }
+
                 $strToken = str_replace($uuid.'-', '', $authorization);
                 $validToken = $this->validateUserTokenService->__invoke($uuid, $strToken);
                 $token = $this->getUserTokenService->__invoke($uuid);
@@ -79,4 +83,6 @@ final class UserTokenMiddleware
 
         return $token !== null && $validToken;
     }
+
+
 }

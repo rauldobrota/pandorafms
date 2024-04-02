@@ -7,13 +7,18 @@ use PandoraFMS\Modules\PandoraITSM\Inventories\Repositories\PandoraITSMInventory
 
 final class ListPandoraITSMInventoryService
 {
+
+
     public function __construct(
         private PandoraITSMInventoryRepository $pandoraITSMInventoryRepository,
     ) {
     }
 
+
     public function __invoke(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): array
     {
         return $this->pandoraITSMInventoryRepository->list($pandoraITSMInventoryFilter);
     }
+
+
 }

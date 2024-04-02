@@ -47,8 +47,11 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class PandoraITSMInventoryFilter extends FilterAbstract
 {
+
     private ?string $freeSearch = null;
+
     private ?array $multipleSearch = null;
+
 
     public function __construct()
     {
@@ -56,6 +59,7 @@ final class PandoraITSMInventoryFilter extends FilterAbstract
         $this->setDefaultDirectionOrder($this::ASC);
         $this->setEntityFilter(new PandoraITSMInventory());
     }
+
 
     public function fieldsTranslate(): array
     {
@@ -72,10 +76,12 @@ final class PandoraITSMInventoryFilter extends FilterAbstract
         ];
     }
 
+
     public function fieldsReadOnly(): array
     {
         return [];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -85,21 +91,25 @@ final class PandoraITSMInventoryFilter extends FilterAbstract
         ];
     }
 
+
     public function getValidations(): array
     {
         $validations = [];
-        if($this->getEntityFilter() !== null) {
+        if ($this->getEntityFilter() !== null) {
             $validations = $this->getEntityFilter()->getValidations();
         }
+
         $validations['freeSearch'] = Validator::STRING;
         $validations['multipleSearch'] = Validator::ARRAY;
         return $validations;
     }
 
+
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
+
 
     /**
      * Get the value of freeSearch.
@@ -111,17 +121,18 @@ final class PandoraITSMInventoryFilter extends FilterAbstract
         return $this->freeSearch;
     }
 
+
     /**
      * Set the value of freeSearch.
      *
-     * @param ?string $freeSearch
-     *
+     * @param string $freeSearch
      */
     public function setFreeSearch(?string $freeSearch): self
     {
         $this->freeSearch = $freeSearch;
         return $this;
     }
+
 
     /**
      * Get the value of fieldsFreeSearch.
@@ -136,6 +147,7 @@ final class PandoraITSMInventoryFilter extends FilterAbstract
         ];
     }
 
+
     /**
      * Get the value of multipleSearchString.
      *
@@ -146,14 +158,17 @@ final class PandoraITSMInventoryFilter extends FilterAbstract
         return $this->multipleSearch;
     }
 
+
     /**
      * Set the value of multipleSearchString.
      *
-     * @param ?array $multipleSearch
+     * @param array $multipleSearch
      */
     public function setMultipleSearch(?array $multipleSearch): self
     {
         $this->multipleSearch = $multipleSearch;
         return $this;
     }
+
+
 }

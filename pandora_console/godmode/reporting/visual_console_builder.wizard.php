@@ -630,6 +630,8 @@ echo '</form>';
 echo '<span id="any_text"     class="invisible">'.__('None').'</span>';
 echo '<span id="none_text"    class="invisible">'.__('None').'</span>';
 echo '<span id="loading_text" class="invisible">'.__('Loading...').'</span>';
+
+echo '<div id="cv-preview-img" title="'.__('Image preview').'"><center><img /></center></div>';
 ?>
 <script type="text/javascript">
 
@@ -915,6 +917,24 @@ $('#image').on('change', function() {
     }
 
     $('#image_prev').html(`<img src="${src}">`);
+});
+
+$('#wizard_table span#image_prev').click(function (e) {
+    e.preventDefault();
+    const src = $('#wizard_table span#image_prev img').attr('src');
+
+    $("#cv-preview-img img").attr('src', src);
+    $("#cv-preview-img").dialog({
+        resizable: true,
+        draggable: true,
+        modal: true,
+        width: 'auto',
+        clickOutside: true,
+        overlay: {
+            opacity: 0.5,
+            background: "black"
+        }
+    });
 });
 
 </script>

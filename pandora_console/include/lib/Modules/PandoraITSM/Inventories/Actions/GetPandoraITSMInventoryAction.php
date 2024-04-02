@@ -7,13 +7,18 @@ use PandoraFMS\Modules\PandoraITSM\Inventories\Services\GetPandoraITSMInventoryS
 
 final class GetPandoraITSMInventoryAction
 {
+
+
     public function __construct(
         private GetPandoraITSMInventoryService $getPandoraITSMInventoryService
     ) {
     }
 
+
     public function __invoke(int $idPandoraITSMInventory): array
     {
         return $this->getPandoraITSMInventoryService->__invoke($idPandoraITSMInventory);
     }
+
+
 }

@@ -13,10 +13,13 @@ use PandoraFMS\Modules\Shared\Services\Config;
 
 class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements PandoraITSMInventoryRepository
 {
+
+
     public function __construct(
         private Config $config
     ) {
     }
+
 
     /**
      * @return PandoraITSMInventory[],
@@ -40,6 +43,7 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
         return $result;
     }
 
+
     public function count(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): int
     {
         $result = $this->getPandoraITSMInventoriesQuery($pandoraITSMInventoryFilter, true);
@@ -59,6 +63,7 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
         return (int) $count;
     }
 
+
     public function getOne(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): array
     {
         try {
@@ -68,7 +73,6 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
             if (empty($result_array) === false) {
                 $result = array_shift($result_array);
             }
-
         } catch (\Throwable $th) {
             // Capture errors mysql.
             throw new InvalidArgumentException(
@@ -84,23 +88,27 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
         return $result;
     }
 
+
     public function create(PandoraITSMInventory $pandoraITSMInventory): PandoraITSMInventory
     {
         return $pandoraITSMInventory;
     }
+
 
     public function update(PandoraITSMInventory $pandoraITSMInventory): PandoraITSMInventory
     {
         return $pandoraITSMInventory;
     }
 
+
     public function delete(int $id): void
     {
     }
 
+
     private function getPandoraITSMInventoriesQuery(
         FilterAbstract $filter,
-        bool $count = false
+        bool $count=false
     ): array {
         $pagination = '';
         $orderBy = '';
@@ -184,7 +192,7 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
                     if (isset($index_name_custom_fields[$name_field]) === true) {
                         if ($index_name_custom_fields[$name_field]['is_password_type']) {
                             $type = 'password';
-                        } elseif ($index_name_custom_fields[$name_field]['is_link_enabled']) {
+                        } else if ($index_name_custom_fields[$name_field]['is_link_enabled']) {
                             $type = 'link';
                         }
                     }
@@ -201,4 +209,6 @@ class PandoraITSMInventoryRepositoryMySQL extends RepositoryMySQL implements Pan
 
         return $result;
     }
+
+
 }

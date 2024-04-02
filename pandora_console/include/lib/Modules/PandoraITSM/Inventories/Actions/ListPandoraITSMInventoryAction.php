@@ -10,11 +10,14 @@ use PandoraFMS\Modules\Shared\Entities\PaginationData;
 
 final class ListPandoraITSMInventoryAction
 {
+
+
     public function __construct(
         private ListPandoraITSMInventoryService $listPandoraITSMInventoryService,
         private CountPandoraITSMInventoryService $countPandoraITSMInventoryService
     ) {
     }
+
 
     public function __invoke(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): array
     {
@@ -25,4 +28,6 @@ final class ListPandoraITSMInventoryAction
             $this->listPandoraITSMInventoryService->__invoke($pandoraITSMInventoryFilter)
         ))->toArray();
     }
+
+
 }

@@ -42,8 +42,11 @@ use PandoraFMS\Modules\Users\Validators\UserValidator;
  */
 final class UserFilter extends FilterAbstract
 {
+
     private ?string $freeSearch = null;
+
     private ?array $multipleSearchString = null;
+
 
     public function __construct()
     {
@@ -51,6 +54,7 @@ final class UserFilter extends FilterAbstract
         $this->setDefaultDirectionOrder($this::ASC);
         $this->setEntityFilter(new User());
     }
+
 
     public function fieldsTranslate(): array
     {
@@ -60,10 +64,12 @@ final class UserFilter extends FilterAbstract
         ];
     }
 
+
     public function fieldsReadOnly(): array
     {
         return [];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -71,6 +77,7 @@ final class UserFilter extends FilterAbstract
             'freeSearch' => $this->getFreeSearch(),
         ];
     }
+
 
     public function getValidations(): array
     {
@@ -83,10 +90,12 @@ final class UserFilter extends FilterAbstract
         return $validations;
     }
 
+
     public function validateFields(array $filters): array
     {
         return (new UserValidator())->validate($filters);
     }
+
 
     /**
      * Get the value of freeSearch.
@@ -98,16 +107,18 @@ final class UserFilter extends FilterAbstract
         return $this->freeSearch;
     }
 
+
     /**
      * Set the value of freeSearch.
      *
-     * @param ?string $freeSearch
+     * @param string $freeSearch
      */
     public function setFreeSearch(?string $freeSearch): self
     {
         $this->freeSearch = $freeSearch;
         return $this;
     }
+
 
     /**
      * Get the value of fieldsFreeSearch.
@@ -122,6 +133,7 @@ final class UserFilter extends FilterAbstract
         ];
     }
 
+
     /**
      * Get the value of multipleSearchString.
      *
@@ -132,14 +144,17 @@ final class UserFilter extends FilterAbstract
         return $this->multipleSearchString;
     }
 
+
     /**
      * Set the value of multipleSearchString.
      *
-     * @param ?array $multipleSearchString
+     * @param array $multipleSearchString
      */
     public function setMultipleSearchString(?array $multipleSearchString): self
     {
         $this->multipleSearchString = $multipleSearchString;
         return $this;
     }
+
+
 }

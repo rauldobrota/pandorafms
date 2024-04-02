@@ -13,11 +13,11 @@ use OpenApi\Annotations as OA;
 
 More useful links:
 
-* <a target='_blank' href='https://pandorafms.com/en/pandora-fms-license-2024_en/'>Pandora FMS Licence </a>
-* <a target='_blank' href='https://support.pandorafms.com'> Pandora FMS Official Support </a>
-* <a target='_blank' href='https://pandorafms.com/en/community/'> Pandora FMS Community </a>
-* <a target='_blank' href='https://pandorafms.com/en/security/vulnerability-disclosure-policy/'> Vulnerability Disclosure Policy </a>
-* <a target='_blank' href='https://pandorafms.com/en/faq/'> Pandora FMS FAQ </a>",
+ * <a target='_blank' href='https://pandorafms.com/en/pandora-fms-license-2024_en/'>Pandora FMS Licence </a>
+ * <a target='_blank' href='https://support.pandorafms.com'> Pandora FMS Official Support </a>
+ * <a target='_blank' href='https://pandorafms.com/en/community/'> Pandora FMS Community </a>
+ * <a target='_blank' href='https://pandorafms.com/en/security/vulnerability-disclosure-policy/'> Vulnerability Disclosure Policy </a>
+ * <a target='_blank' href='https://pandorafms.com/en/faq/'> Pandora FMS FAQ </a>",
  *   version="0.0.1"
  * ),
  * @OA\Schemes(
@@ -60,7 +60,7 @@ More useful links:
  *   name="Users",
  *   description="API Endpoints of users"
  * ),
-* @OA\Tag(
+ * @OA\Tag(
  *   name="PandoraITSM",
  *   description="API Endpoints of integration pandoraITSM"
  * ),
@@ -70,7 +70,7 @@ More useful links:
  *   in="query",
  *   description="page",
  *   required=false,
- *   @OA\Schema(
+ * @OA\Schema(
  *     type="integer",
  *     default=0
  *   ),
@@ -82,7 +82,7 @@ More useful links:
  *   in="query",
  *   description="Size page",
  *   required=false,
- *   @OA\Schema(
+ * @OA\Schema(
  *     type="integer",
  *     default=0
  *   ),
@@ -94,7 +94,7 @@ More useful links:
  *   in="query",
  *   description="sort field",
  *   required=false,
- *   @OA\Schema(
+ * @OA\Schema(
  *     type="string",
  *     default=""
  *   ),
@@ -106,7 +106,7 @@ More useful links:
  *   in="query",
  *   description="sort direction",
  *   required=false,
- *   @OA\Schema(
+ * @OA\Schema(
  *     type="string",
  *     enum={
  *       "ASC",
@@ -120,12 +120,12 @@ More useful links:
  *   response="BadRequest",
  *   description="Bad request",
  *   content={
- *     @OA\MediaType(
+ * @OA\MediaType(
  *       mediaType="application/json",
- *       @OA\Schema(
+ * @OA\Schema(
  *         type="object",
  *         description="Error",
- *         @OA\Property(
+ * @OA\Property(
  *           property="error",
  *           type="string",
  *           default="Message error"
@@ -139,12 +139,12 @@ More useful links:
  *   response="Unauthorized",
  *   description="Unauthorized",
  *   content={
- *     @OA\MediaType(
+ * @OA\MediaType(
  *       mediaType="application/json",
- *       @OA\Schema(
+ * @OA\Schema(
  *         type="object",
  *         description="Error",
- *         @OA\Property(
+ * @OA\Property(
  *           property="error",
  *           type="string",
  *           default="Message error"
@@ -158,12 +158,12 @@ More useful links:
  *   response="Forbidden",
  *   description="Forbidden",
  *   content={
- *     @OA\MediaType(
+ * @OA\MediaType(
  *       mediaType="application/json",
- *       @OA\Schema(
+ * @OA\Schema(
  *         type="object",
  *         description="Error",
- *         @OA\Property(
+ * @OA\Property(
  *           property="error",
  *           type="string",
  *           default="Message error"
@@ -177,12 +177,12 @@ More useful links:
  *   response="NotFound",
  *   description="Not found",
  *   content={
- *     @OA\MediaType(
+ * @OA\MediaType(
  *       mediaType="application/json",
- *       @OA\Schema(
+ * @OA\Schema(
  *         type="object",
  *         description="Error",
- *         @OA\Property(
+ * @OA\Property(
  *           property="error",
  *           type="string",
  *           default="Message error"
@@ -196,12 +196,12 @@ More useful links:
  *   response="InternalServerError",
  *   description="Internal server error",
  *   content={
- *     @OA\MediaType(
+ * @OA\MediaType(
  *       mediaType="application/json",
- *       @OA\Schema(
+ * @OA\Schema(
  *         type="object",
  *         description="Error",
- *         @OA\Property(
+ * @OA\Property(
  *           property="error",
  *           type="string",
  *           default="Message error"
@@ -215,10 +215,10 @@ More useful links:
  *   response="successfullyDeleted",
  *   description="Successfully deleted",
  *   content={
- *     @OA\MediaType(
+ * @OA\MediaType(
  *       mediaType="application/json",
- *       @OA\Schema(
- *         @OA\Property(
+ * @OA\Schema(
+ * @OA\Property(
  *           property="result",
  *           type="string",
  *           default="Successfully deleted"
@@ -227,76 +227,76 @@ More useful links:
  *     )
  *   }
  * )
- * 
+ *
  * @OA\Schema(
  *   schema="multipleSearch",
  *   type="object",
- *   @OA\Property(
+ * @OA\Property(
  *     property="field",
  *     type="string",
  *     nullable=true,
  *     description="Field to search of query"
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="data",
  *     type="array",
  *     nullable=true,
- *     @OA\Items(type="integer"),
+ * @OA\Items(type="integer"),
  *     description="Values to search of query IN()"
  *   )
  * )
- * 
+ *
  * @OA\Schema(
  *   schema="multipleSearchString",
  *   type="object",
- *   @OA\Property(
+ * @OA\Property(
  *     property="field",
  *     type="string",
  *     nullable=true,
  *     description="Field to search of query"
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="data",
  *     type="array",
  *     nullable=true,
- *     @OA\Items(type="string"),
+ * @OA\Items(type="string"),
  *     description="Values to search of query IN()"
  *   )
  * )
- * 
+ *
  * @OA\Schema(
  *   schema="paginationData",
  *   type="object",
  *   description="Info pagination data",
- *   @OA\Property(
+ * @OA\Property(
  *     property="totalPages",
  *     type="integer",
  *     nullable=true,
  *     description="Number of pages",
  *     readOnly=true
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="sizePage",
  *     type="integer",
  *     nullable=true,
  *     description="Items per page",
  *     readOnly=true
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="totalRegisters",
  *     type="integer",
  *     nullable=true,
  *     description="Number of items",
  *     readOnly=true
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="totalRegistersPage",
  *     type="integer",
  *     nullable=true,
  *     description="Number of items this page",
  *     readOnly=true
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="currentPage",
  *     type="integer",
  *     nullable=true,

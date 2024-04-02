@@ -13896,3 +13896,8 @@ button.disabled {
 .text-nowrap {
   text-wrap: nowrap;
 }
+
+#wizard_table span#image_prev img {
+  height: 48px;
+  cursor: pointer;
+}

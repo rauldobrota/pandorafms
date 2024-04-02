@@ -112,24 +112,36 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class PandoraITSMInventory extends Entity
 {
+
     private ?int $idPandoraITSMInventory = null;
+
     private ?string $agentAlias = null;
+
     private ?string $osVersion = null;
+
     private ?string $agentAddress = null;
+
     private ?string $agentUrlAddress = null;
+
     private ?bool $agentDisabled = null;
+
     private ?string $groupName = null;
+
     private ?int $groupId = null;
+
     private ?string $osName = null;
+
 
     public function __construct()
     {
     }
 
+
     public function fieldsReadOnly(): array
     {
         return [];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -146,6 +158,7 @@ final class PandoraITSMInventory extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
@@ -153,112 +166,142 @@ final class PandoraITSMInventory extends Entity
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
-            'agentAlias'      => Validator::STRING,
-            'osVersion'       => Validator::STRING,
-            'agentAddress'    => Validator::STRING,
-            'agentUrlAddress' => Validator::STRING,
-            'agentDisabled'   => Validator::BOOLEAN,
-            'groupName'       => Validator::STRING,
-            'groupId'         => [
+            'agentAlias'             => Validator::STRING,
+            'osVersion'              => Validator::STRING,
+            'agentAddress'           => Validator::STRING,
+            'agentUrlAddress'        => Validator::STRING,
+            'agentDisabled'          => Validator::BOOLEAN,
+            'groupName'              => Validator::STRING,
+            'groupId'                => [
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
-            'osName' => Validator::STRING,
+            'osName'                 => Validator::STRING,
         ];
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
 
+
     public function getIdPandoraITSMInventory(): ?int
     {
         return $this->idPandoraITSMInventory;
     }
+
+
     public function setIdPandoraITSMInventory(?int $idPandoraITSMInventory): self
     {
         $this->idPandoraITSMInventory = $idPandoraITSMInventory;
         return $this;
     }
 
+
     public function getAgentAlias(): ?string
     {
         return $this->agentAlias;
     }
+
+
     public function setAgentAlias(?string $agentAlias): self
     {
         $this->agentAlias = $agentAlias;
         return $this;
     }
 
+
     public function getOsVersion(): ?string
     {
         return $this->osVersion;
     }
+
+
     public function setOsVersion(?string $osVersion): self
     {
         $this->osVersion = $osVersion;
         return $this;
     }
 
+
     public function getAgentAddress(): ?string
     {
         return $this->agentAddress;
     }
+
+
     public function setAgentAddress(?string $agentAddress): self
     {
         $this->agentAddress = $agentAddress;
         return $this;
     }
 
+
     public function getAgentUrlAddress(): ?string
     {
         return $this->agentUrlAddress;
     }
+
+
     public function setAgentUrlAddress(?string $agentUrlAddress): self
     {
         $this->agentUrlAddress = $agentUrlAddress;
         return $this;
     }
 
+
     public function getGroupName(): ?string
     {
         return $this->groupName;
     }
+
+
     public function setGroupName(?string $groupName): self
     {
         $this->groupName = $groupName;
         return $this;
     }
 
+
     public function getOsName(): ?string
     {
         return $this->osName;
     }
+
+
     public function setOsName(?string $osName): self
     {
         $this->osName = $osName;
         return $this;
     }
 
+
     public function getGroupId(): ?int
     {
         return $this->groupId;
     }
+
+
     public function setGroupId(?int $groupId): self
     {
         $this->groupId = $groupId;
         return $this;
     }
 
+
     public function getAgentDisabled(): ?bool
     {
         return $this->agentDisabled;
     }
+
+
     public function setAgentDisabled(?bool $agentDisabled): self
     {
         $this->agentDisabled = $agentDisabled;
         return $this;
     }
+
+
 }

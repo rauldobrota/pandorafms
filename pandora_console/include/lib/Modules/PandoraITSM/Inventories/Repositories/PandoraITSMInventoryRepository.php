@@ -7,18 +7,27 @@ use PandoraFMS\Modules\PandoraITSM\Inventories\Entities\PandoraITSMInventoryFilt
 
 interface PandoraITSMInventoryRepository
 {
+
+
     /**
      * @return PandoraITSMInventory[],
      */
     public function list(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): array;
 
+
     public function count(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): int;
+
 
     public function getOne(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): array;
 
+
     public function create(PandoraITSMInventory $pandoraITSMInventory): PandoraITSMInventory;
+
 
     public function update(PandoraITSMInventory $pandoraITSMInventory): PandoraITSMInventory;
 
+
     public function delete(int $id): void;
+
+
 }

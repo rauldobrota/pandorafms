@@ -7,13 +7,18 @@ use PandoraFMS\Modules\PandoraITSM\Inventories\Repositories\PandoraITSMInventory
 
 final class CountPandoraITSMInventoryService
 {
+
+
     public function __construct(
         private PandoraITSMInventoryRepository $pandoraITSMInventoryRepository,
     ) {
     }
 
+
     public function __invoke(PandoraITSMInventoryFilter $pandoraITSMInventoryFilter): int
     {
         return $this->pandoraITSMInventoryRepository->count($pandoraITSMInventoryFilter);
     }
+
+
 }
