@@ -53,6 +53,9 @@ Key_Value::parseLine (string str) {
 	string                 trimmedstr;
 	
 	trimmedstr = trim (str);
+	if (trimmedstr == "") {
+		return;
+	}
 	
 	/* Check if the string has " */
 	pos = trimmedstr.find ("\"");
