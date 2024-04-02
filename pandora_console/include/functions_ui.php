@@ -2946,7 +2946,7 @@ function ui_print_help_tip(
 
     $id = random_int(1, 99999);
     $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" >';
-    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.$text.'</span></div>';
+    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.io_safe_output($text).'</span></div>';
     $output .= html_print_image(
         $img,
         true,
@@ -7334,7 +7334,7 @@ function ui_print_message_dialog($title, $text, $id='', $img='', $text_button=''
  *
  * @return null
  */
-function ui_query_result_editor($name='default')
+function ui_query_result_editor($name='default', $button_in_action_buttons=true)
 {
     $editorSubContainer = html_print_div(
         [
@@ -7410,9 +7410,22 @@ function ui_query_result_editor($name='default')
         ]
     );
 
-    $execute_button = html_print_submit_button(__('Execute query'), 'execute_query', false, ['icon' => 'update'], true);
-    html_print_action_buttons($execute_button);
+    $execute_button = html_print_submit_button(
+        __('Execute query'),
+        'execute_query',
+        false,
+        [
+            'icon'  => 'update',
+            'class' => 'float-right',
+        ],
+        true
+    );
 
+    if ($button_in_action_buttons === true) {
+        html_print_action_buttons($execute_button);
+    } else {
+        echo $execute_button;
+    }
 }
 
 

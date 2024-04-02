@@ -505,10 +505,6 @@ function config_update_config()
                             $error_update[] = __('Enable Update Manager');
                         }
 
-                        if (config_update_value('legacy_database_ha', get_parameter('legacy_database_ha'), true) === false) {
-                            $error_update[] = __('Legacy database HA');
-                        }
-
                         if (config_update_value('agent_vulnerabilities', get_parameter('agent_vulnerabilities'), true) === false) {
                             $error_update[] = __('agent_vulnerabilities');
                         }
@@ -1976,6 +1972,27 @@ function config_update_config()
                         $error_update[] = __('Pandora ITSM API agents sync');
                     }
 
+                    $ITSM_mode_agents_sync = (int) get_parameter(
+                        'ITSM_mode_agents_sync',
+                        $config['ITSM_mode_agents_sync']
+                    );
+                    if (config_update_value('ITSM_mode_agents_sync', $ITSM_mode_agents_sync, true) === false) {
+                        $error_update[] = __('Pandora ITSM mode agents to synch');
+                    }
+
+                    $ITSM_groups_agents_sync = get_parameter(
+                        'ITSM_groups_agents_sync',
+                        null
+                    );
+
+                    if (empty($ITSM_groups_agents_sync) === false) {
+                        $ITSM_groups_agents_sync = json_encode($ITSM_groups_agents_sync);
+                    }
+
+                    if (config_update_value('ITSM_groups_agents_sync', $ITSM_groups_agents_sync, true) === false) {
+                        $error_update[] = __('Pandora ITSM groups agents to synch');
+                    }
+
                     $incident_default_group = (int) get_parameter('default_group', $config['default_group']);
                     if (empty($incident_default_group) === true) {
                         try {
@@ -2428,10 +2445,6 @@ function config_process_config()
 
     if (!isset($config['enable_update_manager'])) {
         config_update_value('enable_update_manager', 1);
-    }
-
-    if (!isset($config['legacy_database_ha'])) {
-        config_update_value('legacy_database_ha', 0);
     }
 
     if (!isset($config['disabled_newsletter'])) {
@@ -3925,6 +3938,14 @@ function config_process_config()
 
     if (!isset($config['ITSM_agents_sync'])) {
         config_update_value('ITSM_agents_sync', 20);
+    }
+
+    if (!isset($config['ITSM_mode_agents_sync'])) {
+        config_update_value('ITSM_mode_agents_sync', 0);
+    }
+
+    if (!isset($config['ITSM_groups_agents_sync'])) {
+        config_update_value('ITSM_groups_agents_sync', null);
     }
 
     // Module Library.
