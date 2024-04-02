@@ -1892,3 +1892,7 @@ a.link-bold {
   text-decoration: none;
   font-weight: bold;
 }
+
+div.events-refresh-pure {
+  background-color: #333;
+}
