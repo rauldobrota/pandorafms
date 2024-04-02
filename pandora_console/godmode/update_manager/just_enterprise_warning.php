@@ -59,22 +59,23 @@ if ($php_version_array[0] < 7) {
             <?php
             echo html_print_image(
                 'images/custom_logo/logo-default-pandorafms-collapsed.svg',
-                true
+                true,
+                ['class' => 'w100p mrgn_top_50px']
             );
             ?>
         </div>
         <div style="padding: 5px 90px 5px 5px;">
-            <p class="lato font_10pt bolder">
+            <p class="lato font_15px bolder">
                 <?php
                 echo __('From the 777 LTS version onwards, product updates will be differentiated in the Enterprise version and the Open Source version. ');
                 ?>
             </p>
-            <p class="lato font_10pt bolder">
+            <p class="lato font_15px bolder">
                 <?php
-                echo __('Pandora FMS Community code will always be free and open, available with no charge of use and no need to register in Github (https://github.com/pandorafms/pandorafms), and this will be the access way for future upgrades.');
+                echo __('Pandora FMS Community code will always be free and open, available with no charge of use and no need to register in').'<a href="https://github.com/pandorafms/pandorafms" target="_blank" class="font_15px" style="color: #82b92e;"> Github </a>'.__('and this will be the access way for future upgrades.');
                 ?>
             </p>
-            <p class="lato font_10pt bolder">
+            <p class="lato font_15px bolder">
                 <?php
                 echo __('Our Enterprise version customers, both paid and Free Edition, will continue to enjoy automatic updates with the new Warp 2.0 system that will also include the new synchronized plugin library, and other improvements.');
                 ?>
