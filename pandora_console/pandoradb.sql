@@ -4432,7 +4432,8 @@ CREATE TABLE IF NOT EXISTS `tfavmenu_user` (
   `url` TEXT NOT NULL,
   `label` VARCHAR(255) NOT NULL,
   `section` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`));
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- ---------------------------------------------------------------------
 -- Table `tsesion_filter_log_viewer`
@@ -4578,7 +4579,7 @@ CREATE TABLE IF NOT EXISTS `tfiles_repo` (
 	`description` varchar(500) NULL default '',
 	`hash` varchar(8) NULL default '',
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- ---------------------------------------------------------------------
 -- Table `tfiles_repo_group`
@@ -4589,7 +4590,7 @@ CREATE TABLE IF NOT EXISTS `tfiles_repo_group` (
 	`id_group` int(4) unsigned NOT NULL,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`id_file`) REFERENCES tfiles_repo(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- -----------------------------------------------------
 -- Table `tmodule_synth`
