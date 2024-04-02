@@ -1433,15 +1433,15 @@ ui_require_jquery_file('bgiframe');
     
     function show_modules_not_learning_mode_context_help() {
         if ($("input[name='modo'][value=0]").is(':checked')) {
-            $("#modules_not_learning_mode_context_help").show().css('padding-right','8px');
-        }
-        else {
-            $("#modules_not_learning_mode_context_help").hide();
+            $(".div-modules_not_learning_mode").show();
+        } else {
+            $(".div-modules_not_learning_mode").hide();
         }
     }
 
 
     $(document).ready (function() {
+        show_modules_not_learning_mode_context_help();
 
         var $id_agent = '<?php echo $id_agente; ?>';
         var previous_primary_group_select;

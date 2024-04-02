@@ -330,7 +330,7 @@ function clippy_context_help($help=null)
         );
     }
 
-    $return = $code.'<div id="'.$id.'" class="inline"><a onclick="show_'.$id.'();" href="javascript: void(0);" >'.$img.'</a></div>
+    $return = $code.'<div id="'.$id.'" class="inline div-'.$help.'"><a onclick="show_'.$id.'();" href="javascript: void(0);" >'.$img.'</a></div>
         <script type="text/javascript">
         
         function show_'.$id.'() {
