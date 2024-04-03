@@ -222,7 +222,7 @@ $(document).ready(function() {
   }
 
   if ($("#license_dialog_message").length) {
-    let height = 350;
+    let height = 570;
 
     $("#license_dialog_message").dialog({
       dialogClass: "no-close",
@@ -230,8 +230,8 @@ $(document).ready(function() {
       resizable: false,
       draggable: true,
       modal: true,
-      height: height,
-      width: 850,
+      height: "auto",
+      width: 800,
       overlay: {
         opacity: 0.5,
         background: "black"
