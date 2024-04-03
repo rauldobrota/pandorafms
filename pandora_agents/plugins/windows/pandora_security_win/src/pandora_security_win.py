@@ -387,6 +387,10 @@ if __name__ == "__main__":
     auditpol_logon_success_conf = parse_parameter(config, "auditpol_logon_success_conf", "Success and Failure")
     auditpol_logon_noaudit_conf = parse_parameter(config, "auditpol_logon_noaudit_conf", "No Auditing")
 
+    print(auditpol_logon_category)
+    print(auditpol_logon_success_conf)
+    print(auditpol_logon_noaudit_conf)
+
     check_antivirus_status()
     check_locksreen_enables()
     get_windows_update_info()
