@@ -601,6 +601,7 @@ EOF_PARAM
 
 a2enmod ssl &>> "$LOGFILE"
 a2enmod headers &>> "$LOGFILE"
+a2enmod rewrite &>> "$LOGFILE" 
 a2enconf ssl-params &>> "$LOGFILE"
 a2ensite default-ssl &>> "$LOGFILE"
 a2enconf ssl-params &>> "$LOGFILE"
