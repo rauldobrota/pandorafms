@@ -1334,7 +1334,6 @@ function show_display_update_action(id_module_action, alert_id, alert_id_agent_m
                     open: function() {
                         $(`#update_action-div-${alert_id}`).css('overflow', 'hidden');
                         $(`#update_action-div-${alert_id} select`).select2({
-                           tags: true,
                            dropdownParent: $(this).parent()
                         });
                     },
