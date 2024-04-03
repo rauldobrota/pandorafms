@@ -3340,7 +3340,7 @@ class ConsoleSupervisor
 
             $ratio = ($modules / $agents);
             // $ratio = round($ratio);
-            // $ratio = round($ratio, 2);
+            $ratio = round($ratio, 2);
         }
 
         if ($ratio > 200) {
