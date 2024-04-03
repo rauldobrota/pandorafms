@@ -1892,3 +1892,14 @@ a.link-bold {
   text-decoration: none;
   font-weight: bold;
 }
+
+div#dashboard-controls-slides {
+  background-color: #333;
+}
+
+div#dashboard-controls-slides
+  .select2-container
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: var(--text-color) !important;
+}
