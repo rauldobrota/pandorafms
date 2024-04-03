@@ -2481,7 +2481,7 @@ function config_process_config()
     }
 
     if (!isset($config['JWT_signature'])) {
-        config_update_value('JWT_signature', 0);
+        config_update_value('JWT_signature', 1);
     }
 
     if (!isset($config['eastern_eggs_disabled'])) {
