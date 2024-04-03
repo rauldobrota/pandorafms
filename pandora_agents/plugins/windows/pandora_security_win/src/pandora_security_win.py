@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import wmi, sys, winreg, os, subprocess, json, re
 from datetime import datetime, timedelta
 import argparse
@@ -379,7 +381,9 @@ if __name__ == "__main__":
 
     if(args.conf):
         try:
-            config.read_string('[CONF]\n' + open(args.conf).read())
+            with open(args.conf, 'r', encoding='utf-8') as f:
+                content = f.read()
+                config.read_string('[CONF]\n' + content)
         except Exception as e:
             print("Error while reading configuration file, using default values: "+str(e), file=sys.stderr)
 
