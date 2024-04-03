@@ -3328,7 +3328,7 @@ class ConsoleSupervisor
             'SELECT count(*) AS count
             FROM tagente a
             LEFT JOIN tagente_modulo m ON a.id_agente = m.id_agente
-            WHERE m.disabled = 0 AND m.disabled_by_safe_mode = 0
+            WHERE m.disabled = 0
             GROUP BY m.id_agente'
         );
 
@@ -3339,7 +3339,6 @@ class ConsoleSupervisor
             $modules = array_sum(array_column($modules_by_agent, 'count'));
 
             $ratio = ($modules / $agents);
-            // $ratio = round($ratio);
             $ratio = round($ratio, 2);
         }
 
