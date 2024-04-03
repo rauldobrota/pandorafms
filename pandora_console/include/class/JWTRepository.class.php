@@ -33,12 +33,21 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Validation\Constraint\StrictValidAt;
 
 /**
  * JWT Repository.
  */
 final class JWTRepository
 {
+
+    /**
+     * Allowed methods to be called using AJAX request.
+     *
+     * @var array
+     */
+    public $AJAXMethods = ['create'];
 
     /**
      * Signature
@@ -67,6 +76,22 @@ final class JWTRepository
 
 
     /**
+     * Checks if target method is available to be called using AJAX.
+     *
+     * @param string $method Target method.
+     *
+     * @return boolean True allowed, false not.
+     */
+    public function ajaxMethod($method)
+    {
+        // Check access.
+        check_login();
+
+        return in_array($method, $this->AJAXMethods);
+    }
+
+
+    /**
      * Create token
      *
      * @return string
@@ -74,16 +99,20 @@ final class JWTRepository
     public function create(): string
     {
         global $config;
-        $sha = new Sha256();
-        $configJWT = Configuration::forSymmetricSigner(
-            $sha,
-            InMemory::plainText($this->signature)
-        );
+        try {
+            $sha = new Sha256();
+            $configJWT = Configuration::forSymmetricSigner(
+                $sha,
+                InMemory::plainText($this->signature)
+            );
 
-        $now = new DateTimeImmutable();
-        $token = $configJWT->builder()->issuedAt($now)->canOnlyBeUsedAfter($now)->expiresAt($now->modify('+1 minute'))->withClaim('id_user', $config['id_user'])->getToken($configJWT->signer(), $configJWT->signingKey());
+            $now = new DateTimeImmutable();
+            $token = $configJWT->builder()->issuedAt($now)->canOnlyBeUsedAfter($now)->expiresAt($now->modify('+1 minute'))->withClaim('id_user', $config['id_user'])->getToken($configJWT->signer(), $configJWT->signingKey());
 
-        return $token->toString();
+            return $token->toString();
+        } catch (Exception $e) {
+            return '';
+        }
     }
 
 
@@ -94,15 +123,23 @@ final class JWTRepository
      */
     public function validate():bool
     {
-        $sha = new Sha256();
-        $configJWT = Configuration::forSymmetricSigner(
-            $sha,
-            InMemory::plainText($this->signature)
-        );
-        $signed = new SignedWith($sha, InMemory::plainText($this->signature));
-        $constraints = [$signed];
-
-        return $configJWT->validator()->validate($this->token, ...$constraints);
+        try {
+            $sha = new Sha256();
+            $configJWT = Configuration::forSymmetricSigner(
+                $sha,
+                InMemory::plainText($this->signature)
+            );
+            $signed = new SignedWith($sha, InMemory::plainText($this->signature));
+            $now = new DateTimeZone('UTC');
+            $strictValid = new StrictValidAt(SystemClock::fromUTC());
+            $constraints = [
+                $signed,
+                $strictValid,
+            ];
+            return $configJWT->validator()->validate($this->token, ...$constraints);
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
 
@@ -117,11 +154,23 @@ final class JWTRepository
     }
 
 
-    public function setToken(string $tokenString)
+    /**
+     * Setting token.
+     *
+     * @param string $tokenString String token to setting.
+     *
+     * @return boolean
+     */
+    public function setToken(string $tokenString):bool
     {
-        $encoder = new JoseEncoder();
-        $parser = new Parser($encoder);
-        $this->token = $parser->parse($tokenString);
+        try {
+            $encoder = new JoseEncoder();
+            $parser = new Parser($encoder);
+            $this->token = $parser->parse($tokenString);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
 

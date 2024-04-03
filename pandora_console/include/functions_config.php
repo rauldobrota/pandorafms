@@ -207,10 +207,6 @@ function config_update_config()
                         $error_update[] = __('Chromium config directory');
                     }
 
-                    if (config_update_value('loginhash_pwd', (string) get_parameter('loginhash_pwd'), true, true) === false) {
-                        $error_update[] = __('Auto login (hash) password');
-                    }
-
                     if (config_update_value('timesource', (string) get_parameter('timesource'), true) === false) {
                         $error_update[] = __('Time source');
                     }
@@ -2220,10 +2216,6 @@ function config_process_config()
         config_update_value('events_per_query', 5000);
     }
 
-    if (!isset($config['loginhash_pwd'])) {
-        config_update_value('loginhash_pwd', (rand(0, 1000) * rand(0, 1000)).'pandorahash', false, true);
-    }
-
     if (!isset($config['trap2agent'])) {
         config_update_value('trap2agent', 0);
     }
@@ -2485,6 +2477,10 @@ function config_process_config()
 
     if (!isset($config['number_modules_queue'])) {
         config_update_value('number_modules_queue', 500);
+    }
+
+    if (!isset($config['JWT_signature'])) {
+        config_update_value('JWT_signature', 0);
     }
 
     if (!isset($config['eastern_eggs_disabled'])) {

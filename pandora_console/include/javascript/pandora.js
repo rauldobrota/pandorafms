@@ -2736,3 +2736,32 @@ function menuTabsShowHide() {
     }
   }
 }
+
+function redirectNode(url) {
+  event.preventDefault();
+  $.ajax({
+    method: "POST",
+    url: "ajax.php",
+    dataType: "json",
+    data: {
+      page: "include/ajax/jwt.ajax",
+      method: "create"
+    },
+    success: function(data) {
+      var $form = $("<form class='invisible'></form>");
+
+      $form.attr("method", "post");
+      $form.attr("action", url);
+
+      var $input = $("<input>")
+        .attr("type", "hidden")
+        .attr("name", "token")
+        .val(data.data);
+      $form.append($input);
+
+      $("body").append($form);
+
+      $form.submit();
+    }
+  });
+}
