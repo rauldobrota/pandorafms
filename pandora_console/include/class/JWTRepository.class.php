@@ -196,17 +196,16 @@ final class JWTRepository
     {
         global $config;
         if (function_exists('metaconsole_get_servers') === true) {
-            $config['JWT_signature'] = -1;
             $servers = metaconsole_get_servers();
             foreach ($servers as $server) {
+                $config['JWT_signature'] = -1;
                 if (metaconsole_connect($server) == NOERR) {
                     config_update_value('JWT_signature', $signature, true);
                 }
 
                 metaconsole_restore_db();
+                $config['JWT_signature'] = $signature;
             }
-
-            $config['JWT_signature'] = $signature;
         }
     }
 
