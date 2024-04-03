@@ -115,6 +115,7 @@ class ComposerStaticInit94a17e624d873685991e8ae888e00eb9
         'L' => 
         array (
             'Lcobucci\\JWT\\' => 13,
+            'Lcobucci\\Clock\\' => 15,
             'Laravel\\SerializableClosure\\' => 28,
             'Laminas\\Json\\' => 13,
             'Laminas\\Diactoros\\' => 18,
@@ -324,6 +325,10 @@ class ComposerStaticInit94a17e624d873685991e8ae888e00eb9
         'Lcobucci\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
+        ),
+        'Lcobucci\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lcobucci/clock/src',
         ),
         'Laravel\\SerializableClosure\\' => 
         array (

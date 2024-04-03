@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'fbec8c0a05f72bfcc2044c0a4857d5e31f534ad5',
+        'reference' => '670829fa5833a6f666ebf4c78669ca6fdac476c9',
         'name' => 'pandorafms/console',
         'dev' => true,
     ),
@@ -217,6 +217,15 @@
             'reference' => '3dbf8a8e914634c48d389c1234552666b3d43754',
             'dev_requirement' => false,
         ),
+        'lcobucci/clock' => array(
+            'pretty_version' => '3.2.0',
+            'version' => '3.2.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../lcobucci/clock',
+            'aliases' => array(),
+            'reference' => '6f28b826ea01306b07980cb8320ab30b966cd715',
+            'dev_requirement' => false,
+        ),
         'lcobucci/jwt' => array(
             'pretty_version' => '5.2.0',
             'version' => '5.2.0.0',
@@ -304,7 +313,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'fbec8c0a05f72bfcc2044c0a4857d5e31f534ad5',
+            'reference' => '670829fa5833a6f666ebf4c78669ca6fdac476c9',
             'dev_requirement' => false,
         ),
         'paragonie/random_compat' => array(
@@ -357,6 +366,12 @@
             'aliases' => array(),
             'reference' => 'e41a24703d4560fd0acb709162f73b8adfc3aa0d',
             'dev_requirement' => false,
+        ),
+        'psr/clock-implementation' => array(
+            'dev_requirement' => false,
+            'provided' => array(
+                0 => '1.0',
+            ),
         ),
         'psr/container' => array(
             'pretty_version' => '2.0.2',
