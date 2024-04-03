@@ -386,8 +386,8 @@ console_dependencies=" \
     mod_ssl \
     libzstd \
     openldap-clients \
-    https://firefly.pandorafms.com/centos8/chromium-110.0.5481.177-1.el7.x86_64.rpm \
-    https://firefly.pandorafms.com/centos8/chromium-common-110.0.5481.177-1.el7.x86_64.rpm \
+    https://firefly.pandorafms.com/centos8/chromium-122.0.6261.128-1.el8.x86_64.rpm \
+    https://firefly.pandorafms.com/centos8/chromium-common-122.0.6261.128-1.el8.x86_64.rpm \
     https://firefly.pandorafms.com/centos8/pandora_gotty-1.0-1.el8.x86_64.rpm \
     https://firefly.pandorafms.com/centos8/pandorafms_made-0.1.0-1.el8.x86_64.rpm "
 execute_cmd "dnf install -y $console_dependencies" "Installing Pandora FMS Console dependencies"
