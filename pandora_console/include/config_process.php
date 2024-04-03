@@ -185,6 +185,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 config_process_config();
 config_prepare_session();
+config_prepare_jwt_signature();
 
 if ((bool) $config['console_log_enabled'] === true) {
     error_reporting(E_ALL ^ E_NOTICE);

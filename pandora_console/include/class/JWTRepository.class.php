@@ -185,4 +185,30 @@ final class JWTRepository
     }
 
 
+    /**
+     * Sync the signature with nodes for jwt.
+     *
+     * @param string|null $signature Signature to send nodes.
+     *
+     * @return void
+     */
+    public static function syncSignatureWithNodes(?string $signature):void
+    {
+        global $config;
+        if (function_exists('metaconsole_get_servers') === true) {
+            $config['JWT_signature'] = -1;
+            $servers = metaconsole_get_servers();
+            foreach ($servers as $server) {
+                if (metaconsole_connect($server) == NOERR) {
+                    config_update_value('JWT_signature', $signature, true);
+                }
+
+                metaconsole_restore_db();
+            }
+
+            $config['JWT_signature'] = $signature;
+        }
+    }
+
+
 }

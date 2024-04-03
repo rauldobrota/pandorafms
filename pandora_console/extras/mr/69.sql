@@ -7708,7 +7708,7 @@ UPDATE `twelcome_tip` SET url = 'https://pandorafms.com/manual/!current/start?id
 
 DELETE FROM tconfig WHERE `token` = 'legacy_database_ha';
 
-INSERT INTO `tconfig` (`token`, `value`) VALUES ('JWT_signature', '');
+INSERT INTO `tconfig` (`token`, `value`) VALUES ('JWT_signature', 1);
 DELETE FROM tconfig WHERE `token` = 'loginhash_pwd';
 
 COMMIT;

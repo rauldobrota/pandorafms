@@ -30,6 +30,7 @@
 // Config functions.
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/functions.php';
+require_once __DIR__.'/class/JWTRepository.class.php';
 enterprise_include_once('include/functions_config.php');
 
 use PandoraFMS\Core\DBMaintainer;
@@ -4211,4 +4212,15 @@ function config_prepare_session()
 
     ini_set('post_max_size', $config['max_file_size']);
     ini_set('upload_max_filesize', $config['max_file_size']);
+}
+
+
+function config_prepare_jwt_signature()
+{
+    global $config;
+    if (is_metaconsole() === true && is_centralized() === true && $config['JWT_signature'] == 1) {
+        $signature = JWTRepository::generateSignature();
+        config_update_value('JWT_signature', $signature, true);
+        JWTRepository::syncSignatureWithNodes($signature);
+    }
 }
