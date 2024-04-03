@@ -49,7 +49,7 @@ $date = time();
 
 $servers = servers_get_info();
 if ($servers === false) {
-    $no_data_msg = __('There are no servers configured into the database').'<br>'.__('All servers down. Can you up all servers. You go to terminal in linux and execute the next command: "sudo /etc/init.d/pandora_server restart". It\'s possible need introduce root pass.');
+    $no_data_msg = __('There are no servers registered on the database. Please, check the configuration and start the Pandora Server service');
     ui_print_info_message($no_data_msg);
     return;
 }
