@@ -504,9 +504,8 @@ class CustomGraphWidget extends Widget
             break;
 
             case CUSTOM_GRAPH_VBARS:
-                $style = 'padding: 10px;';
                 $height = $size['height'];
-                $output = '<div class="container-center" style="'.$style.'">';
+                $output = '<div class="container-center">';
             break;
 
             case CUSTOM_GRAPH_GAUGE:
