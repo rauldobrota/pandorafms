@@ -4283,6 +4283,12 @@ function ui_print_datatable(array $parameters)
     $js = '<script>';
     $js .= 'var dt = '.$json_data.';';
     $js .= 'var config = '.$json_config.';';
+    if (isset($parameters['data_element']) === true) {
+        $js .= 'var preload_elements = true;';
+    } else {
+        $js .= 'var preload_elements = false;';
+    }
+
     $js .= '</script>';
 
     $js .= '<script>';
