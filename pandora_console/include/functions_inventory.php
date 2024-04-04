@@ -712,6 +712,7 @@ function inventory_get_datatable(
     $return_mode=false,
     $order_by_agent=false,
     $date_init=false,
+    $status_agent=-1,
 ) {
     global $config;
 
@@ -736,6 +737,10 @@ function inventory_get_datatable(
 
     if (array_search(-1, $agents_ids) === false) {
         array_push($where, 'tagent_module_inventory.id_agente IN ('.implode(',', $agents_ids).')');
+    }
+
+    if ($status_agent > -1) {
+        array_push($where, 'tagente.disabled ='.$status_agent);
     }
 
     if ($inventory_module_name[0] !== '0'

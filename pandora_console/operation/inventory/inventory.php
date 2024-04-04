@@ -466,7 +466,8 @@ if ($is_metaconsole === true) {
                 $export,
                 false,
                 $order_by_agent,
-                $date_init
+                $date_init,
+                $status_agent
             );
 
             $data_tmp['server_name'] = $connection['server_name'];
@@ -515,7 +516,8 @@ if ($is_metaconsole === true) {
                         $export,
                         false,
                         $order_by_agent,
-                        $date_init
+                        $date_init,
+                        $status_agent
                     );
 
                     $data_tmp['server_name'] = $server['server_name'];
@@ -1095,7 +1097,8 @@ if ($inventory_module !== 'basic') {
                 $export,
                 false,
                 $order_by_agent,
-                $date_init
+                $date_init,
+                $status_agent
             );
         }
 
