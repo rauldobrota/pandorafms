@@ -1903,3 +1903,7 @@ div#dashboard-controls-slides
   .select2-selection__rendered {
   color: var(--text-color) !important;
 }
+
+div.events-refresh-pure {
+  background-color: #333;
+}
