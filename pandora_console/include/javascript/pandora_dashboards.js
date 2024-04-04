@@ -330,7 +330,20 @@ function initialiceLayout(data) {
       },
       dataType: "json",
       success: function(data) {
-        addCell(data.cellId, 0, 0, 4, 4, true, 0, 2000, 0, 2000, 0, true);
+        addCell(
+          data.cellId,
+          0,
+          0,
+          4,
+          4,
+          true,
+          0,
+          2000,
+          0,
+          2000,
+          original_widgetId,
+          true
+        );
       },
       error: function(xhr, textStatus, errorMessage) {
         console.log("ERROR" + errorMessage + textStatus + xhr);

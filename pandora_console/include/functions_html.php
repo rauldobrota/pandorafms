@@ -1926,7 +1926,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
         ]
     );
     $output .= '</div>';
-    $output .= '<div class="recursive-modules">';
+    $output .= '<div class="recursive-modules mrgn_lft_20px_important">';
 
     // Recursion.
     $output .= html_print_input(
@@ -2037,33 +2037,35 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
     if (is_metaconsole() === true) {
         $output .= html_print_input(
             [
-                'label'       => __('Agents'),
-                'label_class' => 'font-title-font',
-                'type'        => 'select',
-                'fields'      => $agents,
-                'name'        => 'filtered-module-agents-'.$uniqId,
-                'selected'    => explode(',', $data['mAgents']),
-                'return'      => true,
-                'multiple'    => true,
-                'style'       => 'min-width: 200px;max-width:200px;',
-                'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
-                'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'label'         => __('Agents'),
+                'label_class'   => 'font-title-font',
+                'type'          => 'select',
+                'fields'        => $agents,
+                'name'          => 'filtered-module-agents-'.$uniqId,
+                'selected'      => explode(',', $data['mAgents']),
+                'return'        => true,
+                'multiple'      => true,
+                'style'         => 'min-width: 200px;max-width:200px;',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'truncate_size' => 300,
             ]
         );
     } else {
         $output .= html_print_input(
             [
-                'label'       => __('Agents'),
-                'label_class' => 'font-title-font',
-                'type'        => 'select_from_sql',
-                'sql'         => 'SELECT `id_agente`,`alias` FROM tagente',
-                'name'        => 'filtered-module-agents-'.$uniqId,
-                'selected'    => explode(',', $data['mAgents']),
-                'return'      => true,
-                'multiple'    => true,
-                'style'       => 'min-width: 200px;max-width:200px;',
-                'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
-                'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'label'         => __('Agents'),
+                'label_class'   => 'font-title-font',
+                'type'          => 'select_from_sql',
+                'sql'           => 'SELECT `id_agente`,`alias` FROM tagente',
+                'name'          => 'filtered-module-agents-'.$uniqId,
+                'selected'      => explode(',', $data['mAgents']),
+                'return'        => true,
+                'multiple'      => true,
+                'style'         => 'min-width: 200px;max-width:200px;',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'truncate_size' => 300,
             ]
         );
     }
@@ -2075,8 +2077,9 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             $data['mModuleGroup'],
             explode(',', $data['mAgents']),
             !$commonModules,
-            false,
-            true
+            true,
+            (bool) $commonModules,
+            false
         );
     } else {
         $all_modules = [];
@@ -2098,16 +2101,17 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
 
     $output .= html_print_input(
         [
-            'label'       => __('Modules'),
-            'label_class' => 'font-title-font',
-            'type'        => 'select',
-            'fields'      => $all_modules,
-            'name'        => 'filtered-module-modules-'.$uniqId,
-            'selected'    => $result,
-            'return'      => true,
-            'multiple'    => true,
-            'style'       => 'max-width:98%;',
-            'input_class' => 'flex-colum-center-important',
+            'label'         => __('Modules'),
+            'label_class'   => 'font-title-font',
+            'type'          => 'select',
+            'fields'        => $all_modules,
+            'name'          => 'filtered-module-modules-'.$uniqId,
+            'selected'      => $result,
+            'return'        => true,
+            'multiple'      => true,
+            'style'         => 'max-width:98%;',
+            'input_class'   => 'flex-colum-center-important',
+            'truncate_size' => 300,
         ]
     );
 
@@ -2162,6 +2166,7 @@ function html_print_select_from_sql(
     $class='',
     $required=false,
     $placeholder='',
+    $title=false,
 ) {
     global $config;
 
@@ -2209,7 +2214,8 @@ function html_print_select_from_sql(
         '',
         false,
         null,
-        $placeholder
+        $placeholder,
+        $title
     );
 }
 
@@ -5989,6 +5995,7 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 ((isset($data['class']) === true) ? $data['class'] : ''),
                 ((isset($data['required']) === true) ? $data['required'] : false),
                 ((isset($data['placeholder']) === true) ? $data['placeholder'] : null),
+                ((isset($data['title']) === true) ? $data['title'] : false),
             );
         break;
 

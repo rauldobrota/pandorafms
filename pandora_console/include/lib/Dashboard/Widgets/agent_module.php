@@ -297,7 +297,7 @@ class AgentModuleWidget extends Widget
         }
 
         $inputs[] = [
-            'class'     => 'flex flex-column',
+            'class'     => 'flex-colum-center-important',
             'id'        => 'select_multiple_modules_filtered_formated',
             'arguments' => [
                 'type'                     => 'select_multiple_modules_filtered_formated',
@@ -514,6 +514,10 @@ class AgentModuleWidget extends Widget
             $array_names = [];
 
             foreach ($allModules as $module_name) {
+                if (is_numeric($module_name)) {
+                    $module_name = modules_get_agentmodule_name($module_name);
+                }
+
                 $file_name = ui_print_truncate_text(
                     \io_safe_output($module_name),
                     'module_small',

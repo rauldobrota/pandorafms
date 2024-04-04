@@ -7187,6 +7187,10 @@ div.graph div.legend table {
   margin-left: 20px;
 }
 
+.mrgn_lft_20px_important {
+  margin-left: 20px !important;
+}
+
 .mrgn_lft_23px {
   margin-left: 23px;
 }
