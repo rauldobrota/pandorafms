@@ -2994,7 +2994,7 @@ function events_print_type_description($type, $return=false)
 
         case 'unknown':
             $output .= __('Unknown');
-        break; 
+        break;
 
         default:
             $output .= __('Unknown type:').': '.$type;

@@ -1907,3 +1907,31 @@ div#dashboard-controls-slides
 div.events-refresh-pure {
   background-color: #333;
 }
+
+#general-tactical-view * {
+  border-color: #333 !important;
+}
+
+#tree-controller-recipient .node-icon {
+  border-right-color: #333;
+}
+
+.tree-node {
+  background-image: url(../../images/tree/straight@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node.leaf-closed > .leaf-icon {
+  background-image: url(../../images/tree/corner_straight_plus@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node.leaf-open > .leaf-icon {
+  background-image: url(../../images/tree/corner_straight_minus@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node > .leaf-icon {
+  background-image: url(../../images/tree/corner_straight@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node:last-of-type > .leaf-icon {
+  background-image: url(../../images/tree/corner@tree-dark.svg);
+}
