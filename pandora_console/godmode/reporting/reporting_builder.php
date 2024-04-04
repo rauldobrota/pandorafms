@@ -2408,10 +2408,15 @@ switch ($action) {
                             $values['server_name'] = get_parameter('combo_server_sql');
 
                             if ($sql !== '') {
+                                // Replaces possible macros to check the validity of the query
+                                $macros_sql = $sql;
+                                $macros_sql = str_replace('_start_date_', '0', $macros_sql);
+                                $macros_sql = str_replace('_end_date_', 'NOW()', $macros_sql);
+
                                 if ($values['server_name'] === 'all') {
                                     $servers_connection = metaconsole_get_connections();
                                     foreach ($servers_connection as $key => $s) {
-                                        $good_format = db_validate_sql($sql, $s['server_name']);
+                                        $good_format = db_validate_sql($macros_sql, $s['server_name']);
                                     }
 
                                     // Reconnected in nodo if exist.
@@ -2423,9 +2428,9 @@ switch ($action) {
                                     }
                                 } else if ($server_id === 0) {
                                     // Connect with node if not exist conexion.
-                                    $good_format = db_validate_sql($sql, (is_metaconsole() === true) ? $values['server_name'] : false);
+                                    $good_format = db_validate_sql($macros_sql, (is_metaconsole() === true) ? $values['server_name'] : false);
                                 } else {
-                                    $good_format = db_validate_sql($sql);
+                                    $good_format = db_validate_sql($macros_sql);
                                 }
                             }
                         } else if ($values['type'] == 'url') {
@@ -3353,10 +3358,15 @@ switch ($action) {
 
 
                             if ($sql !== '') {
+                                // Replaces possible macros to check the validity of the query
+                                $macros_sql = $sql;
+                                $macros_sql = str_replace('_start_date_', '0', $macros_sql);
+                                $macros_sql = str_replace('_end_date_', 'NOW()', $macros_sql);
+
                                 if ($values['server_name'] === 'all') {
                                     $servers_connection = metaconsole_get_connections();
                                     foreach ($servers_connection as $key => $s) {
-                                        $good_format = db_validate_sql($sql, $s['server_name']);
+                                        $good_format = db_validate_sql($macros_sql, $s['server_name']);
                                     }
 
                                     // Reconnected in nodo if exist.
@@ -3368,9 +3378,9 @@ switch ($action) {
                                     }
                                 } else if ($server_id === 0) {
                                     // Connect with node if not exist conexion.
-                                    $good_format = db_validate_sql($sql, (is_metaconsole() === true) ? $values['server_name'] : false);
+                                    $good_format = db_validate_sql($macros_sql, (is_metaconsole() === true) ? $values['server_name'] : false);
                                 } else {
-                                    $good_format = db_validate_sql($sql);
+                                    $good_format = db_validate_sql($macros_sql);
                                 }
                             }
                         } else if ($values['type'] == 'url') {
