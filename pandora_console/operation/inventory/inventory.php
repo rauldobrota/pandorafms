@@ -451,6 +451,8 @@ if ($is_metaconsole === true) {
         if ($inventory_id_agent > 0) {
             $sql .= ' AND id_agente = '.$inventory_id_agent;
             $agents_node = [$inventory_id_agent => $inventory_id_agent];
+        } else {
+            $agents_node = [-1 => true];
         }
 
         $result_module = db_get_all_rows_sql($sql);
@@ -464,8 +466,7 @@ if ($is_metaconsole === true) {
                 $export,
                 false,
                 $order_by_agent,
-                $server,
-                $pagination_url_parameters
+                $date_init
             );
 
             $data_tmp['server_name'] = $connection['server_name'];
@@ -497,6 +498,8 @@ if ($is_metaconsole === true) {
             if ($inventory_id_agent > 0) {
                 $sql .= ' AND id_agente = '.$inventory_id_agent;
                 $agents_node = [$inventory_id_agent => $inventory_id_agent];
+            } else {
+                $agents_node = [-1 => true];
             }
 
             $result = db_get_all_rows_sql($sql);
@@ -512,8 +515,7 @@ if ($is_metaconsole === true) {
                         $export,
                         false,
                         $order_by_agent,
-                        $server,
-                        $pagination_url_parameters
+                        $date_init
                     );
 
                     $data_tmp['server_name'] = $server['server_name'];
@@ -1073,12 +1075,17 @@ if ($inventory_module !== 'basic') {
             }
         }
     } else {
-        // Single agent selected.
-        if ($inventory_id_agent > 0 && isset($agents[$inventory_id_agent]) === true) {
-            $agents = [$inventory_id_agent => $agents[$inventory_id_agent]];
+        if ($inventory_id_agent > 0) {
+            // Single agent selected.
+            if ($inventory_id_agent > 0 && isset($agents[$inventory_id_agent]) === true) {
+                $agents = [$inventory_id_agent => $agents[$inventory_id_agent]];
+            }
+
+            $agents_ids = array_keys($agents);
+        } else {
+            $agents_ids = [-1];
         }
 
-        $agents_ids = array_keys($agents);
         if (count($agents_ids) > 0) {
             $rows = inventory_get_datatable(
                 $agents_ids,
@@ -1087,7 +1094,8 @@ if ($inventory_module !== 'basic') {
                 $inventory_search_string,
                 $export,
                 false,
-                $order_by_agent
+                $order_by_agent,
+                $date_init
             );
         }
 

@@ -710,7 +710,8 @@ function inventory_get_datatable(
     $inventory_search_string='',
     $export_csv=false,
     $return_mode=false,
-    $order_by_agent=false
+    $order_by_agent=false,
+    $date_init=false,
 ) {
     global $config;
 
@@ -750,21 +751,23 @@ function inventory_get_datatable(
     }
 
     if ($utimestamp > 0) {
-        array_push($where, 'tagente_datos_inventory.utimestamp <= '.$utimestamp.' ');
+        array_push($where, 'tagent_module_inventory.utimestamp <= '.$utimestamp.' ');
+    }
+
+    if ($date_init !== false) {
+        array_push($where, 'tagent_module_inventory.utimestamp >= '.$date_init.' ');
     }
 
     $sql = sprintf(
         'SELECT tmodule_inventory.*,
             tagent_module_inventory.*,
             tagente.alias as name_agent,
-            tagente_datos_inventory.utimestamp as last_update,
-            tagente_datos_inventory.timestamp as last_update_timestamp,
-            tagente_datos_inventory.data as data_inventory
+            tagent_module_inventory.utimestamp as last_update,
+            tagent_module_inventory.timestamp as last_update_timestamp,
+            tagent_module_inventory.data as data_inventory
         FROM tmodule_inventory
-        INNER JOIN tagent_module_inventory
+        LEFT JOIN tagent_module_inventory
             ON tmodule_inventory.id_module_inventory = tagent_module_inventory.id_module_inventory
-        INNER JOIN tagente_datos_inventory
-            ON tagent_module_inventory.id_agent_module_inventory = tagente_datos_inventory.id_agent_module_inventory
         LEFT JOIN tagente
             ON tagente.id_agente = tagent_module_inventory.id_agente
 
