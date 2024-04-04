@@ -1904,6 +1904,10 @@ div#dashboard-controls-slides
   color: var(--text-color) !important;
 }
 
+div.events-refresh-pure {
+  background-color: #333;
+}
+
 #general-tactical-view * {
   border-color: #333 !important;
 }
@@ -1911,10 +1915,6 @@ div#dashboard-controls-slides
 #tree-controller-recipient .node-icon {
   border-right-color: #333;
 }
-
-/* #tree-controller-recipient .leaf-icon {
-  filter: contrast(0.5) brightness(0.6);
-} */
 
 .tree-node {
   background-image: url(../../images/tree/straight@tree-dark.svg);

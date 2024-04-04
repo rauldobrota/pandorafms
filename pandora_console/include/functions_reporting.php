@@ -164,8 +164,12 @@ function shutdown($memory)
     unset($memory->reserve);
 
     $error = error_get_last();
-    if (isset($error['type']) === true && $error['type'] === 1) {
-        echo __('You have no memory for this operation, increase the memory limit.');
+    if (isset($error['type'])) {
+        if ($error['type'] === E_ERROR) {
+            if (strpos($error['message'], 'Allowed memory size') !== false) {
+                echo __('You have no memory for this operation, increase the memory limit.');
+            }
+        }
     }
 }
 
