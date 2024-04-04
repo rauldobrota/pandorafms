@@ -200,7 +200,10 @@ $output .= '<a id="prev-slide" href="'.$prev_slides_url.'">';
 $output .= html_print_image(
     'images/control_prev.png',
     true,
-    ['title' => __('Previous')]
+    [
+        'title' => __('Previous'),
+        'class' => 'invert_filter',
+    ]
 );
 $output .= '</a>';
 $output .= '</div>';
@@ -215,7 +218,10 @@ $output .= '<a href="'.$url.'&'.$stop_slides_url.'">';
 $output .= html_print_image(
     'images/control_stop.png',
     true,
-    ['title' => __('Stop')]
+    [
+        'title' => __('Stop'),
+        'class' => 'invert_filter',
+    ]
 );
 $output .= '</a>';
 $output .= '</div>';
@@ -226,7 +232,10 @@ $output .= '<a id="pause-btn" href="javascript:;">';
 $output .= html_print_image(
     'images/control_pause.png',
     true,
-    ['title' => __('Pause')]
+    [
+        'title' => __('Pause'),
+        'class' => 'invert_filter',
+    ]
 );
 $output .= '</a>';
 $output .= '</div>';
@@ -237,7 +246,10 @@ $output .= '<a id="next-slide" href="'.$next_slides_url.'">';
 $output .= html_print_image(
     'images/control_next.png',
     true,
-    ['title' => __('Next')]
+    [
+        'title' => __('Next'),
+        'class' => 'invert_filter',
+    ]
 );
 $output .= '</a>';
 $output .= '</div>';
@@ -249,14 +261,20 @@ if ($cellModeSlides === 0) {
     $output .= html_print_image(
         'images/visual_console.png',
         true,
-        ['title' => __('Boxed mode')]
+        [
+            'title' => __('Boxed mode'),
+            'class' => 'invert_filter',
+        ]
     );
     $msg_tooltip = __('This mode will show the dashboard with all the widgets in the screen. Click to change to single screen mode.');
 } else {
     $output .= html_print_image(
         'images/dashboard.png',
         true,
-        ['title' => __('Single screen')]
+        [
+            'title' => __('Single screen'),
+            'class' => 'invert_filter',
+        ]
     );
     $msg_tooltip = __('This mode will show each widget in a screen, rotating between elements in each dashboard. Click to change to boxed mode.');
 }
@@ -275,5 +293,11 @@ $output .= '<div class="dashboard-title"><b>'.$name.'</b></div>';
 $output .= '</div>';
 
 $output .= '</div>';
+$output .= '
+<script>
+var controls = document.querySelector("#dashboard-controls-slides");
+autoHideElement(controls, 1000);
+</script>
+';
 
 echo $output;

@@ -2413,7 +2413,6 @@ date: 2018-05-14 15:05:04
       });
     }
 
-    console.log(vCard);
     formattedVCardString +=
       "FN" + encodingPrefix + ":" + e(formattedName) + nl();
     formattedVCardString +=

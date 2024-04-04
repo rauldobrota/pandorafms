@@ -6018,6 +6018,15 @@ function reporting_html_availability_graph($table, $item, $pdf=0)
                         $total_values .= $sla_value;
                         $count_total_charts++;
                         $title = '<b>'.__('Result').'</b>';
+
+                        if (isset($chart['agent']) === true) {
+                            $title .= '<br />'.$chart['agent'];
+                        }
+
+                        if (isset($chart['module']) === true) {
+                            $title .= '<br />'.$chart['module'];
+                        }
+
                         $sla_value_text = "<span style = 'font-weight: bold; font-size: ".$font_size.(($pdf === 0) ? ' !important' : '').'; color: '.$color."'>".$sla_value.'</span>';
                         $checks_resume_text = '<span style = "font-size: '.$font_mini.';">';
                         $checks_resume_text .= $checks_resume;

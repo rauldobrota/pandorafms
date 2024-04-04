@@ -3775,9 +3775,6 @@ sub pandora_delete_module {
 	# Delete templates asociated to the module
 	db_do ($dbh, 'DELETE FROM talert_template_modules WHERE id_agent_module = ?', $module_id);
 	
-	# Delete events asociated to the module
-	db_do ($dbh, 'DELETE FROM tevento WHERE id_agentmodule = ?', $module_id);
-	
 	# Delete tags asociated to the module
 	db_do ($dbh, 'DELETE FROM ttag_module WHERE id_agente_modulo = ?', $module_id);
 	

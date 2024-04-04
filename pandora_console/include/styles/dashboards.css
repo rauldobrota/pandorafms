@@ -450,7 +450,8 @@ li#search_input_widget {
 }
 
 div#dashboard-controls-slides {
-  width: 720px !important;
+  min-width: 720px;
+  text-wrap: nowrap;
 }
 
 div#dashboard-controls,
