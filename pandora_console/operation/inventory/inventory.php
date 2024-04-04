@@ -91,6 +91,7 @@ if ($custom_date === '1') {
 
 $date_init = strtotime($date_init);
 $utimestamp = strtotime($date_end);
+$status_agent = (int) get_parameter('status', -1);
 
 if (is_ajax() === true) {
     $get_csv_url = (bool) get_parameter('get_csv_url');
@@ -192,8 +193,9 @@ if (is_ajax() === true) {
             'order'      => $order,
             'id_agent'   => $id_agent,
             'id_group'   => $id_group,
-            'utimestamp' => strtotime($utimestamp),
+            'utimestamp' => $utimestamp,
             'period'     => $period,
+            'status'     => $status_agent,
         ];
 
         $data = get_data_basic_info_sql($params);
@@ -763,6 +765,23 @@ if (is_metaconsole() === false) {
         )
     );
 }
+
+$table->data[2][0] = html_print_label_input_block(
+    __('Status agent'),
+    html_print_select(
+        [
+            -1 => __('All'),
+            0  => __('Enabled'),
+            1  => __('Disabled'),
+        ],
+        'status',
+        $status_agent,
+        '',
+        '',
+        0,
+        true
+    )
+);
 
 $searchForm .= html_print_table($table, true);
 $searchForm .= html_print_div(
@@ -1355,6 +1374,7 @@ if ($inventory_module !== 'basic') {
                 'id_agent'            => $id_agente,
                 'id_group'            => $inventory_id_group,
                 'search'              => $search,
+                'status'              => $status_agent,
             ],
             'zeroRecords'  => __('Agent info not found'),
             'emptyTable'   => __('Agent info not found'),

@@ -890,6 +890,12 @@ function get_data_basic_info_sql($params, $count=false)
         $where .= sprintf(' AND %s.id_agente = %d', $table, $params['id_agent']);
     }
 
+    if ($params['status'] >= 0 && $count === true) {
+        $where .= sprintf(' AND disabled = %d', $params['status']);
+    } else if ($params['status'] >= 0 && $count === false) {
+        $where .= sprintf(' AND %s.disabled = %d', $table, $params['status']);
+    }
+
     if ($params['id_group'] > 0) {
         $where .= sprintf(' AND id_grupo = %d', $params['id_group']);
     } else {
