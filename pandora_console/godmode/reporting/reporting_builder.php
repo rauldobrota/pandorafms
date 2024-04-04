@@ -911,7 +911,7 @@ switch ($action) {
 
 
             // Admin options only for RM flag.
-            if (check_acl($config['id_user'], 0, 'RM')) {
+            if (check_acl($config['id_user'], 0, 'RR')) {
                 $table->head[$next] = __('Private');
                 $table->headstyle[$next] = 'min-width: 40px;text-align: left;';
                 $table->size[$next] = '2%';
@@ -929,7 +929,7 @@ switch ($action) {
 
                 $next++;
                 $op_column = false;
-                if (is_metaconsole() === false) {
+                if (is_metaconsole() === false && check_acl($config['id_user'], 0, 'RM')) {
                     $op_column = true;
                     $table->head[$next] = '<span title="Operations">'.__('Op.').'</span>'.html_print_checkbox(
                         'all_delete',
@@ -1082,7 +1082,7 @@ switch ($action) {
                 }
 
                 // Admin options only for RM flag.
-                if (check_acl($config['id_user'], 0, 'RM')) {
+                if (check_acl($config['id_user'], 0, 'RR')) {
                     if ($report['private'] == 1) {
                         $data[$next] = __('Yes');
                     } else {
