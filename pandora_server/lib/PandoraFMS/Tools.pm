@@ -648,6 +648,7 @@ sub safe_input($) {
 
 	return "" unless defined($value);
 
+    $value =~ s/<\/?script(.*?)>//gs;
 	$value =~ s/(.)/$CHR2ENT{$1}||$1/ge;
 	
 	return $value;

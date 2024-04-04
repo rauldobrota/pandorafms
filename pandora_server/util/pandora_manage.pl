@@ -3429,6 +3429,8 @@ sub cli_agent_update() {
 	my @id_agents;
 	my $id_agent;
 
+	$new_value = safe_input($new_value);
+
 	if (defined $use_alias and $use_alias eq 'use_alias') {
 		@id_agents = get_agent_ids_from_alias($dbh,$agent_name);
 		foreach my $id (@id_agents) {
