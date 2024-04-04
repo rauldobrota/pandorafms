@@ -350,7 +350,8 @@ function update_template($step)
             'previous_name' => $previous_name,
         ];
 
-        if ($name_check === false) {
+        $original_name = db_get_value('name', 'talert_templates', 'id', $id);
+        if ($name_check === false || $original_name === $name_check) {
             $result = alerts_update_alert_template($id, $values);
         } else {
             ui_print_warning_message(__('Another template with the same name already exists'));

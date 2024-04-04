@@ -49,8 +49,8 @@ $date = time();
 
 $servers = servers_get_info();
 if ($servers === false) {
-    $server_clippy = clippy_context_help('servers_down');
-    echo "<div class='nf'>".__('There are no servers configured into the database').$server_clippy.'</div>';
+    $no_data_msg = __('There are no servers registered on the database. Please, check the configuration and start the Pandora Server service');
+    ui_print_info_message($no_data_msg);
     return;
 }
 

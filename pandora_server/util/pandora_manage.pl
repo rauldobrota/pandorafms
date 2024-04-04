@@ -36,7 +36,7 @@ use Encode::Locale;
 Encode::Locale::decode_argv;
 
 # version: define current version
-my $version = "7.0NG.776 Build 240403";
+my $version = "7.0NG.776 Build 240404";
 
 # save program name for logging
 my $progname = basename($0);
@@ -3428,6 +3428,8 @@ sub cli_agent_update() {
 
 	my @id_agents;
 	my $id_agent;
+
+	$new_value = safe_input($new_value);
 
 	if (defined $use_alias and $use_alias eq 'use_alias') {
 		@id_agents = get_agent_ids_from_alias($dbh,$agent_name);
