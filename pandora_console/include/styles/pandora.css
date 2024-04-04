@@ -7127,6 +7127,10 @@ div.graph div.legend table {
   margin: 0px;
 }
 
+.mrgn_0px_imp {
+  margin: 0px !important;
+}
+
 .mrgn_10px {
   margin: 10px;
 }
@@ -13947,7 +13951,8 @@ button.disabled {
   margin-bottom: 10px;
 }
 
-.empty-view-text > span:nth-child(2) {
+.empty-view-text > span:nth-child(2),
+.empty-view-text > span:nth-child(2) * {
   color: var(--text-color-3);
   font-size: 15px;
   line-height: 24px;
@@ -13970,4 +13975,19 @@ button.disabled {
 
 .empty-view-buttons > *:not(:last-child) {
   margin-right: 0;
+}
+
+form#submit-plugin {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+}
+
+form#submit-plugin > input[type="file"] {
+  line-height: 34px;
+  padding-top: 0;
 }

@@ -25,6 +25,8 @@ Description: The default Pandora FMS theme layout
   --secondary-color: #222;
 
   --text-color: #fff;
+  --text-color-2: #ededed;
+  --text-color-3: #d5d5d5;
 
   --background-main-color: #f6f7fb;
   --background-2: #95a3bf;
@@ -1912,4 +1914,23 @@ div#dashboard-controls-slides
   .select2-selection--single
   .select2-selection__rendered {
   color: var(--text-color) !important;
+}
+
+.empty-view-buttons {
+  border-color: #94a1bb14;
+}
+
+input.button_task:not(div.login_pass > input):not(div.login_nick
+    > input):not([src$=".svg"]) {
+  background-color: var(--primary-color) !important;
+  box-shadow: unset;
+}
+
+input.button_task:not(div.login_pass > input):not(div.login_nick
+    > input):not([src$=".svg"]):hover {
+  filter: brightness(1.1);
+}
+
+.empty-view > .empty-view-img-text > img {
+  filter: brightness(0.85);
 }

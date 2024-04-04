@@ -93,33 +93,26 @@ if (is_metaconsole() === true) {
     }
 }
 
-$output = '<div class="new_task">';
-$output .= '<div class="image_task">';
-$output .= html_print_image(
-    'images/first_task/icono_grande_import.png',
-    true,
-    ['title' => __('Plugin Registration') ]
-);
-$output .= '</div>';
-$output .= '<div class="text_task">';
-$output .= '<h3>'.__('Plugin registration').'</h3>';
-$output .= '<p id="description_task">';
-$output .= __('This extension makes registering server plugins an easier task. Here you can upload a server plugin in .pspz zipped format. Please refer to the official documentation on how to obtain and use Server Plugins.');
-$output .= '<br><br>';
-$output .= __('You can get more plugins in our');
-$output .= '<a href="https://pandorafms.com/Library/Library/">';
-$output .= ' '.__('Public Resource Library');
-$output .= '</a>';
-$output .= '</p>';
+
+$msg = __('This extension makes registering server plugins an easier task. Here you can upload a server plugin in .pspz zipped format. Please refer to the official documentation on how to obtain and use Server Plugins.');
+$msg .= '<br><br>';
+$msg .= __('You can get more plugins in our');
+$msg .= '<a href="https://pandorafms.com/Library/Library/">';
+$msg .= ' '.__('Public Resource Library');
+$msg .= '</a>';
 
 // Upload form.
-$output .= "<form name='submit_plugin' method='post' enctype='multipart/form-data'>";
-$output .= '<table class="" id="table1" width="100%" border="0" cellpadding="4" cellspacing="4">';
-$output .= "<tr><td class='datos'><input type='file' name='plugin_upload' />";
-$output .= "<td class='datos'><input type='submit' class='sub next' value='".__('Upload')."' />";
-$output .= '</form></table>';
-$output .= '</div>';
-$output .= '</div>';
+$button = "<form name='submit_plugin' id='submit-plugin' method='post' enctype='multipart/form-data'>";
+$button .= "<input type='file' class='w100p' name='plugin_upload' />";
+$button .= "<input type='submit' class='button_task button_task_mini mrgn_0px_imp' value='".__('Upload file')."' />";
+$button .= '</form>';
+
+$output = ui_print_empty_view(
+    __('Register plugins'),
+    $msg,
+    'plugins.svg',
+    $button
+);
 
 echo $output;
 

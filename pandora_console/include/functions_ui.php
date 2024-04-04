@@ -5441,6 +5441,7 @@ function ui_print_page_header(
             $buffer .= '</li>';
         }
 
+        $tabs_class = '';
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
