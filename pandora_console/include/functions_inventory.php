@@ -884,15 +884,11 @@ function get_data_basic_info_sql($params, $count=false)
     }
 
     $where = 'WHERE 1=1 ';
-    if ($params['id_agent'] > 0 && $count === true) {
-        $where .= sprintf(' AND id_agente = %d', $params['id_agent']);
-    } else if ($params['id_agent'] > 0 && $count === false) {
+    if ($params['id_agent'] > 0) {
         $where .= sprintf(' AND %s.id_agente = %d', $table, $params['id_agent']);
     }
 
-    if ($params['status'] >= 0 && $count === true) {
-        $where .= sprintf(' AND disabled = %d', $params['status']);
-    } else if ($params['status'] >= 0 && $count === false) {
+    if ($params['status'] >= 0) {
         $where .= sprintf(' AND %s.disabled = %d', $table, $params['status']);
     }
 
@@ -916,7 +912,7 @@ function get_data_basic_info_sql($params, $count=false)
         );
     }
 
-    if ($params['utimestamp'] > 0 && $count === false) {
+    if ($params['utimestamp'] > 0) {
         $where .= sprintf(
             ' AND utimestamp BETWEEN %d AND %d',
             ($params['utimestamp'] - $params['period']),
@@ -983,21 +979,20 @@ function get_data_basic_info_sql($params, $count=false)
 
     $limit_condition = '';
     $order_condition = '';
-    $fields = 'count(*)';
     $innerjoin = '';
     $groupby = '';
 
-    if ($count !== true) {
-        if (is_metaconsole() === true) {
-            $fields = 'tmetaconsole_agent.*, tagent_secondary_group.*, tagent_custom_data.*';
-        } else {
-            $fields = 'tagente.*, tagent_secondary_group.*, tagent_custom_data.*';
-        }
+    if (is_metaconsole() === true) {
+        $fields = 'tmetaconsole_agent.*, tagent_secondary_group.*, tagent_custom_data.*';
+    } else {
+        $fields = 'tagente.*, tagent_secondary_group.*, tagent_custom_data.*';
+    }
 
-        $innerjoin = 'LEFT JOIN tagente_estado ON '.$table.'.id_agente = tagente_estado.id_agente ';
-        $innerjoin .= 'LEFT JOIN tagent_secondary_group ON '.$table.'.id_agente = tagent_secondary_group.id_agent ';
-        $innerjoin .= 'LEFT JOIN tagent_custom_data ON '.$table.'.id_agente = tagent_custom_data.id_agent ';
-        $groupby = 'GROUP BY '.$table.'.id_agente';
+    $innerjoin = 'LEFT JOIN tagente_estado ON '.$table.'.id_agente = tagente_estado.id_agente ';
+    $innerjoin .= 'LEFT JOIN tagent_secondary_group ON '.$table.'.id_agente = tagent_secondary_group.id_agent ';
+    $innerjoin .= 'LEFT JOIN tagent_custom_data ON '.$table.'.id_agente = tagent_custom_data.id_agent ';
+
+    if ($count !== true) {
         $limit_condition = sprintf(
             'LIMIT %d, %d',
             $params['start'],
@@ -1005,7 +1000,11 @@ function get_data_basic_info_sql($params, $count=false)
         );
 
         $order_condition = sprintf('ORDER BY %s', $params['order']);
+    } else {
+        $fields = 'COUNT(*)';
     }
+
+    $groupby = 'GROUP BY '.$table.'.id_agente';
 
     $sql = sprintf(
         'SELECT %s
@@ -1024,13 +1023,19 @@ function get_data_basic_info_sql($params, $count=false)
         $limit_condition
     );
 
+    $sql_count = sprintf(
+        'SELECT COUNT(*)
+        FROM (%s) AS sub_sql',
+        $sql
+    );
+
     if ($count !== true) {
         $result = db_get_all_rows_sql($sql);
         if ($result === false) {
             $result = [];
         }
     } else {
-        $result = db_get_sql($sql);
+        $result = db_get_sql($sql_count);
         if ($result === false) {
             $result = 0;
         }
