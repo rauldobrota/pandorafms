@@ -10585,7 +10585,7 @@ button.submitButton.mini {
   border: 2px solid var(--primary-color);
 }
 
-button.buttonButton > div.mini,
+button.buttonButton > div.mini:not(.unset),
 button.submitButton > div.mini {
   width: 1.5rem;
   height: 1.5rem;
