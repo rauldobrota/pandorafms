@@ -29,8 +29,8 @@ function clippy_agent_module_interval()
     $return_tours['tours']['agent_module_interval']['steps'] = [];
     $return_tours['tours']['agent_module_interval']['steps'][] = [
         'init_step_context' => true,
-        'intro'             => __('Pandora FMS is designed to monitor thousands of elements. It is possible to use very low sampling intervals using specific elements for it (Satellite Server) but doing it in a centralized way can have a severe impact in the performance, that\'s why we limit it to intervals of at least 60 seconds. Even then, you should only do 60 second sampling on very specific modules. The impact on your infrastructure can be severe, leading to event storms and delays in other monitoring. If you are going to use 60-second intervals, we recommend that you disable unknown detection to avoid unwanted events and use FlipFlop\'s protection settings.'),
-        'title'             => __('Data Configuration Module.'),
+        'intro'             => __('Pandora FMS has been designed to monitor thousands of elements. It is possible to use very low sampling intervals by using specific items for that purpose (Satellite Server), but doing so in a centralized way may negatively affect performance. That is why it is limited to 60-second intervals. Even so, 60-second interval sampling should only take place in very specific modules. The impact on your infrastructure may be severe, leading to event storms and monitoring delays. Should you use 60-second intervals, it is recommended to disable unknown detection monitoring to avoid undesired events and use the FlipFlop protection setup'),
+        'title'             => __('Notice'),
         'img'               => html_print_image(
             'images/info-warning.svg',
             true,

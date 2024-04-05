@@ -131,6 +131,10 @@ if ($update_agents) {
     ) {
         if (get_parameter('interval') != -2) {
             $values['intervalo'] = get_parameter('interval');
+
+            if ($values['intervalo'] < 60) {
+                $values['intervalo'] = 60;
+            }
         }
     }
 

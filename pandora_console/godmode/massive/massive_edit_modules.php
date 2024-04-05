@@ -2444,6 +2444,10 @@ function process_manage_edit($module_name, $agents_select=null, $module_status='
             case 'module_interval':
                 if ($value != 0) {
                     $values[$field] = $value;
+
+                    if ($values[$field] < 60) {
+                        $values[$field] = 60;
+                    }
                 }
             break;
 
