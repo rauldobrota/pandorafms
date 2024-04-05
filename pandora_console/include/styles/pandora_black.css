@@ -1916,6 +1916,10 @@ div#dashboard-controls-slides
   color: var(--text-color) !important;
 }
 
+div.events-refresh-pure {
+  background-color: #333;
+}
+
 .empty-view-buttons {
   border-color: #94a1bb14;
 }
