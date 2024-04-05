@@ -1935,3 +1935,12 @@ div.events-refresh-pure {
 #tree-controller-recipient .tree-node:last-of-type > .leaf-icon {
   background-image: url(../../images/tree/corner@tree-dark.svg);
 }
+
+/* Datepicker */
+#ui-datepicker-div .ui-datepicker-header,
+#ui-datepicker-div .ui-datepicker-header select option,
+.ui-datepicker-calendar th,
+.ui-datepicker-calendar th * {
+  background-color: var(--secondary-color);
+  color: var(--text-color) !important;
+}
