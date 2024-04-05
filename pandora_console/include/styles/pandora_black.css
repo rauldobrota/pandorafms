@@ -926,8 +926,12 @@ input:disabled {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   margin-right: 2px;
-  background-color: #222 !important;
 }
+
+.file_table_modal_active {
+  background-color: #333;
+}
+
 div.criticity {
   width: 150px;
   height: 2em;

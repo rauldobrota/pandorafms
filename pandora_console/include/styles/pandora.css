@@ -5638,7 +5638,11 @@ input:checked + .p-slider:before {
 
 #file_table_modal {
   display: flex;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  margin-left: -12px;
+  margin-right: -12px;
+  border-bottom: 1px solid;
+  border-color: var(--border-color);
 }
 
 #file_table_modal .create_folder,
@@ -5648,7 +5652,6 @@ input:checked + .p-slider:before {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   margin-right: 2px;
-  background-color: #e6e6e6;
 }
 
 .file_table_buttons a:last-child img,
@@ -5710,8 +5713,8 @@ input:checked + .p-slider:before {
 }
 
 .file_table_modal_active {
-  background-color: #fff;
-  border: 1px solid #e6e6e6;
+  background-color: #e6e6e6;
+  border: 1px solid var(--border-color);
   border-bottom: none;
 }
 
