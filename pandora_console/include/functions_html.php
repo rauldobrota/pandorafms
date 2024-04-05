@@ -2077,7 +2077,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             $data['mModuleGroup'],
             explode(',', $data['mAgents']),
             !$commonModules,
-            true,
+            !is_metaconsole(),
             (bool) $commonModules,
             false
         );

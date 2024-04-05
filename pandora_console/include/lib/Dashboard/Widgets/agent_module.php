@@ -515,7 +515,7 @@ class AgentModuleWidget extends Widget
 
             foreach ($allModules as $module_name) {
                 if (is_numeric($module_name)) {
-                    $module_name = modules_get_agentmodule_name($module_name);
+                    $module_name = io_safe_output(modules_get_agentmodule_name($module_name));
                 }
 
                 $file_name = ui_print_truncate_text(
@@ -748,13 +748,17 @@ class AgentModuleWidget extends Widget
                     $fullname = $item[1];
                     if ($this->values['mShowCommonModules'] !== 'on') {
                         $item = explode('&#x20;&raquo;&#x20;', $fullname);
-                        $name = $item[1];
+                        $name = $item[2];
                         $carry['modules_selected'][$serverId][$name] = null;
                         $carry['modules'][$name] = null;
                     } else {
                         $carry['modules'][$fullname] = null;
                     }
                 } else {
+                    if (is_numeric($item) === true) {
+                        $item = modules_get_agentmodule_name($item);
+                    }
+
                     $carry['modules'][$item] = null;
                 }
 
