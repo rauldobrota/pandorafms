@@ -64,8 +64,6 @@ function menu_print_menu(&$menu)
         $sec2 = 'godmode/alerts/alert_actions';
     } else if ($sec2 === 'godmode/alerts/configure_alert_command') {
         $sec2 = 'godmode/alerts/alert_commands';
-    } else if ($sec2 === 'enterprise/godmode/setup/edit_skin') {
-        $sec2 = 'enterprise/godmode/setup/setup_skins';
     } else if ($sec2 === 'operation/agentes/networkmap.dinamic') {
         $sec2 = 'operation/agentes/pandora_networkmap';
     } else if ($sec2 === 'godmode/gis_maps/configure_gis_map') {
@@ -153,6 +151,14 @@ function menu_print_menu(&$menu)
         if (empty($operation) === false) {
             $sec2 = $sec2.'&operation='.$operation;
         }
+    } else if ($sec2 === 'godmode/reporting/reporting_builder') {
+        $tab = (string) get_parameter('tab', '');
+        $action = (string) get_parameter('action', '');
+        if ($tab === 'template' && $action === 'list_template') {
+            $sec2 = $sec2.'&tab=template&action=list_template';
+        }
+    } else if ($sec2 === 'godmode/reporting/manage_schedule') {
+        $sec2 = 'godmode/reporting/schedule';
     } else if ($sec2 === 'godmode/users/configure_user') {
         $sec2 = 'godmode/users/user_list';
     } else if ($sec2 === 'godmode/modules/manage_inventory_modules_form') {

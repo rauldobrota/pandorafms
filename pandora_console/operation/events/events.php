@@ -130,24 +130,28 @@ $severity = get_parameter(
     'filter[severity]',
     ($filter['severity'] ?? '')
 );
-if (isset($filter['regex']) === true) {
-    $regex = get_parameter(
-        'filter[regex]',
-        (io_safe_output($filter['regex']) ?? '')
-    );
-} else {
-    $regex = '';
-}
-
-unset($filter['regex']);
 $status = get_parameter(
     'filter[status]',
     ($filter['status'] ?? '')
 );
+
+$regex_switch = (bool) get_parameter(
+    'filter[regex]',
+    ($filter['regex'] ?? false)
+);
+
 $search = get_parameter(
     'filter[search]',
     ($filter['search'] ?? '')
 );
+
+$regex = '';
+
+if ($regex_switch === true) {
+    $regex = $search;
+    $search = '';
+}
+
 $not_search = get_parameter(
     'filter[not_search]',
     0
@@ -480,10 +484,15 @@ if (is_ajax() === true) {
 
             if (empty($events) === false) {
                 $redirection_form_id = 0;
+                if ((int) $filter['group_rep'] > 0) {
+                    $events_comments = [];
+                } else {
+                    $events_comments = reduce_events_comments($events, $filter);
+                }
 
                 $data = array_reduce(
                     $events,
-                    function ($carry, $item) use ($table_id, &$redirection_form_id, $filter, $compact_date, $external_url, $compact_name_event, $regex) {
+                    function ($carry, $item) use ($table_id, &$redirection_form_id, $filter, $compact_date, $external_url, $compact_name_event, $regex, $events_comments) {
                         global $config;
 
                         $tmp = (object) $item;
@@ -671,12 +680,16 @@ if (is_ajax() === true) {
 
                         $tmp->instructions = events_get_instructions($item, 15);
 
-                        $tmp->user_comment = ui_print_comments(
-                            event_get_last_comment(
-                                $item,
-                                $filter
-                            )
-                        );
+                        if ((int) $filter['group_rep'] > 0) {
+                            $tmp->user_comment = ui_print_comments(
+                                event_get_last_comment(
+                                    $item,
+                                    $filter
+                                )
+                            );
+                        } else if (isset($events_comments[$tmp->server_id.'_'.$tmp->id_evento]) === true) {
+                            $tmp->user_comment = ui_print_comments($events_comments[$tmp->server_id.'_'.$tmp->id_evento]);
+                        }
 
                         // Grouped events.
                         if (isset($tmp->max_id_evento) === true
@@ -1245,7 +1258,7 @@ if (is_ajax() === true) {
 
                                 $field = strip_tags($field);
 
-                                if (preg_match('/'.$regex.'/', $field)) {
+                                if (preg_match('/'.io_safe_output($regex).'/', $field)) {
                                     $regex_validation = true;
                                 }
                             }
@@ -1371,8 +1384,15 @@ if ($loaded_filter !== false && $from_event_graph != 1 && isset($fb64) === false
         $id_user_ack = $filter['id_user_ack'];
         $owner_user = $filter['owner_user'];
         $group_rep = $filter['group_rep'];
-        $tag_with = json_decode(io_safe_output($filter['tag_with']));
-        $tag_without = json_decode(io_safe_output($filter['tag_without']));
+        $tag_with = [];
+        if ($filter['tag_with'] !== null) {
+            $tag_with = json_decode(io_safe_output($filter['tag_with']));
+        }
+
+        $tag_without = [];
+        if ($filter['tag_with'] !== null) {
+            $tag_without = json_decode(io_safe_output($filter['tag_without']));
+        }
 
         $tag_with_base64 = base64_encode(json_encode($tag_with));
         $tag_without_base64 = base64_encode(json_encode($tag_without));
@@ -1653,13 +1673,10 @@ $url .= '';
 if ($pure) {
     // Fullscreen.
     // Floating menu - Start.
-    echo '<div id="vc-controls" class="zindex999"">';
+    echo '<div id="vc-controls" class="events-refresh-pure"">';
 
-    echo '<div id="menu_tab" class="menu_tab_pure">';
-    echo '<ul class="mn">';
-
+    echo '<div>';
     // Quit fullscreen.
-    echo '<li class="nomn">';
     echo '<a target="_top" href="'.$url.'&amp;pure=0">';
     echo html_print_image(
         'images/exit_fullscreen@svg.svg',
@@ -1670,12 +1687,10 @@ if ($pure) {
         ]
     );
     echo '</a>';
-    echo '</li>';
+    echo '</div>';
+
 
     // Countdown.
-    echo '<li class="nomn">';
-    echo '<div class="events-refr">';
-    echo '<div class="events-countdown"><span id="refrcounter"></span></div>';
     echo '<div id="events-refr-form">';
     echo __('Refresh').':';
     echo html_print_select(
@@ -1690,16 +1705,8 @@ if ($pure) {
         false
     );
     echo '</div>';
-    echo '</div>';
-    echo '</li>';
 
-    // Console name.
-    echo '<li class="nomn">';
-    echo '<div class="vc-title">'.__('Event viewer').'</div>';
-    echo '</li>';
-
-    echo '</ul>';
-    echo '</div>';
+    echo '<div class="events-countdown"><span id="refrcounter"></span></div>';
 
     echo '</div>';
     // Floating menu - End.
@@ -2086,10 +2093,32 @@ $data .= html_print_checkbox_switch(
     true
 );
 
+$data .= '<label class="vert-align-bottom pdd_r_15px">';
+$data .= __('Not');
 $data .= ui_print_help_tip(
     __('Search for elements NOT containing given text.'),
     true
 );
+$data .= '</label>';
+
+$data .= html_print_checkbox_switch(
+    'regex',
+    $regex,
+    $regex,
+    true,
+    false,
+    'checked_slide_events(this);',
+    true
+);
+
+$data .= '<label class="vert-align-bottom pdd_r_15px">';
+$data .= __('Regexp');
+$data .= ui_print_help_tip(
+    __('Search by regular expression.'),
+    true
+);
+$data .= '</label>';
+
 $data .= '</div>';
 
 $in = '<div class="filter_input filter_input_not_search"><label>'.__('Free search').'</label>';
@@ -2124,12 +2153,6 @@ $data = html_print_select(
 );
 $in = '<div class="filter_input"><label>'.__('Severity').'</label>';
 $in .= $data.'</div>';
-$inputs[] = $in;
-
-// REGEX search datatable.
-$in = '<div class="filter_input"><label>'.__('Regex search').ui_print_help_tip(__('Filter the results of the current page with regular expressions. It works on Agent name, Event name, Extra ID, Source, Custom data and Comment fields.'), true).'</label>';
-$in .= html_print_input_text('regex', $regex, '', '', 255, true);
-$in .= '</div>';
 $inputs[] = $in;
 
 // User private filter.
@@ -2816,8 +2839,6 @@ try {
         ],
         true
     );
-
-
 
     // Print datatable.
     html_print_div(
@@ -3833,4 +3854,9 @@ function show_events_graph(){
         }
     });
 }
+
+$(document).ready(function () {
+    var controls = document.querySelector('.events-refresh-pure');
+    autoHideElement(controls, 1000);
+});
 </script>

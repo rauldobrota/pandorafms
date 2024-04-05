@@ -3398,8 +3398,10 @@ function graph_custom_sql_graph(
 
         if ($count <= $max_num_elements) {
             $label = __('Data');
+            $full_label = __('Data');
             if (empty($data_item['label']) === false) {
                 $label = io_safe_output($data_item['label']);
+                $full_label = io_safe_output($data_item['label']);
                 if (strlen($label) > $SQL_GRAPH_MAX_LABEL_SIZE) {
                     $first_label = $label;
                     $label = substr(
@@ -3413,13 +3415,15 @@ function graph_custom_sql_graph(
             $labels_bar[] = $label;
             if ($type === 'sql_graph_hbar') {
                 $data_bar[] = [
-                    'y' => $label,
-                    'x' => $value,
+                    'full_title' => $full_label,
+                    'y'          => $label,
+                    'x'          => $value,
                 ];
             } else {
                 $data_bar[] = [
-                    'x' => $label,
-                    'y' => $value,
+                    'full_title' => $full_label,
+                    'x'          => $label,
+                    'y'          => $value,
                 ];
             }
 
@@ -3492,6 +3496,9 @@ function graph_custom_sql_graph(
                     'y' => [
                         'grid' => ['display' => false],
                     ],
+                ],
+                'tooltip'   => [
+                    'title' => ['fullTitle' => true],
                 ],
                 'labels'    => $labels_bar,
             ];
@@ -4093,7 +4100,7 @@ function fullscale_data(
             $data['sum'.$series_suffix]['min'] = $min_value_total;
             $data['sum'.$series_suffix]['max'] = $max_value_total;
             $data['sum'.$series_suffix]['avg'] = 0;
-            if (isset($count_data_total) === true) {
+            if (isset($count_data_total) === true && $count_data_total > 0) {
                 $data['sum'.$series_suffix]['avg'] = ($sum_data_total / $count_data_total);
             }
         }
@@ -5614,6 +5621,24 @@ function draw_form_stat_win(array $form_data, string $tab_active)
                 false,
                 false
             ).'</div>';
+
+            $table->data[7][0] = __('Type graph');
+            $table->data[7][1] = '<div class="small-input-select2">'.html_print_select(
+                [
+                    'tabs-chart-module-graph' => __('Module Graph'),
+                    'tabs-chart-period-graph' => __('Sliced'),
+                ],
+                'graph_tab',
+                $form_data['graph_tab'],
+                '',
+                '',
+                0,
+                true,
+                false,
+                false
+            ).'</div>';
+            $table->data[7][2] = '';
+            $table->data[7][3] = '';
         }
     } else {
         $table->data[0][0] = __('Refresh time');
@@ -5785,6 +5810,22 @@ function draw_form_stat_win(array $form_data, string $tab_active)
             0,
             7,
             true
+        ).'</div>';
+
+        $table->data[8][0] = __('Type graph');
+        $table->data[8][1] = '<div class="small-input-select2">'.html_print_select(
+            [
+                'tabs-chart-module-graph' => __('Module Graph'),
+                'tabs-chart-period-graph' => __('Sliced'),
+            ],
+            'graph_tab',
+            $form_data['graph_tab'],
+            '',
+            '',
+            0,
+            true,
+            false,
+            false
         ).'</div>';
     }
 

@@ -45,8 +45,8 @@ our @EXPORT = qw(
 	);
 
 # version: Defines actual version of Pandora Server for this module only
-my $pandora_version = "7.0NG.775";
-my $pandora_build = "240223";
+my $pandora_version = "7.0NG.776";
+my $pandora_build = "240405";
 our $VERSION = $pandora_version." ".$pandora_build;
 
 # Setup hash
@@ -566,7 +566,6 @@ sub pandora_load_config {
 
 	$pa_config->{"netflowserver"} = 0; # 7.0.770
 	$pa_config->{"netflowserver_threads"} = 1; # 7.0.770
-	$pa_config->{"ha_mode"} = "pacemaker"; # 7.0.770
 	$pa_config->{"ha_file"} = undef; # 7.0.770
 	$pa_config->{"ha_hosts_file"} = '/var/spool/pandora/data_in/conf/pandora_ha_hosts.conf'; # 7.0.770
 	$pa_config->{"ha_connect_retries"} = 2; # 7.0.770
@@ -588,6 +587,8 @@ sub pandora_load_config {
 	$pa_config->{"ssl_verify"} = 0; # 7.0 774
 
 	$pa_config->{"madeserver"} = 0; # 774.
+
+	$pa_config->{"multiprocess"} = 0; # 775.
 
 	$pa_config->{"too_many_xml"} = 10; # 776.
 
@@ -1336,11 +1337,6 @@ sub pandora_load_config {
 		elsif ($parametro =~ m/^ncm_ssh_utility\s+(.*)/i) {
 			$pa_config->{'ncm_ssh_utility'}= clean_blank($1);
 		}
-
-		# Pandora HA extra
-		elsif ($parametro =~ m/^ha_mode\s(.*)/i) {
-			$pa_config->{'ha_mode'} = clean_blank($1);
-		}
 		elsif ($parametro =~ m/^ha_file\s(.*)/i) {
 			$pa_config->{'ha_file'} = clean_blank($1);
 		}
@@ -1416,10 +1412,13 @@ sub pandora_load_config {
 		elsif ($parametro =~ m/^ssl_verify\s+([0-1])/i) {
 			$pa_config->{'ssl_verify'} = clean_blank($1);
 		}
-		elsif ($parametro =~ m/^madeserver\s+([0-1])/i){
+		elsif ($parametro =~ m/^madeserver\s+([0-1])/i) {
 			$pa_config->{'madeserver'}= clean_blank($1);
 		}
-		elsif ($parametro =~ m/^too_many_xml\s+([0-9]*)/i){
+		elsif ($parametro =~ m/^multiprocess\s+([0-1])/i) {
+			$pa_config->{'multiprocess'}= clean_blank($1);
+		}
+		elsif ($parametro =~ m/^too_many_xml\s+([0-9]*)/i) {
 			$pa_config->{'too_many_xml'}= clean_blank($1);
 		}
 	} # end of loop for parameter #

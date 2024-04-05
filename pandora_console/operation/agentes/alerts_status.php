@@ -363,6 +363,13 @@ if (isset($agent_view_page) === false) {
 }
 
 if ($agent_view_page === true) {
+    $alerts_count = alerts_get_alerts(0, '', 'all', -1, true, true, $agent['id_agente']);
+    $disabled_alert = false;
+    // Optimal limit to display alerts.
+    if ((int) $alerts_count > AGENT_ALERT_LIMIT) {
+        $disabled_alert = true;
+    }
+
     ui_print_datatable(
         [
             'id'                  => 'alerts_status_datatable',
@@ -405,7 +412,7 @@ if ($agent_view_page === true) {
                 'no_toggle' => true,
                 'class'     => 'flex',
             ],
-            'start_disabled'      => true,
+            'start_disabled'      => $disabled_alert,
         ]
     );
 } else {
@@ -486,6 +493,11 @@ if (is_metaconsole() === false) {
                 ['type' => 'form_action']
             );
         }
+    } else {
+        html_print_action_buttons(
+            '',
+            ['type' => 'form_action']
+        );
     }
 } else {
     echo "<form method='post' action='index.php?sec=galertas&sec2=godmode/alerts/alert_list&tab=builder&pure=0'>";
@@ -505,7 +517,6 @@ $html_content = ob_get_clean();
 
 if ($agent_view_page === true) {
     // Create controlled toggle content.
-    $alerts_count = alerts_get_alerts(0, '', 'all', -1, $true, true, $agent['id_agente']);
     html_print_div(
         [
             'class'   => 'agent_details_line',

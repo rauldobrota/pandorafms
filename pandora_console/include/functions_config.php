@@ -92,6 +92,8 @@ function config_update_value($token, $value, $noticed=false, $password=false)
 
     if (isset($config[$token]) === false) {
         $config[$token] = $value;
+        $value = io_safe_output($value);
+
         if (($password === false)) {
             return (bool) config_create_value($token, io_safe_input($value));
         } else {
@@ -205,7 +207,7 @@ function config_update_config()
                         $error_update[] = __('Chromium config directory');
                     }
 
-                    if (config_update_value('loginhash_pwd', io_input_password((string) get_parameter('loginhash_pwd')), true) === false) {
+                    if (config_update_value('loginhash_pwd', (string) get_parameter('loginhash_pwd'), true, true) === false) {
                         $error_update[] = __('Auto login (hash) password');
                     }
 
@@ -249,7 +251,7 @@ function config_update_config()
                         $error_update[] = __('IP list with API access');
                     }
 
-                    if (config_update_value('api_password', io_input_password(get_parameter('api_password')), true) === false) {
+                    if (config_update_value('api_password', get_parameter('api_password'), true, true) === false) {
                         $error_update[] = __('API password');
                     }
 
@@ -439,7 +441,7 @@ function config_update_config()
                         $error_update[] = __('Email user');
                     }
 
-                    if (config_update_value('email_password', io_input_password(get_parameter('email_password')), true) === false) {
+                    if (config_update_value('email_password', get_parameter('email_password'), true, true) === false) {
                         $error_update[] = __('Email password');
                     }
 
@@ -483,7 +485,7 @@ function config_update_config()
                             $error_update[] = __('Replication DB user');
                         }
 
-                        if (config_update_value('replication_dbpass', io_input_password((string) get_parameter('replication_dbpass')), true) === false) {
+                        if (config_update_value('replication_dbpass', (string) get_parameter('replication_dbpass'), true, true) === false) {
                             $error_update[] = __('Replication DB password');
                         }
 
@@ -501,10 +503,6 @@ function config_update_config()
 
                         if (config_update_value('enable_update_manager', get_parameter('enable_update_manager'), true) === false) {
                             $error_update[] = __('Enable Update Manager');
-                        }
-
-                        if (config_update_value('legacy_database_ha', get_parameter('legacy_database_ha'), true) === false) {
-                            $error_update[] = __('Legacy database HA');
                         }
 
                         if (config_update_value('agent_vulnerabilities', get_parameter('agent_vulnerabilities'), true) === false) {
@@ -708,7 +706,7 @@ function config_update_config()
                         $error_update[] = __('Admin LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass', io_input_password(get_parameter('ldap_admin_pass')), true) === false) {
+                    if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
                         $error_update[] = __('Admin LDAP password');
                     }
 
@@ -744,7 +742,7 @@ function config_update_config()
                         $error_update[] = __('Admin secondary LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass_secondary', io_input_password(get_parameter('ldap_admin_pass_secondary')), true) === false) {
+                    if (config_update_value('ldap_admin_pass_secondary', get_parameter('ldap_admin_pass_secondary'), true, true) === false) {
                         $error_update[] = __('Admin secondary LDAP password');
                     }
 
@@ -792,7 +790,7 @@ function config_update_config()
                         $error_update[] = __('User');
                     }
 
-                    if (config_update_value('rpandora_pass', io_input_password(get_parameter('rpandora_pass')), true) === false) {
+                    if (config_update_value('rpandora_pass', get_parameter('rpandora_pass'), true, true) === false) {
                         $error_update[] = __('Password');
                     }
 
@@ -1441,6 +1439,10 @@ function config_update_config()
                         );
                     }
 
+                    if (config_update_value('tabs_menu', get_parameter('tabs_menu', 'both'), true) === false) {
+                        $error_update[] = __('Tabs menu');
+                    }
+
                     // --------------------------------------------------
                     // CUSTOM VALUES POST PROCESS
                     // --------------------------------------------------
@@ -1764,7 +1766,7 @@ function config_update_config()
                         $error_update[] = __('Database user');
                     }
 
-                    if (config_update_value('history_db_pass', io_input_password(get_parameter('history_db_pass')), true) === false) {
+                    if (config_update_value('history_db_pass', get_parameter('history_db_pass'), true, true) === false) {
                         $error_update[] = __('Database password');
                     }
 
@@ -1912,7 +1914,7 @@ function config_update_config()
                         $error_update[] = __('eHorus user');
                     }
 
-                    if (config_update_value('ehorus_pass', io_input_password((string) get_parameter('ehorus_pass', $config['ehorus_pass'])), true) === false) {
+                    if (config_update_value('ehorus_pass', (string) get_parameter('ehorus_pass', $config['ehorus_pass']), true, true) === false) {
                         $error_update[] = __('eHorus password');
                     }
 
@@ -1942,7 +1944,7 @@ function config_update_config()
                         $error_update[] = __('Enable Pandora ITSM');
                     }
 
-                    if (config_update_value('ITSM_token', io_input_password((string) get_parameter('ITSM_token', $config['ITSM_token'])), true) === false) {
+                    if (config_update_value('ITSM_token', (string) get_parameter('ITSM_token', $config['ITSM_token']), true, true) === false) {
                         $error_update[] = __('Pandora ITSM token');
                     }
 
@@ -1968,6 +1970,27 @@ function config_update_config()
                     $ITSM_agents_sync = (int) get_parameter('ITSM_agents_sync', $config['ITSM_agents_sync']);
                     if (config_update_value('ITSM_agents_sync', $ITSM_agents_sync, true) === false) {
                         $error_update[] = __('Pandora ITSM API agents sync');
+                    }
+
+                    $ITSM_mode_agents_sync = (int) get_parameter(
+                        'ITSM_mode_agents_sync',
+                        $config['ITSM_mode_agents_sync']
+                    );
+                    if (config_update_value('ITSM_mode_agents_sync', $ITSM_mode_agents_sync, true) === false) {
+                        $error_update[] = __('Pandora ITSM mode agents to synch');
+                    }
+
+                    $ITSM_groups_agents_sync = get_parameter(
+                        'ITSM_groups_agents_sync',
+                        null
+                    );
+
+                    if (empty($ITSM_groups_agents_sync) === false) {
+                        $ITSM_groups_agents_sync = json_encode($ITSM_groups_agents_sync);
+                    }
+
+                    if (config_update_value('ITSM_groups_agents_sync', $ITSM_groups_agents_sync, true) === false) {
+                        $error_update[] = __('Pandora ITSM groups agents to synch');
                     }
 
                     $incident_default_group = (int) get_parameter('default_group', $config['default_group']);
@@ -2198,7 +2221,7 @@ function config_process_config()
     }
 
     if (!isset($config['loginhash_pwd'])) {
-        config_update_value('loginhash_pwd', io_input_password((rand(0, 1000) * rand(0, 1000)).'pandorahash'));
+        config_update_value('loginhash_pwd', (rand(0, 1000) * rand(0, 1000)).'pandorahash', false, true);
     }
 
     if (!isset($config['trap2agent'])) {
@@ -2422,10 +2445,6 @@ function config_process_config()
 
     if (!isset($config['enable_update_manager'])) {
         config_update_value('enable_update_manager', 1);
-    }
-
-    if (!isset($config['legacy_database_ha'])) {
-        config_update_value('legacy_database_ha', 0);
     }
 
     if (!isset($config['disabled_newsletter'])) {
@@ -2804,7 +2823,7 @@ function config_process_config()
     }
 
     if (!isset($config['custom_splash_login'])) {
-        config_update_value('custom_splash_login', 'none.png');
+        config_update_value('custom_splash_login', 'default');
     }
 
     if (!isset($config['custom_docs_logo'])) {
@@ -3921,6 +3940,14 @@ function config_process_config()
         config_update_value('ITSM_agents_sync', 20);
     }
 
+    if (!isset($config['ITSM_mode_agents_sync'])) {
+        config_update_value('ITSM_mode_agents_sync', 0);
+    }
+
+    if (!isset($config['ITSM_groups_agents_sync'])) {
+        config_update_value('ITSM_groups_agents_sync', null);
+    }
+
     // Module Library.
     if (!isset($config['module_library_user'])) {
         config_update_value('module_library_user', '');
@@ -3940,6 +3967,10 @@ function config_process_config()
 
     if (isset($config['control_session_timeout']) === false) {
         config_update_value('control_session_timeout', 'check_activity');
+    }
+
+    if (isset($config['tabs_menu']) === false) {
+        config_update_value('tabs_menu', 'both');
     }
 
     // Finally, check if any value was overwritten in a form.

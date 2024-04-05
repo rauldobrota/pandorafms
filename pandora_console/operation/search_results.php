@@ -168,9 +168,12 @@ if ($searchModules) {
 if ($searchPolicies) {
     $policies_tab = [
         'text'   => "<a href='index.php?search_category=policies&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
-            'images/policies_mc.png',
+            'images/policy@svg.svg',
             true,
-            ['title' => __('Policies')]
+            [
+                'title' => __('Policies'),
+                'class' => 'main_menu_icon',
+            ]
         ).'</a>',
         'active' => $searchTab == 'policies',
     ];
@@ -206,7 +209,7 @@ ui_print_standard_header(
 );
 
 $only_count = false;
-hd(io_safe_input($_SESSION['stringSearchSQL']), true);
+
 switch ($searchTab) {
     case 'main':
         $only_count = true;

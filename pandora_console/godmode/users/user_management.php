@@ -249,7 +249,7 @@ $userManagementTable->data['fields_fullname'][0] = html_print_input_text_extende
 // User Email.
 $userManagementTable->rowclass['captions_email'] = 'field_half_width';
 $userManagementTable->rowclass['fields_email'] = 'field_half_width';
-$userManagementTable->data['captions_email'][0] = __('Email');
+$userManagementTable->data['captions_email'][0] = __('Email').ui_print_help_tip(__('This will be the email used in those alert actions that the email makes use of. It will also be the email used for user notifications that wer configured in this way.'), true);
 $userManagementTable->data['fields_email'][0] = html_print_input_text_extended(
     'email',
     $user_info['email'],
@@ -296,7 +296,7 @@ if (empty($doubleAuthentication) === false) {
 
 if (users_is_admin() === true) {
     $globalProfileContent = [];
-    $globalProfileContent[] = '<span>'.__('Administrator user').'</span>';
+    $globalProfileContent[] = '<span>'.__('Administrator user').ui_print_help_tip(__('This type of \'superadmin\' has no restrictions whatsoever. If you want to create partial administrators, use the profile and group-based privilege system.'), true).'</span>';
     $globalProfileContent[] = html_print_checkbox_switch(
         'is_admin',
         0,
@@ -720,10 +720,10 @@ if (is_metaconsole() === true) {
         $userManagementTable->data['line2_looknfeel'][1] = $outputMetaAccess[1];
     }
 } else {
-    if (function_exists('skins_print_select')) {
-        $userManagementTable->data['line1_looknfeel'][1] = __('User color scheme').$hin_change_theme;
-        $userManagementTable->data['line2_looknfeel'][1] = skins_print_select($id_usr, 'skin', $user_info['id_skin'], '', __('None'), 0, true);
-    }
+    $userManagementTable->data['line1_looknfeel'][1] = __('User color scheme').$hin_change_theme;
+    $skins[DEFAULT_THEME] = __('Default theme');
+    $skins[BLACK_THEME] = __('Black theme');
+    $userManagementTable->data['line2_looknfeel'][1] = html_print_select($skins, 'skin', $user_info['id_skin'], '', __('None'), 0, true);
 }
 
 $performance_variables_control = (array) json_decode(io_safe_output($config['performance_variables_control']));

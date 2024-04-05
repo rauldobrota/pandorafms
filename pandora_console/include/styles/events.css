@@ -180,11 +180,6 @@ form.flex-row div.filter_input.filter_input_switch .p-slider {
   width: 30px;
 }
 
-form .filter_input_not_search .p-switch {
-  flex: 0 1 30px;
-  margin: 0;
-}
-
 fieldset {
   margin: 0 auto;
 }
@@ -588,4 +583,21 @@ div.container-filter-buttons {
 
 #button-start-search {
   width: 115px;
+}
+
+.events-refresh-pure {
+  position: fixed;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  width: 450px;
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #f2f6f7;
+  border-radius: 15px;
+  padding: 0px 10px;
 }

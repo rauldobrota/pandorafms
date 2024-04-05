@@ -73,6 +73,10 @@ function io_safe_input($value)
 {
     // Stop!! Are you sure to modify this critical code? Because the older
     // versions are serius headache in many places of Pandora.
+    if (empty($value) === true) {
+        return $value;
+    }
+
     if (is_numeric($value)) {
         return $value;
     }
@@ -84,6 +88,10 @@ function io_safe_input($value)
 
     if (isset($value) === true && !mb_check_encoding($value, 'UTF-8')) {
         $value = utf8_encode($value);
+    }
+
+    if (preg_match('/<\/?script(.*?)>/', $value)) {
+        $value = preg_replace('/<\/?script(.*?)>/', '', $value);
     }
 
     $valueHtmlEncode = htmlentities(($value ?? ''), ENT_QUOTES, 'UTF-8', true);

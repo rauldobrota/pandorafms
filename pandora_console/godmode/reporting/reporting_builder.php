@@ -750,7 +750,7 @@ switch ($action) {
                 true
             ),
             html_print_input_text(
-                __('search'),
+                'search',
                 $search,
                 '',
                 30,
@@ -911,7 +911,7 @@ switch ($action) {
 
 
             // Admin options only for RM flag.
-            if (check_acl($config['id_user'], 0, 'RM')) {
+            if (check_acl($config['id_user'], 0, 'RR')) {
                 $table->head[$next] = __('Private');
                 $table->headstyle[$next] = 'min-width: 40px;text-align: left;';
                 $table->size[$next] = '2%';
@@ -929,7 +929,7 @@ switch ($action) {
 
                 $next++;
                 $op_column = false;
-                if (is_metaconsole() === false) {
+                if (is_metaconsole() === false && check_acl($config['id_user'], 0, 'RM')) {
                     $op_column = true;
                     $table->head[$next] = '<span title="Operations">'.__('Op.').'</span>'.html_print_checkbox(
                         'all_delete',
@@ -1082,7 +1082,7 @@ switch ($action) {
                 }
 
                 // Admin options only for RM flag.
-                if (check_acl($config['id_user'], 0, 'RM')) {
+                if (check_acl($config['id_user'], 0, 'RR')) {
                     if ($report['private'] == 1) {
                         $data[$next] = __('Yes');
                     } else {
@@ -1280,24 +1280,6 @@ switch ($action) {
                     'message'  => __('No data found.'),
                 ]
             );
-        }
-
-        $discovery_tasklist = new DiscoveryTaskList();
-        $report_task_data = $discovery_tasklist->showListConsoleTask(true);
-        if (is_array($report_task_data) === true || (strpos($report_task_data, 'class="nf"') === false && $report_task_data !== -1)) {
-            $task_table = '<div class="mrgn_top_15px white_box">';
-            $task_table .= '<span class="white_table_graph_header">'.__('Report tasks');
-            $task_table .= ui_print_help_tip(__('To schedule a report, do it from the editing view of each report.'), true);
-            $task_table .= '</span><div>';
-            $task_table .= $report_task_data;
-            $task_table .= '</div></div>';
-            echo $task_table;
-        } else {
-            if ($report_task_data === -1) {
-                $report_task_data = '';
-            }
-
-            ui_print_info_message($report_task_data.__('To schedule a report, do it from the editing view of each report.'));
         }
 
         if (check_acl($config['id_user'], 0, 'RW')
@@ -2426,10 +2408,15 @@ switch ($action) {
                             $values['server_name'] = get_parameter('combo_server_sql');
 
                             if ($sql !== '') {
+                                // Replaces possible macros to check the validity of the query
+                                $macros_sql = $sql;
+                                $macros_sql = str_replace('_start_date_', '0', $macros_sql);
+                                $macros_sql = str_replace('_end_date_', 'NOW()', $macros_sql);
+
                                 if ($values['server_name'] === 'all') {
                                     $servers_connection = metaconsole_get_connections();
                                     foreach ($servers_connection as $key => $s) {
-                                        $good_format = db_validate_sql($sql, $s['server_name']);
+                                        $good_format = db_validate_sql($macros_sql, $s['server_name']);
                                     }
 
                                     // Reconnected in nodo if exist.
@@ -2441,9 +2428,9 @@ switch ($action) {
                                     }
                                 } else if ($server_id === 0) {
                                     // Connect with node if not exist conexion.
-                                    $good_format = db_validate_sql($sql, (is_metaconsole() === true) ? $values['server_name'] : false);
+                                    $good_format = db_validate_sql($macros_sql, (is_metaconsole() === true) ? $values['server_name'] : false);
                                 } else {
-                                    $good_format = db_validate_sql($sql);
+                                    $good_format = db_validate_sql($macros_sql);
                                 }
                             }
                         } else if ($values['type'] == 'url') {
@@ -3371,10 +3358,15 @@ switch ($action) {
 
 
                             if ($sql !== '') {
+                                // Replaces possible macros to check the validity of the query
+                                $macros_sql = $sql;
+                                $macros_sql = str_replace('_start_date_', '0', $macros_sql);
+                                $macros_sql = str_replace('_end_date_', 'NOW()', $macros_sql);
+
                                 if ($values['server_name'] === 'all') {
                                     $servers_connection = metaconsole_get_connections();
                                     foreach ($servers_connection as $key => $s) {
-                                        $good_format = db_validate_sql($sql, $s['server_name']);
+                                        $good_format = db_validate_sql($macros_sql, $s['server_name']);
                                     }
 
                                     // Reconnected in nodo if exist.
@@ -3386,9 +3378,9 @@ switch ($action) {
                                     }
                                 } else if ($server_id === 0) {
                                     // Connect with node if not exist conexion.
-                                    $good_format = db_validate_sql($sql, (is_metaconsole() === true) ? $values['server_name'] : false);
+                                    $good_format = db_validate_sql($macros_sql, (is_metaconsole() === true) ? $values['server_name'] : false);
                                 } else {
-                                    $good_format = db_validate_sql($sql);
+                                    $good_format = db_validate_sql($macros_sql);
                                 }
                             }
                         } else if ($values['type'] == 'url') {

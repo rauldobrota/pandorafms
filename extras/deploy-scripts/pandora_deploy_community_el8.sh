@@ -20,7 +20,7 @@ LOGFILE="/tmp/pandora-deploy-community-$(date +%F).log"
 # define default variables
 [ "$TZ" ]       || TZ="Europe/Madrid"
 [ "$MYVER" ]    || MYVER=80
-[ "$PHPVER" ]   || PHPVER=8
+[ "$PHPVER" ]   || PHPVER=8.2
 [ "$DBHOST" ]   || DBHOST=127.0.0.1
 [ "$DBNAME" ]   || DBNAME=pandora
 [ "$DBUSER" ]   || DBUSER=pandora
@@ -48,6 +48,9 @@ green="\e[0;92m"
 cyan="\e[0;36m"
 yellow="\e[33m"
 reset="\e[0m"
+
+#force lts to install php 8.0
+[ "$PANDORA_LTS" -eq '1' ] && PHPVER=8.0
 
 # Functions
 execute_cmd () {
@@ -289,13 +292,13 @@ execute_cmd "dnf install -y wget" "Installing wget"
 
 #Installing php
 execute_cmd "dnf module reset -y php " "Disabling standard PHP module"
-if [ "$PHPVER" -ne '8' ] ; then
-    execute_cmd "dnf module install -y php:remi-7.4" "Configuring PHP 7"
+
+if [ "$PHPVER" == '8' ] ; then
+    PHPVER=8.0
 fi
 
-if [ "$PHPVER" -eq '8' ] ; then
-    execute_cmd "dnf module install -y php:remi-8.0" "Configuring PHP 8"
-fi
+    execute_cmd "dnf module install -y php:remi-${PHPVER}" "Configuring PHP ${PHPVER}"
+
 
     # Install percona Database
 execute_cmd "dnf module disable -y mysql" "Disabiling mysql module"
@@ -391,8 +394,8 @@ console_dependencies=" \
     mod_ssl \
     libzstd \
     openldap-clients \
-    https://firefly.pandorafms.com/centos8/chromium-110.0.5481.177-1.el7.x86_64.rpm \
-    https://firefly.pandorafms.com/centos8/chromium-common-110.0.5481.177-1.el7.x86_64.rpm \
+    https://firefly.pandorafms.com/centos8/chromium-122.0.6261.128-1.el8.x86_64.rpm \
+    https://firefly.pandorafms.com/centos8/chromium-common-122.0.6261.128-1.el8.x86_64.rpm \
     https://firefly.pandorafms.com/centos8/perl-Net-Telnet-3.04-1.el8.noarch.rpm \
     https://firefly.pandorafms.com/centos8/pandora_gotty-1.0-1.el8.x86_64.rpm \
     https://firefly.pandorafms.com/centos8/pandorafms_made-0.1.0-1.el8.x86_64.rpm \
@@ -414,7 +417,6 @@ server_dependencies=" \
     perl(Sys::Syslog) \
     perl(DBI) \
     perl(XML::Simple) \
-    perl(Geo::IP) \
     perl(IO::Socket::INET6) \
     perl(XML::Twig) \
     expect \
@@ -454,7 +456,6 @@ ipam_dependencies=" \
     perl(Sys::Syslog) \
     perl(DBI) \
     perl(XML::Simple) \
-    perl(Geo::IP) \
     perl(IO::Socket::INET6) \
     perl(XML::Twig)"
 execute_cmd "dnf install -y $ipam_dependencies" "Installing IPAM Instant client"
@@ -629,30 +630,14 @@ include (\$ownDir . "config_process.php");
 EO_CONFIG_F
 
 cat > /etc/httpd/conf.d/pandora.conf << EO_CONFIG_F
+ServerTokens Prod
 <Directory "/var/www/html">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride All
     Require all granted
 </Directory>
 
 EO_CONFIG_F
-
-# Add ws proxy options to apache.
-cat >> /etc/httpd/conf.modules.d/00-proxy.conf << 'EO_HTTPD_MOD'
-LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
-
-EO_HTTPD_MOD
-
-cat >> /etc/httpd/conf.d/wstunnel.conf << 'EO_HTTPD_WSTUNNEL'
-ProxyRequests Off
-<Proxy *>
-    Require all granted
-</Proxy>
-
-ProxyPass /ws ws://127.0.0.1:8080
-ProxyPassReverse /ws ws://127.0.0.1:8080
-
-EO_HTTPD_WSTUNNEL
 
 # Temporal quitar htaccess
 sed -i -e "s/php_flag engine off//g" $PANDORA_CONSOLE/images/.htaccess
@@ -810,16 +795,6 @@ EO_LRA
 
 chmod 0644 /etc/logrotate.d/pandora_server
 chmod 0644 /etc/logrotate.d/pandora_agent
-
-# Add websocket engine start script.
-mv /var/www/html/pandora_console/pandora_websocket_engine /etc/init.d/ &>> "$LOGFILE"
-chmod +x /etc/init.d/pandora_websocket_engine
-
-# Start Websocket engine
-/etc/init.d/pandora_websocket_engine start &>> "$LOGFILE"
-
-# Configure websocket to be started at start.
-systemctl enable pandora_websocket_engine &>> "$LOGFILE"
 
 # Enable pandora ha service
 systemctl enable pandora_server --now &>> "$LOGFILE"

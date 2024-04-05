@@ -23,7 +23,7 @@ rm -f $LOGFILE &> /dev/null # remove last log before start
 
 # define default variables
 [ "$TZ" ] || TZ="Europe/Madrid"
-[ "$PHPVER" ] || PHPVER=8.0
+[ "$PHPVER" ] || PHPVER=8.2
 [ "$DBHOST" ] || DBHOST=127.0.0.1
 [ "$DBNAME" ] || DBNAME=pandora
 [ "$DBUSER" ] || DBUSER=pandora
@@ -49,6 +49,10 @@ red="\e[0;91m"
 green="\e[0;92m"
 cyan="\e[0;36m"
 reset="\e[0m"
+
+#force lts to install php 8.0
+[ "$PANDORA_LTS" -eq '1' ] && PHPVER=8.0
+
 
 # Functions
 
@@ -367,7 +371,7 @@ ln -s /usr/bin/fping /usr/sbin/fping &>> "$LOGFILE"
 
 # Chrome
 rm -f /usr/bin/chromium-browser &>> "$LOGFILE"
-CHROME_VERSION=google-chrome-stable_110.0.5481.177-1_amd64.deb
+CHROME_VERSION=google-chrome-stable_122.0.6261.128-1_amd64.deb
 execute_cmd "wget https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/${CHROME_VERSION}" "Downloading google chrome"
 execute_cmd "apt install -y ./${CHROME_VERSION}" "Intalling google chrome"
 execute_cmd "ln -s /usr/bin/google-chrome /usr/bin/chromium-browser" "Creating /usr/bin/chromium-browser Symlink"
@@ -526,7 +530,7 @@ if [ "$PANDORA_LTS" -eq '1' ] ; then
 elif [ "$PANDORA_LTS" -ne '1' ] ; then
     [ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_server-7.0NG.tar.gz"
     [ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_console-7.0NG.tar.gz"
-    [ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="  https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_agent_linux-7.0NG.x86_64.tar.gz"
+    [ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_agent_linux-7.0NG.x86_64.tar.gz"
 fi
 
 if [ "$PANDORA_BETA" -eq '1' ] ; then
@@ -597,6 +601,7 @@ EOF_PARAM
 
 a2enmod ssl &>> "$LOGFILE"
 a2enmod headers &>> "$LOGFILE"
+a2enmod rewrite &>> "$LOGFILE" 
 a2enconf ssl-params &>> "$LOGFILE"
 a2ensite default-ssl &>> "$LOGFILE"
 a2enconf ssl-params &>> "$LOGFILE"
@@ -636,23 +641,13 @@ EO_CONFIG_F
 
 #Enable allow Override
 cat > /etc/apache2/conf-enabled/pandora_security.conf << EO_CONFIG_F
+ServerTokens Prod
 <Directory "/var/www/html">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride All
     Require all granted
 </Directory>
 EO_CONFIG_F
-
-#Enable quickshell proxy
-cat >> /etc/apache2/mods-enabled/00-proxy.conf << 'EO_HTTPD_WSTUNNEL'
-ProxyRequests Off
-<Proxy *>
-    Require all granted
-</Proxy>
-
-ProxyPass /ws ws://127.0.0.1:8080
-ProxyPassReverse /ws ws://127.0.0.1:8080
-EO_HTTPD_WSTUNNEL
 
 # Fixing console permissions
 chmod 600 $PANDORA_CONSOLE/include/config.php &>> "$LOGFILE"
@@ -808,16 +803,6 @@ EO_LRA
 chmod 0644 /etc/logrotate.d/pandora_server
 chmod 0644 /etc/logrotate.d/pandora_agent
 
-# Add websocket engine start script.
-mv /var/www/html/pandora_console/pandora_websocket_engine /etc/init.d/ &>> "$LOGFILE"
-chmod +x /etc/init.d/pandora_websocket_engine
-
-# Start Websocket engine
-/etc/init.d/pandora_websocket_engine start &>> "$LOGFILE"
-
-# Configure websocket to be started at start.
-systemctl enable pandora_websocket_engine &>> "$LOGFILE"
-
 # Enable pandora ha service
 execute_cmd "/etc/init.d/pandora_server start" "Starting Pandora FMS Server"
 systemctl enable pandora_server &>> "$LOGFILE"
@@ -849,6 +834,11 @@ systemctl enable postfix --now &>> "$LOGFILE"
 # Disable snmptrapd
 systemctl disable --now snmptrapd &>> "$LOGFILE"
 systemctl disable --now snmptrapd.socket &>> "$LOGFILE"
+
+# Adding legacy to openssl
+sed -i '/default = default_sect/a legacy = legacy_sect' /etc/ssl/openssl.cnf
+sed -i 's/# activate = 1/activate = 1/' /etc/ssl/openssl.cnf
+sed -i '/activate = 1/a [legacy_sect]\nactivate = 1' /etc/ssl/openssl.cnf
 
 #SSH banner
 [ "$(curl -s ifconfig.me)" ] && ipplublic=$(curl -s ifconfig.me)

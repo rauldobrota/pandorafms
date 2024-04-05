@@ -317,6 +317,11 @@ function clippy_context_help($help=null)
         $title = $clippy_data_configuration_module['tours']['data_configuration_module']['steps'][0]['title'];
         $intro = $clippy_data_configuration_module['tours']['data_configuration_module']['steps'][0]['intro'];
         $img   = $clippy_data_configuration_module['tours']['data_configuration_module']['steps'][0]['img'];
+    } else if ($help === 'modules_not_learning_mode') {
+        $clippy_modules_not_learning_mode = clippy_modules_not_learning_mode();
+        $title = $clippy_modules_not_learning_mode['tours']['modules_not_learning_mode']['steps'][0]['title'];
+        $intro = $clippy_modules_not_learning_mode['tours']['modules_not_learning_mode']['steps'][0]['intro'];
+        $img   = $clippy_modules_not_learning_mode['tours']['modules_not_learning_mode']['steps'][0]['img'];
     } else if ($help === 'agent_module_interval') {
         $clippy_agent_module_interval = clippy_agent_module_interval();
         $title = $clippy_agent_module_interval['tours']['agent_module_interval']['steps'][0]['title'];
@@ -330,7 +335,7 @@ function clippy_context_help($help=null)
         );
     }
 
-    $return = $code.'<div id="'.$id.'" class="inline"><a onclick="show_'.$id.'();" href="javascript: void(0);" >'.$img.'</a></div>
+    $return = $code.'<div id="'.$id.'" class="inline div-'.$help.'"><a onclick="show_'.$id.'();" href="javascript: void(0);" >'.$img.'</a></div>
         <script type="text/javascript">
         
         function show_'.$id.'() {

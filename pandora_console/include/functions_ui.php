@@ -1337,7 +1337,7 @@ function ui_format_alert_row(
         } else {
             $module_linked = policies_is_module_linked($alert['id_agent_module']);
             if ($module_linked === '0') {
-                $img = 'images/unlinkpolicy.png';
+                $img = 'images/unlinkpolicy.svg';
             } else {
                 $img = 'images/policy@svg.svg';
             }
@@ -1502,14 +1502,41 @@ function ui_format_alert_row(
         metaconsole_restore_db();
     }
 
-    if (empty($actions) === false || $actionDefault != '') {
-        $actionText = '<div><ul class="action_list">';
+    $actionText = '';
+
+    if ($actionDefault !== '' && $actionDefault !== false) {
+        $actionDefault_name = db_get_sql(
+            sprintf(
+                'SELECT name FROM talert_actions WHERE id = %d',
+                $actionDefault
+            )
+        );
         foreach ($actions as $action) {
-            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li>'.$action['name'];
+            if ($actionDefault_name === $action['name']) {
+                $hide_actionDefault = true;
+            } else {
+                $hide_actionDefault = false;
+            }
+        }
+
+        if ($hide_actionDefault !== true) {
+            $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
+        }
+    }
+
+    if (empty($actions) === false || $actionDefault != '') {
+        $actionText .= '<div><ul class="action_list">';
+        foreach ($actions as $action) {
+            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li class="">';
+            $actionText .= '<div class="flex_center mrgn_top-22px">';
+            $actionText .= '<div class="mrgn_lft_0px_imp">';
+            $actionText .= $action['name'];
             if ($action['fires_min'] != $action['fires_max']) {
                 $actionText .= ' ('.$action['fires_min'].' / '.$action['fires_max'].')';
             }
 
+            $actionText .= '</div>';
+            $actionText .= '<div class="flex_center table_action_buttons mrgn_lft_0px_imp">';
             $actionText .= ui_print_help_tip(__('The default actions will be executed every time that the alert is fired and no other action is executed'), true);
             // Is possible manage actions if have LW permissions in the agent group of the alert module.
             if (is_metaconsole() === true) {
@@ -1520,7 +1547,7 @@ function ui_format_alert_row(
                         [
                             'alt'   => __('Delete action'),
                             'title' => __('Delete action'),
-                            'class' => 'main_menu_icon invert_filter vertical_baseline',
+                            'class' => 'main_menu_icon invert_filter vertical_baseline action_button_hidden',
                         ]
                     ).'</a>';
                 }
@@ -1534,7 +1561,7 @@ function ui_format_alert_row(
                         true,
                         [
                             'title'   => __('Update action'),
-                            'class'   => 'main_menu_icon invert_filter',
+                            'class'   => 'main_menu_icon invert_filter action_button_hidden',
                             'onclick' => 'show_display_update_action(\''.$action['original_id'].'\',\''.$alert['id'].'\',\''.$alert['id_agent_module'].'\',\''.$action['original_id'].'\',\''.$alert['agent_name'].'\')',
                         ]
                     );
@@ -1542,32 +1569,15 @@ function ui_format_alert_row(
                 }
             }
 
+            $actionText .= '</div>';
+            $actionText .= '</div>';
+
             $actionText .= '<div id="update_action-div-'.$alert['id'].'" class="invisible">';
             $actionText .= '</div>';
             $actionText .= '</li></span></div>';
         }
 
         $actionText .= '</ul></div>';
-
-        if ($actionDefault !== '' && $actionDefault !== false) {
-            $actionDefault_name = db_get_sql(
-                sprintf(
-                    'SELECT name FROM talert_actions WHERE id = %d',
-                    $actionDefault
-                )
-            );
-            foreach ($actions as $action) {
-                if ($actionDefault_name === $action['name']) {
-                    $hide_actionDefault = true;
-                } else {
-                    $hide_actionDefault = false;
-                }
-            }
-
-            if ($hide_actionDefault !== true) {
-                $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
-            }
-        }
     }
 
     $data[$index['action']] = $actionText;
@@ -2942,18 +2952,22 @@ function ui_print_help_tip(
         $img = 'images/info@svg.svg';
     }
 
-    $output = '<a href="javascript:" class="tip" style="'.$style.'" >';
+    $text_title = (strlen($text) >= 60) ? substr($text, 0, 60).'...' : $text;
+
+    $id = random_int(1, 99999);
+    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" >';
+    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.io_safe_output($text).'</span></div>';
     $output .= html_print_image(
         $img,
         true,
         [
-            'title' => $text,
+            'title' => $text_title,
             'class' => $blink === true ? 'blink' : '',
             'style' => 'width: 16px; height: 16px;',
         ],
         false,
         $is_relative && is_metaconsole()
-    ).'</a>';
+    ).'</div>';
 
     if ($return) {
         return $output;
@@ -3450,6 +3464,7 @@ function get_shape_status_set($type)
         case STATUS_SERVER_OK:
         case STATUS_SERVER_DOWN:
         case STATUS_SERVER_CRASH:
+        case STATUS_SERVER_STANDBY:
             $return = ['class' => 'status_small_squares'];
         break;
 
@@ -3650,7 +3665,11 @@ function ui_progress(
                             data = data_array[1];
                         }
                         try {
-                            val = JSON.parse(data);
+                            if (isNaN(data) === true) {
+                                val = JSON.parse(data);
+                            } else {
+                                val = data;
+                            }
 
                             $("#'.$id.'").attr("data-label", val + " %");
                             $("#'.$id.'_progress").width(val+"%");
@@ -5398,7 +5417,7 @@ function ui_print_page_header(
 
     if (is_metaconsole() === true) {
         if ($help != '') {
-            $buffer .= "<div class='head_help'>".ui_print_help_icon($help, true, '', 'images/help_30.png').'</div>';
+            $buffer .= "<div class='head_help rounded-icon-header'>".ui_print_help_icon($help, true, '', 'images/help@header.svg').'</div>';
         }
     }
 
@@ -5410,6 +5429,18 @@ function ui_print_page_header(
 
     if (is_array($options)) {
         $buffer .= '<div id="menu_tab"><ul class="mn">';
+
+        $menu_dots_class = 'menu-dots-hide';
+        if (isset($dots) === true && $dots !== '' && $config['tabs_menu'] !== 'icons') {
+            $menu_dots_class = 'menu-dots-show';
+        }
+
+        if (isset($dots) === true && $dots !== '') {
+            $buffer .= '<li class="nomn menu-dots-li '.$menu_dots_class.'">';
+            $buffer .= '<div id="menu_dots">'.$dots.'</div>';
+            $buffer .= '</li>';
+        }
+
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
@@ -5419,6 +5450,13 @@ function ui_print_page_header(
                 // $buffer .= '</li>';
             } else {
                 if (is_array($option)) {
+                    if ($config['tabs_menu'] === 'menu' && (isset($dots) === true && $dots !== '')) {
+                        $tabs_class = 'tabs-hide';
+                        if (isset($option['active']) === true && (bool) $option['active'] === true) {
+                            $tabs_class = 'tabs-show';
+                        }
+                    }
+
                     $class = 'nomn';
                     if (isset($option['active'])) {
                         if ($option['active']) {
@@ -5435,7 +5473,7 @@ function ui_print_page_header(
                         $class .= ($godmode) ? ' tab_godmode' : ' tab_operation';
                     }
 
-                    $buffer .= '<li class="'.$class.' ">';
+                    $buffer .= '<li class="'.$class.' '.$tabs_class.'">';
                     $buffer .= $option['text'];
                     if (isset($option['sub_menu'])) {
                         $buffer .= $option['sub_menu'];
@@ -5451,11 +5489,19 @@ function ui_print_page_header(
         }
 
         $buffer .= '</ul>';
-        if (isset($dots) === true) {
-            $buffer .= '<div id="menu_dots">'.$dots.'</div>';
-        }
-
         $buffer .= '</div>';
+
+        if (is_metaconsole() === false) {
+            $buffer .= '
+            <script>
+                menuTabsShowHide();
+                
+                $(window).on("resize", function() {
+                menuTabsShowHide();
+                });
+            </script>
+        ';
+        }
     } else {
         if ($options != '') {
             $buffer .= '<div id="menu_tab"><ul class="mn"><li>';
@@ -7294,7 +7340,7 @@ function ui_print_message_dialog($title, $text, $id='', $img='', $text_button=''
  *
  * @return null
  */
-function ui_query_result_editor($name='default')
+function ui_query_result_editor($name='default', $button_in_action_buttons=true)
 {
     $editorSubContainer = html_print_div(
         [
@@ -7370,9 +7416,22 @@ function ui_query_result_editor($name='default')
         ]
     );
 
-    $execute_button = html_print_submit_button(__('Execute query'), 'execute_query', false, ['icon' => 'update'], true);
-    html_print_action_buttons($execute_button);
+    $execute_button = html_print_submit_button(
+        __('Execute query'),
+        'execute_query',
+        false,
+        [
+            'icon'  => 'update',
+            'class' => 'float-right',
+        ],
+        true
+    );
 
+    if ($button_in_action_buttons === true) {
+        html_print_action_buttons($execute_button);
+    } else {
+        echo $execute_button;
+    }
 }
 
 

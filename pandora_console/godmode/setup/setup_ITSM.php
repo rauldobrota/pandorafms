@@ -56,11 +56,18 @@ try {
     $status_values = $ITSM->getStatus();
     $object_types_values = $ITSM->getObjectypes();
     if ((bool) get_parameter('update_config', 0) === true) {
+        $ITSM_groups_agents_sync_base = null;
+        if (empty($config['ITSM_groups_agents_sync']) === false) {
+            $ITSM_groups_agents_sync_base = base64_encode($config['ITSM_groups_agents_sync']);
+        }
+
         $set_config_inventories = $ITSM->createNode(
             [
-                'serverAuth'         => $config['server_unique_identifier'],
-                'apiPass'            => $config['api_password'],
+                'serverAuth'         => md5($config['server_unique_identifier']),
+                'apiPass'            => md5($config['api_password']),
                 'agentsForExecution' => $config['ITSM_agents_sync'],
+                'groups'             => $ITSM_groups_agents_sync_base,
+                'mode'               => $config['ITSM_mode_agents_sync'],
                 'path'               => $config['ITSM_public_url'],
                 'label'              => array_keys(servers_get_names())[0],
                 'nodeId'             => $config['metaconsole_node_id'],
@@ -69,7 +76,7 @@ try {
     }
 
     try {
-        $node = $ITSM->getNode($config['server_unique_identifier']);
+        $node = $ITSM->getNode(md5($config['server_unique_identifier']));
     } catch (\Throwable $th) {
         $node = [];
     }
@@ -123,7 +130,7 @@ $table_remote->data['ITSM_user_level_conf'] = $row;
 $row = [];
 $row['hostname'] = html_print_label_input_block(
     __('URL to Pandora ITSM setup').ui_print_help_tip(
-        __('Full URL to your Pandora ITSM setup (e.g., http://192.168.1.20/integria/api/v1).'),
+        __('Full URL (e.g., http://192.168.1.20/XXX/api/v2).'),
         true
     ),
     html_print_input_text(
@@ -180,7 +187,7 @@ $button_test .= html_print_image(
     'images/status_sets/default/severity_normal.png',
     true
 );
-$button_test .= '&nbsp;'.__('Connection its OK').'</span>';
+$button_test .= '&nbsp;'.__('Connection is OK').'</span>';
 $button_test .= '<span id="ITSM-failure" class="invisible">&nbsp;';
 $button_test .= html_print_image(
     'images/status_sets/default/severity_critical.png',
@@ -190,7 +197,7 @@ $button_test .= '&nbsp;'.__('Connection failed').'</span>';
 $button_test .= '&nbsp;<span id="ITSM-message" class="invisible"></span>';
 
 $row['control'] = html_print_label_input_block(
-    __('Test connection pandora to ITSM'),
+    __('Test connection PFMS to Pandora ITSM'),
     $button_test,
     ['div_class' => 'ITSM-remote-setup-ITSM_token']
 );
@@ -206,8 +213,8 @@ if (empty($itsm_public_url) === true) {
 }
 
 $row['publicUrl'] = html_print_label_input_block(
-    __('URL conect to API %s', get_product_name()).ui_print_help_tip(
-        __('Full URL to your Pandora (e.g., http://192.168.1.20).'),
+    __('URL connect to API %s', get_product_name()).ui_print_help_tip(
+        __('Full URL (e.g., http://192.168.1.20/XXX/api/v2).'),
         true
     ),
     html_print_input_text(
@@ -221,7 +228,7 @@ $row['publicUrl'] = html_print_label_input_block(
 );
 
 $row['agentsSync'] = html_print_label_input_block(
-    __('Number Agents to synchronize').ui_print_help_tip(
+    __('Number of Agents to synchronize').ui_print_help_tip(
         __('Number of agents that will synchronize at the same time, minimum 10 max 1000'),
         true
     ),
@@ -236,6 +243,55 @@ $row['agentsSync'] = html_print_label_input_block(
 );
 
 $table_remote->data['ITSM_sync_inventory'] = $row;
+
+$row = [];
+$itsm_groups_agents_sync = [];
+if (empty($config['ITSM_groups_agents_sync']) === false) {
+    $itsm_groups_agents_sync = json_decode(
+        io_safe_output($config['ITSM_groups_agents_sync']),
+        true
+    );
+}
+
+$mode_values = [
+    1 => __('Enable'),
+    2 => __('Disable'),
+];
+
+$row['modeAgentsSync'] = html_print_label_input_block(
+    __('Synchronize agents mode'),
+    html_print_select(
+        $mode_values,
+        'ITSM_mode_agents_sync',
+        $config['ITSM_mode_agents_sync'],
+        '',
+        __('All'),
+        0,
+        true,
+        false,
+        true,
+        '',
+        false
+    )
+);
+
+$row['groupsAgentsSync'] = html_print_label_input_block(
+    __('Agent groups to synchronize'),
+    html_print_select_groups(
+        false,
+        'AW',
+        false,
+        'ITSM_groups_agents_sync[]',
+        $itsm_groups_agents_sync,
+        '',
+        '',
+        '',
+        true,
+        true
+    )
+);
+
+$table_remote->data['ITSM_sync_inventory_filters'] = $row;
 
 // Test.
 $row = [];
@@ -261,7 +317,7 @@ $button_test_pandora .= html_print_image(
     'images/status_sets/default/severity_normal.png',
     true
 );
-$button_test_pandora .= '&nbsp;'.__('Connection its OK').'</span>';
+$button_test_pandora .= '&nbsp;'.__('Connection is OK').'</span>';
 $button_test_pandora .= '<span id="ITSM-failure-pandora" class="invisible">&nbsp;';
 $button_test_pandora .= html_print_image(
     'images/status_sets/default/severity_critical.png',
@@ -300,7 +356,7 @@ if (empty($node) === false) {
 
     // $progressbar .= (empty($node['dateStart']) === false) ? human_time_comparation($node['dateStart']) : __('Never');
     $row['control-test-pandora'] = html_print_label_input_block(
-        __('Progress agents to synch'),
+        __('Progress on agents to be synchronized'),
         $progressbar
     );
 }

@@ -24,6 +24,7 @@ use POSIX qw(setsid strftime);
 use POSIX;
 use HTML::Entities;
 use Encode;
+use Encode::MIME::Header;
 use Socket qw(inet_ntoa inet_aton);
 use Sys::Syslog;
 use Scalar::Util qw(looks_like_number);
@@ -182,6 +183,7 @@ our @EXPORT = qw(
 	check_cron_element
 	cron_check
 	p_pretty_json
+	apply_timezone_offset
 );
 
 # ID of the different servers
@@ -610,6 +612,7 @@ sub set_file_permissions($$;$) {
 			my $uid  = getpwnam($pa_config->{'user'});
 			my $gid  = getgrnam($pa_config->{'group'});
 			my $perm = $grants & (~oct($pa_config->{'umask'}));
+			$gid = getgrnam("www-data") if (!defined($gid));
 
 			chown $uid, $gid, $file;
 			chmod ( $perm, $file );
@@ -645,6 +648,7 @@ sub safe_input($) {
 
 	return "" unless defined($value);
 
+    $value =~ s/<\/?script(.*?)>//gs;
 	$value =~ s/(.)/$CHR2ENT{$1}||$1/ge;
 	
 	return $value;
@@ -2995,6 +2999,33 @@ sub p_pretty_json {
 
 	return $output;
 }
+
+################################################################################
+# Apply a timezone offset to the given timestamp.
+################################################################################
+sub apply_timezone_offset {
+	my ($timestamp, $timezone_offset) = @_;
+
+	# Nothing to be done.
+	return $timestamp if (!defined($timezone_offset) || $timezone_offset == 0);
+
+	# Convert the timestamp to seconds.
+	my $utimestamp = 0;
+	eval {
+		if ($timestamp =~ /(\d+)[\/|\-](\d+)[\/|\-](\d+) +(\d+):(\d+):(\d+)/) {
+			$utimestamp = strftime("%s", $6, $5, $4, $3, $2 -1 , $1 - 1900);
+		}
+	};
+	
+	# Something went wrong.
+	return $timestamp if ($@);
+
+	# Apply the offset and convert back to timestamp.
+	$timestamp = strftime ("%Y-%m-%d %H:%M:%S", localtime($utimestamp + ($timezone_offset * 3600)));
+
+	return $timestamp;
+}
+
 1;
 __END__
 

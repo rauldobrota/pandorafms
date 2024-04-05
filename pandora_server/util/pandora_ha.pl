@@ -442,16 +442,6 @@ sub ha_database_connect_pandora($) {
 	# Select a new master database.
 	my ($dbh, $utimestamp, $max_utimestamp) = (undef, undef, -1);
 
-  my @disabled_nodes = get_disabled_nodes($conf);
-
-  # If there are disabled nodes ignore them from the HA_DB_Hosts.
-  if(scalar @disabled_nodes ne 0){
-    @HA_DB_Hosts = grep { my $item = $_; !grep { $_ eq $item } @disabled_nodes } @HA_DB_Hosts;
-
-    my $data = join(",", @disabled_nodes);
-    log_message($conf, 'LOG', "Ignoring disabled hosts: " . $data);
-  }
-
 	foreach my $ha_dbhost (@HA_DB_Hosts) {
 
 		# Retry each database ha_connect_retries times.
@@ -478,6 +468,13 @@ sub ha_database_connect_pandora($) {
 		# No luck. Try the next database.
 		next unless defined($dbh);
 
+    # Check if database is disabled.
+    if (defined(get_db_value($dbh, 'SELECT `id` FROM `tdatabase` WHERE `host` = "' . $ha_dbhost . '" AND disabled = 1')))
+    {
+      log_message($conf, 'LOG', "Ignoring disabled host: " . $ha_dbhost);
+      db_disconnect($dbh);
+      next;
+    }
 		eval {
 		   # Get the most recent utimestamp from the database.
 		   $utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
@@ -542,119 +539,6 @@ sub ha_restart_pandora($) {
     `$config->{'pandora_service_cmd'} $control_command 2>/dev/null`;
 }
 
-###############################################################################
-# Get ip of the disabled nodes.
-###############################################################################
-sub get_disabled_nodes($) {
-  my ($conf) = @_;
-  
-  my $dbh = db_connect('mysql',
-						  $conf->{'dbname'},
-						  $conf->{'dbhost'},
-						  $conf->{'dbport'},
-						  $conf->{'ha_dbuser'},
-						  $conf->{'ha_dbpass'});
-
-  my $disabled_nodes = get_db_value($dbh, "SELECT value FROM tconfig WHERE token = 'ha_disabled_nodes'");
-  
-  if(!defined($disabled_nodes) || $disabled_nodes eq ""){
-    $disabled_nodes = ',';
-  }
-
-  my @disabled_nodes = split(',', $disabled_nodes);
-
-  if(scalar @disabled_nodes ne 0){
-    $disabled_nodes = join(",", @disabled_nodes);
-    @disabled_nodes = get_db_rows($dbh, "SELECT host FROM tdatabase WHERE id IN ($disabled_nodes)");
-    @disabled_nodes = map { $_->{host} } @disabled_nodes;
-  }
-
-  return @disabled_nodes;
-}
-
-###############################################################################
-# Main (Pacemaker)
-###############################################################################
-sub ha_main_pacemaker($) {
-  my ($conf) = @_;
-
-  # Set the PID file.
-  $conf->{'PID'} = $PID_FILE;
-
-  # Log to a separate file if needed.
-  $conf->{'log_file'} = $conf->{'ha_log_file'} if defined ($conf->{'ha_log_file'});
-
-  $Running = 1;
-
-  ha_daemonize($conf) if ($DAEMON == 1);
-
-  while ($Running) {
-    eval {
-      eval { 
-        local $SIG{__DIE__};
-        # Load enterprise components.
-        enterprise_load($conf, 1);
-
-        # Register Enterprise logger
-        enterprise_hook('pandoraha_logger', [\&log_message]);
-        log_message($conf, 'LOG', 'Enterprise capabilities loaded');
-
-      };
-      if ($@) {
-        # No enterprise capabilities.
-        log_message($conf, 'LOG', 'No enterprise capabilities');
-      }
-
-      # Start the Pandora FMS server if needed.
-      log_message($conf, 'LOG', 'Checking the pandora_server service.');
-
-      # Connect to a DB.
-      my $dbh = ha_database_connect($conf);
-
-      if ($First_Cleanup == 1) {
-        log_message($conf, 'LOG', 'Cleaning previous unfinished actions');
-        enterprise_hook('pandoraha_cleanup_states', [$conf, $dbh]);
-        $First_Cleanup = 0;
-      }
-
-      # Check if there are updates pending.
-      ha_update_server($conf, $dbh);
-
-      # Keep pandora running
-      ha_keep_pandora_running($conf, $dbh);
-
-      # Keep Tentacle running
-      ha_keep_tentacle_running($conf, $dbh);
-    
-      # Keep MADE running
-      ha_keep_made_running($conf, $dbh);
-
-      # Are we the master?
-      pandora_set_master($conf, $dbh);
-      if (!pandora_is_master($conf)) {
-        log_message($conf, 'LOG', $conf->{'servername'} . ' is not the current master. Skipping DB-HA actions and monitoring.');
-        # Exit current eval.
-        return;
-      }
-
-      # Synchronize database.
-      enterprise_hook('pandoraha_sync_node', [$conf, $dbh]);
-
-      # Monitoring.
-      enterprise_hook('pandoraha_monitoring', [$conf, $dbh]);
-    
-      # Pending actions.
-      enterprise_hook('pandoraha_process_queue', [$conf, $dbh, $First_Cleanup]);
-    
-      # Cleanup and exit
-      db_disconnect ($dbh);
-    };
-    log_message($conf, 'WARNING', $@) if ($@);
-
-    log_message($conf, 'LOG', "Sleep.");
-    sleep($conf->{'ha_interval'});
-  }
-}
 
 ###############################################################################
 # Main (Pandora)
@@ -743,6 +627,9 @@ sub ha_main_pandora($) {
       # Execute resync actions.
       enterprise_hook('pandoraha_resync_dbs', [$conf, $dbh, $DB_Host, \@HA_DB_Hosts]);
 
+      # Update and push HA databases info to Metaconsole or nodes.
+      enterprise_hook('pandoraha_update_and_push_databases_info', [$conf, $dbh]);
+
       # Synchronize nodes.
       enterprise_hook('pandoraha_sync_node', [$conf, $dbh]);
     };
@@ -793,11 +680,6 @@ ha_init_pandora(\%Conf);
 # Read config file
 ha_load_pandora_conf (\%Conf);
 
-# Main
-if (defined($Conf{'ha_mode'}) && lc($Conf{'ha_mode'}) eq 'pandora') {
-	ha_main_pandora(\%Conf);
-} else {
-	ha_main_pacemaker(\%Conf);
-}
+ha_main_pandora(\%Conf);
 
 exit 0;

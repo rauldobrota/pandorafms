@@ -54,7 +54,14 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         // ======= Servers List ===============================================
         if ((bool) check_acl($config['id_user'], 0, 'AW') !== false) {
             $servers = [];
-            $servers['all'] = (int) count((servers_get_info() ?? []));
+            $servers_info = servers_get_info();
+
+            $servers['all'] = 0;
+
+            if ($servers_info !== null && $servers_info !== false) {
+                $servers['all'] = (int) count($servers_info);
+            }
+
             if ($servers['all'] != 0) {
                 $servers['up'] = (int) servers_check_status();
                 $servers['down'] = ($servers['all'] - $servers['up']);
@@ -592,21 +599,12 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
     function filter_notification() {
         let notification_type = '';
         $('.notification-item').hide();
-        $(".checkbox_filter_notifications:checkbox:checked").each(function() {
-            notification_type = $(this).val();
-            console.log(notification_type);
-            $('.notification-item[value='+notification_type+']').show();
-            if (notification_type == 'All'){
-                $('.notification-item').show();
-            }
-        });
+        notification_type = $("#notifications_filter_options").val()
 
-        if (notification_type == 'All'){
+        if (notification_type === 'All') {
             $('.notification-item').show();
-        }
-
-        if (notification_type == ''){
-            $('.notification-item').hide();
+        } else {
+            $('.notification-item[value='+notification_type+']').show();
         }
     }
 
@@ -1051,8 +1049,10 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                         })
                     }
                 },
+                closeOnEscape: true,
                 onload: () => {
                     $(document).ready(function () {
+                        $(".ui-dialog-titlebar-close").hide();
                         var buttonpane = $("div[aria-describedby='welcome_modal_window'] .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix");
                         $(buttonpane).append(`
                         <div class="welcome-wizard-buttons">

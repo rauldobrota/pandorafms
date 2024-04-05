@@ -179,6 +179,7 @@ function testConectionApiItsmToPandora(path) {
       } else {
         showFailureImage();
         showMessage();
+        $("span#ITSM-message-pandora").html(data);
       }
     })
     .fail(function() {

@@ -58,7 +58,6 @@ if ($id_group > 0) {
         $alerts_disabled = $group['disabled'];
         $custom_id = $group['custom_id'];
         $propagate = $group['propagate'];
-        $skin = $group['id_skin'];
         $contact = $group['contact'];
         $other = $group['other'];
         $description = $group['description'];
@@ -80,7 +79,6 @@ if ($id_group > 0) {
     $alerts_disabled = 0;
     $custom_id = '';
     $propagate = 0;
-    $skin = 0;
     $contact = '';
     $other = '';
     $description = '';
@@ -234,7 +232,7 @@ $table->data[1][0] = html_print_label_input_block(
 
 if ((bool) $config['enterprise_installed'] === true) {
     $table->data[1][1] .= html_print_label_input_block(
-        __('Group Password'),
+        __('Group Password').ui_print_help_tip(__('If a group is password protected, it will only accept XML from those software agents that have a group password configured with the same name. Do not use spaces or symbols.'), true),
         html_print_input_password('group_pass', $group_pass, '', 16, 255, true)
     );
 }
@@ -250,7 +248,7 @@ $table->data[2][1] = html_print_label_input_block(
 );
 
 $table->data[3][0] = html_print_label_input_block(
-    __('Custom ID'),
+    __('Custom ID').ui_print_help_tip(__('It is an external ID used for integrations. Do not use spaces or symbols.'), true),
     html_print_input_text('custom_id', $custom_id, '', 16, 255, true)
 );
 
@@ -261,12 +259,12 @@ $table->data[3][1] = html_print_label_input_block(
 
 $table->data[4][0] = html_print_label_input_block(
     __('Contact').ui_print_help_tip(__('Contact information accessible through the _groupcontact_ macro'), true),
-    html_print_textarea('contact', 4, 40, $contact, "class='min-height-0px'", true)
+    html_print_input_text('contact', $contact, '', false, '', true)
 );
 
 $table->data[4][1] = html_print_label_input_block(
     __('Other').ui_print_help_tip(__('Information accessible through the _group_other_ macro'), true),
-    html_print_textarea('other', 4, 40, $other, "class='min-height-0px'", true)
+    html_print_input_text('other', $other, '', false, '', true)
 );
 
 $table->data[5][0] = html_print_label_input_block(

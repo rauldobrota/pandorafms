@@ -662,13 +662,16 @@ if ($modules !== false) {
     $table->width = '100%';
     $table->class = 'tactical_table info_table';
     $table->head = [];
-    $table->head['checkbox'] = html_print_checkbox(
-        'all_delete',
-        0,
-        false,
-        true,
-        false
-    );
+    if (check_acl_one_of_groups($config['id_user'], $all_groups, 'AW') === true) {
+        $table->head['checkbox'] = html_print_checkbox(
+            'all_delete',
+            0,
+            false,
+            true,
+            false
+        );
+    }
+
     $table->head[0] = '<span>'.__('Name').'</span>'.ui_get_sorting_arrows(
         $url_name.'up',
         $url_name.'down',
@@ -909,23 +912,30 @@ if ($modules !== false) {
 
                 if ((bool) $linked !== false) {
                     if ((bool) $adopt === true) {
-                        $img = 'images/policies_brick.png';
+                        $img = 'images/policies_brick.svg';
                         $title = '('.__('Adopted').') '.$policyInfo['name_policy'];
                     } else {
-                        $img = 'images/policies_mc.png';
+                        $img = 'images/policy@svg.svg';
                         $title = $policyInfo['name_policy'];
                     }
                 } else {
                     if ((bool) $adopt === true) {
-                        $img = 'images/policies_not_brick.png';
+                        $img = 'images/policies_not_brick.svg';
                         $title = '('.__('Unlinked').') ('.__('Adopted').') '.$policyInfo['name_policy'];
                     } else {
-                        $img = 'images/unlinkpolicy.png';
+                        $img = 'images/unlinkpolicy.svg';
                         $title = '('.__('Unlinked').') '.$policyInfo['name_policy'];
                     }
                 }
 
-                $data[1] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
+                $data[1] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image(
+                    $img,
+                    true,
+                    [
+                        'title' => $title,
+                        'class' => 'main_menu_icon',
+                    ]
+                ).'</a>';
             }
         }
 
@@ -1053,7 +1063,7 @@ if ($modules !== false) {
             $data[8] .= html_print_menu_button(
                 [
                     'href'    => 'index.php?sec=gagente&tab=module&sec2=godmode/agentes/configurar_agente&id_agente='.$id_agente.'&duplicate_module='.$module['id_agente_modulo'],
-                    'onClick' => "if (!confirm(\' '.__('Are you sure?').'\')) return false;",
+                    'onClick' => "if (!confirm('".__('Are you sure?')."')) return false;",
                     'image'   => 'images/copy.svg',
                     'title'   => __('Duplicate'),
                 ],
@@ -1064,8 +1074,8 @@ if ($modules !== false) {
             $data[8] .= html_print_menu_button(
                 [
                     'href'           => 'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$id_agente.'&tab=module&fix_module='.$module['id_agente_modulo'],
-                    'onClick'        => "if (!confirm(\' '.__('Are you sure?').'\')) return false;",
-                    'image'          => 'images/module-graph.svg',
+                    'onClick'        => "if (!confirm('".__('Are you sure?')."')) return false;",
+                    'image'          => 'images/normalization@svg.svg',
                     'title'          => __('Normalize'),
                     'disabled'       => (isset($numericModules[$type]) === false || $numericModules[$type] === false),
                     'disabled_title' => ' ('.__('Disabled').')',
@@ -1077,7 +1087,7 @@ if ($modules !== false) {
             $data[8] .= html_print_menu_button(
                 [
                     'href'           => 'index.php?sec=gmodules&sec2=godmode/modules/manage_network_components&create_network_from_module=1&id_agente='.$id_agente.'&create_module_from='.$module['id_agente_modulo'],
-                    'onClick'        => "if (!confirm(\' '.__('Are you sure?').'\')) return false;",
+                    'onClick'        => "if (!confirm('".__('Are you sure?')."')) return false;",
                     'image'          => 'images/cluster@os.svg',
                     'title'          => __('Create network component'),
                     'disabled'       => ((is_user_admin($config['id_user']) === true) && (int) $module['id_modulo'] === MODULE_NETWORK) === false,
@@ -1262,23 +1272,11 @@ html_print_div(
             $('#modal').dialog("close");
         });
 
-        $('[id^=checkbox-id_delete]').change(function(){
-            if($(this).parent().parent().hasClass('checkselected')){
-                $(this).parent().parent().removeClass('checkselected');
-            }
-            else{
-                $(this).parent().parent().addClass('checkselected');
-            }
-        });
-
-
         $('[id^=checkbox-all_delete]').change(function(){
             if ($("#checkbox-all_delete").prop("checked")) {
-                $('[id^=checkbox-id_delete]').parent().parent().addClass('checkselected');
                 $("[name^=id_delete").prop("checked", true);
             }
             else{
-                $('[id^=checkbox-id_delete]').parent().parent().removeClass('checkselected');
                 $("[name^=id_delete").prop("checked", false);
             }
         });
