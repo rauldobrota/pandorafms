@@ -1228,14 +1228,15 @@ function events_get_all(
     // User comment.
     $event_comment_join = '';
     if (empty($filter['user_comment']) === false) {
-        $event_comment_join = 'INNER JOIN tevent_comment ON te.id_evento = tevent_comment.id_event ';
-        $sql_filter_comment = sprintf(
+        $event_comment_join = 'INNER JOIN tevent_comment ON te.id_evento = tevent_comment.id_event';
+        $sql_filters[] = sprintf(
             ' AND (lower(tevent_comment.comment) like lower("%%%s%%")
                 OR lower(tevent_comment.comment) like lower("%%%s%%"))',
             io_safe_input($filter['user_comment']),
             $filter['user_comment']
         );
-        $event_comment_join .= $sql_filter_comment;
+
+        array_unshift($fields, 'DISTINCT te.id_evento AS distinct_event');
     }
 
     // Source.
