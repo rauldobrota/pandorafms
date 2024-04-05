@@ -627,6 +627,14 @@ if ($pure === true) {
     <?php
 }
 
+?>
+    <style type="text/css">
+        .visual-console-item-label p,pre,h4,h5,h6 {
+            margin-block-start: <?php echo $config['vc_text_margin'].'em'; ?>;
+            margin-block-end: <?php echo $config['vc_text_margin'].'em'; ?>;
+        }
+    </style>
+<?php
 // Check groups can access user.
 $aclUserGroups = [];
 if (users_can_manage_group_all('AR') === false) {
