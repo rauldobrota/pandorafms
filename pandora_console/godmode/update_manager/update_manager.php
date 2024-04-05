@@ -166,5 +166,9 @@ switch ($tab) {
         $mode = \UpdateManager\UI\Manager::MODE_ONLINE;
         include $config['homedir'].'/godmode/um_client/index.php';
         include $config['homedir'].'/godmode/update_manager/modal_lts_update.php';
+
+        if (enterprise_installed() === false) {
+            include $config['homedir'].'/godmode/update_manager/just_enterprise_warning.php';
+        }
     break;
 }
