@@ -470,7 +470,7 @@ function get_user_language($id_user=null)
 
     if ($id_user !== null) {
         $userinfo = get_user_info($id_user);
-        if ($userinfo['language'] != 'default') {
+        if (isset($userinfo['language']) === true && $userinfo['language'] != 'default') {
             return $userinfo['language'];
         }
     }
