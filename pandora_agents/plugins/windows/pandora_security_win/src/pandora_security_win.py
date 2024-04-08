@@ -345,6 +345,7 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
         last_line_parts = re.split(r'\s\s+', last_line)
         cleaned_line = re.sub(' +', ' ', last_line)
         
+        print(sys.getdefaultencoding())
         print(last_line_parts[1])
         print(last_line_parts[1].encode(sys.getdefaultencoding()))
         print(auditpol_logon_success_conf)
