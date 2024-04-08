@@ -179,7 +179,7 @@ class AgentModuleWidget extends Widget
 
         // This forces at least a first configuration.
         $this->configurationRequired = false;
-        if (isset($this->values['mModules']) === false) {
+        if (isset($this->values['mModules']) === false || (isset($this->values['mModules']) === true && empty($this->values['mModules'][0]) === true)) {
             $this->configurationRequired = true;
         }
 
@@ -825,14 +825,15 @@ class AgentModuleWidget extends Widget
                     }
 
                     $key_name_module = $module->name();
-
-                    if ($this->values['mTypeShow'] === '1') {
-                        $mod = $module->toArray();
-                        $mod['datos'] = $module->lastValue();
-                        $module_last_value = modules_get_agentmodule_data_for_humans($mod);
-                        $visualData[$agent_id]['modules'][$key_name_module] = $module_last_value;
-                    } else {
-                        $visualData[$agent_id]['modules'][$key_name_module] = $module->getStatus()->estado();
+                    if (array_key_exists($key_name_module, $allModules) === true) {
+                        if ($this->values['mTypeShow'] === '1') {
+                            $mod = $module->toArray();
+                            $mod['datos'] = $module->lastValue();
+                            $module_last_value = modules_get_agentmodule_data_for_humans($mod);
+                            $visualData[$agent_id]['modules'][$key_name_module] = $module_last_value;
+                        } else {
+                            $visualData[$agent_id]['modules'][$key_name_module] = $module->getStatus()->estado();
+                        }
                     }
                 }
 

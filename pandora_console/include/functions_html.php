@@ -16,7 +16,7 @@
  * @package    Include
  * @subpackage HTML
  */
-
+use PandoraFMS\Enterprise\Metaconsole\Node;
 if (!isset($config)) {
     $working_dir = getcwd();
     $working_dir = str_replace('\\', '/', $working_dir);
@@ -2078,7 +2078,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             explode(',', $data['mAgents']),
             !$commonModules,
             !is_metaconsole(),
-            (bool) $commonModules,
+            is_metaconsole(),
             false
         );
     } else {
@@ -2091,6 +2091,31 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             ',',
             $data['mModules']
         );
+    } else {
+        if (is_metaconsole()) {
+            foreach ($data['mModules'] as $row) {
+                $exp = explode('|', $row);
+                if (empty($exp[0]) === false) {
+                    if (is_numeric($exp[1]) === false) {
+                        if (is_metaconsole() === true) {
+                            $node = new Node($exp[0]);
+                            $node->connect();
+                        }
+
+                        $module = explode('&#x20;&raquo;&#x20;', $exp[1]);
+                        $id_agente = db_get_sql(sprintf('SELECT id_agente FROM tagente WHERE nombre = "%s"', $module[1]));
+                        $id_agente_modulo = db_get_sql(sprintf('SELECT id_agente_modulo FROM tagente_modulo WHERE nombre = "%s" AND id_agente = %s', $module[2], $id_agente));
+                        $array = [
+                            $exp[0].'|'.$id_agente_modulo => $exp[0].'|'.$id_agente_modulo,
+                        ];
+                        $mModules = array_merge($mModules, $array);
+                        if (is_metaconsole() === true) {
+                            $node->disconnect();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     $result = [];

@@ -281,6 +281,8 @@ function initialiceLayout(data) {
         });
 
         $("#configure-widget-" + id).click(function() {
+          widgetId =
+            widgetId === 0 ? $("#hidden-widget_id_" + id).val() : widgetId;
           getSizeModalConfiguration(id, widgetId);
         });
 
@@ -815,6 +817,8 @@ function initialiceLayout(data) {
         });
 
         $("#configure-widget-" + cellId).click(function() {
+          widgetId =
+            widgetId === 0 ? $("#hidden-widget_id_" + cellId).val() : widgetId;
           getSizeModalConfiguration(cellId, widgetId);
         });
 
