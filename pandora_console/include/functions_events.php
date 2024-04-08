@@ -1235,6 +1235,8 @@ function events_get_all(
             io_safe_input($filter['user_comment']),
             $filter['user_comment']
         );
+
+        array_unshift($fields, 'DISTINCT te.id_evento AS distinct_event');
     }
 
     // Source.
