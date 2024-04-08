@@ -340,8 +340,12 @@ def check_password_enforcement():
 def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_conf, auditpol_logon_noaudit_conf):
     try:
         # Run the auditpol command to check the audit policy for Logon/Logoff
-        cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category}"'
-        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True, encoding=locale.getpreferredencoding())
+        cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category.encode("utf-8").decode("utf-8")}"'
+        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=False, check=True)
+
+        print(result.stdout)
+        print(auditpol_logon_success_conf)
+
         last_line = result.stdout.strip().split('\n')[-1].strip()
         last_line_parts = re.split(r'\s\s+', last_line)
         cleaned_line = re.sub(' +', ' ', last_line)
