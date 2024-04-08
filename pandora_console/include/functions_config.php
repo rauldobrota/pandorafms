@@ -1905,7 +1905,7 @@ function config_update_config()
                     }
                 break;
 
-                case 'ehorus':
+                case 'pandorarc':
                     if (config_update_value('ehorus_enabled', (int) get_parameter('ehorus_enabled', 0), true) === false) {
                         $error_update[] = __('Enable eHorus');
                     }
