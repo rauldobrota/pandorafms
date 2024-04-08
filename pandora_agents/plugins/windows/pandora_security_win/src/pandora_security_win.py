@@ -340,8 +340,8 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
     try:
         # Run the auditpol command to check the audit policy for Logon/Logoff
         cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category}"'
-        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True, encoding='latin-1')
-        last_line = result.stdout.encode('latin-1').decode('utf-8').strip().split('\n')[-1].strip()
+        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True)
+        last_line = result.stdout.encode(sys.getdefaultencoding()).decode('utf-8').strip().split('\n')[-1].strip()
         cleaned_line = re.sub(' +', ' ', last_line)
         
         # Interpret the result
