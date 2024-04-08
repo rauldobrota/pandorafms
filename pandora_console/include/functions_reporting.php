@@ -3352,8 +3352,8 @@ function reporting_inventory($report, $content, $type)
                 $date,
                 '',
                 false,
-                'csv',
                 false,
+                'csv',
                 '',
                 [],
                 $inventory_regular_expression
@@ -3367,12 +3367,13 @@ function reporting_inventory($report, $content, $type)
                 $date,
                 '',
                 false,
-                'hash',
                 false,
+                'hash',
                 '',
                 [],
                 $inventory_regular_expression
             );
+
         break;
     }
 
