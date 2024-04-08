@@ -345,9 +345,9 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
         cleaned_line = re.sub(' +', ' ', last_line)
         
         # Interpret the result
-        if auditpol_logon_success_conf in result.stdout:
+        if auditpol_logon_success_conf.encode(sys.getdefaultencoding()).decode('utf-8') in result.stdout:
             result = 1
-        elif auditpol_logon_noaudit_conf in result.stdout:
+        elif auditpol_logon_noaudit_conf.encode(sys.getdefaultencoding()).decode('utf-8') in result.stdout:
             result = 0
         else:
             print("Unable to determine audit policy for Logon/Logoff events.", file=sys.stderr)
