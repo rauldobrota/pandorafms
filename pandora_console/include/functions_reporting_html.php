@@ -5169,7 +5169,7 @@ function reporting_html_value(
         $table->colspan['data']['cell'] = 3;
         $table->cellstyle['data']['cell'] = 'text-align: left;';
 
-        $table->data['data']['cell'] = '<p class="bolder" style="font-size: '.$font_size.'; color: #000000;">';
+        $table->data['data']['cell'] = '<p class="bolder" style="font-size: '.$font_size.';">';
 
         if ($check_empty && empty($item['data']['value'])) {
             $table->data['data']['cell'] .= __('Unknown');
