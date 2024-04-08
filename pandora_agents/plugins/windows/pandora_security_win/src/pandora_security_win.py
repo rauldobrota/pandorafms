@@ -4,6 +4,7 @@ import wmi, sys, winreg, os, subprocess, json, re
 from datetime import datetime, timedelta
 import argparse
 import configparser
+import locale
 
 ## Define modules
 modules=[]
@@ -340,21 +341,21 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
     try:
         # Run the auditpol command to check the audit policy for Logon/Logoff
         cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category}"'
-        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True, encoding="latin-1")
+        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True, encoding=locale.getpreferredencoding())
         last_line = result.stdout.strip().split('\n')[-1].strip()
         last_line_parts = re.split(r'\s\s+', last_line)
         cleaned_line = re.sub(' +', ' ', last_line)
         
-        print("latin-1")
+        print(locale.getpreferredencoding())
         print(last_line_parts[1])
-        print(last_line_parts[1].encode("latin-1"))
+        print(last_line_parts[1].encode(locale.getpreferredencoding()))
         print(auditpol_logon_success_conf)
-        print(auditpol_logon_success_conf.encode("latin-1"))
+        print(auditpol_logon_success_conf.encode(locale.getpreferredencoding()))
 
         # Interpret the result
-        if auditpol_logon_success_conf.encode("latin-1") == last_line_parts[1].encode("latin-1"):
+        if auditpol_logon_success_conf.encode(locale.getpreferredencoding()) == last_line_parts[1].encode(locale.getpreferredencoding()):
             result = 1
-        elif auditpol_logon_noaudit_conf.encode("latin-1") == last_line_parts[1].encode("latin-1"):
+        elif auditpol_logon_noaudit_conf.encode(locale.getpreferredencoding()) == last_line_parts[1].encode(locale.getpreferredencoding()):
             result = 0
         else:
             print("Unable to determine audit policy for Logon/Logoff events.", file=sys.stderr)
@@ -388,7 +389,7 @@ if __name__ == "__main__":
 
     if(args.conf):
         try:
-            with open(args.conf, 'r', encoding="latin-1") as f:
+            with open(args.conf, 'r', encoding=locale.getpreferredencoding()) as f:
                 content = f.read()
                 config.read_string('[CONF]\n' + content)
         except Exception as e:
