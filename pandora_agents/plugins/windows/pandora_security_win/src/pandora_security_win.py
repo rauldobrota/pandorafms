@@ -340,8 +340,9 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
     try:
         # Run the auditpol command to check the audit policy for Logon/Logoff
         cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category}"'
-        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True)
+        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True, encoding='utf-8')
         last_line = result.stdout.strip().split('\n')[-1].strip()
+        cleaned_line = re.sub(' +', ' ', last_line)
         
         # Interpret the result
         if auditpol_logon_success_conf in result.stdout:
@@ -356,7 +357,7 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
                 "type" : "generic_proc",
                 "value": result,
                 "module_group": "security",
-                "desc" : f"Check if the logon events audit log is enables, status: {last_line}",
+                "desc" : f"Check if the logon events audit log is enables, status: {cleaned_line}",
             })
 
     except subprocess.CalledProcessError as e:
