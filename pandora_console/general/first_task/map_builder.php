@@ -35,12 +35,12 @@ ui_require_css_file('first_task');
 
 if ($vconsoles_write || $vconsoles_manage) {
     $msg = __(
-        "%s allows users to create visual maps on which each user is able to create his or her own monitoring map. The new visual console editor is much more practical, although the prior 'visual console editor had its advantages.",
+        '%s allows users to create visual maps on which each user is able to create his or her own monitoring map. The new visual console editor is much more practical, although the prior visual console editor had its advantages.',
         get_product_name()
     );
 
     $msg .= '<br><br>'.__(
-        "On the new visual console, we've been successful in imitating the sensation and touch of a drawing application like GIMP. We've also simplified the editor by dividing it into several subject-divided tabs named 'Data', 'Preview', 'Wizard', 'List of Elements' and 'Editor'."
+        "On the new visual console, we have been successful in imitating the sensation and touch of a drawing application like GIMP. We have also simplified the editor by dividing it into several subject-divided tabs named 'Data', 'Preview', 'Wizard', 'List of Elements' and 'Editor'."
     );
 
     $msg .= '<br><br>'.__(
