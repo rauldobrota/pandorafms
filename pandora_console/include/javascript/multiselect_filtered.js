@@ -249,9 +249,13 @@ function fmModuleChange(uniqId, isMeta) {
                   ? value["id_node"] + "|" + value["id_agente_modulo"]
                   : value["id_agente_modulo"]
               )
+              .attr("title", value)
               .html(value["nombre"]);
           } else {
-            option.attr("value", id).html(value);
+            option
+              .attr("value", id)
+              .attr("title", value)
+              .html(value);
           }
 
           $("#filtered-module-modules-" + uniqId).append(option);
