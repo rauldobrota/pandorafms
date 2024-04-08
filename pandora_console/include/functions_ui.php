@@ -1337,7 +1337,7 @@ function ui_format_alert_row(
         } else {
             $module_linked = policies_is_module_linked($alert['id_agent_module']);
             if ($module_linked === '0') {
-                $img = 'images/unlinkpolicy.png';
+                $img = 'images/unlinkpolicy.svg';
             } else {
                 $img = 'images/policy@svg.svg';
             }
@@ -1502,14 +1502,41 @@ function ui_format_alert_row(
         metaconsole_restore_db();
     }
 
-    if (empty($actions) === false || $actionDefault != '') {
-        $actionText = '<div><ul class="action_list">';
+    $actionText = '';
+
+    if ($actionDefault !== '' && $actionDefault !== false) {
+        $actionDefault_name = db_get_sql(
+            sprintf(
+                'SELECT name FROM talert_actions WHERE id = %d',
+                $actionDefault
+            )
+        );
         foreach ($actions as $action) {
-            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li>'.$action['name'];
+            if ($actionDefault_name === $action['name']) {
+                $hide_actionDefault = true;
+            } else {
+                $hide_actionDefault = false;
+            }
+        }
+
+        if ($hide_actionDefault !== true) {
+            $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
+        }
+    }
+
+    if (empty($actions) === false || $actionDefault != '') {
+        $actionText .= '<div><ul class="action_list">';
+        foreach ($actions as $action) {
+            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li class="">';
+            $actionText .= '<div class="flex_center mrgn_top-22px">';
+            $actionText .= '<div class="mrgn_lft_0px_imp">';
+            $actionText .= $action['name'];
             if ($action['fires_min'] != $action['fires_max']) {
                 $actionText .= ' ('.$action['fires_min'].' / '.$action['fires_max'].')';
             }
 
+            $actionText .= '</div>';
+            $actionText .= '<div class="flex_center table_action_buttons mrgn_lft_0px_imp">';
             $actionText .= ui_print_help_tip(__('The default actions will be executed every time that the alert is fired and no other action is executed'), true);
             // Is possible manage actions if have LW permissions in the agent group of the alert module.
             if (is_metaconsole() === true) {
@@ -1520,7 +1547,7 @@ function ui_format_alert_row(
                         [
                             'alt'   => __('Delete action'),
                             'title' => __('Delete action'),
-                            'class' => 'main_menu_icon invert_filter vertical_baseline',
+                            'class' => 'main_menu_icon invert_filter vertical_baseline action_button_hidden',
                         ]
                     ).'</a>';
                 }
@@ -1534,7 +1561,7 @@ function ui_format_alert_row(
                         true,
                         [
                             'title'   => __('Update action'),
-                            'class'   => 'main_menu_icon invert_filter',
+                            'class'   => 'main_menu_icon invert_filter action_button_hidden',
                             'onclick' => 'show_display_update_action(\''.$action['original_id'].'\',\''.$alert['id'].'\',\''.$alert['id_agent_module'].'\',\''.$action['original_id'].'\',\''.$alert['agent_name'].'\')',
                         ]
                     );
@@ -1542,32 +1569,15 @@ function ui_format_alert_row(
                 }
             }
 
+            $actionText .= '</div>';
+            $actionText .= '</div>';
+
             $actionText .= '<div id="update_action-div-'.$alert['id'].'" class="invisible">';
             $actionText .= '</div>';
             $actionText .= '</li></span></div>';
         }
 
         $actionText .= '</ul></div>';
-
-        if ($actionDefault !== '' && $actionDefault !== false) {
-            $actionDefault_name = db_get_sql(
-                sprintf(
-                    'SELECT name FROM talert_actions WHERE id = %d',
-                    $actionDefault
-                )
-            );
-            foreach ($actions as $action) {
-                if ($actionDefault_name === $action['name']) {
-                    $hide_actionDefault = true;
-                } else {
-                    $hide_actionDefault = false;
-                }
-            }
-
-            if ($hide_actionDefault !== true) {
-                $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
-            }
-        }
     }
 
     $data[$index['action']] = $actionText;
@@ -5411,7 +5421,7 @@ function ui_print_page_header(
 
     if (is_metaconsole() === true) {
         if ($help != '') {
-            $buffer .= "<div class='head_help'>".ui_print_help_icon($help, true, '', 'images/help_30.png').'</div>';
+            $buffer .= "<div class='head_help rounded-icon-header'>".ui_print_help_icon($help, true, '', 'images/help@header.svg').'</div>';
         }
     }
 

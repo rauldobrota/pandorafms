@@ -1885,6 +1885,49 @@ a.link-bold {
   font-weight: bold;
 }
 
+div#dashboard-controls-slides {
+  background-color: #333;
+}
+
+div#dashboard-controls-slides
+  .select2-container
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: var(--text-color) !important;
+}
+
+div.events-refresh-pure {
+  background-color: #333;
+}
+
+#general-tactical-view * {
+  border-color: #333 !important;
+}
+
+#tree-controller-recipient .node-icon {
+  border-right-color: #333;
+}
+
+.tree-node {
+  background-image: url(../../images/tree/straight@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node.leaf-closed > .leaf-icon {
+  background-image: url(../../images/tree/corner_straight_plus@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node.leaf-open > .leaf-icon {
+  background-image: url(../../images/tree/corner_straight_minus@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node > .leaf-icon {
+  background-image: url(../../images/tree/corner_straight@tree-dark.svg);
+}
+
+#tree-controller-recipient .tree-node:last-of-type > .leaf-icon {
+  background-image: url(../../images/tree/corner@tree-dark.svg);
+}
+
 #menu_full::after,
 .white_table_graph.fixed_filter_bar::before {
   background-color: #111;

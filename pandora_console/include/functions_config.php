@@ -1259,6 +1259,10 @@ function config_update_config()
                         $error_update[] = __('Default line menu items for the Visual Console');
                     }
 
+                    if (config_update_value('vc_text_margin', (int) get_parameter('vc_text_margin', 1), true) === false) {
+                        $error_update[] = __('Default text margin for the Visual Console');
+                    }
+
                     if (config_update_value('vc_line_thickness', (int) get_parameter('vc_line_thickness'), true) === false) {
                         $error_update[] = __('Default line thickness for the Visual Console');
                     }
@@ -2928,6 +2932,10 @@ function config_process_config()
 
     if (!isset($config['vc_menu_items'])) {
         config_update_value('vc_menu_items', 10);
+    }
+
+    if (!isset($config['vc_text_margin'])) {
+        config_update_value('vc_text_margin', 1);
     }
 
     if (!isset($config['ser_menu_items'])) {

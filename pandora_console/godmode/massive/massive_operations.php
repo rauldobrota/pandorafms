@@ -252,7 +252,7 @@ $alertstab = [
 
 $policiesalertstab = [
     'text'   => '<a href="'.$url.'&tab=massive_policies_alerts">'.html_print_image(
-        'images/policies_mc.png',
+        'images/policy@svg.svg',
         true,
         [
             'title' => __('Policies alerts'),

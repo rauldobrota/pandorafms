@@ -1416,7 +1416,7 @@ function check_event_sound(settings) {
           );
           li.insertAdjacentHTML(
             "beforeend",
-            `<div class="li-title"><a href="javascript:" onclick="show_event_dialog('${b64}')">${element.message}</a></div>`
+            `<div class="li-title"><a class="sound-events-li-link" href="javascript:" onclick="show_event_dialog('${b64}')">${element.message}</a></div>`
           );
           li.insertAdjacentHTML(
             "beforeend",

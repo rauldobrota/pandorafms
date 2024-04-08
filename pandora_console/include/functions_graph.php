@@ -4100,7 +4100,7 @@ function fullscale_data(
             $data['sum'.$series_suffix]['min'] = $min_value_total;
             $data['sum'.$series_suffix]['max'] = $max_value_total;
             $data['sum'.$series_suffix]['avg'] = 0;
-            if (isset($count_data_total) === true) {
+            if (isset($count_data_total) === true && $count_data_total > 0) {
                 $data['sum'.$series_suffix]['avg'] = ($sum_data_total / $count_data_total);
             }
         }

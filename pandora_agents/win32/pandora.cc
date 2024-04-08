@@ -30,7 +30,7 @@ using namespace Pandora;
 using namespace Pandora_Strutils;
 
 #define PATH_SIZE    _MAX_PATH+1
-#define PANDORA_VERSION ("7.0NG.776 Build 240402")
+#define PANDORA_VERSION ("7.0NG.776 Build 240408")
 
 string pandora_path;
 string pandora_dir;
@@ -53,6 +53,9 @@ Key_Value::parseLine (string str) {
 	string                 trimmedstr;
 	
 	trimmedstr = trim (str);
+	if (trimmedstr == "") {
+		return;
+	}
 	
 	/* Check if the string has " */
 	pos = trimmedstr.find ("\"");

@@ -46,7 +46,7 @@ our @EXPORT = qw(
 
 # version: Defines actual version of Pandora Server for this module only
 my $pandora_version = "7.0NG.776";
-my $pandora_build = "240402";
+my $pandora_build = "240408";
 our $VERSION = $pandora_version." ".$pandora_build;
 
 # Setup hash
@@ -555,6 +555,8 @@ sub pandora_load_config {
 	$pa_config->{'ncmserver'} = 0; # 7.0.758
 	$pa_config->{'ncmserver_threads'} = 1; # 7.0.758
 	$pa_config->{'ncm_ssh_utility'} = '/usr/share/pandora_server/util/ncm_ssh_extension'; # 7.0.758
+
+	$pa_config->{'agent_deployer_utility'} = '/usr/share/pandora_server/util/pandora_agent_deployer'; # 7.0.777
 
 	$pa_config->{"pandora_service_cmd"} = 'service pandora_server'; # 7.0.761
 	$pa_config->{"tentacle_service_cmd"} = 'service tentacle_serverd'; # 7.0.761
@@ -1336,6 +1338,9 @@ sub pandora_load_config {
 		}
 		elsif ($parametro =~ m/^ncm_ssh_utility\s+(.*)/i) {
 			$pa_config->{'ncm_ssh_utility'}= clean_blank($1);
+		}
+		elsif ($parametro =~ m/^agent_deployer_utility\s+(.*)/i) {
+			$pa_config->{'agent_deployer_utility'}= clean_blank($1);
 		}
 		elsif ($parametro =~ m/^ha_file\s(.*)/i) {
 			$pa_config->{'ha_file'} = clean_blank($1);

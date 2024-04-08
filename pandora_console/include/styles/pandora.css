@@ -7204,6 +7204,10 @@ div.graph div.legend table {
   margin-left: 0px;
 }
 
+.mrgn_lft_0px_imp {
+  margin-left: 0px !important;
+}
+
 .mrgn_lft_2px {
   margin-left: 2px;
 }
@@ -7344,6 +7348,10 @@ div.graph div.legend table {
 
 .mrgn_top-15px {
   margin-top: -15px;
+}
+
+.mrgn_top-22px {
+  margin-top: -22px;
 }
 
 .mrgn_top_0px {
@@ -13985,4 +13993,9 @@ button.disabled {
 
 .text-nowrap {
   text-wrap: nowrap;
+}
+
+#wizard_table span#image_prev img {
+  height: 48px;
+  cursor: pointer;
 }

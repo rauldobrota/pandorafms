@@ -140,13 +140,16 @@ if (enterprise_installed() && $alert['id_policy_alerts'] != 0) {
     if ($policyInfo === false) {
         $policy = __('N/A');
     } else {
-        $img = 'images/policies_mc.png';
+        $img = 'images/policy@svg.svg';
 
         $policy = '<a href="?sec=gmodules&amp;sec2=enterprise/godmode/policies/policies&amp;id='.$policyInfo['id'].'">';
         $policy .= html_print_image(
             $img,
             true,
-            ['title' => $policyInfo['name']]
+            [
+                'title' => $policyInfo['name'],
+                'class' => 'main_menu_icon',
+            ]
         );
         $policy .= '</a>';
     }

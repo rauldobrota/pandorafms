@@ -1765,18 +1765,18 @@ if (is_ajax() === true) {
 
             if ($linked) {
                 if ($adopt) {
-                    $img = 'images/policies_brick.png';
+                    $img = 'images/policies_brick.svg';
                     $title = __('(Adopt) ').$name_policy;
                 } else {
-                    $img = 'images/policies_mc.png';
+                    $img = 'images/policy@svg.svg';
                         $title = $name_policy;
                 }
             } else {
                 if ($adopt) {
-                    $img = 'images/policies_not_brick.png';
+                    $img = 'images/policies_not_brick.svg';
                     $title = __('(Unlinked) (Adopt) ').$name_policy;
                 } else {
-                    $img = 'images/unlinkpolicy.png';
+                    $img = 'images/unlinkpolicy.svg';
                     $title = __('(Unlinked) ').$name_policy;
                 }
             }
