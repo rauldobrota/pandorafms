@@ -1250,6 +1250,7 @@ function test_sound_button(test_sound, urlSound) {
 }
 
 function action_events_sound(mode, settings) {
+  test_sound_button(false, "");
   if (mode === true) {
     // Enable tabs.
     $("#tabs-sound-modal").tabs("option", "disabled", [0]);
@@ -1397,9 +1398,7 @@ function check_event_sound(settings) {
         $(".container-button-alert").addClass("fired");
 
         // Remove audio.
-        remove_audio();
-
-        // Apend audio.
+        //remove_audio();
         add_audio(settings.urlSound);
 
         // Add elements.
@@ -1432,10 +1431,10 @@ function check_event_sound(settings) {
         });
 
         // -100 delay sound.
-        setTimeout(
-          remove_audio,
-          parseInt($("#tabs-sound-modal #time_sound").val()) * 1000 - 100
-        );
+        //setTimeout(
+        //  remove_audio,
+        //  parseInt($("#tabs-sound-modal #time_sound").val()) * 1000 - 100
+        //);
       }
     },
     "json"
