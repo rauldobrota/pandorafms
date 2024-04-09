@@ -2644,7 +2644,7 @@ function reporting_html_inventory($table, $item, $pdf=0)
     } else {
         // Grouped type inventory.
         $type_modules = array_reduce(
-            $item['data'],
+            ($item['data'] ?? []),
             function ($carry, $it) {
                 $carry[$it['name']][] = $it;
                 return $carry;

@@ -99,9 +99,9 @@ function inventory_get_data(
     // Prepare pagination.
     $url = sprintf(
         '?sec=estado&sec2=operation/inventory/inventory&agent_id=%s&agent=%s&id_group=%s&export=%s&module_inventory_general_view=%s&search_string=%s&utimestamp=%s&period=%s&order_by_agent=%s&submit_filter=%d',
-        $pagination_url_parameters['inventory_id_agent'],
-        $pagination_url_parameters['inventory_agent'],
-        $pagination_url_parameters['inventory_id_group'],
+        (isset($pagination_url_parameters['inventory_id_agent']) ?? ''),
+        (isset($pagination_url_parameters['inventory_agent']) ?? ''),
+        (isset($pagination_url_parameters['inventory_id_group']) ?? ''),
         $export_csv,
         $inventory_module_name,
         $inventory_search_string,
