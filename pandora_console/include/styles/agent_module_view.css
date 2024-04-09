@@ -27,6 +27,8 @@
 }
 
 #select_multiple_modules_filtered_formated .recursive-modules > div {
+  display: flex;
+  flex-wrap: nowrap;
   flex-direction: row-reverse;
   justify-content: flex-end;
 }
@@ -38,6 +40,14 @@
 
 #select_multiple_modules_filtered_formated > div > div > select {
   min-width: 250px !important;
+}
+
+#select_multiple_modules_filtered_formated > div > div > label.p-switch {
+  width: 10%;
+}
+
+#select_multiple_modules_filtered_formated > div > div > label.font-title-font {
+  margin-top: 5px;
 }
 
 #select_multiple_modules_filtered_formated > div > div > .select2 {
