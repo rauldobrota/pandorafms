@@ -1305,6 +1305,7 @@ if ($inventory_module !== 'basic') {
                             'no_sortable_columns'         => [],
                             'data_element'                => $data,
                             'searching'                   => true,
+                            'dom_elements'                => 'rtipB',
                             'order'                       => [
                                 'field'     => $columns[0],
                                 'direction' => 'asc',
