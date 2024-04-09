@@ -7205,6 +7205,10 @@ div.graph div.legend table {
   margin-left: 20px;
 }
 
+.mrgn_lft_20px_important {
+  margin-left: 20px !important;
+}
+
 .mrgn_lft_23px {
   margin-left: 23px;
 }
@@ -12056,8 +12060,18 @@ div[role="dialog"] {
   align-items: center;
 }
 
+.flex-colum-center-important {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
 .flex-colum-center > img {
   margin: 5px;
+}
+
+.flex-none {
+  flex: none !important;
 }
 
 .space-between {

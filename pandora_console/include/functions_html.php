@@ -16,7 +16,7 @@
  * @package    Include
  * @subpackage HTML
  */
-
+use PandoraFMS\Enterprise\Metaconsole\Node;
 if (!isset($config)) {
     $working_dir = getcwd();
     $working_dir = str_replace('\\', '/', $working_dir);
@@ -1855,6 +1855,301 @@ function html_print_select_multiple_modules_filtered(array $data):string
 
 
 /**
+ * Form multiple inputs for slect groups.
+ *
+ * @param array $data Data inputs.
+ *
+ * @return string Html output.
+ */
+function html_print_select_multiple_modules_filtered_formated(array $data):string
+{
+    if (is_ajax() === true) {
+        ui_require_javascript_file(
+            'multiselect_filtered',
+            'include/javascript/',
+            true
+        );
+        ui_require_css_file(
+            'multiselect_filtered',
+            'include/styles/',
+            true
+        );
+    } else {
+        ui_require_javascript_file('multiselect_filtered');
+        ui_require_css_file('multiselect_filtered');
+    }
+
+    $uniqId = $data['uniqId'];
+
+    $return_all_group = isset($data['mReturnAllGroup']) ? $data['mReturnAllGroup'] : true;
+
+    // Group.
+    $output = '<div class="w98p">';
+    $output .= html_print_input(
+        [
+            'label'          => __('Group'),
+            'label_class'    => 'font-title-font',
+            'name'           => 'filtered-module-group-'.$uniqId,
+            'returnAllGroup' => $return_all_group,
+            'privilege'      => 'AR',
+            'type'           => 'select_groups',
+            'return'         => true,
+            'script'         => 'fmAgentChange(\''.$uniqId.'\')',
+            'selected'       => $data['mGroup'],
+        ]
+    );
+
+    // Groups module.
+    $module_groups = db_get_all_rows_sql(
+        'SELECT * FROM tmodule_group ORDER BY name'
+    );
+    $module_groups = array_reduce(
+        $module_groups,
+        function ($carry, $item) {
+            $carry[$item['id_mg']] = $item['name'];
+            return $carry;
+        }
+    );
+
+    $output .= html_print_input(
+        [
+            'label'         => __('Module group'),
+            'label_class'   => 'font-title-font',
+            'type'          => 'select',
+            'fields'        => $module_groups,
+            'name'          => 'filtered-module-module-group-'.$uniqId,
+            'selected'      => $data['mModuleGroup'],
+            'return'        => true,
+            'nothing'       => __('All'),
+            'nothing_value' => 0,
+            'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+        ]
+    );
+    $output .= '</div>';
+    $output .= '<div class="recursive-modules mrgn_lft_20px_important">';
+
+    // Recursion.
+    $output .= html_print_input(
+        [
+            'label'       => __('Recursion'),
+            'label_class' => 'font-title-font',
+            'type'        => 'switch',
+            'name'        => 'filtered-module-recursion-'.$uniqId,
+            'value'       => (empty($data['mRecursion']) === true) ? false : true,
+            'checked'     => (empty($data['mRecursion']) === true) ? false : true,
+            'return'      => true,
+            'id'          => 'filtered-module-recursion-'.$uniqId,
+            'onchange'    => 'fmAgentChange(\''.$uniqId.'\')',
+        ]
+    );
+
+    $commonModules = 0;
+    if (empty($data['mShowCommonModules']) === false) {
+        $commonModules = 1;
+    }
+
+    $output .= html_print_input(
+        [
+            'label'       => __('Only common modules'),
+            'label_class' => 'font-title-font',
+            'type'        => 'switch',
+            'checked'     => $commonModules,
+            'value'       => $commonModules,
+            'name'        => 'filtered-module-show-common-modules-'.$uniqId,
+            'id'          => 'filtered-module-show-common-modules-'.$uniqId,
+            'return'      => true,
+            'onchange'    => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+        ]
+    );
+
+    $output .= '</div>';
+
+    if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
+        $output .= '<div>';
+
+        $output .= '<div>';
+        $output .= html_print_input(
+            [
+                'type'        => 'text',
+                'name'        => 'agent-searchBar-'.$uniqId,
+                'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
+                'placeholder' => __('Type to search agents'),
+                'return'      => true,
+            ]
+        );
+
+        $output .= '</div>';
+
+        $output .= '<div>';
+        $output .= html_print_input(
+            [
+                'type'        => 'text',
+                'name'        => 'module-searchBar-'.$uniqId,
+                'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
+                'return'      => true,
+                'placeholder' => __('Type to search modules'),
+            ]
+        );
+
+        $output .= '</div>';
+
+        $output .= '</div>';
+    }
+
+    $output .= '<div class="w98p">';
+    // Agent.
+    $agents = agents_get_group_agents(
+        // Id_group.
+        $data['mGroup'],
+        // Search.
+        false,
+        // Case.
+        'lower',
+        // NoACL.
+        false,
+        // ChildGroups.
+        false,
+        // Serialized.
+        false,
+        // Separator.
+        '|',
+        // Add_alert_bulk_op.
+        false,
+        // Force_serialized.
+        false,
+        // Meta_fields.
+        ($data['mMetaFields'] ?? is_metaconsole())
+    );
+
+    if ((empty($agents)) === true || $agents == -1) {
+        $agents = [];
+    }
+
+    if ($data['mShowSelectedOtherGroups']) {
+        $selected_agents = explode(',', $data['mAgents']);
+        foreach ($selected_agents as $agent_id) {
+            if (!array_key_exists($agent_id, $agents)) {
+                $agents[$agent_id] = agents_get_alias($agent_id);
+            }
+        }
+    }
+
+    if (is_metaconsole() === true) {
+        $output .= html_print_input(
+            [
+                'label'         => __('Agents'),
+                'label_class'   => 'font-title-font',
+                'type'          => 'select',
+                'fields'        => $agents,
+                'name'          => 'filtered-module-agents-'.$uniqId,
+                'selected'      => explode(',', $data['mAgents']),
+                'return'        => true,
+                'multiple'      => true,
+                'style'         => 'min-width: 200px;max-width:200px;',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'truncate_size' => 300,
+            ]
+        );
+    } else {
+        $output .= html_print_input(
+            [
+                'label'         => __('Agents'),
+                'label_class'   => 'font-title-font',
+                'type'          => 'select_from_sql',
+                'sql'           => 'SELECT `id_agente`,`alias` FROM tagente',
+                'name'          => 'filtered-module-agents-'.$uniqId,
+                'selected'      => explode(',', $data['mAgents']),
+                'return'        => true,
+                'multiple'      => true,
+                'style'         => 'min-width: 200px;max-width:200px;',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'truncate_size' => 300,
+            ]
+        );
+    }
+
+    if (empty($data['mAgents']) === false
+        && empty($data['mModuleGroup'] === false)
+    ) {
+        $all_modules = get_modules_agents(
+            $data['mModuleGroup'],
+            explode(',', $data['mAgents']),
+            !$commonModules,
+            !is_metaconsole(),
+            is_metaconsole(),
+            false
+        );
+    } else {
+        $all_modules = [];
+    }
+
+    $mModules = $data['mModules'];
+    if (is_array($data['mModules']) === false) {
+        $mModules = explode(
+            ',',
+            $data['mModules']
+        );
+    } else {
+        if (is_metaconsole()) {
+            foreach ($data['mModules'] as $row) {
+                $exp = explode('|', $row);
+                if (empty($exp[0]) === false) {
+                    if (is_numeric($exp[1]) === false) {
+                        if (is_metaconsole() === true) {
+                            $node = new Node($exp[0]);
+                            $node->connect();
+                        }
+
+                        $module = explode('&#x20;&raquo;&#x20;', $exp[1]);
+                        $id_agente = db_get_sql(sprintf('SELECT id_agente FROM tagente WHERE nombre = "%s"', $module[1]));
+                        $id_agente_modulo = db_get_sql(sprintf('SELECT id_agente_modulo FROM tagente_modulo WHERE nombre = "%s" AND id_agente = %s', $module[2], $id_agente));
+                        $array = [
+                            $exp[0].'|'.$id_agente_modulo => $exp[0].'|'.$id_agente_modulo,
+                        ];
+                        $mModules = array_merge($mModules, $array);
+                        if (is_metaconsole() === true) {
+                            $node->disconnect();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $result = [];
+    // Clean double safe input.
+    foreach ($mModules as $name) {
+        $result[] = io_safe_output($name);
+    }
+
+    $output .= html_print_input(
+        [
+            'label'         => __('Modules'),
+            'label_class'   => 'font-title-font',
+            'type'          => 'select',
+            'fields'        => $all_modules,
+            'name'          => 'filtered-module-modules-'.$uniqId,
+            'selected'      => $result,
+            'return'        => true,
+            'multiple'      => true,
+            'style'         => 'max-width:98%;',
+            'input_class'   => 'flex-colum-center-important',
+            'truncate_size' => 300,
+        ]
+    );
+
+    $output .= '</div>';
+    if ($data['return'] === false) {
+        echo $output;
+    }
+
+    return $output;
+}
+
+
+/**
  * Prints an array of fields in a popup menu of a form based on a SQL query.
  * The first and second columns of the query will be used.
  *
@@ -1896,6 +2191,7 @@ function html_print_select_from_sql(
     $class='',
     $required=false,
     $placeholder='',
+    $title=false,
 ) {
     global $config;
 
@@ -1943,7 +2239,8 @@ function html_print_select_from_sql(
         '',
         false,
         null,
-        $placeholder
+        $placeholder,
+        $title
     );
 }
 
@@ -5727,6 +6024,7 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 ((isset($data['class']) === true) ? $data['class'] : ''),
                 ((isset($data['required']) === true) ? $data['required'] : false),
                 ((isset($data['placeholder']) === true) ? $data['placeholder'] : null),
+                ((isset($data['title']) === true) ? $data['title'] : false),
             );
         break;
 
@@ -6110,6 +6408,10 @@ function html_print_input($data, $wrapper='div', $input_only=false)
 
         case 'select_multiple_modules_filtered':
             $output .= html_print_select_multiple_modules_filtered($data);
+        break;
+
+        case 'select_multiple_modules_filtered_formated':
+            $output .= html_print_select_multiple_modules_filtered_formated($data);
         break;
 
         case 'datalist':

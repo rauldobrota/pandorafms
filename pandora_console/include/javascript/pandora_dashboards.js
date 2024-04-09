@@ -1,6 +1,7 @@
 /* globals $, GridStack, load_modal, TreeController, forced_title_callback, createVisualConsole, UndefineTinyMCE*/
 // eslint-disable-next-line no-unused-vars
 function show_option_dialog(settings) {
+  $("#modal-config-widget").html("");
   load_modal({
     target: $("#modal-update-dashboard"),
     form: "form-update-dashboard",
@@ -280,6 +281,8 @@ function initialiceLayout(data) {
         });
 
         $("#configure-widget-" + id).click(function() {
+          widgetId =
+            widgetId === 0 ? $("#hidden-widget_id_" + id).val() : widgetId;
           getSizeModalConfiguration(id, widgetId);
         });
 
@@ -329,7 +332,20 @@ function initialiceLayout(data) {
       },
       dataType: "json",
       success: function(data) {
-        addCell(data.cellId, 0, 0, 4, 4, true, 0, 2000, 0, 2000, 0, true);
+        addCell(
+          data.cellId,
+          0,
+          0,
+          4,
+          4,
+          true,
+          0,
+          2000,
+          0,
+          2000,
+          original_widgetId,
+          true
+        );
       },
       error: function(xhr, textStatus, errorMessage) {
         console.log("ERROR" + errorMessage + textStatus + xhr);
@@ -801,6 +817,8 @@ function initialiceLayout(data) {
         });
 
         $("#configure-widget-" + cellId).click(function() {
+          widgetId =
+            widgetId === 0 ? $("#hidden-widget_id_" + cellId).val() : widgetId;
           getSizeModalConfiguration(cellId, widgetId);
         });
 

@@ -32,6 +32,7 @@ ui_require_javascript_file('tinymce', 'vendor/tinymce/tinymce/', true);
 ui_require_javascript_file('pandora', 'include/javascript/', true);
 
 $output = '';
+$widgetId = json_decode(io_safe_output(get_parameter('extradata')), true)['widgetId'];
 
 $form = [
     'action'   => '#',
@@ -63,5 +64,9 @@ HTML::printForm(
         'js'     => $js,
     ]
 );
+
+if ($widgetId == '10') {
+    $output .= ui_require_css_file('agent_module_view', 'include/styles/', true, true);
+}
 
 echo $output;
