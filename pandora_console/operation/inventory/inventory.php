@@ -85,7 +85,7 @@ if ($custom_date === '1') {
     }
 } else {
     $date_end = date('Y/m/d H:i:s');
-    $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - $range));
+    $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - (int) $range));
     $period = (strtotime($date_end) - strtotime($date_init));
 }
 
@@ -181,6 +181,8 @@ if (is_ajax() === true) {
         $order = get_datatable_order();
         $id_agent = (int) get_parameter('id_agent', 0);
         $id_group = (int) get_parameter('id_group', 0);
+        $utimestamp = (int) get_parameter('utimestamp', 0);
+        $period = (int) get_parameter('period', 0);
 
         if (isset($filter['value']) === false) {
             $filter['value'] = '';
@@ -1386,6 +1388,8 @@ if ($inventory_module !== 'basic') {
                 'id_group'            => $inventory_id_group,
                 'search'              => $search,
                 'status'              => $status_agent,
+                'utimestamp'          => (($range !== 'none') ? $utimestamp : 0),
+                'period'              => $period,
             ],
             'zeroRecords'  => __('Agent info not found'),
             'emptyTable'   => __('Agent info not found'),
