@@ -426,14 +426,14 @@ if ($access_console_node === true) {
 
     if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
         // Setup.
-        $menu_godmode['gsetup']['text'] = __('Setup');
+        $menu_godmode['gsetup']['text'] = __('Settings');
         $menu_godmode['gsetup']['sec2'] = 'general';
         $menu_godmode['gsetup']['id'] = 'god-setup';
 
         $sub = [];
 
         // Options Setup.
-        $sub['general']['text'] = __('Setup');
+        $sub['general']['text'] = __('System Settings');
         $sub['general']['id'] = 'Setup';
         $sub['general']['type'] = 'direct';
         $sub['general']['subtype'] = 'nolink';
