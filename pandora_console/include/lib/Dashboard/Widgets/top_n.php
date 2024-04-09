@@ -238,7 +238,7 @@ class TopNWidget extends Widget
         // Module.
         $inputs[] = [
             'label'     => __('Module').ui_print_help_tip(
-                __('Case insensitive regular expression or string for module name. For example: .*usage.* will match: cpu_usage, vram usage.'),
+                __('Case insensitive regular expression or string for module name. For example: %s will match: cpu_usage, vram usage.', '.*usage.*'),
                 true
             ),
             'arguments' => [
