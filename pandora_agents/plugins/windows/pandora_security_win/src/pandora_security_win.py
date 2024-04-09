@@ -4,7 +4,6 @@ import wmi, sys, winreg, os, subprocess, json, re
 from datetime import datetime, timedelta
 import argparse
 import configparser
-import locale
 
 ## Define modules
 modules=[]
@@ -340,26 +339,16 @@ def check_password_enforcement():
 def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_conf, auditpol_logon_noaudit_conf):
     try:
         # Run the auditpol command to check the audit policy for Logon/Logoff
-        cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category.encode("utf-8").decode("utf-8")}"'
+        cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category}"'
         result = subprocess.run(cmd_command, shell=True, capture_output=True, text=False, check=True)
-
-        print(result.stdout)
-        print(auditpol_logon_success_conf)
-
-        last_line = result.stdout.strip().split('\n')[-1].strip()
-        last_line_parts = re.split(r'\s\s+', last_line)
+        stdout = result.stdout.decode('cp850', errors='replace')
+        last_line = stdout.strip().split('\n')[-1]
         cleaned_line = re.sub(' +', ' ', last_line)
         
-        print(locale.getpreferredencoding())
-        print(last_line_parts[1])
-        print(last_line_parts[1].encode(locale.getpreferredencoding()))
-        print(auditpol_logon_success_conf)
-        print(auditpol_logon_success_conf.encode(locale.getpreferredencoding()))
-
         # Interpret the result
-        if auditpol_logon_success_conf.encode(locale.getpreferredencoding()) == last_line_parts[1].encode(locale.getpreferredencoding()):
+        if auditpol_logon_success_conf in stdout:
             result = 1
-        elif auditpol_logon_noaudit_conf.encode(locale.getpreferredencoding()) == last_line_parts[1].encode(locale.getpreferredencoding()):
+        elif auditpol_logon_noaudit_conf in stdout:
             result = 0
         else:
             print("Unable to determine audit policy for Logon/Logoff events.", file=sys.stderr)
@@ -369,7 +358,7 @@ def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_con
                 "type" : "generic_proc",
                 "value": result,
                 "module_group": "security",
-                "desc" : f"Check if the logon events audit log is enables, status: {cleaned_line}",
+                "desc" : f"Check if the logon events audit log is enables, status:{cleaned_line}",
             })
 
     except subprocess.CalledProcessError as e:
@@ -393,7 +382,7 @@ if __name__ == "__main__":
 
     if(args.conf):
         try:
-            with open(args.conf, 'r', encoding=locale.getpreferredencoding()) as f:
+            with open(args.conf, 'r', encoding='utf-8') as f:
                 content = f.read()
                 config.read_string('[CONF]\n' + content)
         except Exception as e:
