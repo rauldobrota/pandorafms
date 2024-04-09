@@ -4132,6 +4132,10 @@ function html_print_table(&$table, $return=false)
             } else {
                 $headStyle = '';
             }
+            
+            if (isset($table->headStyle[$heading])) {
+                $headStyle = ' style = "'.$table->headStyle[$heading].'" ';
+            }
 
             $output .= '<th class="'.$table->headclass[$key].'" '.$headColspan.$headStyle.' scope="col">'.$heading.'</th>';
         }
