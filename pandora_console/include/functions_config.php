@@ -4218,9 +4218,8 @@ function config_prepare_session()
 function config_prepare_jwt_signature()
 {
     global $config;
-    if (is_metaconsole() === true && is_centralized() === true && $config['JWT_signature'] == 1) {
+    if (is_metaconsole() === true && $config['JWT_signature'] == 1) {
         $signature = JWTRepository::generateSignature();
-        config_update_value('JWT_signature', $signature, true);
         JWTRepository::syncSignatureWithNodes($signature);
     }
 }

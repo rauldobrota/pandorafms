@@ -35,6 +35,7 @@ use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Validation\Constraint\StrictValidAt;
+enterprise_include_once('include/functions_metaconsole.php');
 
 /**
  * JWT Repository.
@@ -196,15 +197,21 @@ final class JWTRepository
     {
         global $config;
         if (function_exists('metaconsole_get_servers') === true) {
+            $sync = false;
             $servers = metaconsole_get_servers();
             foreach ($servers as $server) {
-                $config['JWT_signature'] = -1;
+                $config['JWT_signature'] = 1;
                 if (metaconsole_connect($server) == NOERR) {
                     config_update_value('JWT_signature', $signature, true);
+                    $sync = true;
                 }
 
+                $config['JWT_signature'] = 1;
                 metaconsole_restore_db();
-                $config['JWT_signature'] = $signature;
+            }
+
+            if ($sync === true) {
+                config_update_value('JWT_signature', $signature, true);
             }
         }
     }
