@@ -6380,6 +6380,7 @@ function reporting_html_sql($table, $item, $pdf=0)
                 // Print the header.
                 foreach ($row as $key => $value) {
                     $table2->head[] = $key;
+                    $table2->headStyle[$key] = 'text-align: center;';
                 }
             }
 
