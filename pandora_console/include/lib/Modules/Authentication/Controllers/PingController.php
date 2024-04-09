@@ -9,9 +9,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class PingController extends Controller
 {
-    public function __construct(
-    ) {
+
+
+    public function __construct()
+    {
     }
+
 
     /**
      * @OA\Get(
@@ -19,21 +22,21 @@ final class PingController extends Controller
      *   path="/ping",
      *   tags={"Authentication"},
      *   summary="ping",
-     *   @OA\Response(response=200, ref="#/components/responses/ResponsePing"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Response(response=200, ref="#/components/responses/ResponsePing"),
+     * @OA\Response(response=400, ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403, ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404, ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500, ref="#/components/responses/InternalServerError")
      *  )
      *
-     *  @OA\Response(
+     * @OA\Response(
      *   response="ResponsePing",
      *   description="Ping",
      *   content={
-     *     @OA\MediaType(
+     * @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Property(
+     * @OA\Property(
      *         property="valid",
      *         type="bool",
      *         nullable=false,
@@ -48,4 +51,6 @@ final class PingController extends Controller
     {
         return $this->getResponse($response, ['valid' => true]);
     }
+
+
 }

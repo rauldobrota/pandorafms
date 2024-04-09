@@ -131,6 +131,10 @@ if ($update_agents) {
     ) {
         if (get_parameter('interval') != -2) {
             $values['intervalo'] = get_parameter('interval');
+
+            if ($values['intervalo'] < 60) {
+                $values['intervalo'] = 60;
+            }
         }
     }
 
@@ -753,7 +757,7 @@ $table->data[1][0] = html_print_label_input_block(
 
 $table->data[1][1] = html_print_label_input_block(
     __('Interval'),
-    html_print_extended_select_for_time(
+    html_print_select_agentmodule_interval(
         'interval',
         -2,
         '',

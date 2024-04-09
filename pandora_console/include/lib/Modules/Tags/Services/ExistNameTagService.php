@@ -9,15 +9,20 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class ExistNameTagService
 {
+
+
     public function __construct(
         private TagRepository $tagRepository,
     ) {
     }
 
+
     public function __invoke(string $name): bool
     {
         $tagFilter = new TagFilter();
-        /** @var Tag $entityFilter */
+        /*
+            @var Tag $entityFilter
+        */
         $entityFilter = $tagFilter->getEntityFilter();
         $entityFilter->setName($name);
 
@@ -28,4 +33,6 @@ final class ExistNameTagService
             return false;
         }
     }
+
+
 }

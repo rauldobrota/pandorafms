@@ -39,7 +39,9 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class TokenFilter extends FilterAbstract
 {
+
     private ?string $freeSearch = null;
+
 
     public function __construct()
     {
@@ -47,6 +49,7 @@ final class TokenFilter extends FilterAbstract
         $this->setDefaultDirectionOrder($this::DESC);
         $this->setEntityFilter(new Token());
     }
+
 
     public function fieldsTranslate(): array
     {
@@ -58,10 +61,12 @@ final class TokenFilter extends FilterAbstract
         ];
     }
 
+
     public function fieldsReadOnly(): array
     {
         return [];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -69,6 +74,7 @@ final class TokenFilter extends FilterAbstract
             'freeSearch' => $this->getFreeSearch(),
         ];
     }
+
 
     public function getValidations(): array
     {
@@ -80,15 +86,18 @@ final class TokenFilter extends FilterAbstract
         return $validations;
     }
 
+
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
 
+
     public function getFreeSearch(): ?string
     {
         return $this->freeSearch;
     }
+
 
     public function setFreeSearch(?string $freeSearch): self
     {
@@ -96,8 +105,11 @@ final class TokenFilter extends FilterAbstract
         return $this;
     }
 
+
     public function getFieldsFreeSearch(): ?array
     {
         return [TokenDataMapper::TABLE_NAME.'.'.TokenDataMapper::LABEL];
     }
+
+
 }

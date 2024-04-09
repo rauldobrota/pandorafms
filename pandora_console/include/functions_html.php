@@ -2587,7 +2587,7 @@ function html_print_extended_select_for_time(
 
     echo '</div>';
 
-    echo '<div id="'.$uniq_name.'_manual" class="w100p inline_flex">';
+    echo '<div id="'.$uniq_name.'_manual" class="inline_flex">';
         html_print_input_text($uniq_name.'_text', $selected, '', $size, 255, false, $readonly, false, '', $class, $script_input);
 
         html_print_input_hidden($name, $selected, false, $uniq_name);
@@ -2614,7 +2614,7 @@ function html_print_extended_select_for_time(
             false,
             false
         );
-        echo ' <a href="javascript:">'.html_print_image(
+        echo '&nbsp&nbsp<a href="javascript:">'.html_print_image(
             'images/logs@svg.svg',
             true,
             [
@@ -2652,6 +2652,174 @@ function html_print_extended_select_for_time(
     } else {
         echo $returnString;
     }
+}
+
+
+/**
+ * Render agent/module interval-specific time selection set of inputs
+ * from html_print_extended_select_for_time with additional structure and
+ * behavior associated (establishes a limit of at least 60 seconds to be
+ * selected and displays notice when this limit is actively selected).
+ *
+ * @param string  $name          Select form name.
+ * @param mixed   $selected      Current selected value. Can be a single value or an array of selected values (in combination with multiple).
+ * @param string  $script        Javascript onChange (select) code.
+ * @param string  $nothing       Label when nothing is selected.
+ * @param mixed   $nothing_value Value when nothing is selected.
+ * @param integer $size          Size of the input.
+ * @param boolean $return        Whether to return an output string or echo now (optional, echo by default).
+ * @param boolean $select_style  Wherter to assign to combo a unique name (to have more than one on same page, like dashboard).
+ * @param boolean $unique_name   Uunique name value.
+ * @param string  $class         Class value.
+ * @param boolean $readonly      Readonly value.
+ * @param string  $custom_fields Custom fields value.
+ * @param string  $style_icon    Style icon value.
+ * @param boolean $no_change     No change value.
+ * @param boolean $allow_zero    Allow the use of the value zero.
+
+ * @return string HTML code if return parameter is true.
+ */
+function html_print_select_agentmodule_interval(
+    $name,
+    $selected='',
+    $script='',
+    $nothing='',
+    $nothing_value='0',
+    $size=false,
+    $return=false,
+    $select_style=false,
+    $unique_name=true,
+    $class='',
+    $readonly=false,
+    $custom_fields=false,
+    $style_icon='',
+    $no_change=false,
+    $allow_zero=0,
+    $units=null,
+    $script_input=''
+) {
+    global $config;
+
+    include_once $config['homedir'].'/include/functions_clippy.php';
+
+    $output = '<div style="display: inline-flex;">';
+    $output .= html_print_extended_select_for_time(
+        $name,
+        $selected,
+        $script,
+        $nothing,
+        $nothing_value,
+        $size,
+        $return,
+        $select_style,
+        $unique_name,
+        $class,
+        $readonly
+    );
+
+    $unique_id = '';
+
+    if ($unique_name === true) {
+        $pattern = '/'.$name.'([a-fA-F0-9]+)_default/';
+
+        if (preg_match($pattern, $output, $matches)) {
+            // Obtain the unique ID of the generated input.
+            $unique_id = $matches[1];
+            $name .= $unique_id;
+        }
+    }
+
+    $output .= html_print_div(
+        [
+            'id'      => 'agent_module_interval_clippy'.$unique_id,
+            'class'   => 'invisible flex align-self-center',
+            'content' => clippy_context_help('agent_module_interval'),
+        ],
+        true
+    );
+
+    $output .= "<script type='text/javascript'>
+		$(document).ready (function () {
+            // Trigger first check.
+            $('#text-".$name."_text').trigger('change');
+
+            $('#text-".$name."_text').on('keyup change', function() {
+                var unit_multiplier = parseInt($('#".$name."_units').val());
+                var numeric_value = parseInt($(this).val());
+
+                if (unit_multiplier <= 0 || numeric_value <= 0) {
+                    return;
+                }
+
+                var curr_secs = numeric_value * unit_multiplier;
+
+                if (curr_secs === 60) {
+                    $('#agent_module_interval_clippy".$unique_id."').show();
+                } else {
+                    $('#agent_module_interval_clippy".$unique_id."').hide();
+                }
+            });
+
+            $('.".$name."_toggler').on('click', function() {
+                if ($('#".$name."_default').css('display') != 'none') {
+                    $('#agent_module_interval_clippy".$unique_id."').hide();
+                } else {
+                    $('#text-".$name."_text').trigger('change');
+                }
+            });
+
+            $('#".$name."_units').on('input change', function() {
+                var numeric_value = parseInt($('#text-".$name."_text').val());
+                var unit_multiplier = parseInt($(this).val());
+
+                if (unit_multiplier <= 0 || numeric_value <= 0) {
+                    return;
+                }
+
+                var curr_secs = numeric_value * unit_multiplier;
+
+                if (curr_secs== 60) {
+                    $('#agent_module_interval_clippy".$unique_id."').show();
+                } else {
+                    $('#agent_module_interval_clippy".$unique_id."').hide();
+                }
+            });
+
+            $('#text-".$name."_text').on('change', function() {
+                checkMinValue($(this));
+            });
+
+            $('#".$name."_units').on('input change', function() {
+                checkMinValue($('#text-".$name."_text'));
+            });
+
+
+        });
+
+        function checkMinValue(that) {
+            if (isNaN(that.val()) === true) {
+                return;
+            }
+
+            var unit_multiplier = parseInt($('#".$name."_units').val());
+            var numeric_value = parseInt(that.val());
+
+            if (unit_multiplier <= 0 || numeric_value <= 0) {
+                return;
+            }
+
+            var curr_secs = numeric_value * unit_multiplier;
+
+            if (curr_secs < 60) {
+                // Override value to minimum limited seconds (60).
+                that
+                    .val((60 / unit_multiplier))
+                    .trigger('change');
+            }
+        }
+	</script>";
+    $output .= '</div>';
+    return $output;
 }
 
 

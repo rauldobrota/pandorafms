@@ -9,15 +9,18 @@ use PandoraFMS\Modules\Shared\Repositories\Repository;
 
 class ProfileRepository
 {
+
+
     public function __construct(
         private Repository $repository,
         private ProfileDataMapper $profileDataMapper
     ) {
     }
 
+
     /**
      * @return Profile[],
-    */
+     */
     public function list(ProfileFilter $profileFilter): array
     {
         return $this->repository->__list(
@@ -25,6 +28,7 @@ class ProfileRepository
             $this->profileDataMapper
         );
     }
+
 
     public function count(ProfileFilter $profileFilter): int
     {
@@ -34,6 +38,7 @@ class ProfileRepository
         );
     }
 
+
     public function getOne(ProfileFilter $profileFilter): Profile
     {
         return $this->repository->__getOne(
@@ -42,11 +47,13 @@ class ProfileRepository
         );
     }
 
+
     public function create(Profile $profile): Profile
     {
         $id = $this->repository->__create($profile, $this->profileDataMapper);
         return $profile->setIdProfile($id);
     }
+
 
     public function update(Profile $profile): Profile
     {
@@ -57,9 +64,11 @@ class ProfileRepository
         );
     }
 
+
     public function delete(int $id): void
     {
         $this->repository->__delete($id, $this->profileDataMapper);
     }
+
 
 }

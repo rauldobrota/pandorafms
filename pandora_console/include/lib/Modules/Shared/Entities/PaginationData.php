@@ -6,12 +6,19 @@ use JsonSerializable;
 
 class PaginationData implements JsonSerializable
 {
+
     private ?int $totalPages = null;
+
     private ?int $sizePage = null;
+
     private ?int $currentPage = null;
+
     private ?int $totalRegisters = null;
+
     private ?int $totalRegistersPage = null;
+
     private ?array $data = null;
+
 
     public function __construct(
         $currentPage,
@@ -29,10 +36,12 @@ class PaginationData implements JsonSerializable
         $this->setData($data);
     }
 
+
     public function toArray()
     {
         return $this->jsonSerialize();
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -44,14 +53,16 @@ class PaginationData implements JsonSerializable
                 'totalRegisters'     => $this->getTotalRegisters(),
                 'totalRegistersPage' => $this->getTotalRegistersPage(),
             ],
-            'data' => $this->getData(),
+            'data'           => $this->getData(),
         ];
     }
+
 
     public function getTotalPages(): ?int
     {
         return $this->totalPages;
     }
+
 
     public function setTotalPages(?int $totalPages): self
     {
@@ -60,10 +71,12 @@ class PaginationData implements JsonSerializable
         return $this;
     }
 
+
     public function getSizePage(): ?int
     {
         return $this->sizePage;
     }
+
 
     public function setSizePage(?int $sizePage): self
     {
@@ -72,10 +85,12 @@ class PaginationData implements JsonSerializable
         return $this;
     }
 
+
     public function getCurrentPage(): ?int
     {
         return $this->currentPage;
     }
+
 
     public function setCurrentPage(?int $currentPage): self
     {
@@ -84,10 +99,12 @@ class PaginationData implements JsonSerializable
         return $this;
     }
 
+
     public function getTotalRegisters(): ?int
     {
         return $this->totalRegisters;
     }
+
 
     public function setTotalRegisters(?int $totalRegisters): self
     {
@@ -96,10 +113,12 @@ class PaginationData implements JsonSerializable
         return $this;
     }
 
+
     public function getTotalRegistersPage(): ?int
     {
         return $this->totalRegistersPage;
     }
+
 
     public function setTotalRegistersPage(?int $totalRegistersPage): self
     {
@@ -108,10 +127,12 @@ class PaginationData implements JsonSerializable
         return $this;
     }
 
+
     public function getData(): ?array
     {
         return $this->data;
     }
+
 
     public function setData(?array $data): self
     {
@@ -119,4 +140,6 @@ class PaginationData implements JsonSerializable
 
         return $this;
     }
+
+
 }

@@ -157,30 +157,48 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class Group extends Entity
 {
+
     private ?int $idGroup = null;
+
     private ?string $name = null;
+
     private ?string $icon = null;
+
     private ?int $parent = null;
+
     private ?string $parentName = null;
+
     private ?bool $haschild = null;
+
     private ?bool $isPropagate = null;
+
     private ?bool $isAlertEnabled = null;
+
     private ?string $customId = null;
+
     private ?int $idSkin = null;
+
     private ?string $description = null;
+
     private ?string $contact = null;
+
     private ?string $other = null;
+
     private ?string $password = null;
+
     private ?int $maxAgents = null;
+
 
     public function __construct()
     {
     }
 
+
     public function fieldsReadOnly(): array
     {
         return ['idGroup' => 1];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -202,16 +220,17 @@ final class Group extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
-            'idGroup' => [
+            'idGroup'        => [
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
-            'name'   => Validator::STRING,
-            'icon'   => Validator::STRING,
-            'parent' => [
+            'name'           => Validator::STRING,
+            'icon'           => Validator::STRING,
+            'parent'         => [
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
@@ -222,168 +241,216 @@ final class Group extends Entity
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
-            'description' => Validator::STRING,
-            'contact'     => Validator::STRING,
-            'other'       => Validator::STRING,
-            'maxAgents'   => [
+            'description'    => Validator::STRING,
+            'contact'        => Validator::STRING,
+            'other'          => Validator::STRING,
+            'maxAgents'      => [
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
         ];
     }
 
+
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
 
+
     public function getIdGroup(): ?int
     {
         return $this->idGroup;
     }
+
+
     public function setIdGroup(?int $idGroup): self
     {
         $this->idGroup = $idGroup;
         return $this;
     }
 
+
     public function getName(): ?string
     {
         return $this->name;
     }
+
+
     public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
+
     public function getIcon(): ?string
     {
         return $this->icon;
     }
+
+
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
         return $this;
     }
 
+
     public function getParent(): ?int
     {
         return $this->parent;
     }
+
+
     public function setParent(?int $parent): self
     {
         $this->parent = $parent;
         return $this;
     }
 
+
     public function getIsPropagate(): ?bool
     {
         return $this->isPropagate;
     }
+
+
     public function setIsPropagate(?bool $isPropagate): self
     {
         $this->isPropagate = $isPropagate;
         return $this;
     }
 
+
     public function getIsAlertEnabled(): ?bool
     {
         return $this->isAlertEnabled;
     }
+
+
     public function setIsAlertEnabled(?bool $isAlertEnabled): self
     {
         $this->isAlertEnabled = $isAlertEnabled;
         return $this;
     }
 
+
     public function getCustomId(): ?string
     {
         return $this->customId;
     }
+
+
     public function setCustomId(?string $customId): self
     {
         $this->customId = $customId;
         return $this;
     }
 
+
     public function getIdSkin(): ?int
     {
         return $this->idSkin;
     }
+
+
     public function setIdSkin(?int $idSkin): self
     {
         $this->idSkin = $idSkin;
         return $this;
     }
 
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
+
+
     public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
+
     public function getContact(): ?string
     {
         return $this->contact;
     }
+
+
     public function setContact(?string $contact): self
     {
         $this->contact = $contact;
         return $this;
     }
 
+
     public function getOther(): ?string
     {
         return $this->other;
     }
+
+
     public function setOther(?string $other): self
     {
         $this->other = $other;
         return $this;
     }
 
+
     public function getPassword(): ?string
     {
         return $this->password;
     }
+
+
     public function setPassword(?string $password): self
     {
         $this->password = $password;
         return $this;
     }
 
+
     public function getMaxAgents(): ?int
     {
         return $this->maxAgents;
     }
+
+
     public function setMaxAgents(?int $maxAgents): self
     {
         $this->maxAgents = $maxAgents;
         return $this;
     }
 
+
     public function getParentName(): ?string
     {
         return $this->parentName;
     }
+
+
     public function setParentName(?string $parentName): self
     {
         $this->parentName = $parentName;
         return $this;
     }
 
+
     public function getHaschild(): ?bool
     {
         return $this->haschild;
     }
+
+
     public function setHaschild(?bool $haschild): self
     {
         $this->haschild = $haschild;
         return $this;
     }
+
+
 }

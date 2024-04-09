@@ -18,9 +18,12 @@ use Slim\Routing\RouteContext;
 
 abstract class Controller
 {
+
+
     public function __construct()
     {
     }
+
 
     public function getParam(Request $request, string $param): mixed
     {
@@ -35,6 +38,7 @@ abstract class Controller
         return $value;
     }
 
+
     public function getFile(Request $request, string $file): UploadedFileInterface
     {
         $files = $request->getUploadedFiles();
@@ -48,6 +52,7 @@ abstract class Controller
 
         return $files[$file];
     }
+
 
     public function extractParams(Request $request): array
     {
@@ -67,6 +72,7 @@ abstract class Controller
         return $params;
     }
 
+
     public function fromRequest(Request $request, string $className): mixed
     {
         $params = $this->extractParams($request);
@@ -84,10 +90,11 @@ abstract class Controller
         return $class->fromArray($params);
     }
 
+
     public function getResponse(
         Response $response,
         mixed $result,
-        ?string $contentType = 'application/json'
+        ?string $contentType='application/json'
     ): Response {
         if ($contentType === 'application/json') {
             $result = json_encode($result);
@@ -96,6 +103,7 @@ abstract class Controller
         $response->getBody()->write($result);
         return $response->withHeader('Content-Type', $contentType);
     }
+
 
     public function getResponseAttachment(Response $response, string $path, string $fileName)
     {
@@ -112,4 +120,6 @@ abstract class Controller
 
         return $response->withBody($file_stream)->withHeader('Content-Disposition', 'attachment; filename='.$fileName)->withHeader('Content-Type', mime_content_type($path));
     }
+
+
 }

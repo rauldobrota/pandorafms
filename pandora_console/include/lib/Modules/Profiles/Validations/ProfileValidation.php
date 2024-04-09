@@ -8,115 +8,120 @@ use PandoraFMS\Modules\Shared\Exceptions\BadRequestException;
 
 final class ProfileValidation
 {
+
+
     public function __construct(
         private ExistNameProfileService $existNameProfileService
     ) {
     }
 
-    public function __invoke(Profile $profile, ?Profile $oldProfile = null): void
+
+    public function __invoke(Profile $profile, ?Profile $oldProfile=null): void
     {
         if (!$profile->getName()) {
             throw new BadRequestException(__('Name is missing'));
         }
 
-        if($oldProfile === null || $oldProfile->getName() !== $profile->getName()) {
-            if($this->existNameProfileService->__invoke($profile->getName()) === true) {
+        if ($oldProfile === null || $oldProfile->getName() !== $profile->getName()) {
+            if ($this->existNameProfileService->__invoke($profile->getName()) === true) {
                 throw new BadRequestException(
                     __('Name %s is already exists', $profile->getName())
                 );
             }
         }
 
-        if($profile->getIsAgentView() === null) {
+        if ($profile->getIsAgentView() === null) {
             $profile->setIsAgentView(false);
         }
 
-        if($profile->getIsAgentEdit() === null) {
+        if ($profile->getIsAgentEdit() === null) {
             $profile->setIsAgentEdit(false);
         }
 
-        if($profile->getIsAlertEdit() === null) {
+        if ($profile->getIsAlertEdit() === null) {
             $profile->setIsAlertEdit(false);
         }
 
-        if($profile->getIsUserManagement() === null) {
+        if ($profile->getIsUserManagement() === null) {
             $profile->setIsUserManagement(false);
         }
 
-        if($profile->getIsDbManagement() === null) {
+        if ($profile->getIsDbManagement() === null) {
             $profile->setIsDbManagement(false);
         }
 
-        if($profile->getIsAlertManagement() === null) {
+        if ($profile->getIsAlertManagement() === null) {
             $profile->setIsAlertManagement(false);
         }
 
-        if($profile->getIsPandoraManagement() === null) {
+        if ($profile->getIsPandoraManagement() === null) {
             $profile->setIsPandoraManagement(false);
         }
 
-        if($profile->getIsReportView() === null) {
+        if ($profile->getIsReportView() === null) {
             $profile->setIsReportView(false);
         }
 
-        if($profile->getIsReportEdit() === null) {
+        if ($profile->getIsReportEdit() === null) {
             $profile->setIsReportEdit(false);
         }
 
-        if($profile->getIsReportManagement() === null) {
+        if ($profile->getIsReportManagement() === null) {
             $profile->setIsReportManagement(false);
         }
 
-        if($profile->getIsEventView() === null) {
+        if ($profile->getIsEventView() === null) {
             $profile->setIsEventView(false);
         }
 
-        if($profile->getIsEventEdit() === null) {
+        if ($profile->getIsEventEdit() === null) {
             $profile->setIsEventEdit(false);
         }
 
-        if($profile->getIsEventManagement() === null) {
+        if ($profile->getIsEventManagement() === null) {
             $profile->setIsEventManagement(false);
         }
 
-        if($profile->getIsAgentDisable() === null) {
+        if ($profile->getIsAgentDisable() === null) {
             $profile->setIsAgentDisable(false);
         }
 
-        if($profile->getIsMapView() === null) {
+        if ($profile->getIsMapView() === null) {
             $profile->setIsMapView(false);
         }
 
-        if($profile->getIsMapEdit() === null) {
+        if ($profile->getIsMapEdit() === null) {
             $profile->setIsMapEdit(false);
         }
 
-        if($profile->getIsMapManagement() === null) {
+        if ($profile->getIsMapManagement() === null) {
             $profile->setIsMapManagement(false);
         }
 
-        if($profile->getIsVconsoleView() === null) {
+        if ($profile->getIsVconsoleView() === null) {
             $profile->setIsVconsoleView(false);
         }
 
-        if($profile->getIsVconsoleEdit() === null) {
+        if ($profile->getIsVconsoleEdit() === null) {
             $profile->setIsVconsoleEdit(false);
         }
 
-        if($profile->getIsVconsoleManagement() === null) {
+        if ($profile->getIsVconsoleManagement() === null) {
             $profile->setIsVconsoleManagement(false);
         }
 
-        if($profile->getIsNetworkConfigView() === null) {
+        if ($profile->getIsNetworkConfigView() === null) {
             $profile->setIsNetworkConfigView(false);
         }
 
-        if($profile->getIsNetworkConfigEdit() === null) {
+        if ($profile->getIsNetworkConfigEdit() === null) {
             $profile->setIsNetworkConfigEdit(false);
         }
 
-        if($profile->getIsNetworkConfigManagement() === null) {
+        if ($profile->getIsNetworkConfigManagement() === null) {
             $profile->setIsNetworkConfigManagement(false);
         }
     }
+
+
 }

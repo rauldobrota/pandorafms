@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class DeleteTokenService
 {
+
+
     public function __construct(
         private Audit $audit,
         private TokenRepository $tokenRepository,
     ) {
     }
+
 
     public function __invoke(Token $token): void
     {
@@ -27,4 +30,6 @@ final class DeleteTokenService
             json_encode($token->toArray())
         );
     }
+
+
 }

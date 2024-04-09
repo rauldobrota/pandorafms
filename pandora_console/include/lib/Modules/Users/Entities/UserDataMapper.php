@@ -66,6 +66,7 @@ final class UserDataMapper extends DataMapperAbstract
     public const AUTH_TOKEN_SECRET = 'auth_token_secret';
     public const SESSION_MAX_TIME_EXPIRE = 'session_max_time_expire';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -76,10 +77,12 @@ final class UserDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return User::class;
     }
+
 
     public function fromDatabase(array $data): User
     {
@@ -142,6 +145,7 @@ final class UserDataMapper extends DataMapperAbstract
         );
     }
 
+
     /**
      * @param User $data
      */
@@ -202,4 +206,6 @@ final class UserDataMapper extends DataMapperAbstract
             self::SESSION_MAX_TIME_EXPIRE          => $data->getSessionMaxTimeExpire(),
         ];
     }
+
+
 }

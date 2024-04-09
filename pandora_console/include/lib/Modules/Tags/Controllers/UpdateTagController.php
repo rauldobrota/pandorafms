@@ -19,16 +19,18 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  *   summary="Updates an tag",
  *   @OA\Parameter(ref="#/components/parameters/parameterIdTag"),
  *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyTag"),
- *   @OA\Response(response=200, ref="#/components/responses/ResponseTag"),
- *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
- *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
- *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
- *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
- *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+ *   @OA\Response(response=200,                                        ref="#/components/responses/ResponseTag"),
+ *   @OA\Response(response=400,                                        ref="#/components/responses/BadRequest"),
+ *   @OA\Response(response=401,                                        ref="#/components/responses/Unauthorized"),
+ *   @OA\Response(response=403,                                        ref="#/components/responses/Forbidden"),
+ *   @OA\Response(response=404,                                        ref="#/components/responses/NotFound"),
+ *   @OA\Response(response=500,                                        ref="#/components/responses/InternalServerError")
  * )
  */
 final class UpdateTagController extends Controller
 {
+
+
     public function __construct(
         private UpdateTagAction $updateTagAction,
         private ValidateAclSystem $acl,
@@ -36,6 +38,7 @@ final class UpdateTagController extends Controller
         private Management $management
     ) {
     }
+
 
     public function __invoke(Request $request, Response $response): Response
     {
@@ -53,4 +56,6 @@ final class UpdateTagController extends Controller
         $result = $this->updateTagAction->__invoke($tag, $oldTag);
         return $this->getResponse($response, $result);
     }
+
+
 }
