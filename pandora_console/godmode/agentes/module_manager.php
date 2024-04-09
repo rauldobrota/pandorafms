@@ -1365,4 +1365,9 @@ html_print_div(
         
         
     }
+
+    $(document).ready(function () {
+        $('#module_action').select2('open');
+        $('#module_action').select2('close');
+    });
 </script>
