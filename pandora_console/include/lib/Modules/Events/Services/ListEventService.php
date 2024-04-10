@@ -7,13 +7,18 @@ use PandoraFMS\Modules\Events\Repositories\EventRepository;
 
 final class ListEventService
 {
+
+
     public function __construct(
         private EventRepository $eventRepository,
     ) {
     }
 
+
     public function __invoke(EventFilter $eventFilter): array
     {
         return $this->eventRepository->list($eventFilter);
     }
+
+
 }

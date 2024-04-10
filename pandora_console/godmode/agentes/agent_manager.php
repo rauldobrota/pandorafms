@@ -558,7 +558,7 @@ if ($broker === false) {
     $tableAgent->data['caption_interval'][0] = __('Interval').ui_print_help_tip(__('Time that elapses when updating data in the agent. Remote modules have their own interval, but this time is used to find out if an agent stopped responding (unknown state). When twice the time interval defined in an agent goes by, it is considered to be in unknown state (or also if all its remote modules are in unknown state). An agent may be in unknown state if all of its local (software agent-based) modules have a last contact time longer than twice the agent interval, even if it has updated remote modules.'), true);
     // $tableAgent->rowstyle['interval'] = 'width: 260px';
     $tableAgent->rowclass['interval'] = 'w540px';
-    $tableAgent->data['interval'][0] = html_print_extended_select_for_time(
+    $tableAgent->data['interval'][0] = html_print_select_agentmodule_interval(
         'intervalo',
         $intervalo,
         '',

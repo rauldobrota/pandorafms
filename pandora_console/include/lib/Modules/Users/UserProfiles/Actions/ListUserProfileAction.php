@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Users\UserProfiles\Services\ListUserProfileService;
 
 final class ListUserProfileAction
 {
+
+
     public function __construct(
         private ListUserProfileService $listUserProfileService,
         private CountUserProfileService $countUserProfileService
     ) {
     }
+
 
     public function __invoke(UserProfileFilter $userProfileFilter): array
     {
@@ -24,4 +27,6 @@ final class ListUserProfileAction
             $this->listUserProfileService->__invoke($userProfileFilter)
         ))->toArray();
     }
+
+
 }

@@ -15,11 +15,14 @@ use PandoraFMS\Modules\Users\Entities\UserFilter;
 
 final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepository
 {
+
+
     public function __construct(
         private UserDataMapper $userDataMapper,
         private Config $config
     ) {
     }
+
 
     /**
      * @return User[],
@@ -49,6 +52,7 @@ final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepositor
         return $result;
     }
 
+
     public function count(UserFilter $userFilter): int
     {
         $sql = $this->getUsersQuery($userFilter, $this->userDataMapper, true);
@@ -64,6 +68,7 @@ final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepositor
 
         return (int) $count;
     }
+
 
     public function getOne(UserFilter $userFilter): User
     {
@@ -85,6 +90,7 @@ final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepositor
         return $this->userDataMapper->fromDatabase($result);
     }
 
+
     public function getExistUser(string $idUser): User
     {
         try {
@@ -105,11 +111,13 @@ final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepositor
         return $this->userDataMapper->fromDatabase($result);
     }
 
+
     public function create(User $user): User
     {
         $this->__create($user, $this->userDataMapper);
         return $user;
     }
+
 
     public function update(User $user): User
     {
@@ -120,15 +128,17 @@ final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepositor
         );
     }
 
+
     public function delete(string $id): void
     {
         $this->__delete($id, $this->userDataMapper);
     }
 
+
     private function getUsersQuery(
         FilterAbstract $filter,
         DataMapperAbstract $mapper,
-        bool $count = false
+        bool $count=false
     ): string {
         $pagination = '';
         $orderBy = '';
@@ -185,4 +195,6 @@ final class UserRepositoryMySQL extends RepositoryMySQL implements UserRepositor
 
         return $sql;
     }
+
+
 }

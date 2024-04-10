@@ -94,16 +94,24 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class EventComment extends Entity
 {
+
     private ?int $idEventComment = null;
+
     private ?int $idEvent = null;
+
     private ?int $utimestamp = null;
+
     private ?string $comment = null;
+
     private ?string $idUser = null;
+
     private ?string $action = null;
+
 
     public function __construct()
     {
     }
+
 
     public function fieldsReadOnly(): array
     {
@@ -114,6 +122,7 @@ final class EventComment extends Entity
             'utimestamp'     => 1,
         ];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -127,6 +136,7 @@ final class EventComment extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
@@ -134,82 +144,103 @@ final class EventComment extends Entity
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
-            'idEvent' => [
+            'idEvent'        => [
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
-            'utimestamp' => [
+            'utimestamp'     => [
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
-            'comment' => Validator::STRING,
-            'idUser'  => Validator::STRING,
-            'action'  => Validator::STRING,
+            'comment'        => Validator::STRING,
+            'idUser'         => Validator::STRING,
+            'action'         => Validator::STRING,
         ];
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
 
+
     public function getIdEventComment(): ?int
     {
         return $this->idEventComment;
     }
+
+
     public function setIdEventComment(?int $idEventComment): self
     {
         $this->idEventComment = $idEventComment;
         return $this;
     }
 
+
     public function getIdEvent(): ?int
     {
         return $this->idEvent;
     }
+
+
     public function setIdEvent(?int $idEvent): self
     {
         $this->idEvent = $idEvent;
         return $this;
     }
 
+
     public function getUtimestamp(): ?int
     {
         return $this->utimestamp;
     }
+
+
     public function setUtimestamp(?int $utimestamp): self
     {
         $this->utimestamp = $utimestamp;
         return $this;
     }
 
+
     public function getComment(): ?string
     {
         return $this->comment;
     }
+
+
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
         return $this;
     }
 
+
     public function getIdUser(): ?string
     {
         return $this->idUser;
     }
+
+
     public function setIdUser(?string $idUser): self
     {
         $this->idUser = $idUser;
         return $this;
     }
 
+
     public function getAction(): ?string
     {
         return $this->action;
     }
+
+
     public function setAction(?string $action): self
     {
         $this->action = $action;
         return $this;
     }
+
+
 }

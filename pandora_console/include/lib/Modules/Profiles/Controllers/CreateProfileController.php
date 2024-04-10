@@ -13,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class CreateProfileController extends Controller
 {
+
+
     public function __construct(
         private CreateProfileAction $createProfileAction,
         private ValidateAclSystem $acl,
@@ -20,19 +22,20 @@ final class CreateProfileController extends Controller
     ) {
     }
 
+
     /**
      * @OA\Post(
      *   security={{ "bearerAuth": {}}},
      *   tags={"Profiles"},
      *   path="/profile",
      *   summary="Creates a new profiles",
-     *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyProfile"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseProfile"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\RequestBody(ref="#/components/requestBodies/requestBodyProfile"),
+     * @OA\Response(response=200,                                            ref="#/components/responses/ResponseProfile"),
+     * @OA\Response(response=400,                                            ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                            ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                            ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                            ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                            ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -51,4 +54,6 @@ final class CreateProfileController extends Controller
 
         return $this->getResponse($response, $result);
     }
+
+
 }

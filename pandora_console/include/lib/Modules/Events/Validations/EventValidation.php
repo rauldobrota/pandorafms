@@ -16,6 +16,8 @@ use PandoraFMS\Modules\Users\Services\GetUserService;
 
 final class EventValidation
 {
+
+
     public function __construct(
         private ValidateAclSystem $acl,
         private Config $config,
@@ -25,7 +27,8 @@ final class EventValidation
     ) {
     }
 
-    public function __invoke(Event $event, ?Event $oldEvent = null): void
+
+    public function __invoke(Event $event, ?Event $oldEvent=null): void
     {
         if (!$event->getEvent()) {
             throw new BadRequestException(__('Event is missing'));
@@ -103,15 +106,18 @@ final class EventValidation
         }
     }
 
+
     private function validateUser(string $idUser): void
     {
         $this->getUserService->__invoke($idUser);
     }
 
+
     protected function validateGroup(int $idGroup): void
     {
         $this->getGroupService->__invoke($idGroup);
     }
+
 
     protected function validateAgent(int $idAgent): void
     {
@@ -125,10 +131,11 @@ final class EventValidation
         }
     }
 
-    protected function validateAgentModule(int $idAgentModule, ?int $idAgent = 0): void
+
+    protected function validateAgentModule(int $idAgentModule, ?int $idAgent=0): void
     {
         // TODO: create new service for this.
-        if(empty($idAgent) === false) {
+        if (empty($idAgent) === false) {
             $agent = new Agent($idAgent);
             $existModule = $agent->searchModules(
                 ['id_agente_modulo' => $idAgentModule],
@@ -155,6 +162,7 @@ final class EventValidation
         }
     }
 
+
     protected function validateAlert(int $idAlert): void
     {
         // TODO: create new service for this.
@@ -163,13 +171,17 @@ final class EventValidation
         }
     }
 
+
     protected function getCurrentTimestamp(): string
     {
         return $this->timestamp->getMysqlCurrentTimestamp(0);
     }
 
+
     protected function getCurrentUtimestamp(): int
     {
         return $this->timestamp->getMysqlSystemUtimestamp();
     }
+
+
 }

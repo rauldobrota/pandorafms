@@ -10,11 +10,14 @@ use PandoraFMS\Modules\Shared\Entities\PaginationData;
 
 final class ListTokenAction
 {
+
+
     public function __construct(
         private ListTokenService $listTokenService,
         private CountTokenService $countTokenService
     ) {
     }
+
 
     public function __invoke(TokenFilter $tokenFilter): array
     {
@@ -25,4 +28,6 @@ final class ListTokenAction
             $this->listTokenService->__invoke($tokenFilter)
         ))->toArray();
     }
+
+
 }

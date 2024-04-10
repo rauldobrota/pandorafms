@@ -39,7 +39,9 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class EventCommentFilter extends FilterAbstract
 {
+
     private ?string $freeSearch = null;
+
 
     public function __construct()
     {
@@ -47,6 +49,7 @@ final class EventCommentFilter extends FilterAbstract
         $this->setDefaultDirectionOrder($this::DESC);
         $this->setEntityFilter(new EventComment());
     }
+
 
     public function fieldsTranslate(): array
     {
@@ -60,10 +63,12 @@ final class EventCommentFilter extends FilterAbstract
         ];
     }
 
+
     public function fieldsReadOnly(): array
     {
         return [];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -72,20 +77,24 @@ final class EventCommentFilter extends FilterAbstract
         ];
     }
 
+
     public function getValidations(): array
     {
         $validations = [];
-        if($this->getEntityFilter() !== null) {
+        if ($this->getEntityFilter() !== null) {
             $validations = $this->getEntityFilter()->getValidations();
         }
+
         $validations['freeSearch'] = Validator::STRING;
         return $validations;
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
+
 
     /**
      * Get the value of freeSearch.
@@ -97,17 +106,18 @@ final class EventCommentFilter extends FilterAbstract
         return $this->freeSearch;
     }
 
+
     /**
      * Set the value of freeSearch.
      *
-     * @param ?string $freeSearch
-     *
+     * @param string $freeSearch
      */
     public function setFreeSearch(?string $freeSearch): self
     {
         $this->freeSearch = $freeSearch;
         return $this;
     }
+
 
     /**
      * Get the value of fieldsFreeSearch.
@@ -118,5 +128,6 @@ final class EventCommentFilter extends FilterAbstract
     {
         return [EventCommentDataMapper::COMMENT];
     }
+
 
 }

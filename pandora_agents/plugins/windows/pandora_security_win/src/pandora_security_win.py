@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import wmi, sys, winreg, os, subprocess, json, re
 from datetime import datetime, timedelta
-
+import argparse
+import configparser
 
 ## Define modules
 modules=[]
@@ -333,22 +336,19 @@ def check_password_enforcement():
         print("Failed to check password enforcement for users.",  file=sys.stderr)
 
 
-def check_login_audit_policy():
+def check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_conf, auditpol_logon_noaudit_conf):
     try:
         # Run the auditpol command to check the audit policy for Logon/Logoff
-        cmd_command = "auditpol /get /subcategory:Logon"
-        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True, check=True)
-        last_line = result.stdout.strip().split('\n')[-1]
+        cmd_command = f'auditpol /get /subcategory:"{auditpol_logon_category}"'
+        result = subprocess.run(cmd_command, shell=True, capture_output=True, text=False, check=True)
+        stdout = result.stdout.decode('cp850', errors='replace')
+        last_line = stdout.strip().split('\n')[-1]
         cleaned_line = re.sub(' +', ' ', last_line)
         
         # Interpret the result
-        if "Success and Failure" in result.stdout:
+        if auditpol_logon_success_conf in stdout:
             result = 1
-        elif "Aciertos y errores" in result.stdout:
-            result = 1
-        elif "No Auditing" in result.stdout:
-            result = 0
-        elif "Sin auditoría" in result.stdout:
+        elif auditpol_logon_noaudit_conf in stdout:
             result = 0
         else:
             print("Unable to determine audit policy for Logon/Logoff events.", file=sys.stderr)
@@ -366,14 +366,38 @@ def check_login_audit_policy():
         print("Failed to check audit policy using auditpol command.", file=sys.stderr)
         return
 
+def parse_parameter(config=None, key="", default=""):
+    try:
+        return config.get("CONF", key)
+    except Exception as e:
+        return default
 
 if __name__ == "__main__":
+
+    # Parse arguments
+    parser = argparse.ArgumentParser(description= "", formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--conf', help='Path to configuration file', metavar='<conf_file>', required=False)
+    args = parser.parse_args()
+    config = configparser.ConfigParser()
+
+    if(args.conf):
+        try:
+            with open(args.conf, 'r', encoding='utf-8') as f:
+                content = f.read()
+                config.read_string('[CONF]\n' + content)
+        except Exception as e:
+            print("Error while reading configuration file, using default values: "+str(e), file=sys.stderr)
+
+    auditpol_logon_category     = parse_parameter(config, "auditpol_logon_category", "Logon")
+    auditpol_logon_success_conf = parse_parameter(config, "auditpol_logon_success_conf", "Success and Failure")
+    auditpol_logon_noaudit_conf = parse_parameter(config, "auditpol_logon_noaudit_conf", "No Auditing")
+
     check_antivirus_status()
     check_locksreen_enables()
     get_windows_update_info()
     is_firewall_enabled()
     check_password_enforcement()
-    check_login_audit_policy()
+    check_login_audit_policy(auditpol_logon_category, auditpol_logon_success_conf, auditpol_logon_noaudit_conf)
 
     for module in modules:
         print_module(module, True)

@@ -147,6 +147,7 @@ function notifications_get_subtypes(?string $source=null)
             'NOTIF.METACONSOLE.DB_CONNECTION',
             'NOTIF.DOWNTIME',
             'NOTIF.UPDATEMANAGER.REGISTRATION',
+            'NOTIF.OPENSEARCH.CONSOLELOG',
             'NOTIF.API.ACCESS',
             'NOTIF.MISC.EVENTSTORMPROTECTION',
             'NOTIF.MISC.DEVELOPBYPASS',

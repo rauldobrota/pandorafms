@@ -38,6 +38,7 @@ final class EventDataMapper extends DataMapperAbstract
     public const MODULE_STATUS = 'module_status';
     public const EVENT_CUSTOM_ID = 'event_custom_id';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -48,44 +49,52 @@ final class EventDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return Event::class;
     }
 
+
     public function fromDatabase(array $data): Event
     {
-        return $this->builder->build(new Event(), [
-            'idEvent'              => $data[self::ID_EVENT],
-            'idAgent'              => $data[self::ID_AGENT],
-            'idUser'               => $data[self::ID_USER],
-            'idGroup'              => $data[self::ID_GROUP],
-            'status'               => EventStatusEnum::get($data[self::STATUS]),
-            'timestamp'            => $data[self::TIMESTAMP],
-            'event'                => $this->repository->safeOutput($data[self::EVENT]),
-            'utimestamp'           => $data[self::UTIMESTAMP],
-            'eventType'            => EventTypeEnum::get($data[self::EVENT_TYPE]),
-            'idAgentModule'        => $data[self::ID_AGENTMODULE],
-            'idAlertAm'            => $data[self::ID_ALERT_AM],
-            'severity'             => EventSeverityEnum::get($data[self::SEVERITY]),
-            'tags'                 => $data[self::TAGS],
-            'source'               => $data[self::SOURCE],
-            'idExtra'              => $data[self::ID_EXTRA],
-            'criticalInstructions' => $this->repository->safeOutput($data[self::CRITICAL_INSTRUCTIONS]),
-            'warningInstructions'  => $this->repository->safeOutput($data[self::WARNING_INSTRUCTIONS]),
-            'unknownInstructions'  => $this->repository->safeOutput($data[self::UNKNOWN_INSTRUCTIONS]),
-            'ownerUser'            => $data[self::OWNER_USER],
-            'ackUtimestamp'        => $data[self::ACK_UTIMESTAMP],
-            'customData'           => $this->repository->safeOutput($data[self::CUSTOM_DATA]),
-            'data'                 => $this->repository->safeOutput($data[self::DATA]),
-            'moduleStatus'         => $data[self::MODULE_STATUS],
-            'eventCustomId'        => $this->repository->safeOutput($data[self::EVENT_CUSTOM_ID]),
-        ]);
+        return $this->builder->build(
+            new Event(),
+            [
+                'idEvent'              => $data[self::ID_EVENT],
+                'idAgent'              => $data[self::ID_AGENT],
+                'idUser'               => $data[self::ID_USER],
+                'idGroup'              => $data[self::ID_GROUP],
+                'status'               => EventStatusEnum::get($data[self::STATUS]),
+                'timestamp'            => $data[self::TIMESTAMP],
+                'event'                => $this->repository->safeOutput($data[self::EVENT]),
+                'utimestamp'           => $data[self::UTIMESTAMP],
+                'eventType'            => EventTypeEnum::get($data[self::EVENT_TYPE]),
+                'idAgentModule'        => $data[self::ID_AGENTMODULE],
+                'idAlertAm'            => $data[self::ID_ALERT_AM],
+                'severity'             => EventSeverityEnum::get($data[self::SEVERITY]),
+                'tags'                 => $data[self::TAGS],
+                'source'               => $data[self::SOURCE],
+                'idExtra'              => $data[self::ID_EXTRA],
+                'criticalInstructions' => $this->repository->safeOutput($data[self::CRITICAL_INSTRUCTIONS]),
+                'warningInstructions'  => $this->repository->safeOutput($data[self::WARNING_INSTRUCTIONS]),
+                'unknownInstructions'  => $this->repository->safeOutput($data[self::UNKNOWN_INSTRUCTIONS]),
+                'ownerUser'            => $data[self::OWNER_USER],
+                'ackUtimestamp'        => $data[self::ACK_UTIMESTAMP],
+                'customData'           => $this->repository->safeOutput($data[self::CUSTOM_DATA]),
+                'data'                 => $this->repository->safeOutput($data[self::DATA]),
+                'moduleStatus'         => $data[self::MODULE_STATUS],
+                'eventCustomId'        => $this->repository->safeOutput($data[self::EVENT_CUSTOM_ID]),
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var Event $data */
+        /*
+            @var Event $data
+        */
         return [
             self::ID_EVENT              => $data->getIdEvent(),
             self::ID_AGENT              => $data->getIdAgent(),
@@ -113,4 +122,6 @@ final class EventDataMapper extends DataMapperAbstract
             self::EVENT_CUSTOM_ID       => $this->repository->safeInput($data->getEventCustomId()),
         ];
     }
+
+
 }

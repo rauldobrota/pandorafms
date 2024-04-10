@@ -470,7 +470,7 @@ function get_user_language($id_user=null)
 
     if ($id_user !== null) {
         $userinfo = get_user_info($id_user);
-        if ($userinfo['language'] != 'default') {
+        if (isset($userinfo['language']) === true && $userinfo['language'] != 'default') {
             return $userinfo['language'];
         }
     }
@@ -5616,6 +5616,13 @@ function get_help_info($section_name)
                 $result .= 'pandorafms/management_and_operation/12_console_setup#general_setup';
             }
         break;
+
+        case 'opensearch_installation':
+            if ($es) {
+                $result .= 'pandorafms/technical_annexes/38_opensearch_installation#instalacion';
+            } else {
+                $result .= 'pandorafms/technical_annexes/38_opensearch_installation#installation';
+            }
 
         case 'servers_ha_clusters_tab':
             if ($es) {

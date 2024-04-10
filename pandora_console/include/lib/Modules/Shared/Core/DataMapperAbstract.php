@@ -4,10 +4,15 @@ namespace PandoraFMS\Modules\Shared\Core;
 
 abstract class DataMapperAbstract
 {
+
     private null|string $tableRelated = null;
+
     private null|string $keyRelated = null;
+
     private null|string $searchFieldRelated = null;
+
     private mixed $searchFieldValueRelated = null;
+
 
     public function __construct(
         private string $tableName,
@@ -15,26 +20,33 @@ abstract class DataMapperAbstract
     ) {
     }
 
+
     abstract public function getClassName(): string;
+
 
     abstract public function fromDatabase(array $data): MappeableInterface;
 
+
     abstract public function toDatabase(MappeableInterface $data): array;
+
 
     public function getTableName(): string
     {
         return $this->tableName;
     }
 
+
     public function getPrimaryKey(): string
     {
         return $this->primaryKey;
     }
 
+
     public function getTableRelated(): null|string
     {
         return $this->tableRelated;
     }
+
 
     public function setTableRelated(null|string $tableRelated): self
     {
@@ -43,10 +55,12 @@ abstract class DataMapperAbstract
         return $this;
     }
 
+
     public function getKeyRelated(): null|string
     {
         return $this->keyRelated;
     }
+
 
     public function setKeyRelated(null|string $keyRelated): self
     {
@@ -55,10 +69,12 @@ abstract class DataMapperAbstract
         return $this;
     }
 
+
     public function getSearchFieldRelated(): null|string
     {
         return $this->searchFieldRelated;
     }
+
 
     public function setSearchFieldRelated(null|string $searchFieldRelated): self
     {
@@ -67,10 +83,12 @@ abstract class DataMapperAbstract
         return $this;
     }
 
+
     public function getSearchFieldValueRelated(): mixed
     {
         return $this->searchFieldValueRelated;
     }
+
 
     public function setSearchFieldValueRelated(mixed $searchFieldValueRelated): self
     {
@@ -78,6 +96,7 @@ abstract class DataMapperAbstract
 
         return $this;
     }
+
 
     public function getStringNameClass(): string
     {
@@ -96,4 +115,6 @@ abstract class DataMapperAbstract
 
         return $result;
     }
+
+
 }

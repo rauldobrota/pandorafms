@@ -9,12 +9,15 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class UpdateProfileService
 {
+
+
     public function __construct(
         private Audit $audit,
         private ProfileRepository $profileRepository,
         private ProfileValidation $profileValidation
     ) {
     }
+
 
     public function __invoke(Profile $profile, Profile $oldProfile): Profile
     {
@@ -30,4 +33,6 @@ final class UpdateProfileService
 
         return $profile;
     }
+
+
 }

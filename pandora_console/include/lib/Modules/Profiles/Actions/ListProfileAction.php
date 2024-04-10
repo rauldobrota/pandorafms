@@ -10,11 +10,14 @@ use PandoraFMS\Modules\Shared\Entities\PaginationData;
 
 final class ListProfileAction
 {
+
+
     public function __construct(
         private ListProfileService $listProfileService,
         private CountProfileService $countProfileService
     ) {
     }
+
 
     public function __invoke(ProfileFilter $profileFilter): array
     {
@@ -25,4 +28,6 @@ final class ListProfileAction
             $this->listProfileService->__invoke($profileFilter)
         ))->toArray();
     }
+
+
 }

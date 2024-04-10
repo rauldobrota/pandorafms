@@ -15,6 +15,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class CreateUserProfileController extends Controller
 {
+
+
     public function __construct(
         private CreateUserProfileAction $createUserProfileAction,
         private ValidateAclSystem $acl,
@@ -24,21 +26,22 @@ final class CreateUserProfileController extends Controller
     ) {
     }
 
+
     /**
      * @OA\Post(
      *   security={{ "bearerAuth": {}}},
      *   tags={"Users"},
      *   path="/user/{idUser}/profile/{idProfile}",
      *   summary="Create user profile",
-     *   @OA\Parameter(ref="#/components/parameters/parameterIdUser"),
-     *   @OA\Parameter(ref="#/components/parameters/parameterIdProfile"),
-     *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyUserProfile"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseUserProfile"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Parameter(ref="#/components/parameters/parameterIdUser"),
+     * @OA\Parameter(ref="#/components/parameters/parameterIdProfile"),
+     * @OA\RequestBody(ref="#/components/requestBodies/requestBodyUserProfile"),
+     * @OA\Response(response=200,                                                ref="#/components/responses/ResponseUserProfile"),
+     * @OA\Response(response=400,                                                ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                                ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                                ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                                ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                                ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -63,4 +66,6 @@ final class CreateUserProfileController extends Controller
         $result = $this->createUserProfileAction->__invoke($userProfile);
         return $this->getResponse($response, $result);
     }
+
+
 }

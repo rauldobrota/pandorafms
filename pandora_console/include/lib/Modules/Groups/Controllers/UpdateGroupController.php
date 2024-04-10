@@ -19,16 +19,18 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  *   summary="Updates an group",
  *   @OA\Parameter(ref="#/components/parameters/parameterIdGroup"),
  *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyGroup"),
- *   @OA\Response(response=200, ref="#/components/responses/ResponseGroup"),
- *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
- *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
- *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
- *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
- *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+ *   @OA\Response(response=200,                                          ref="#/components/responses/ResponseGroup"),
+ *   @OA\Response(response=400,                                          ref="#/components/responses/BadRequest"),
+ *   @OA\Response(response=401,                                          ref="#/components/responses/Unauthorized"),
+ *   @OA\Response(response=403,                                          ref="#/components/responses/Forbidden"),
+ *   @OA\Response(response=404,                                          ref="#/components/responses/NotFound"),
+ *   @OA\Response(response=500,                                          ref="#/components/responses/InternalServerError")
  * )
  */
 final class UpdateGroupController extends Controller
 {
+
+
     public function __construct(
         private UpdateGroupAction $updateGroupAction,
         private ValidateAclSystem $acl,
@@ -36,6 +38,7 @@ final class UpdateGroupController extends Controller
         private Management $management
     ) {
     }
+
 
     public function __invoke(Request $request, Response $response): Response
     {
@@ -53,4 +56,6 @@ final class UpdateGroupController extends Controller
         $result = $this->updateGroupAction->__invoke($group, $oldGroup);
         return $this->getResponse($response, $result);
     }
+
+
 }

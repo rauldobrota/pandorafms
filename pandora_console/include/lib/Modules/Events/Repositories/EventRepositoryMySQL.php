@@ -13,11 +13,14 @@ use PandoraFMS\Modules\Shared\Repositories\RepositoryMySQL;
 
 class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
 {
+
+
     public function __construct(
         private EventDataMapper $eventDataMapper,
         private Config $config
     ) {
     }
+
 
     /**
      * @return Event[],
@@ -40,7 +43,6 @@ class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
                 $order,
                 $sort_field
             );
-
         } catch (\Throwable $th) {
             // Capture errors mysql.
             throw new InvalidArgumentException(
@@ -60,6 +62,7 @@ class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
 
         return $result;
     }
+
 
     public function count(EventFilter $eventFilter): int
     {
@@ -88,6 +91,7 @@ class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
 
         return (int) $count;
     }
+
 
     public function getOne(EventFilter $eventFilter): Event
     {
@@ -119,11 +123,13 @@ class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
         return $this->eventDataMapper->fromDatabase($result);
     }
 
+
     public function create(Event $event): Event
     {
         $id = $this->__create($event, $this->eventDataMapper);
         return $event->setIdEvent($id);
     }
+
 
     public function update(Event $event): Event
     {
@@ -134,21 +140,23 @@ class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
         );
     }
 
+
     public function delete(string $id): void
     {
         $this->__delete($id, $this->eventDataMapper);
     }
 
+
     public function getEvents(
         $fields,
         $filter,
-        $offset = null,
-        $limit = null,
-        $order = null,
-        $sort_field = null
+        $offset=null,
+        $limit=null,
+        $order=null,
+        $sort_field=null
     ): array {
         ob_start();
-        require_once $this->config->get('homedir').'/include/functions_events.php';
+        include_once $this->config->get('homedir').'/include/functions_events.php';
         $events = \events_get_all(
             $fields,
             $filter,
@@ -166,4 +174,6 @@ class EventRepositoryMySQL extends RepositoryMySQL implements EventRepository
 
         return $events;
     }
+
+
 }

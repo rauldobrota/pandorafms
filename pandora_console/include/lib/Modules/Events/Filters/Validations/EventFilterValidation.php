@@ -17,6 +17,8 @@ use PandoraFMS\Modules\Users\Services\GetUserService;
 
 final class EventFilterValidation
 {
+
+
     public function __construct(
         private ExistNameEventFilterService $existNameEventFilterService,
         private GetUserService $getUserService,
@@ -25,14 +27,15 @@ final class EventFilterValidation
     ) {
     }
 
-    public function __invoke(EventFilter $eventFilter, ?EventFilter $oldEventFilter = null): void
+
+    public function __invoke(EventFilter $eventFilter, ?EventFilter $oldEventFilter=null): void
     {
         if (!$eventFilter->getName()) {
             throw new BadRequestException(__('Name is missing'));
         }
 
-        if($oldEventFilter === null || $oldEventFilter->getName() !== $eventFilter->getName()) {
-            if($this->existNameEventFilterService->__invoke($eventFilter->getName()) === true) {
+        if ($oldEventFilter === null || $oldEventFilter->getName() !== $eventFilter->getName()) {
+            if ($this->existNameEventFilterService->__invoke($eventFilter->getName()) === true) {
                 throw new BadRequestException(
                     __('Name %s is already exists', $eventFilter->getName())
                 );
@@ -131,15 +134,18 @@ final class EventFilterValidation
         }
     }
 
+
     private function validateUser(string $idUser): void
     {
         $this->getUserService->__invoke($idUser);
     }
 
+
     protected function validateGroup(int $idGroup): void
     {
         $this->getGroupService->__invoke($idGroup);
     }
+
 
     protected function validateTags(array $tags): void
     {
@@ -147,6 +153,7 @@ final class EventFilterValidation
             $this->getTagService->__invoke((int) $tag);
         }
     }
+
 
     protected function validateAgent(int $idAgent): void
     {
@@ -160,10 +167,11 @@ final class EventFilterValidation
         }
     }
 
-    protected function validateAgentModule(int $idAgentModule, ?int $idAgent = 0): void
+
+    protected function validateAgentModule(int $idAgentModule, ?int $idAgent=0): void
     {
         // TODO: create new service for this.
-        if(empty($idAgent) === false) {
+        if (empty($idAgent) === false) {
             $agent = new Agent($idAgent);
             $existModule = $agent->searchModules(
                 ['id_agente_modulo' => $idAgentModule],
@@ -190,15 +198,17 @@ final class EventFilterValidation
         }
     }
 
+
     protected function validateNodes(array $nodes): void
     {
         // TODO: create new service for this.
     }
 
+
     protected function validateSeverities(array $severities): void
     {
         foreach ($severities as $severity) {
-            if($severity !== null) {
+            if ($severity !== null) {
                 $result = EventSeverityEnum::get(strtoupper($severity));
                 if (empty($result) === true) {
                     throw new BadRequestException(__('Invalid severity: %s', $severity));
@@ -206,4 +216,6 @@ final class EventFilterValidation
             }
         }
     }
+
+
 }

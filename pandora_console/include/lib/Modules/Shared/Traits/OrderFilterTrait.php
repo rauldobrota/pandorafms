@@ -4,13 +4,17 @@ namespace PandoraFMS\Modules\Shared\Traits;
 
 trait OrderFilterTrait
 {
+
     private ?string $sortField = null;
+
     private ?string $sortDirection = null;
+
 
     public function getSortField(): ?string
     {
         return $this->sortField;
     }
+
 
     public function setSortField(?string $sortField): self
     {
@@ -19,10 +23,12 @@ trait OrderFilterTrait
         return $this;
     }
 
+
     public function getSortDirection(): ?string
     {
         return $this->sortDirection;
     }
+
 
     public function setSortDirection(?string $sortDirection): self
     {
@@ -30,4 +36,6 @@ trait OrderFilterTrait
 
         return $this;
     }
+
+
 }
