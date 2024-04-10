@@ -22,6 +22,7 @@ Description: The default Pandora FMS theme layout
 */
 :root {
   --primary-color: #14524f;
+  --primary-color-hover: #14524f;
   --secondary-color: #222;
 
   --text-color: #fff;

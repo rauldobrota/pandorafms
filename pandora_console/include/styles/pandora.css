@@ -29,6 +29,7 @@
 
 :root {
   --primary-color: #14524f;
+  --primary-color-hover: #318280;
   --secondary-color: #ffffff;
 
   --text-color: #333;
@@ -4115,14 +4116,22 @@ div.div_groups_status {
   min-height: 53px;
 }
 
-#menu_tab li:hover:not(.menu-dots-li) {
-  box-shadow: inset 0px 4px var(--primary-color);
-}
-
 #menu_tab li.nomn_high,
 #menu_tab li.nomn_high span {
   color: #fff;
-  box-shadow: inset 0px 4px var(--primary-color);
+}
+
+#menu_tab li.nomn_high::before,
+#menu_tab li:hover:not(.menu-dots-li)::before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  width: 40px;
+  height: 5px;
+  margin-left: -5px;
+  background-color: var(--primary-color-hover);
+  border-radius: 5px;
 }
 
 #menu_tab li.nomn img,
