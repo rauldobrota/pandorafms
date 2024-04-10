@@ -79,8 +79,10 @@ if ($create_token === true || $update_token === true) {
     $validity = null;
     if (empty($expirationDate) === false && $expirationDate >= date('Y-m-d')) {
         $validity = $expirationDate;
-        if (empty($expirationTime) === false) {
+        if (empty($expirationTime) === false && $expirationTime > date('H:i:s')) {
             $validity .= ' '.$expirationTime;
+        } else {
+            $validity .= ' 23:59:59';
         }
     }
 
