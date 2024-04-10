@@ -46,14 +46,9 @@ a {
   text-decoration: none;
 }
 
-h1 {
+h1:not(.unbootstrap) {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-}
-
-.visual-console-container-dashboard h1 {
-  font-size: inherit;
-  margin-bottom: inherit;
 }
 
 .container-fluid {
@@ -971,7 +966,7 @@ input.resize_button {
   right: 20px;
 }
 
-.parent_graph > .graph {
+.parent_graph > .graph:not(.unbootstrap) {
   margin-left: 10px;
 }
 
@@ -993,4 +988,8 @@ input.resize_button {
   display: flex;
   width: 100%;
   justify-content: center;
+}
+
+.grid-stack-item-content .visual-console-container-dashboard {
+  text-align: initial;
 }

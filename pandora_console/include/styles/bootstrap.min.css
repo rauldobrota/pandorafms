@@ -71,12 +71,12 @@ hr {
   height: 0;
   overflow: visible;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1:not(.unbootstrap),
+h2:not(.unbootstrap),
+h3:not(.unbootstrap),
+h4:not(.unbootstrap),
+h5:not(.unbootstrap),
+h6:not(.unbootstrap) {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
@@ -311,18 +311,18 @@ template {
 [hidden] {
   display: none !important;
 }
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.h1:not(.unbootstrap),
+.h2:not(.unbootstrap),
+.h3:not(.unbootstrap),
+.h4:not(.unbootstrap),
+.h5:not(.unbootstrap),
+.h6:not(.unbootstrap),
+h1:not(.unbootstrap),
+h2:not(.unbootstrap),
+h3:not(.unbootstrap),
+h4:not(.unbootstrap),
+h5:not(.unbootstrap),
+h6:not(.unbootstrap) {
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
