@@ -10,11 +10,14 @@ use PandoraFMS\Modules\Shared\Entities\PaginationData;
 
 final class ListGroupAction
 {
+
+
     public function __construct(
         private ListGroupService $listGroupService,
         private CountGroupService $countGroupService
     ) {
     }
+
 
     public function __invoke(GroupFilter $groupFilter): array
     {
@@ -25,4 +28,6 @@ final class ListGroupAction
             $this->listGroupService->__invoke($groupFilter)
         ))->toArray();
     }
+
+
 }

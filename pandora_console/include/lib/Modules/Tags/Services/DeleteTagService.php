@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Tags\Repositories\TagRepository;
 
 final class DeleteTagService
 {
+
+
     public function __construct(
         private Audit $audit,
         private TagRepository $tagRepository,
     ) {
     }
+
 
     public function __invoke(Tag $tag): void
     {
@@ -32,4 +35,6 @@ final class DeleteTagService
             'Deleted tag '.$nameTag
         );
     }
+
+
 }

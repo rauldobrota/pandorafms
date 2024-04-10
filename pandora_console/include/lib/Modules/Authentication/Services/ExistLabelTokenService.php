@@ -9,15 +9,20 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class ExistLabelTokenService
 {
+
+
     public function __construct(
         private TokenRepository $tokenRepository,
     ) {
     }
 
+
     public function __invoke(string $label): bool
     {
         $tokenFilter = new TokenFilter();
-        /** @var Token $entityFilter */
+        /*
+            @var Token $entityFilter
+        */
         $entityFilter = $tokenFilter->getEntityFilter();
         $entityFilter->setLabel($label);
 
@@ -28,4 +33,6 @@ final class ExistLabelTokenService
             return false;
         }
     }
+
+
 }

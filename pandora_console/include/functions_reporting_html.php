@@ -2644,7 +2644,7 @@ function reporting_html_inventory($table, $item, $pdf=0)
     } else {
         // Grouped type inventory.
         $type_modules = array_reduce(
-            $item['data'],
+            ($item['data'] ?? []),
             function ($carry, $it) {
                 $carry[$it['name']][] = $it;
                 return $carry;
@@ -5169,7 +5169,7 @@ function reporting_html_value(
         $table->colspan['data']['cell'] = 3;
         $table->cellstyle['data']['cell'] = 'text-align: left;';
 
-        $table->data['data']['cell'] = '<p class="bolder" style="font-size: '.$font_size.'; color: #000000;">';
+        $table->data['data']['cell'] = '<p class="bolder" style="font-size: '.$font_size.';">';
 
         if ($check_empty && empty($item['data']['value'])) {
             $table->data['data']['cell'] .= __('Unknown');
@@ -6380,6 +6380,7 @@ function reporting_html_sql($table, $item, $pdf=0)
                 // Print the header.
                 foreach ($row as $key => $value) {
                     $table2->head[] = $key;
+                    $table2->headStyle[$key] = 'text-align: center;';
                 }
             }
 

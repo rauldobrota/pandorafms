@@ -93,17 +93,26 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class Tag extends Entity
 {
+
     private ?int $idTag = null;
+
     private ?string $name = null;
+
     private ?string $description = null;
+
     private ?string $url = null;
+
     private ?string $mail = null;
+
     private ?string $phone = null;
+
     private ?string $previousName = null;
+
 
     public function __construct()
     {
     }
+
 
     public function fieldsReadOnly(): array
     {
@@ -112,6 +121,7 @@ final class Tag extends Entity
             'previousName' => 1,
         ];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -125,10 +135,11 @@ final class Tag extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
-            'idTag' => [
+            'idTag'        => [
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
@@ -141,78 +152,102 @@ final class Tag extends Entity
         ];
     }
 
+
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
 
+
     public function getIdTag(): ?int
     {
         return $this->idTag;
     }
+
+
     public function setIdTag(?int $idTag): self
     {
         $this->idTag = $idTag;
         return $this;
     }
 
+
     public function getName(): ?string
     {
         return $this->name;
     }
+
+
     public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
+
+
     public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
+
     public function getUrl(): ?string
     {
         return $this->url;
     }
+
+
     public function setUrl(?string $url): self
     {
         $this->url = $url;
         return $this;
     }
 
+
     public function getMail(): ?string
     {
         return $this->mail;
     }
+
+
     public function setMail(?string $mail): self
     {
         $this->mail = $mail;
         return $this;
     }
 
+
     public function getPhone(): ?string
     {
         return $this->phone;
     }
+
+
     public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
         return $this;
     }
 
+
     public function getPreviousName(): ?string
     {
         return $this->previousName;
     }
+
+
     public function setPreviousName(?string $previousName): self
     {
         $this->previousName = $previousName;
         return $this;
     }
+
+
 }

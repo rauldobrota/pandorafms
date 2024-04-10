@@ -470,7 +470,7 @@ function get_user_language($id_user=null)
 
     if ($id_user !== null) {
         $userinfo = get_user_info($id_user);
-        if ($userinfo['language'] != 'default') {
+        if (isset($userinfo['language']) === true && $userinfo['language'] != 'default') {
             return $userinfo['language'];
         }
     }
@@ -6940,6 +6940,48 @@ function get_defined_translation($string)
             return vsprintf($cache[$language][$string], $args);
         }
     }
+}
+
+
+/**
+ * General utility to check if at least one element in an array meets a certain criteria defined by passed function.
+ *
+ * @param array    $array Array to be checked.
+ * @param callable $fn    Checking function (must accept one argument => array item to be evaluated and returns
+ * true/false depending on whether or not the condition was fulfilled).
+ *
+ * @return boolean
+ */
+function array_some(array $array, callable $fn)
+{
+    foreach ($array as $value) {
+        if ($fn($value) === true) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+/**
+ * General utility to check if every element in an array meets a certain criteria defined by passed function.
+ *
+ * @param array    $array Array to be checked.
+ * @param callable $fn    Checking function (must accept one argument => array item to be evaluated and returns
+ * true/false depending on whether or not the condition was fulfilled).
+ *
+ * @return boolean
+ */
+function array_every(array $array, callable $fn)
+{
+    foreach ($array as $value) {
+        if ($fn($value) === false) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 

@@ -95,19 +95,28 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class Token extends Entity
 {
+
     private ?int $idToken = null;
+
     private ?string $label = null;
+
     private ?string $uuid = null;
+
     private ?string $challenge = null;
+
     private ?string $idUser = null;
+
     private ?string $validity = null;
+
     private ?string $lastUsage = null;
 
     private ?string $token = null;
 
+
     public function __construct()
     {
     }
+
 
     public function fieldsReadOnly(): array
     {
@@ -119,6 +128,7 @@ final class Token extends Entity
             'lastUsage' => 1,
         ];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -133,10 +143,11 @@ final class Token extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
-            'idToken' => [
+            'idToken'   => [
                 Validator::INTEGER,
                 Validator::GREATERTHAN,
             ],
@@ -149,10 +160,12 @@ final class Token extends Entity
         ];
     }
 
+
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
+
 
     /**
      * Get the value of idToken.
@@ -164,11 +177,11 @@ final class Token extends Entity
         return $this->idToken;
     }
 
+
     /**
      * Set the value of idToken.
      *
-     * @param ?int $idToken
-     *
+     * @param integer $idToken
      */
     public function setIdToken(?int $idToken): self
     {
@@ -188,11 +201,11 @@ final class Token extends Entity
         return $this->label;
     }
 
+
     /**
      * Set the value of label.
      *
-     * @param ?string $label
-     *
+     * @param string $label
      */
     public function setLabel(?string $label): self
     {
@@ -200,6 +213,7 @@ final class Token extends Entity
 
         return $this;
     }
+
 
     /**
      * Get the value of uuid.
@@ -211,11 +225,11 @@ final class Token extends Entity
         return $this->uuid;
     }
 
+
     /**
      * Set the value of uuid.
      *
-     * @param ?string $uuid
-     *
+     * @param string $uuid
      */
     public function setUuid(?string $uuid): self
     {
@@ -223,6 +237,7 @@ final class Token extends Entity
 
         return $this;
     }
+
 
     /**
      * Get the value of challenge.
@@ -234,11 +249,11 @@ final class Token extends Entity
         return $this->challenge;
     }
 
+
     /**
      * Set the value of challenge.
      *
-     * @param ?string $challenge
-     *
+     * @param string $challenge
      */
     public function setChallenge(?string $challenge): self
     {
@@ -246,6 +261,7 @@ final class Token extends Entity
 
         return $this;
     }
+
 
     /**
      * Get the value of idUser.
@@ -257,11 +273,11 @@ final class Token extends Entity
         return $this->idUser;
     }
 
+
     /**
      * Set the value of idUser.
      *
-     * @param ?string $idUser
-     *
+     * @param string $idUser
      */
     public function setIdUser(?string $idUser): self
     {
@@ -269,6 +285,7 @@ final class Token extends Entity
 
         return $this;
     }
+
 
     /**
      * Get the value of validity.
@@ -280,11 +297,11 @@ final class Token extends Entity
         return $this->validity;
     }
 
+
     /**
      * Set the value of validity.
      *
-     * @param ?string $validity
-     *
+     * @param string $validity
      */
     public function setValidity(?string $validity): self
     {
@@ -292,6 +309,7 @@ final class Token extends Entity
 
         return $this;
     }
+
 
     /**
      * Get the value of lastUsage.
@@ -303,11 +321,11 @@ final class Token extends Entity
         return $this->lastUsage;
     }
 
+
     /**
      * Set the value of lastUsage.
      *
-     * @param ?string $lastUsage
-     *
+     * @param string $lastUsage
      */
     public function setLastUsage(?string $lastUsage): self
     {
@@ -315,6 +333,7 @@ final class Token extends Entity
 
         return $this;
     }
+
 
     /**
      * Get the value of token.
@@ -326,11 +345,11 @@ final class Token extends Entity
         return $this->token;
     }
 
+
     /**
      * Set the value of token.
      *
-     * @param ?string $token
-     *
+     * @param string $token
      */
     public function setToken(?string $token): self
     {
@@ -338,4 +357,6 @@ final class Token extends Entity
 
         return $this;
     }
+
+
 }

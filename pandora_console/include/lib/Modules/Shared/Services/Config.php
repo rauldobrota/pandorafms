@@ -4,11 +4,14 @@ namespace PandoraFMS\Modules\Shared\Services;
 
 final class Config
 {
-    public function get(string $key, mixed $default = null): mixed
+
+
+    public function get(string $key, mixed $default=null): mixed
     {
         global $config;
         return ($config[$key] ?? $default);
     }
+
 
     public function set(string $key, mixed $value): bool
     {
@@ -21,4 +24,6 @@ final class Config
 
         return $res;
     }
+
+
 }

@@ -9,15 +9,20 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class ExistNameProfileService
 {
+
+
     public function __construct(
         private ProfileRepository $profileRepository,
     ) {
     }
 
+
     public function __invoke(string $name): bool
     {
         $profileFilter = new ProfileFilter();
-        /** @var Profile $entityFilter */
+        /*
+            @var Profile $entityFilter
+        */
         $entityFilter = $profileFilter->getEntityFilter();
         $entityFilter->setName($name);
 
@@ -28,4 +33,6 @@ final class ExistNameProfileService
             return false;
         }
     }
+
+
 }

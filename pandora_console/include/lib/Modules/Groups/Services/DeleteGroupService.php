@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class DeleteGroupService
 {
+
+
     public function __construct(
         private Audit $audit,
         private GroupRepository $groupRepository,
     ) {
     }
+
 
     public function __invoke(Group $group): void
     {
@@ -39,4 +42,6 @@ final class DeleteGroupService
             'Deleted group '.$idGroup
         );
     }
+
+
 }

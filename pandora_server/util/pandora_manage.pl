@@ -36,7 +36,7 @@ use Encode::Locale;
 Encode::Locale::decode_argv;
 
 # version: define current version
-my $version = "7.0NG.776 Build 240404";
+my $version = "7.0NG.776 Build 240410";
 
 # save program name for logging
 my $progname = basename($0);
@@ -3404,9 +3404,14 @@ sub cli_agent_update_custom_fields() {
 		}
 	}
 
+	if(!defined($new_value)) {
+		print_log "[ERROR] Error updating field '$field' no new value has been provided\n\n";
+		exit;
+	}
+
 	print_log "\n[INFO] Updating field '$field' in agent with ID '$id_agent'\n\n";
 
-	my $result = 	pandora_agent_update_custom_field ($dbh, $new_value, $custom_field, $id_agent);
+	my $result = 	pandora_update_agent_custom_field ($dbh, $new_value, $custom_field, $id_agent);
 
 	if($result == "0E0"){
 			print_log "[ERROR] Error updating field '$field'\n\n";
@@ -7916,7 +7921,7 @@ sub pandora_manage_main ($$$) {
 					'values' => [
 						'unknown','alert_fired','alert_recovered','alert_ceased',
 						'alert_manual_validation','recon_host_detected','system',
-						'error','new_agent','going_up_warning','going_up_critical','going_down_warning',
+						'error','new_agent','going_up_warning','going_up_critical','going_down_warning','going_unknown',
 						'going_down_normal','going_down_critical','going_up_normal','configuration_change'
 					]
 				},

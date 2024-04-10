@@ -3933,19 +3933,18 @@ CREATE TABLE IF NOT EXISTS `tdeployment_hosts` (
   `id` SERIAL,
   `id_cs` VARCHAR(100),
   `ip` VARCHAR(100) NOT NULL UNIQUE,
-  `id_os` INT UNSIGNED DEFAULT 0,
-  `os_version` VARCHAR(100) DEFAULT '' COMMENT 'OS version in STR format',
-  `arch` ENUM('x64', 'x86') DEFAULT 'x64',
   `current_agent_version` VARCHAR(100) DEFAULT '' COMMENT 'String latest installed agent',
   `target_agent_version_id` BIGINT UNSIGNED,
   `deployed` BIGINT NOT NULL DEFAULT 0 COMMENT 'When it was deployed',
   `server_ip` VARCHAR(100) DEFAULT NULL COMMENT 'Where to point target agent',
   `last_err` TEXT,
+  `deploy_method` ENUM('SSH', 'HTTP', 'HTTPS') DEFAULT 'SSH',
+  `deploy_port` INT UNSIGNED NOT NULL DEFAULT 22,
+  `server_port` INT UNSIGNED NOT NULL DEFAULT 41121,
+  `temp_folder` VARCHAR(500) DEFAULT '/tmp',
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id_cs`) REFERENCES `tcredential_store`(`identifier`)
   ON UPDATE CASCADE ON DELETE SET NULL,
-  FOREIGN KEY (`id_os`) REFERENCES `tconfig_os`(`id_os`)
-  ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`target_agent_version_id`) REFERENCES  `tagent_repository`(`id`)
   ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;

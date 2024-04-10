@@ -7,10 +7,13 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class ExistIdUserService
 {
+
+
     public function __construct(
         private UserRepository $UserRepository,
     ) {
     }
+
 
     public function __invoke(string $idUser): bool
     {
@@ -21,4 +24,6 @@ final class ExistIdUserService
             return false;
         }
     }
+
+
 }

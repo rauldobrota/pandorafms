@@ -3137,7 +3137,7 @@ class ConsoleSupervisor
             return;
         }
 
-        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer(true);
+        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer();
         $counts = $sync->getQueues(true);
 
         if (count($counts) === 0) {
@@ -3195,7 +3195,7 @@ class ConsoleSupervisor
             return;
         }
 
-        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer(true);
+        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer();
         $queues = $sync->getQueues();
         if (count($queues) === 0) {
             // Clean all.
@@ -3325,27 +3325,34 @@ class ConsoleSupervisor
     public function checkTotalModulesByAgent()
     {
         $modules_by_agent = db_process_sql(
-            'SELECT count(*) AS modules_by_agent
+            'SELECT count(*) AS count
             FROM tagente a
             LEFT JOIN tagente_modulo m ON a.id_agente = m.id_agente
+            WHERE m.disabled = 0
             GROUP BY m.id_agente'
         );
 
         $show_warning = false;
-        foreach ($modules_by_agent as $key => $total_modules) {
-            if ($total_modules['modules_by_agent'] > 200) {
-                $this->notify(
-                    [
-                        'type'              => 'NOTIF.MODULES_AGENT.ALERT',
-                        'title'             => __('Your system has an average of %s modules per agent', $total_modules['modules_by_agent']),
-                        'message'           => __('This is higher than the recommended maximum (200). This may result in poor performance of your system.'),
-                        'icon_notification' => self::ICON_HEADSUP,
-                        'url'               => '__url__index.php?sec=gagente&sec2=godmode/agentes/modificar_agente',
-                    ]
-                );
-                $show_warning = true;
-                break;
-            }
+
+        if ($modules_by_agent !== false) {
+            $agents = count($modules_by_agent);
+            $modules = array_sum(array_column($modules_by_agent, 'count'));
+
+            $ratio = ($modules / $agents);
+            $ratio = round($ratio, 2);
+        }
+
+        if ($ratio > 200) {
+            $this->notify(
+                [
+                    'type'              => 'NOTIF.MODULES_AGENT.ALERT',
+                    'title'             => __('Your system has an average of %s modules per agent', $ratio),
+                    'message'           => __('This is higher than the recommended maximum (200). This may result in poor performance of your system.'),
+                    'icon_notification' => self::ICON_HEADSUP,
+                    'url'               => '__url__index.php?sec=gagente&sec2=godmode/agentes/modificar_agente',
+                ]
+            );
+            $show_warning = true;
         }
 
         if ($show_warning === false) {

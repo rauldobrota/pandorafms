@@ -9,15 +9,20 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class ExistNameEventFilterService
 {
+
+
     public function __construct(
         private EventFilterRepository $eventFilterRepository,
     ) {
     }
 
+
     public function __invoke(string $name): bool
     {
         $eventFilterFilter = new EventFilterFilter();
-        /** @var EventFilter $entityFilter */
+        /*
+            @var EventFilter $entityFilter
+        */
         $entityFilter = $eventFilterFilter->getEntityFilter();
         $entityFilter->setName($name);
 
@@ -28,4 +33,6 @@ final class ExistNameEventFilterService
             return false;
         }
     }
+
+
 }

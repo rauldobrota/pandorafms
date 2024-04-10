@@ -4,10 +4,13 @@ namespace PandoraFMS\Modules\Authentication\Services;
 
 final class ValidateUserTokenService
 {
+
+
     public function __construct(
         private readonly GetUserTokenService $getUserTokenService,
     ) {
     }
+
 
     public function __invoke(
         string $uuid,
@@ -28,4 +31,6 @@ final class ValidateUserTokenService
             $challenge
         );
     }
+
+
 }

@@ -221,6 +221,31 @@ $(document).ready(function() {
     }
   }
 
+  if ($("#license_dialog_message").length) {
+    let height = 570;
+
+    $("#license_dialog_message").dialog({
+      dialogClass: "no-close",
+      closeOnEscape: false,
+      resizable: false,
+      draggable: true,
+      modal: true,
+      height: "auto",
+      width: 800,
+      overlay: {
+        opacity: 0.5,
+        background: "black"
+      },
+      open: function() {
+        $("#ok_buttom").show();
+      }
+    });
+
+    $("#ok_buttom").click(function() {
+      $("#license_dialog_message").dialog("close");
+    });
+  }
+
   if ($("#msg_change_password").length) {
     $("#msg_change_password").dialog({
       resizable: false,
