@@ -195,22 +195,27 @@ final class JWTRepository
      */
     public static function syncSignatureWithNodes(?string $signature):void
     {
-        global $config;
-        if (function_exists('metaconsole_get_servers') === true) {
-            $sync = false;
+        if (function_exists('metaconsole_get_servers') === true
+            && function_exists('metaconsole_push_conf_to_node') === true
+        ) {
+            $sync_server = 0;
             $servers = metaconsole_get_servers();
             foreach ($servers as $server) {
-                $config['JWT_signature'] = 1;
-                if (metaconsole_connect($server) == NOERR) {
-                    config_update_value('JWT_signature', $signature, true);
-                    $sync = true;
-                }
+                $ok_sync = metaconsole_push_conf_to_node(
+                    $server,
+                    [ 'JWT_signature' => $signature],
+                    true
+                );
 
-                $config['JWT_signature'] = 1;
-                metaconsole_restore_db();
+                if ($ok_sync === true) {
+                    $sync_server++;
+                }
             }
 
-            if ($sync === true) {
+            if (is_array($servers) === true
+                && count($servers) === $sync_server
+                && count($servers) > 0
+            ) {
                 config_update_value('JWT_signature', $signature, true);
             }
         }

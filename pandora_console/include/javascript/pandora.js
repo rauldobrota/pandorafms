@@ -2748,7 +2748,10 @@ function redirectNode(url, target = "_blank") {
       get_jwt_for_login: 1
     },
     success: function(data) {
-      var $form = $(`<form class='invisible' target='${target}'></form>`);
+      const unique_id = "token_form_" + uniqId();
+      var $form = $(
+        `<form class="invisible" id="${unique_id}" target="${target}"></form>`
+      );
       $form.attr("method", "post");
       $form.attr("action", url);
       if (data.success) {
@@ -2761,6 +2764,7 @@ function redirectNode(url, target = "_blank") {
 
       $("body").append($form);
       $form.submit();
+      $("#" + unique_id).remove();
     }
   });
 }
