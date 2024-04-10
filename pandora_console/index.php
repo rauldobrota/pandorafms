@@ -755,10 +755,10 @@ if (isset($config['id_user']) === false) {
         header('Location: '.ui_get_full_url('index.php'.$redirect_url));
         exit;
         // Always exit after sending location headers.
-    } else if (isset($_POST['token']) === true && (bool) $config['JWT_signature'] !== false) {
+    } else if (isset($_POST['auth_token']) === true && (bool) $config['JWT_signature'] !== false) {
         include_once $config['homedir'].'/include/class/JWTRepository.class.php';
         $jwt = new JWTRepository($config['JWT_signature']);
-        if ($jwt->setToken($_POST['token']) && $jwt->validate()) {
+        if ($jwt->setToken($_POST['auth_token']) && $jwt->validate()) {
             $id_user = $jwt->payload()->get('id_user');
             db_logon($id_user, $_SERVER['REMOTE_ADDR']);
             $_SESSION['id_usuario'] = $id_user;
@@ -956,10 +956,10 @@ if (isset($config['id_user']) === false) {
         exit('</html>');
     }
 } else {
-    if (isset($_POST['token']) === true && (bool) $config['JWT_signature'] !== false) {
+    if (isset($_POST['auth_token']) === true && (bool) $config['JWT_signature'] !== false) {
         include_once $config['homedir'].'/include/class/JWTRepository.class.php';
         $jwt = new JWTRepository($config['JWT_signature']);
-        if ($jwt->setToken($_POST['token']) && $jwt->validate()) {
+        if ($jwt->setToken($_POST['auth_token']) && $jwt->validate()) {
             $iduser = $_SESSION['id_usuario'];
             unset($_SESSION['id_usuario']);
             unset($iduser);

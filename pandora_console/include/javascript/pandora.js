@@ -2757,7 +2757,7 @@ function redirectNode(url, target = "_blank") {
       if (data.success) {
         var $input = $("<input>")
           .attr("type", "hidden")
-          .attr("name", "token")
+          .attr("name", "auth_token")
           .val(data.data);
         $form.append($input);
       }
