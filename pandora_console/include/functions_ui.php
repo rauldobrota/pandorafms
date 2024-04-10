@@ -6470,25 +6470,25 @@ function ui_print_agent_autocomplete_input($parameters)
 				switch (item.filter) {
 					default:
 					case \'agent\':
-						return $("<li style=\'background: #DFFFC4;\'></li>")
+						return $("<li style=\'background: #DFFFC4;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Agent').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'address\':
-						return $("<li style=\'background: #F7CFFF;\'></li>")
+						return $("<li style=\'background: #F7CFFF;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Address').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'description\':
-						return $("<li style=\'background: #FEFCC6;\'></li>")
+						return $("<li style=\'background: #FEFCC6;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Description').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'alias\':
-						return $("<li style=\"'.$background_results.'\"></li>")
+						return $("<li style=\"'.$background_results.'\" title=\''.__('Alias').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
