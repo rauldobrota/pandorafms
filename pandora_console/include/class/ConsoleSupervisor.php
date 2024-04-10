@@ -251,6 +251,13 @@ class ConsoleSupervisor
         $this->checkAllowOverrideEnabled();
 
         /*
+         * Check if OpenSearch is configured and log collector enabled
+         *  NOTIF.OPENSEARCH.CONSOLELOG
+         */
+
+        $this->checkOpenSearchLogCollector();
+
+        /*
          * Check if the Pandora Console log
          * file remains in old location.
          *  NOTIF.PANDORACONSOLE.LOG.OLD
@@ -539,6 +546,12 @@ class ConsoleSupervisor
          */
 
         $this->checkUpdateManagerRegistration();
+
+        /*
+         * Check if OpenSearch is configured and log collector enabled
+         *  NOTIF.OPENSEARCH.CONSOLELOG
+         */
+        $this->checkOpenSearchLogCollector();
 
         /*
          * Check if has API access.
@@ -2535,6 +2548,35 @@ class ConsoleSupervisor
                 );
             } else {
                 $this->cleanNotifications('NOTIF.UPDATEMANAGER.REGISTRATION');
+            }
+        }
+    }
+
+
+    /**
+     * Check if OpenSearch is configured and log collector enabled.
+     *
+     * @return void
+     */
+    public function checkOpenSearchLogCollector()
+    {
+        global $config;
+        include_once $config['homedir'].'/include/functions_update_manager.php';
+        $login = get_parameter('login', false);
+
+        if ($config['log_collector'] !== '1' && empty($config['elasticsearch_ip']) === false && empty($config['elasticsearch_port']) === false) {
+            if (update_manager_verify_registration() === false) {
+                $this->notify(
+                    [
+                        'type'              => 'NOTIF.OPENSEARCH.CONSOLELOG',
+                        'title'             => __('The Log collector is not enabled'),
+                        'message'           => __('The OpenSearch is defined but the log collector is not enabled.'),
+                        'url'               => '__url__/index.php?sec=gsetup&sec2=godmode/setup/setup&section=log',
+                        'icon_notification' => self::ICON_QUESTION,
+                    ]
+                );
+            } else {
+                $this->cleanNotifications('NOTIF.OPENSEARCH.CONSOLELOG');
             }
         }
     }

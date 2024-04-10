@@ -5617,6 +5617,13 @@ function get_help_info($section_name)
             }
         break;
 
+        case 'opensearch_installation':
+            if ($es) {
+                $result .= 'pandorafms/technical_annexes/38_opensearch_installation#instalacion';
+            } else {
+                $result .= 'pandorafms/technical_annexes/38_opensearch_installation#installation';
+            }
+
         case 'servers_ha_clusters_tab':
             if ($es) {
                 $result .= 'pandorafms/complex_environments_and_optimization/06_ha#alta_disponibilidad_del_servidor_de_datos';
