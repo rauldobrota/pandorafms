@@ -2744,9 +2744,8 @@ function redirectNode(url, target = "_blank") {
     url: "ajax.php",
     dataType: "json",
     data: {
-      page: "include/ajax/jwt.ajax",
-      method: "create",
-      only_metaconsole: 1
+      page: "include/ajax/token",
+      get_jwt_for_login: 1
     },
     success: function(data) {
       var $form = $(`<form class='invisible' target='${target}'></form>`);
