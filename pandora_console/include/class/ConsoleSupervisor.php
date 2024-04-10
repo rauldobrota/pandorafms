@@ -251,6 +251,13 @@ class ConsoleSupervisor
         $this->checkAllowOverrideEnabled();
 
         /*
+         * Check if OpenSearch is configured and log collector enabled
+         *  NOTIF.OPENSEARCH.CONSOLELOG
+         */
+
+        $this->checkOpenSearchLogCollector();
+
+        /*
          * Check if the Pandora Console log
          * file remains in old location.
          *  NOTIF.PANDORACONSOLE.LOG.OLD
