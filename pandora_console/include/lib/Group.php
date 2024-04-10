@@ -778,6 +778,7 @@ class Group extends Entity
         exit;
     }
 
+
     /**
      * Check whether group is linked to a database element (needed for ajax check).
      *

@@ -44,6 +44,31 @@
   --input-border: #c0ccdc;
 
   --table-hover-background: #ebfffe;
+
+  /* Events priorities colors */
+  --events-priority-bg-green: #82b92e;
+  --events-priority-text-green: #fff;
+
+  --events-priority-bg-red: #e63c52;
+  --events-priority-text-red: #fff;
+
+  --events-priority-bg-yellow: #f3b200;
+  --events-priority-text-yellow: #111;
+
+  --events-priority-bg-blue: #4ca8e0;
+  --events-priority-text-blue: #fff;
+
+  --events-priority-bg-grey: #999999;
+  --events-priority-text-grey: #fff;
+
+  --events-priority-bg-pink: #fdc4ca;
+  --events-priority-text-pink: #111;
+
+  --events-priority-bg-brown: #a67c52;
+  --events-priority-text-brown: #fff;
+
+  --events-priority-bg-orange: #f7931e;
+  --events-priority-text-orange: #111;
 }
 
 /*
@@ -14016,4 +14041,58 @@ form#submit-plugin > input[type="file"] {
 form#aws-view > span.select2 {
   vertical-align: bottom;
   margin-right: 15px;
+}
+
+table#snmp_console tbody td:not(.table_action_buttons) * {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+table#snmp_console tbody .datos_green,
+table#snmp_console tbody .datos_green * {
+  background-color: var(--events-priority-bg-green);
+  color: var(--events-priority-text-green) !important;
+}
+
+table#snmp_console tbody .datos_red,
+table#snmp_console tbody .datos_red * {
+  background-color: var(--events-priority-bg-red);
+  color: var(--events-priority-text-red) !important;
+}
+
+table#snmp_console tbody .datos_yellow,
+table#snmp_console tbody .datos_yellow * {
+  background-color: var(--events-priority-bg-yellow);
+  color: var(--events-priority-text-yellow) !important;
+}
+
+table#snmp_console tbody .datos_blue,
+table#snmp_console tbody .datos_blue * {
+  background-color: var(--events-priority-bg-blue);
+  color: var(--events-priority-text-blue) !important;
+}
+
+table#snmp_console tbody .datos_grey,
+table#snmp_console tbody .datos_grey * {
+  background-color: var(--events-priority-bg-grey);
+  color: var(--events-priority-text-grey) !important;
+}
+
+table#snmp_console tbody .datos_pink,
+table#snmp_console tbody .datos_pink * {
+  background-color: var(--events-priority-bg-pink);
+  color: var(--events-priority-text-pink) !important;
+}
+
+table#snmp_console tbody .datos_brown,
+table#snmp_console tbody .datos_brown * {
+  background-color: var(--events-priority-bg-brown);
+  color: var(--events-priority-text-brown) !important;
+}
+
+table#snmp_console tbody .datos_orange,
+table#snmp_console tbody .datos_orange * {
+  background-color: var(--events-priority-bg-orange);
+  color: var(--events-priority-text-orange) !important;
 }
