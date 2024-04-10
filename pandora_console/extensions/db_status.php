@@ -164,60 +164,83 @@ function extension_db_status_execute_checks($db_user, $db_password, $db_host, $d
     $db_name = explode(' ', $db_name);
     $db_name = $db_name[0];
 
-    if ($config['mysqli'] === true) {
-        $connection_test = mysqli_connect($db_host, $db_user, $db_password);
-    } else {
-        $connection_test = mysql_connect($db_host, $db_user, $db_password);
+    try {
+        if ($config['mysqli']) {
+            $connection_test = mysqli_connect($db_host, $db_user, $db_password);
+        } else {
+            $connection_test = mysql_connect($db_host, $db_user, $db_password);
+        }
+    } catch (Exception $e) {
+        $connection_test = false;
     }
 
     if (!$connection_test) {
-        ui_print_error_message(
-            __('Unsuccessful connected to the DB')
-        );
-    } else {
-        if ($config['mysqli'] === true) {
+        ui_print_error_message(__('Unsuccessful connected to the DB'));
+        return;
+    }
+
+    try {
+        $query = "SELECT IF(EXISTS(SELECT 1 FROM information_schema.SCHEMATA WHERE schema_name = '$db_name'), 'true', 'false') AS result";
+        if ($config['mysqli']) {    
+            $exist_db = mysqli_fetch_assoc(mysqli_query($connection_test, $query))['result'];
+        } else {
+            $exist_db = mysql_fetch_assoc(mysqli_query($connection_test, $query))['result'];
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__("There was a problem during verification of the existence of the `$db_name` table"));
+        return;
+    }
+   
+    if ($exist_db == 'true') {
+        ui_print_error_message(__("The testing DB `$db_name` already exists"));
+        return;
+    }
+
+    try {
+        if ($config['mysqli']) {
             $create_db = mysqli_query($connection_test, "CREATE DATABASE `$db_name`");
         } else {
             $create_db = mysql_query("CREATE DATABASE `$db_name`");
         }
+    } catch (Exception $e) {
+        $connection_test = false;
+    }
 
-        if (!$create_db) {
-            ui_print_error_message(
-                __('Unsuccessful created the testing DB')
-            );
-        } else {
-            if ($config['mysqli'] === true) {
-                mysqli_select_db($connection_test, $db_name);
-            } else {
-                mysql_select_db($db_name, $connection_test);
-            }
+    if (!$create_db) {
+        ui_print_error_message(__('Unsuccessful created the testing DB'));
+        return;
+    }
 
-            $install_tables = extension_db_status_execute_sql_file(
-                $config['homedir'].'/pandoradb.sql',
-                $connection_test
-            );
+    if ($config['mysqli'] === true) {
+        mysqli_select_db($connection_test, $db_name);
+    } else {
+        mysql_select_db($db_name, $connection_test);
+    }
 
-            if (!$install_tables) {
-                ui_print_error_message(
-                    __('Unsuccessful installed tables into the testing DB')
-                );
-            } else {
-                extension_db_check_tables_differences(
-                    $connection_test,
-                    $connection_system,
-                    $db_name,
-                    $config['dbname']
-                );
-            }
+    $install_tables = extension_db_status_execute_sql_file(
+        $config['homedir'].'/pandoradb.sql',
+        $connection_test
+    );
 
-            if ($config['mysqli'] === true) {
-                mysqli_select_db($connection_test, $db_name);
-                mysqli_query($connection_test, "DROP DATABASE IF EXISTS `$db_name`");
-            } else {
-                mysql_select_db($db_name, $connection_test);
-                mysql_query("DROP DATABASE IF EXISTS `$db_name`", $connection_test);
-            }
-        }
+    if (!$install_tables) {
+        ui_print_error_message(__('Unsuccessful installed tables into the testing DB'));
+        return;
+    } 
+
+    extension_db_check_tables_differences(
+        $connection_test,
+        $connection_system,
+        $db_name,
+        $config['dbname']
+    );
+    
+
+    if ($config['mysqli'] === true) {
+        mysqli_select_db($connection_test, $db_name);
+        mysqli_query($connection_test, "DROP DATABASE IF EXISTS `$db_name`");
+    } else {
+        mysql_select_db($db_name, $connection_test);
+        mysql_query("DROP DATABASE IF EXISTS `$db_name`", $connection_test);
     }
 }
 
