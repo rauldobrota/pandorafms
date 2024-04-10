@@ -45,11 +45,21 @@ try {
 
 // Ajax controller.
 $method = get_parameter('method', '');
+$only_metaconsole = (bool) get_parameter('only_metaconsole', false);
 
 if (method_exists($class, $method) === true) {
     if ($class->ajaxMethod($method) === true) {
-        $res = $class->{$method}();
-        echo json_encode(['success' => true, 'data' => $res]);
+        if ($only_metaconsole === true) {
+            if (is_metaconsole() === true) {
+                $res = $class->{$method}();
+                echo json_encode(['success' => true, 'data' => $res]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Environment is not a metaconsole']);
+            }
+        } else {
+            $res = $class->{$method}();
+            echo json_encode(['success' => true, 'data' => $res]);
+        }
     } else {
         echo json_encode(['success' => false, 'error' => 'Unavailable method.']);
     }

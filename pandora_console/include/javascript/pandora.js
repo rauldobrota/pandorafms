@@ -2737,7 +2737,7 @@ function menuTabsShowHide() {
   }
 }
 
-function redirectNode(url) {
+function redirectNode(url, target = "_blank") {
   event.preventDefault();
   $.ajax({
     method: "POST",
@@ -2745,22 +2745,22 @@ function redirectNode(url) {
     dataType: "json",
     data: {
       page: "include/ajax/jwt.ajax",
-      method: "create"
+      method: "create",
+      only_metaconsole: 1
     },
     success: function(data) {
-      var $form = $("<form class='invisible'></form>");
-
+      var $form = $(`<form class='invisible' target='${target}'></form>`);
       $form.attr("method", "post");
       $form.attr("action", url);
-
-      var $input = $("<input>")
-        .attr("type", "hidden")
-        .attr("name", "token")
-        .val(data.data);
-      $form.append($input);
+      if (data.success) {
+        var $input = $("<input>")
+          .attr("type", "hidden")
+          .attr("name", "token")
+          .val(data.data);
+        $form.append($input);
+      }
 
       $("body").append($form);
-
       $form.submit();
     }
   });
