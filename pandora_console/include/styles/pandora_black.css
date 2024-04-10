@@ -21,11 +21,23 @@ Description: The default Pandora FMS theme layout
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 :root {
-  /* --primary-color: #14524f; */
+  --primary-color: #14524f;
   --secondary-color: #222;
+
   --text-color: #fff;
-  /* --input-border: #c0ccdc; */
+  --text-color-2: #ededed;
+  --text-color-3: #d5d5d5;
+
+  --background-main-color: #f6f7fb;
+  --background-2: #95a3bf;
+
   --border-color: #484848;
+  --border-color-4: #e5e9ed;
+  --border-dark-color: #e1e1e1;
+
+  --input-border: #c0ccdc;
+
+  --table-hover-background: #edfffe;
 }
 
 /* General styles */
@@ -39,7 +51,7 @@ input.search_input,
 .filters input,
 input#text-id_parent.ac_input,
 input:not(div.login_pass > input):not(div.login_nick
-    > input):not([src$=".svg"]),
+    > input):not([src$=".svg"]):not(.transparent),
 textarea,
 select,
 .edit_user_comments #textarea_comments,
@@ -926,8 +938,12 @@ input:disabled {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   margin-right: 2px;
-  background-color: #222 !important;
 }
+
+.file_table_modal_active {
+  background-color: #333;
+}
+
 div.criticity {
   width: 150px;
   height: 2em;
@@ -1934,6 +1950,25 @@ div.events-refresh-pure {
 
 #tree-controller-recipient .tree-node:last-of-type > .leaf-icon {
   background-image: url(../../images/tree/corner@tree-dark.svg);
+}
+
+.empty-view-buttons {
+  border-color: #94a1bb14;
+}
+
+input.button_task:not(div.login_pass > input):not(div.login_nick
+    > input):not([src$=".svg"]) {
+  background-color: var(--primary-color) !important;
+  box-shadow: unset;
+}
+
+input.button_task:not(div.login_pass > input):not(div.login_nick
+    > input):not([src$=".svg"]):hover {
+  filter: brightness(1.1);
+}
+
+.empty-view > .empty-view-img-text > img {
+  filter: brightness(0.85);
 }
 
 /* Datepicker */

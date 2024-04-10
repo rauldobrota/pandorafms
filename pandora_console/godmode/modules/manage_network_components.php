@@ -82,6 +82,11 @@ $snmp_oid = (string) get_parameter('snmp_oid');
 $snmp_community = (string) get_parameter('snmp_community');
 $id_module_group = (int) get_parameter('id_module_group');
 $module_interval = (int) get_parameter('module_interval');
+// Limit module interval to at least 60 secs.
+if ($module_interval > 0) {
+    $module_interval = max($module_interval, 60);
+}
+
 $id_group = (int) get_parameter('id_group');
 $plugin_user = (string) get_parameter('plugin_user');
 $plugin_pass = io_input_password((string) get_parameter('plugin_pass'));

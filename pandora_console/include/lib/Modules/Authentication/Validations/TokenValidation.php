@@ -11,6 +11,8 @@ use PandoraFMS\Modules\Users\Services\GetUserService;
 
 final class TokenValidation
 {
+
+
     public function __construct(
         private Config $config,
         private Timestamp $timestamp,
@@ -19,7 +21,8 @@ final class TokenValidation
     ) {
     }
 
-    public function __invoke(Token $token, ?Token $oldToken = null): void
+
+    public function __invoke(Token $token, ?Token $oldToken=null): void
     {
         if (!$token->getLabel()) {
             throw new BadRequestException(__('Label is missing'));
@@ -34,7 +37,7 @@ final class TokenValidation
         }
 
         if (is_user_admin($this->config->get('id_user')) === false
-           || empty($token->getIdUser()) === true
+            || empty($token->getIdUser()) === true
         ) {
             $token->setIdUser($this->config->get('id_user'));
         } else {
@@ -42,13 +45,17 @@ final class TokenValidation
         }
     }
 
+
     protected function getCurrentTimestamp(): string
     {
         return $this->timestamp->getMysqlCurrentTimestamp(0);
     }
 
+
     private function validateUser(string $idUser): void
     {
         $this->getUserService->__invoke($idUser);
     }
+
+
 }

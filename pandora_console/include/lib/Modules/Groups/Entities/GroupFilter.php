@@ -39,7 +39,9 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class GroupFilter extends FilterAbstract
 {
+
     private ?string $freeSearch = null;
+
 
     public function __construct()
     {
@@ -47,6 +49,7 @@ final class GroupFilter extends FilterAbstract
         $this->setDefaultDirectionOrder($this::ASC);
         $this->setEntityFilter(new Group());
     }
+
 
     public function fieldsTranslate(): array
     {
@@ -67,10 +70,12 @@ final class GroupFilter extends FilterAbstract
         ];
     }
 
+
     public function fieldsReadOnly(): array
     {
         return ['password' => 1];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -79,20 +84,24 @@ final class GroupFilter extends FilterAbstract
         ];
     }
 
+
     public function getValidations(): array
     {
         $validations = [];
-        if($this->getEntityFilter() !== null) {
+        if ($this->getEntityFilter() !== null) {
             $validations = $this->getEntityFilter()->getValidations();
         }
+
         $validations['freeSearch'] = Validator::STRING;
         return $validations;
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
+
 
     /**
      * Get the value of freeSearch.
@@ -104,17 +113,18 @@ final class GroupFilter extends FilterAbstract
         return $this->freeSearch;
     }
 
+
     /**
      * Set the value of freeSearch.
      *
-     * @param ?string $freeSearch
-     *
+     * @param string $freeSearch
      */
     public function setFreeSearch(?string $freeSearch): self
     {
         $this->freeSearch = $freeSearch;
         return $this;
     }
+
 
     /**
      * Get the value of fieldsFreeSearch.
@@ -128,4 +138,6 @@ final class GroupFilter extends FilterAbstract
             GroupDataMapper::TABLE_NAME.'.'.GroupDataMapper::DESCRIPTION,
         ];
     }
+
+
 }

@@ -13,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class CreateUserController extends Controller
 {
+
+
     public function __construct(
         private CreateUserAction $createUserAction,
         private ValidateAclSystem $acl,
@@ -20,19 +22,20 @@ final class CreateUserController extends Controller
     ) {
     }
 
+
     /**
      * @OA\Post(
      *   security={{ "bearerAuth": {}}},
      *   tags={"Users"},
      *   path="/user",
      *   summary="Creates a new users",
-     *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyUser"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseUser"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\RequestBody(ref="#/components/requestBodies/requestBodyUser"),
+     * @OA\Response(response=200,                                         ref="#/components/responses/ResponseUser"),
+     * @OA\Response(response=400,                                         ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                         ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                         ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                         ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                         ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -50,4 +53,6 @@ final class CreateUserController extends Controller
 
         return $this->getResponse($response, $result);
     }
+
+
 }

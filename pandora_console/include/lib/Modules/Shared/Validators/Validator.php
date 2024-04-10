@@ -19,9 +19,11 @@ class Validator
     public const LANGUAGE = 'Language';
     public const MAIL = 'Mail';
 
+
     public function __construct()
     {
     }
+
 
     public function validate(array $args): array
     {
@@ -48,6 +50,7 @@ class Validator
         return $failed;
     }
 
+
     private function buildError(string $type, string $field, $value): ?array
     {
         if ($this->{'is'.$type}($value) !== true) {
@@ -60,56 +63,67 @@ class Validator
         return null;
     }
 
+
     public function isInteger($arg): bool
     {
         return is_numeric($arg);
     }
+
 
     public function isGreaterThan($arg): bool
     {
         return $arg > 0;
     }
 
+
     public function isGreaterEqualThan($arg): bool
     {
         return $arg >= 0;
     }
+
 
     public function isBool($arg): bool
     {
         return is_bool($arg);
     }
 
+
     public function isString($arg): bool
     {
         return is_string($arg) || is_numeric($arg);
     }
+
 
     public function isArray($arg): bool
     {
         return is_array($arg);
     }
 
+
     public function isDate($date)
     {
         return $this->isDateTime($date, 'Y-m-d');
     }
+
 
     public function isTime($date)
     {
         return $this->isDateTime($date, 'H:i:s');
     }
 
-    public function isDateTime($date, $format = 'Y-m-d H:i:s')
+
+    public function isDateTime($date, $format='Y-m-d H:i:s')
     {
         $d = \DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
     }
 
+
     public function isTimeZone(string $timeZone): string
     {
         return array_search($timeZone, timezone_identifiers_list());
     }
+
 
     protected function isLanguage(string $language): bool
     {
@@ -118,8 +132,11 @@ class Validator
         return empty($result) === true ? false : true;
     }
 
+
     protected function isMail(string $mail): bool
     {
         return filter_var($mail, FILTER_VALIDATE_EMAIL);
     }
+
+
 }

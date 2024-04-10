@@ -9,12 +9,15 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class CreateTagService
 {
+
+
     public function __construct(
         private Audit $audit,
         private TagRepository $tagRepository,
         private TagValidation $tagValidation
     ) {
     }
+
 
     public function __invoke(Tag $tag): Tag
     {
@@ -30,4 +33,6 @@ final class CreateTagService
 
         return $tag;
     }
+
+
 }

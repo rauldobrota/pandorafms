@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class DeleteEventService
 {
+
+
     public function __construct(
         private Audit $audit,
         private EventRepository $eventRepository,
     ) {
     }
+
 
     public function __invoke(Event $event): void
     {
@@ -25,4 +28,6 @@ final class DeleteEventService
             'Deleted event '.$idEvent
         );
     }
+
+
 }

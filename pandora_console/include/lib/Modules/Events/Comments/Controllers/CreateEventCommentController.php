@@ -14,6 +14,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class CreateEventCommentController extends Controller
 {
+
+
     public function __construct(
         private CreateEventCommentAction $createEventCommentAction,
         private ValidateAclSystem $acl,
@@ -21,20 +23,21 @@ final class CreateEventCommentController extends Controller
     ) {
     }
 
+
     /**
      * @OA\Post(
      *   security={{ "bearerAuth": {}}},
      *   tags={"Events"},
      *   path="/event/{idEvent}/comment",
      *   summary="Creates a new field into events comments",
-     *   @OA\Parameter(ref="#/components/parameters/parameterIdEvent"),
-     *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyEventComment"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseEventComment"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Parameter(ref="#/components/parameters/parameterIdEvent"),
+     * @OA\RequestBody(ref="#/components/requestBodies/requestBodyEventComment"),
+     * @OA\Response(response=200,                                                 ref="#/components/responses/ResponseEventComment"),
+     * @OA\Response(response=400,                                                 ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                                 ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                                 ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                                 ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                                 ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -56,4 +59,6 @@ final class CreateEventCommentController extends Controller
 
         return $this->getResponse($response, $result);
     }
+
+
 }

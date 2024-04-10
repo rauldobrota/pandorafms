@@ -10,6 +10,8 @@ use PandoraFMS\Modules\Users\UserProfiles\Repositories\UserProfileRepository;
 
 final class DeleteUserProfileService
 {
+
+
     public function __construct(
         private Config $config,
         private Audit $audit,
@@ -17,6 +19,7 @@ final class DeleteUserProfileService
         private UserProfileRepository $userProfileRepository,
     ) {
     }
+
 
     public function __invoke(UserProfile $userProfile): void
     {
@@ -30,4 +33,6 @@ final class DeleteUserProfileService
             'Deleted profile: '.$profile->getName().' for user: '.$idUser
         );
     }
+
+
 }

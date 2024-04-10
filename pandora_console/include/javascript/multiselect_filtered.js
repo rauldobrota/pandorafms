@@ -218,6 +218,7 @@ function fmModuleChange(uniqId, isMeta) {
     "#filtered-module-show-common-modules-" + uniqId
   ).attr("type");
 
+  var select_mode = isMeta === 1 ? 0 : 1;
   var showCommonModules = +(
     $("#filtered-module-show-common-modules-" + uniqId).prop("checked") == false
   );
@@ -229,7 +230,8 @@ function fmModuleChange(uniqId, isMeta) {
       get_modules_group_json: 1,
       id_module_group: idModuleGroup,
       id_agents: idAgents,
-      selection: showCommonModules
+      selection: showCommonModules,
+      select_mode: select_mode
     },
     function(data) {
       $("#filtered-module-modules-" + uniqId).html("");
@@ -247,9 +249,13 @@ function fmModuleChange(uniqId, isMeta) {
                   ? value["id_node"] + "|" + value["id_agente_modulo"]
                   : value["id_agente_modulo"]
               )
+              .attr("title", value)
               .html(value["nombre"]);
           } else {
-            option.attr("value", id).html(value);
+            option
+              .attr("value", id)
+              .attr("title", value)
+              .html(value);
           }
 
           $("#filtered-module-modules-" + uniqId).append(option);

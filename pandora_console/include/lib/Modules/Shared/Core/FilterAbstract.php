@@ -19,42 +19,55 @@ abstract class FilterAbstract extends SerializableAbstract
     public const DESC = 'DESC';
 
     private ?int $limit = null;
+
     private ?int $offset = null;
+
     private ?string $defaultFieldOrder = null;
+
     private ?string $defaultDirectionOrder = null;
+
     private ?array $fields = null;
+
     private ?Entity $entityFilter = null;
+
 
     public function __construct()
     {
     }
 
+
     abstract public function fieldsTranslate(): array;
+
 
     public function getFieldsFreeSearch(): ?array
     {
         return [];
     }
 
+
     public function getMultipleSearch(): ?array
     {
         return [];
     }
+
 
     public function getMultipleSearchString(): ?array
     {
         return [];
     }
 
+
     public function getFieldAclGroupMysql(): ?string
     {
         return '';
     }
 
+
     public function getModeAclGroupMysql(): ?string
     {
         return null;
     }
+
 
     public function fromArray(array $params): static
     {
@@ -72,7 +85,7 @@ abstract class FilterAbstract extends SerializableAbstract
 
             if (method_exists($this, 'set'.ucfirst($field)) === true) {
                 $this->{'set'.ucfirst($field)}($value ?? null);
-            } elseif ($this->getEntityFilter() !== null && method_exists($this->getEntityFilter(), 'set'.ucfirst($field)) === true) {
+            } else if ($this->getEntityFilter() !== null && method_exists($this->getEntityFilter(), 'set'.ucfirst($field)) === true) {
                 $this->getEntityFilter()->{'set'.ucfirst($field)}($value ?? null);
             }
         }
@@ -80,10 +93,12 @@ abstract class FilterAbstract extends SerializableAbstract
         return $this;
     }
 
+
     public function getLimit(): ?int
     {
         return $this->limit;
     }
+
 
     public function setLimit(?int $limit): self
     {
@@ -92,10 +107,12 @@ abstract class FilterAbstract extends SerializableAbstract
         return $this;
     }
 
+
     public function getOffset(): ?int
     {
         return $this->offset;
     }
+
 
     public function setOffset(?int $offset): self
     {
@@ -104,10 +121,12 @@ abstract class FilterAbstract extends SerializableAbstract
         return $this;
     }
 
+
     public function getDefaultFieldOrder(): ?string
     {
         return $this->defaultFieldOrder;
     }
+
 
     public function setDefaultFieldOrder(?string $defaultFieldOrder): self
     {
@@ -116,10 +135,12 @@ abstract class FilterAbstract extends SerializableAbstract
         return $this;
     }
 
+
     public function getDefaultDirectionOrder(): ?string
     {
         return $this->defaultDirectionOrder;
     }
+
 
     public function setDefaultDirectionOrder(?string $defaultDirectionOrder): self
     {
@@ -128,10 +149,12 @@ abstract class FilterAbstract extends SerializableAbstract
         return $this;
     }
 
+
     public function getEntityFilter(): ?Entity
     {
         return $this->entityFilter;
     }
+
 
     public function setEntityFilter(?Entity $entityFilter): self
     {
@@ -140,10 +163,12 @@ abstract class FilterAbstract extends SerializableAbstract
         return $this;
     }
 
+
     public function getFields(): ?array
     {
         return $this->fields;
     }
+
 
     public function setFields(?array $fields): self
     {
@@ -151,4 +176,6 @@ abstract class FilterAbstract extends SerializableAbstract
 
         return $this;
     }
+
+
 }

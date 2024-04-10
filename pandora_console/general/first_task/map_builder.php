@@ -34,37 +34,30 @@ check_login();
 ui_require_css_file('first_task');
 
 if ($vconsoles_write || $vconsoles_manage) {
-    ?>
+    $msg = __(
+        '%s allows users to create visual maps on which each user is able to create his or her own monitoring map. The new visual console editor is much more practical, although the prior visual console editor had its advantages.',
+        get_product_name()
+    );
 
-<div class="new_task">
-    <div class="image_task">
-        <?php echo html_print_image('images/first_task/icono_grande_visualconsole.png', true, ['title' => __('Visual Console')]); ?>
-    </div>
-    <div class="text_task">
-        <h3> <?php echo __('Visual Consoles'); ?></h3><p id="description_task"> 
-            <?php
-            echo __(
-                '%s allows users to create visual maps on which each user is able to create his or her '.'own monitoring map. The new visual console editor is much more practical, although the prior '."visual console editor had its advantages. On the new visual console, we've been successful in "."imitating the sensation and touch of a drawing application like GIMP. We've also simplified the "."editor by dividing it into several subject-divided tabs named 'Data', 'Preview', 'Wizard', 'List of "."Elements' and 'Editor'. The items the %s Visual Map was designed to handle are "."'static images', 'percentage bars', 'module graphs' and 'simple values'.",
-                get_product_name(),
-                get_product_name()
-            );
-            ?>
-   </p>
-        <form action="index.php?sec=network&amp;sec2=godmode/reporting/visual_console_builder" method="post">
-        <?php
-        html_print_input_hidden('edit_layout', 1);
-        html_print_action_buttons(
-            html_print_submit_button(
-                __('Create a Visual Console'),
-                'button_task',
-                false,
-                ['icon' => 'wand'],
-                true
-            )
-        );
-        ?>
-        </form>
-    </div>
-</div>
-    <?php
+    $msg .= '<br><br>'.__(
+        "On the new visual console, we have been successful in imitating the sensation and touch of a drawing application like GIMP. We have also simplified the editor by dividing it into several subject-divided tabs named 'Data', 'Preview', 'Wizard', 'List of Elements' and 'Editor'."
+    );
+
+    $msg .= '<br><br>'.__(
+        " The items the %s Visual Map was designed to handle are 'static images', 'percentage bars', 'module graphs' and 'simple values'",
+        get_product_name()
+    );
+
+    $url_new = 'index.php?sec=network&amp;sec2=godmode/reporting/visual_console_builder';
+    $button = '<form action="'.$url_new.'" method="post">';
+    $button .= html_print_input_hidden('edit_layout', 1);
+    $button .= '<input type="submit" class="button_task button_task_mini mrgn_0px_imp" value="'.__('Create visual console').'" />';
+    $button .= '</form>';
+
+    echo ui_print_empty_view(
+        __('There are no customized visual consoles'),
+        $msg,
+        'visual-console.svg',
+        $button
+    );
 }

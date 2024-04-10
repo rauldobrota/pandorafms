@@ -9,12 +9,15 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class UpdateEventService
 {
+
+
     public function __construct(
         private Audit $audit,
         private EventRepository $eventRepository,
         private EventValidation $eventValidation
     ) {
     }
+
 
     public function __invoke(Event $event, Event $oldEvent): Event
     {
@@ -30,4 +33,6 @@ final class UpdateEventService
 
         return $event;
     }
+
+
 }

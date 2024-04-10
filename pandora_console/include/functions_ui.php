@@ -4283,6 +4283,12 @@ function ui_print_datatable(array $parameters)
     $js = '<script>';
     $js .= 'var dt = '.$json_data.';';
     $js .= 'var config = '.$json_config.';';
+    if (isset($parameters['data_element']) === true) {
+        $js .= 'var preload_elements = true;';
+    } else {
+        $js .= 'var preload_elements = false;';
+    }
+
     $js .= '</script>';
 
     $js .= '<script>';
@@ -5441,6 +5447,7 @@ function ui_print_page_header(
             $buffer .= '</li>';
         }
 
+        $tabs_class = '';
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
@@ -8372,4 +8379,32 @@ function ui_print_status_secmon_div($status, $title=false)
         $title = ($title === false) ? __('critical') : $title;
         return ui_print_div('group_view_crit '.$class, $title);
     }
+}
+
+
+function ui_print_empty_view($title, $message, $img_name, $buttons=false)
+{
+    $img = html_print_image(
+        'images/empty_views/'.$img_name,
+        true,
+        [
+            'title' => __('Empty view image'),
+            'class' => '',
+        ]
+    );
+
+    $output = '
+        <div class="empty-view">
+            <div class="empty-view-img-text">
+                    '.$img.'
+                <div class="empty-view-text">
+                    <span>'.$title.'</span>
+                    <span>'.$message.'</span>
+                </div>
+            </div>
+            '.($buttons !== false ? '<div class="empty-view-buttons">'.$buttons.'</div>' : '').'
+        </div>
+    ';
+
+    return $output;
 }

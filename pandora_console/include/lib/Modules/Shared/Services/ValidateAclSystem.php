@@ -8,6 +8,8 @@ use PandoraFMS\Modules\Users\UserProfiles\Actions\GetUserProfileAction;
 
 class ValidateAclSystem
 {
+
+
     public function __construct(
         private Config $config,
         private Audit $audit,
@@ -15,10 +17,11 @@ class ValidateAclSystem
     ) {
     }
 
+
     public function validate(
         int $idGroup,
         string|array $permissions,
-        string $message = '',
+        string $message='',
     ): void {
         // ACL.
         $idUser ??= $this->config->get('id_user');
@@ -46,10 +49,11 @@ class ValidateAclSystem
         }
     }
 
+
     public function validateUserGroups(
         int|array|null $idGroup,
         string $permissions,
-        string $message = '',
+        string $message='',
     ): void {
         $idUser ??= $this->config->get('id_user');
 
@@ -81,6 +85,7 @@ class ValidateAclSystem
         }
     }
 
+
     public function validateUserAdmin(): void
     {
         if ((bool) \users_is_admin() === false) {
@@ -88,7 +93,8 @@ class ValidateAclSystem
         }
     }
 
-    public function validateUserCanManageAll($acl = 'PM'): void
+
+    public function validateUserCanManageAll($acl='PM'): void
     {
         if ((bool) \users_is_admin() === false
             && (bool) \users_can_manage_group_all($acl) === false
@@ -99,12 +105,14 @@ class ValidateAclSystem
         }
     }
 
+
     public function validateUserProfile(
         int $idProfile
     ): void {
         $idUser ??= $this->config->get('id_user');
         $this->getUserProfileAction->__invoke($idUser, $idProfile);
     }
+
 
     public function validateAclToken(
         Token $token
@@ -124,4 +132,6 @@ class ValidateAclSystem
             throw new ForbiddenACLException(__('ACL Forbidden only user administrator edit token other users'));
         }
     }
+
+
 }

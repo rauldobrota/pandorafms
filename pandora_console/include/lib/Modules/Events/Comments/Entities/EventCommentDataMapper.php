@@ -17,6 +17,7 @@ final class EventCommentDataMapper extends DataMapperAbstract
     public const ID_USER = 'id_user';
     public const ACTION = 'action';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -27,26 +28,34 @@ final class EventCommentDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return EventComment::class;
     }
 
+
     public function fromDatabase(array $data): EventComment
     {
-        return $this->builder->build(new EventComment(), [
-            'idEventComment' => $data[self::ID_EVENT_COMMENT],
-            'idEvent'        => $data[self::ID_EVENT],
-            'utimestamp'     => $data[self::UTIMESTAMP],
-            'comment'        => $this->repository->safeOutput($data[self::COMMENT]),
-            'idUser'         => $this->repository->safeOutput($data[self::ID_USER]),
-            'action'         => $this->repository->safeOutput($data[self::ACTION]),
-        ]);
+        return $this->builder->build(
+            new EventComment(),
+            [
+                'idEventComment' => $data[self::ID_EVENT_COMMENT],
+                'idEvent'        => $data[self::ID_EVENT],
+                'utimestamp'     => $data[self::UTIMESTAMP],
+                'comment'        => $this->repository->safeOutput($data[self::COMMENT]),
+                'idUser'         => $this->repository->safeOutput($data[self::ID_USER]),
+                'action'         => $this->repository->safeOutput($data[self::ACTION]),
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var EventComment $data */
+        /*
+            @var EventComment $data
+        */
         return [
             self::ID_EVENT_COMMENT => $data->getIdEventComment(),
             self::ID_EVENT         => $data->getIdEvent(),
@@ -56,4 +65,6 @@ final class EventCommentDataMapper extends DataMapperAbstract
             self::ACTION           => $this->repository->safeInput($data->getAction()),
         ];
     }
+
+
 }

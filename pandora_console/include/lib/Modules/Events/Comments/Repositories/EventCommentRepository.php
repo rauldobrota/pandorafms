@@ -9,15 +9,18 @@ use PandoraFMS\Modules\Shared\Repositories\Repository;
 
 class EventCommentRepository
 {
+
+
     public function __construct(
         private Repository $repository,
         private EventCommentDataMapper $eventCommentDataMapper
     ) {
     }
 
+
     /**
      * @return EventComments[],
-    */
+     */
     public function list(EventCommentFilter $eventCommentFilter): array
     {
         return $this->repository->__list(
@@ -25,6 +28,7 @@ class EventCommentRepository
             $this->eventCommentDataMapper
         );
     }
+
 
     public function count(EventCommentFilter $eventCommentFilter): int
     {
@@ -34,6 +38,7 @@ class EventCommentRepository
         );
     }
 
+
     public function getOne(EventCommentFilter $eventCommentFilter): EventComment
     {
         return $this->repository->__getOne(
@@ -42,11 +47,13 @@ class EventCommentRepository
         );
     }
 
+
     public function create(EventComment $eventComment): EventComment
     {
         $id = $this->repository->__create($eventComment, $this->eventCommentDataMapper);
         return $eventComment->setIdEventComment($id);
     }
+
 
     public function update(EventComment $eventComment): EventComment
     {
@@ -57,9 +64,11 @@ class EventCommentRepository
         );
     }
 
+
     public function delete(int $id): void
     {
         $this->repository->__delete($id, $this->eventCommentDataMapper);
     }
+
 
 }
