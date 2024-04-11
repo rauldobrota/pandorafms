@@ -2738,7 +2738,13 @@ function menuTabsShowHide() {
 }
 
 function redirectNode(url, target = "_blank") {
-  event.preventDefault();
+  if (
+    typeof event !== "undefined" &&
+    typeof event.preventDefault === "function"
+  ) {
+    event.preventDefault();
+  }
+
   $.ajax({
     method: "POST",
     url: "ajax.php",
