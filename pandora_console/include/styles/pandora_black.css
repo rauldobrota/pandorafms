@@ -2008,3 +2008,27 @@ div.show_result_interpreter {
   border: 1px solid var(--border-color);
   border-top: 0;
 }
+
+button.ui-button-text-only.ui-widget.sub:hover,
+#button_generate_code input.buttonButton:hover,
+#registration_wizard button[type="submit"]:hover {
+  box-shadow: 0px 2px 5px #837e7e6b;
+}
+
+#registration_wizard button[type="submit"].submit-cancel:hover {
+  color: var(--text-color) !important;
+}
+
+#button_generate_code input.buttonButton,
+#registration_wizard button[type="submit"]:not(.submit-cancel) {
+  background-color: var(--primary-color) !important;
+  box-shadow: none;
+}
+
+#registration_wizard button[type="submit"] > span {
+  line-height: normal;
+}
+
+button.secondaryButton {
+  color: var(--text-color) !important;
+}
