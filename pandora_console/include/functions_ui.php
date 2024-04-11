@@ -436,7 +436,7 @@ function ui_print_message($message, $class='', $attributes='', $return=false, $t
         $_SESSION['info_box_count']++;
     }
 
-    $position = (20 + ((int) $_SESSION['info_box_count'] * 100));
+    $position = (20 + (int) $_SESSION['info_box_count']);
 
     $output = html_print_div(
         [
