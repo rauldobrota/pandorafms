@@ -12336,7 +12336,7 @@ div.relative > div > div#ui-datepicker-div {
 }
 
 #ui-datepicker-div .ui-datepicker-header {
-  background-color: white;
+  background-color: var(--secondary-color);
 }
 
 .ui-widget-overlay {
