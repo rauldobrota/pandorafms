@@ -990,6 +990,13 @@ input.resize_button {
   justify-content: center;
 }
 
+.select2-container.select2-container--default.select2-container--open {
+  z-index: 999999;
+}
+.select2-search__field {
+  box-sizing: border-box !important;
+}
+
 .grid-stack-item-content .visual-console-container-dashboard {
   text-align: initial;
 }

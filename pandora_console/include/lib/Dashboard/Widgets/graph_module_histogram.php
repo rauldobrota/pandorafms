@@ -455,7 +455,7 @@ class GraphModuleHistogramWidget extends Widget
 
         $style = 'min-width:200px; min-height:100px;';
         $output .= '<div class="container-center" style="'.$style.'">';
-        $output .= '<div style="font-size:'.$size_label.'px;">';
+        $output .= '<div style="font-size:'.$size_label.'px; line-height:'.($size_label + 5).'px;">';
         $output .= $label;
         $output .= '</div>';
         $style = 'min-width:200px; width:'.($size['width'] + 15).'px;';

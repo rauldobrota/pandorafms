@@ -4597,7 +4597,7 @@ function html_print_table(&$table, $return=false)
             } else {
                 $headStyle = '';
             }
-            
+
             if (isset($table->headStyle[$heading])) {
                 $headStyle = ' style = "'.$table->headStyle[$heading].'" ';
             }
