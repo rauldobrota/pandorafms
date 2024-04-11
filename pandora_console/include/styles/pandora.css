@@ -10554,6 +10554,13 @@ select {
   box-sizing: border-box;
 }
 
+input.buttonButton {
+  border: 0px;
+  outline: 0px;
+  border-radius: 8px;
+  line-height: normal;
+}
+
 input[list],
 textarea[list],
 select[list] {
@@ -11164,7 +11171,6 @@ button.ui-button-text-only.ui-widget.sub {
   font-size: 16px !important;
   align-items: center;
   line-height: 24px;
-  box-shadow: 0px 3px 6px #c7c7c7;
   border-radius: 16px;
   cursor: pointer;
   padding: 0 16px;
@@ -14196,6 +14202,19 @@ table#snmp_console tbody .datos_orange,
 table#snmp_console tbody .datos_orange * {
   background-color: var(--events-priority-bg-orange);
   color: var(--events-priority-text-orange) !important;
+}
+
+.open_search_status_color {
+  color: var(--text-color-2);
+}
+
+button.ui-button-text-only.ui-widget.sub:hover,
+#button_generate_code input.buttonButton:hover {
+  box-shadow: 0px 3px 6px #c7c7c7;
+}
+
+#button_generate_code input.buttonButton {
+  box-shadow: none;
 }
 
 .black-and-white {
