@@ -140,7 +140,6 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                 }
             }
 
-            $search_bar .= '<div id="result_order" class="result_order"></div>';
             $search_bar .= '<input id="keywords" name="keywords"';
             if (!isset($config['search_keywords'])) {
                 $search_bar .= "value='".__('Enter keywords to search')."'";
@@ -407,6 +406,27 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         $modal_box .= '<a href="https://github.com/pandorafms/pandorafms/issues" target="_blank">'.__('Open an issue in Github').'</a>';
         $modal_box .= '<a href="https://discord.com/invite/xVt2ruSxmr" target="_blank">'.__('Join discord community').'</a>';
         $modal_box .= '</div>';
+
+        // Move help modal (header) fix z-index.
+        $modal_box .= '
+            <script>
+                $(document).ready(function() {
+                    let helpModalIcon = $("#modal-help-content > img");
+                    let helpModal = $("#modal_help");
+                
+                    if (helpModalIcon.length > 0) {
+                    let distanceRight =
+                        $(window).width() - (helpModalIcon.offset().left + helpModalIcon.width());
+                
+                    helpModal.css("z-index", "3");
+                    helpModal.css("position", "fixed");
+                    helpModal.css("top", "16px");
+                    helpModal.css("right", `${Math.floor(distanceRight) + 34}px`);
+                    helpModal.appendTo(document.body);
+                    }
+                });
+            </script>
+        ';
 
         if ($config['activate_feedback'] === '1') {
             $modal_help = html_print_div(
@@ -883,7 +903,8 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                     enterprise: <?php echo (int) enterprise_installed(); ?>,
                 },
                 success: function (data) {
-                   $('#result_order').html(data);
+                    $('#result_order').html(data);
+                    resizeSearchHeader()
                 },
                 error: function (data) {
                     console.error("Fatal error in AJAX call to interpreter order", data)
@@ -1208,4 +1229,8 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         });
     });
 /* ]]> */
+
+$(window).resize(function () { 
+    resizeSearchHeader()
+});
 </script>

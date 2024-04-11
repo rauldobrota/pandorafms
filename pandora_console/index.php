@@ -1565,6 +1565,9 @@ while (ob_get_length() > 0) {
     ob_end_flush();
 }
 
+// Results search header.
+echo '<div id="result_order" class="result_order"></div>';
+
 db_print_database_debug();
 echo '</html>';
 
