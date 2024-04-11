@@ -994,3 +994,10 @@ input.resize_button {
   width: 100%;
   justify-content: center;
 }
+
+.select2-container.select2-container--default.select2-container--open {
+  z-index: 999999;
+}
+.select2-search__field {
+  box-sizing: border-box !important;
+}
