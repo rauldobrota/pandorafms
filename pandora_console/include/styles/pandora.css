@@ -14197,3 +14197,7 @@ table#snmp_console tbody .datos_orange * {
   background-color: var(--events-priority-bg-orange);
   color: var(--events-priority-text-orange) !important;
 }
+
+.open_search_status_color {
+  color: var(--text-color-2);
+}
