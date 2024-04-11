@@ -493,7 +493,7 @@ class MapsMadeByUser extends Widget
 
         $output .= '<script type="text/javascript">';
         $output .= '$(document).ready(function () {';
-        $output .= 'dashboardLoadVC('.$settings.')';
+        $output .= 'dashboardLoadVC('.$settings.');';
         $output .= '});';
         $output .= '</script>';
 
