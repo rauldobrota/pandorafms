@@ -2012,3 +2012,19 @@ th {
 .white_table_graph.fixed_filter_bar {
   border-radius: 8px;
 }
+
+.div-import,
+.div-export {
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+}
+
+img[src$="import_to.svg"],
+img[src$="export_to.svg"] {
+  filter: brightness(0.9);
+}
+
+button.disabled {
+  background-color: #4b525c !important;
+  cursor: initial;
+}
