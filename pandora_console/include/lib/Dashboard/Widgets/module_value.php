@@ -459,17 +459,12 @@ class ModuleValueWidget extends Widget
 
         $last = modules_get_last_value($this->values['moduleId']);
 
-        if (empty($sql_data['min_warning']) === false || empty($sql_data['max_warning']) === false
-            || empty($sql_data['min_critical']) === false || empty($sql_data['max_critical']) === false
-            || empty($sql_data['str_warning']) === false
-        ) {
-            if (($last >= $sql_data['min_warning']) && ($last < $sql_data['max_warning'])) {
-                $color = COL_WARNING;
-            }
+        if (($last >= $sql_data['min_warning']) && ($last < $sql_data['max_warning'])) {
+            $color = COL_WARNING;
+        }
 
-            if ($last >= $sql_data['max_warning']) {
-                $color = COL_CRITICAL;
-            }
+        if ($last >= $sql_data['max_warning']) {
+            $color = COL_CRITICAL;
         }
 
         $uuid = uniqid();
