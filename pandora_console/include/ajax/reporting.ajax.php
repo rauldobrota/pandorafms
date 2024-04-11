@@ -37,7 +37,6 @@ $add_sla = get_parameter('add_sla', 0);
 $add_general = get_parameter('add_general', 0);
 $id = get_parameter('id', 0);
 $truncate_text = get_parameter('truncate_text', 0);
-$get_metaconsole_hash_data = get_parameter('get_metaconsole_hash_data', 0);
 $get_metaconsole_server_url = get_parameter('get_metaconsole_server_url', 0);
 $change_custom_fields_macros_report = (bool) get_parameter(
     'change_custom_fields_macros_report',
@@ -184,37 +183,6 @@ if ($get_custom_sql) {
 if ($truncate_text) {
     $text = get_parameter('text', '');
     return ui_print_truncate_text($text, GENERIC_SIZE_TEXT, true, false);
-}
-
-if ($get_metaconsole_hash_data) {
-    $server_name = get_parameter('server_name');
-
-    enterprise_include_once('include/functions_metaconsole.php');
-
-    $server = enterprise_hook('metaconsole_get_connection', [$server_name]);
-
-    // Bad data
-    if (empty($server)) {
-        echo '';
-        return;
-    }
-
-    // Deserialization of auth_token
-    $auth_serialized = json_decode($server['auth_token'], true);
-
-    $auth_token = '';
-
-    if (is_array($auth_serialized)) {
-        $auth_token = $auth_serialized['auth_token'];
-        $api_password = $auth_serialized['api_password'];
-        $console_user = $auth_serialized['console_user'];
-        $console_password = $auth_serialized['console_password'];
-    }
-
-    $url_hash = metaconsole_get_servers_url_hash($server);
-
-    echo $url_hash;
-    return;
 }
 
 if ($get_metaconsole_server_url) {

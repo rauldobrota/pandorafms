@@ -1165,16 +1165,10 @@ function ui_format_alert_row(
     global $config;
 
     if (!isset($alert['server_data'])) {
-        $server_name = '';
         $server_id = '';
-        $url_hash = '';
-        $console_url = '';
     } else {
         $server_data = $alert['server_data'];
-        $server_name = $server_data['server_name'];
         $server_id = $server_data['id'];
-        $console_url = $server_data['server_url'].'/';
-        $url_hash = metaconsole_get_servers_url_hash($server_data);
     }
 
     $actionText = '';
@@ -1445,13 +1439,13 @@ function ui_format_alert_row(
         if (is_metaconsole() === true) {
             // Do not show link if user cannot access node
             if ((bool) can_user_access_node() === true) {
-                $hashdata = metaconsole_get_server_hashdata($server);
-                $url = $server['server_url'].'/index.php?sec=estado&sec2=operation/agentes/ver_agente&amp;loginhash=auto&loginhash_data='.$hashdata.'&loginhash_user='.str_rot13($config['id_user']).'&id_agente='.$agente['id_agente'];
+                $url = $server['server_url'].'/index.php?sec=estado&sec2=operation/agentes/ver_agente&amp;&id_agente='.$agente['id_agente'];
                 $data[$index['agent_name']] .= html_print_anchor(
                     [
-                        'href'    => $url,
+                        'href'    => '#',
                         'content' => '<span class="bolder" title="'.$agente['nombre'].'">'.$agente['alias'].'</span>',
                         'target'  => '_blank',
+                        'onClick' => 'redirectNode(\''.$url.'\');',
                     ],
                     true
                 );
