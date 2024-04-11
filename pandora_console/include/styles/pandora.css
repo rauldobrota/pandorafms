@@ -14197,3 +14197,11 @@ table#snmp_console tbody .datos_orange * {
   background-color: var(--events-priority-bg-orange);
   color: var(--events-priority-text-orange) !important;
 }
+
+.black-and-white {
+  filter: saturate(0);
+}
+
+.invert_filter.black-and-white {
+  filter: invert(1) saturate(0) !important;
+}
