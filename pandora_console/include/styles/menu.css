@@ -478,7 +478,6 @@ ul li {
   top: 0;
   left: 0;
   background-color: #ffffff;
-  border-right: 1px solid #eee;
 }
 
 .button_collapse {
@@ -545,6 +544,13 @@ ul li {
   width: 35px;
 }
 
+#button_collapse {
+  width: 32px;
+  height: 32px;
+  background-color: #f6f7fb;
+  border-radius: 50%;
+}
+
 @media screen and (max-height: 750px) {
   .operation {
     padding-top: 10px;
@@ -586,7 +592,7 @@ ul li {
 
 #menu_tabs {
   height: 49px;
-  border-bottom: 1px solid #c1ccdc;
+  border-bottom: 1px solid #f6f7fb;
 }
 
 .div_border_line {
