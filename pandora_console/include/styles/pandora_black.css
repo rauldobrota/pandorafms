@@ -65,6 +65,15 @@ button.sub,
   color: var(--text-color) !important;
 }
 
+table
+  > tbody
+  > tr
+  > td.table_action_buttons:not(.qwerqwer)
+  input[type="image"]:not(.qwerqwer) {
+  background-color: transparent !important;
+  /* filter: brightness(4.5) contrast(100%) !important; */
+}
+
 div#head,
 #menu_tab li.nomn_high,
 #menu_tab li.nomn_high span,
@@ -431,8 +440,14 @@ table.black_table_modal_alternate tr:nth-child(even) td {
 .table_action_buttons a[href] img,
 .table_action_buttons input[type="image"],
 .action_button_img {
-  filter: brightness(4.5) contrast(50%);
+  filter: brightness(4.5) contrast(100%) !important;
   background-color: transparent !important;
+}
+
+.table_action_buttons a[href] img.invert_filter,
+.table_action_buttons input[type="image"].invert_filter,
+.action_button_img.invert_filter {
+  filter: invert(100%) brightness(4.5) contrast(100%) !important;
 }
 
 a.pandora_pagination {
