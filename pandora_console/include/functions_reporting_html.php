@@ -4355,7 +4355,7 @@ function reporting_html_last_value($table, $item, $pdf=0)
                 true
             );
         } else {
-            // PDF align center each column
+            // Center every row
             for ($i = 0; $i < 4; $i++) {
                 $table_data->cellstyle['1'][$i] = 'text-align: center;';
             }
