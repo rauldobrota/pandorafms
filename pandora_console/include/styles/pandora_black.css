@@ -28,6 +28,7 @@ Description: The default Pandora FMS theme layout
   --text-color: #fff;
   --text-color-2: #ededed;
   --text-color-3: #d5d5d5;
+  --text-color-4: #dddddd;
 
   --background-main-color: #f6f7fb;
   --background-2: #95a3bf;
@@ -77,7 +78,6 @@ table
 div#head,
 #menu_tab li.nomn_high,
 #menu_tab li.nomn_high span,
-.white_table_graph_header,
 .white-box-content,
 fieldset,
 .databox.filters,
@@ -267,6 +267,7 @@ h4,
 .info_table > thead > tr > th,
 .info_table > thead > tr > th a,
 .info_table > thead > tr > th > span,
+th,
 form.discovery label,
 .edit_user_labels,
 .input_label,
@@ -274,7 +275,8 @@ form.discovery label,
 tr.group_view_data,
 .group_view_data,
 ol.steps li span,
-ol.steps li a {
+ol.steps li a,
+.div-span {
   color: var(--text-color) !important;
 }
 
@@ -1132,17 +1134,15 @@ select,
 }
 
 .white_table_graph_header {
-  border: 1px solid #707070;
-  background-color: var(--secondary-color) !important;
   color: var(--text-color) !important;
   border-radius: 0;
 }
 
 .white_table_graph {
-  background-color: #111 !important;
+  background-color: var(--secondary-color) !important;
 }
 table.databox {
-  border-color: #707070;
+  border-color: var(--border-color);
   background-color: var(--secondary-color) !important;
   color: var(--text-color) !important;
 }
@@ -1175,6 +1175,7 @@ li.ui-tabs-tab.ui-corner-top.ui-state-default.ui-tab {
   width: 100%;
   position: relative;
   height: 30px;
+  background-color: var(--secondary-color);
 }
 
 .chartLegend table {
@@ -1182,7 +1183,8 @@ li.ui-tabs-tab.ui-corner-top.ui-state-default.ui-tab {
   right: 0px;
 }
 
-.graph_container {
+.graph_container,
+#graph_container {
   width: 800px;
   margin: 20px auto;
   border-radius: 3px;
@@ -1514,7 +1516,7 @@ span.select2-dropdown.select2-dropdown--below {
 }
 
 div.white_table_graph {
-  border-radius: 0;
+  border-radius: 8px;
 }
 
 div.white_box_opened[style*="height: 0px"],
@@ -1598,7 +1600,6 @@ a.autorefresh_txt,
 .white_box,
 .white-box-content {
   border: 0px;
-  background-color: var(--secondary-color) !important;
   color: var(--text-color) !important;
 }
 
@@ -1623,8 +1624,7 @@ a.pandora_pagination,
   border: 1px solid #2b2b2b !important;
 }
 
-.white_box,
-.white-box-content {
+.white_box {
   border: 1px solid #333;
 }
 
@@ -1638,11 +1638,7 @@ a.pandora_pagination,
 }
 
 .box-flat {
-  border: 1px solid #333;
-}
-
-.white_table_graph_header {
-  border: 1px solid #333;
+  border: 1px solid var(--border-color);
 }
 
 .info_table > tbody > tr > td {
@@ -2007,6 +2003,14 @@ div.show_result_interpreter {
   box-shadow: 0px 13px 13px 0px #dadada26;
   border: 1px solid var(--border-color);
   border-top: 0;
+}
+
+th {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.white_table_graph.fixed_filter_bar {
+  border-radius: 8px;
 }
 
 .div-import,

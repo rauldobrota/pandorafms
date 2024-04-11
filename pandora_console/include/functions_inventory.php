@@ -752,7 +752,7 @@ function inventory_get_datatable(
     }
 
     if ($inventory_search_string != '') {
-        array_push($where, "REPLACE(tagente_datos_inventory.data, '&#x20;', ' ') LIKE '%".$inventory_search_string."%'");
+        array_push($where, "REPLACE(tagent_module_inventory.data, '&#x20;', ' ') LIKE '%".$inventory_search_string."%'");
     }
 
     if ($utimestamp > 0) {

@@ -35,6 +35,7 @@
   --text-color: #333;
   --text-color-2: #161628;
   --text-color-3: #454545;
+  --text-color-4: #3f3f3f;
 
   --background-main-color: #f6f7fb;
 
@@ -14044,6 +14045,7 @@ button.disabled {
 
 .white_table_graph > div {
   background-color: transparent;
+  border-radius: 8px;
 }
 
 .link-bold {
@@ -14194,4 +14196,8 @@ table#snmp_console tbody .datos_orange,
 table#snmp_console tbody .datos_orange * {
   background-color: var(--events-priority-bg-orange);
   color: var(--events-priority-text-orange) !important;
+}
+
+.open_search_status_color {
+  color: var(--text-color-2);
 }
