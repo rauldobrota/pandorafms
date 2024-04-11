@@ -14044,6 +14044,7 @@ button.disabled {
 
 .white_table_graph > div {
   background-color: transparent;
+  border-radius: 8px;
 }
 
 .link-bold {
