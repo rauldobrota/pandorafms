@@ -1175,6 +1175,7 @@ li.ui-tabs-tab.ui-corner-top.ui-state-default.ui-tab {
   width: 100%;
   position: relative;
   height: 30px;
+  background-color: var(--secondary-color);
 }
 
 .chartLegend table {
@@ -1182,7 +1183,8 @@ li.ui-tabs-tab.ui-corner-top.ui-state-default.ui-tab {
   right: 0px;
 }
 
-.graph_container {
+.graph_container,
+#graph_container {
   width: 800px;
   margin: 20px auto;
   border-radius: 3px;
