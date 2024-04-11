@@ -994,3 +994,7 @@ input.resize_button {
   width: 100%;
   justify-content: center;
 }
+
+ul.select2-selection__rendered > li.select2-selection__choice {
+  box-sizing: border-box !important;
+}
