@@ -2070,6 +2070,10 @@ button.secondaryButton {
   color: var(--text-color) !important;
 }
 
+li.agent-autocomplete-li-text-color a {
+  color: #333 !important;
+}
+
 /* Datepicker */
 #ui-datepicker-div .ui-datepicker-header,
 #ui-datepicker-div .ui-datepicker-header select option,
