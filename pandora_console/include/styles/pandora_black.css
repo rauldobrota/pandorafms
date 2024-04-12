@@ -2069,3 +2069,7 @@ button.ui-button-text-only.ui-widget.sub:hover,
 button.secondaryButton {
   color: var(--text-color) !important;
 }
+
+li.agent-autocomplete-li-text-color a {
+  color: #333 !important;
+}
