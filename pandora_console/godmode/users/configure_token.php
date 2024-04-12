@@ -132,7 +132,7 @@ $table->data[1][3] = html_print_input_text(
     50,
     255,
     true
-);
+).html_print_input_hidden('today_time', date('H:i:s'), true);
 
 echo '<form class="max_floating_element_size" id="form_token" method="post" action="'.$url_list.'">';
 
@@ -205,8 +205,9 @@ ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript
     $('#button-next').on('click', function() {
         event.preventDefault();
         var date = $('#text-date-expiration').val();
-        if (date !== '') {
-            if (date < $('#hidden-today_date').val()) {
+        var time = date+' '+$('#text-time-expiration').val();
+        if (date !== '' || time !== '') {
+            if (date < $('#hidden-today_date').val() || time < $('#hidden-today_date').val()+' '+$('#hidden-today_time').val()) {
                 confirmDialog({
                     title: "<?php echo __('Error'); ?>",
                     message: "<?php echo __('Date expiration must be later than today.'); ?>",
