@@ -2745,9 +2745,16 @@ function redirectNode(url, target = "_blank") {
     event.preventDefault();
   }
 
+  let pathAjax = "ajax.php";
+
+  // Detect if view is phone.
+  if (window.settings && window.settings.mobile) {
+    pathAjax = "../ajax.php";
+  }
+
   $.ajax({
     method: "POST",
-    url: "ajax.php",
+    url: pathAjax,
     dataType: "json",
     data: {
       page: "include/ajax/token",
