@@ -1208,7 +1208,7 @@ $createModuleTable->data[1][] = html_print_label_input_block(
     html_print_anchor(
         [
             'href'    => 'https://pandorafms.com/Library/Library/',
-            'class'   => 'color-black-grey invert_filter',
+            'class'   => 'color-black-grey',
             'content' => __('Get more modules on Monitoring Library'),
         ],
         true

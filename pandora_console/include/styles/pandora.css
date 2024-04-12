@@ -12342,7 +12342,7 @@ div.relative > div > div#ui-datepicker-div {
 }
 
 #ui-datepicker-div .ui-datepicker-header {
-  background-color: white;
+  background-color: var(--secondary-color);
 }
 
 .ui-widget-overlay {
@@ -14215,4 +14215,12 @@ button.ui-button-text-only.ui-widget.sub:hover,
 
 #button_generate_code input.buttonButton {
   box-shadow: none;
+}
+
+.black-and-white {
+  filter: saturate(0);
+}
+
+.invert_filter.black-and-white {
+  filter: invert(1) saturate(0) !important;
 }
