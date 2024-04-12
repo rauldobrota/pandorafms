@@ -77,7 +77,7 @@ if ($create_token === true || $update_token === true) {
     $expirationDate = get_parameter('date-expiration', null);
     $expirationTime = get_parameter('time-expiration', null);
     $validity = null;
-    $error_date = false;
+
     if (empty($expirationDate) === false && $expirationDate >= date('Y-m-d')) {
         $validity = $expirationDate;
         if (empty($expirationTime) === false && $expirationTime > date('H:i:s')) {
@@ -85,8 +85,6 @@ if ($create_token === true || $update_token === true) {
         } else {
             $validity .= ' 23:59:59';
         }
-    } else if ($expirationDate < date('Y-m-d')) {
-        $error_date = true;
     }
 
     $values = [
@@ -98,22 +96,16 @@ if ($create_token === true || $update_token === true) {
     // Create token.
     if ($create_token === true) {
         try {
-            if ($error_date === false) {
-                $token = create_user_token($values);
-                $smgInfo = __('This code will appear only once, please keep it in a safe place');
-                $smgInfo .= '.</br>';
-                $smgInfo .= __('If you lose the code, you will only able to delete it and create a new one');
-                $smgInfo .= '.</br></br>';
-                $smgInfo .= '<i>';
-                $smgInfo .= $token['token'];
-                $smgInfo .= '</i>';
-                $tokenMsg = ui_print_info_message($smgInfo, '', true);
-                ui_print_success_message(__('Successfully created'));
-            } else {
-                ui_print_error_message(
-                    __('Date expiration must be bigger than today')
-                );
-            }
+            $token = create_user_token($values);
+            $smgInfo = __('This code will appear only once, please keep it in a safe place');
+            $smgInfo .= '.</br>';
+            $smgInfo .= __('If you lose the code, you will only able to delete it and create a new one');
+            $smgInfo .= '.</br></br>';
+            $smgInfo .= '<i>';
+            $smgInfo .= $token['token'];
+            $smgInfo .= '</i>';
+            $tokenMsg = ui_print_info_message($smgInfo, '', true);
+            ui_print_success_message(__('Successfully created'));
         } catch (\Exception $e) {
             ui_print_error_message(
                 __('There was a problem creating this token, %s', $e->getMessage())
@@ -124,14 +116,8 @@ if ($create_token === true || $update_token === true) {
     // Update token.
     if ($update_token === true) {
         try {
-            if ($error_date === false) {
-                $token = update_user_token($id_token, $values);
-                ui_print_success_message(__('Successfully updated'));
-            } else {
-                echo ui_print_error_message(
-                    __('Date expiration must be bigger than today')
-                );
-            }
+            $token = update_user_token($id_token, $values);
+            ui_print_success_message(__('Successfully updated'));
         } catch (\Exception $e) {
             ui_print_error_message(
                 __('There was a problem updating this token, %s', $e->getMessage())
