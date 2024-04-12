@@ -214,7 +214,7 @@ try {
     echo $e->getMessage();
 }
 
-echo '<form method="post" id="" yaction="'.$edit_url.'">';
+echo '<form method="post" action="'.$edit_url.'">';
 html_print_action_buttons(
     html_print_submit_button(
         __('Create Token'),
