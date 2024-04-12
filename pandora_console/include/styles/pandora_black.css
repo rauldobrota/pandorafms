@@ -2005,6 +2005,23 @@ div.show_result_interpreter {
   border-top: 0;
 }
 
+.switch_radio_button input:checked + label {
+  color: var(--text-color) !important;
+}
+
+.tags_selected_container > span.select2 {
+  background-color: #111 !important;
+}
+
+.select2-container .select2-selection--single,
+.select2-container .select2-selection--multiple {
+  border-color: #707070 !important;
+}
+
+.select2-container.select2-container--focus .select2-selection--multiple {
+  border-color: #8a96a6 !important;
+}
+
 th {
   border-bottom: 1px solid var(--border-color);
 }

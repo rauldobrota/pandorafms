@@ -14216,3 +14216,11 @@ button.ui-button-text-only.ui-widget.sub:hover,
 #button_generate_code input.buttonButton {
   box-shadow: none;
 }
+
+.black-and-white {
+  filter: saturate(0);
+}
+
+.invert_filter.black-and-white {
+  filter: invert(1) saturate(0) !important;
+}
