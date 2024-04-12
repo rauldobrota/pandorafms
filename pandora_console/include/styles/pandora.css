@@ -12283,7 +12283,7 @@ ul.tag-editor {
   cursor: text;
   font: normal 14px sans-serif;
   color: #333333;
-  background: #f6f7fb;
+  background: var(--secondary-color);
   line-height: 20px;
 }
 
