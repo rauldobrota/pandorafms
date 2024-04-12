@@ -24,6 +24,7 @@ Description: The default Pandora FMS theme layout
   --primary-color: #14524f;
   --primary-color-hover: #14524f;
   --secondary-color: #222;
+  --tertiary-color: #333;
 
   --text-color: #fff;
   --text-color-2: #ededed;
@@ -2072,4 +2073,8 @@ button.secondaryButton {
 
 li.agent-autocomplete-li-text-color a {
   color: #333 !important;
+}
+
+select option:checked {
+  background-color: var(--tertiary-color);
 }
