@@ -404,7 +404,7 @@ class OrderInterpreter extends Wizard
                     if ($iterator <= 9 && $this->canShowItem($enterprise, $this->pages_menu[$key]['url'])) {
                         echo '<li class="list_found" name="'.$iterator.'" id="'.$iterator.'">';
                         echo '
-                        <span class="invert_filter"> Go to </span> &nbsp;
+                        <span class=""> Go to </span> &nbsp;
                         <img src="'.$this->pages_menu[$key]['icon'].'">';
                         echo '&nbsp;
                         <a href="'.$this->pages_menu[$key]['url'].'">

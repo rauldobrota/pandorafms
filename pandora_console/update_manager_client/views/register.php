@@ -80,26 +80,24 @@ $product_name = get_product_name(); ?>
     </div>
 
     <div class="submit_buttons_container">
-        <div class="left">
+        <div class="ui-dialog-buttonset mrgn_lft_15px">
             <?php
             echo html_print_submit_button(
                 __('Cancel'),
                 'cancel_registration',
                 false,
-                'id="submit-cancel_registration" class="lato ui-widget
-            ui-state-default ui-corner-all ui-button-text-only sub upd submit-cancel"',
+                'id="submit-cancel_registration" class="submit-cancel secondaryButton ui-button ui-corner-all ui-widget"',
                 true
             );
             ?>
         </div>
-        <div class="right">
+        <div class="ui-dialog-buttonset right">
             <?php
             echo html_print_submit_button(
                 __('OK!'),
                 'register',
                 false,
-                'id="submit-register" class="lato ui-widget
-            ui-state-default ui-corner-all ui-button-text-only sub ok submit-next w100px"',
+                'id="submit-register" class="submit-next ui-button ui-corner-all ui-widget"',
                 true
             );
             ?>
