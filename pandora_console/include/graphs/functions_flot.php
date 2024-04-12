@@ -303,9 +303,15 @@ function flot_area_graph(
         }
     }
 
+    $extra_styles = '';
+    if (isset($params['extra_styles']) === true && empty($params['extra_styles']) === false) {
+        $extra_styles = $params['extra_styles'];
+    }
+
     $return .= 'graph'.$params['adapt_key']."'
 				style='".$width.';
-				height: '.$params['height']."px;'></div>";
+				height: '.$params['height'].'px;
+                '.$extra_styles."'></div>";
 
     $legend_top = 10;
     if (empty($params['show_legend']) === false) {
