@@ -2073,3 +2073,12 @@ button.secondaryButton {
 li.agent-autocomplete-li-text-color a {
   color: #333 !important;
 }
+
+/* Datepicker */
+#ui-datepicker-div .ui-datepicker-header,
+#ui-datepicker-div .ui-datepicker-header select option,
+.ui-datepicker-calendar th,
+.ui-datepicker-calendar th * {
+  background-color: var(--secondary-color);
+  color: var(--text-color) !important;
+}
