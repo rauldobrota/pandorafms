@@ -210,7 +210,7 @@ ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript
             if (date < $('#hidden-today_date').val() || time < $('#hidden-today_date').val()+' '+$('#hidden-today_time').val()) {
                 confirmDialog({
                     title: "<?php echo __('Error'); ?>",
-                    message: "<?php echo __('Date expiration must be later than today.'); ?>",
+                    message: "<?php echo __('Expiration date must be later than today.'); ?>",
                     hideCancelButton: true,
                 });
             } else{
