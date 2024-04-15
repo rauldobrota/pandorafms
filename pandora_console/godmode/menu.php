@@ -386,52 +386,32 @@ if ($access_console_node === true) {
         $menu_godmode['galertas']['sub'] = $sub;
     }
 
-    if ((bool) check_acl($config['id_user'], 0, 'AW') === true || (bool) check_acl($config['id_user'], 0, 'PM') === true) {
+    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
         // Servers.
         $menu_godmode['gservers']['text'] = __('Servers');
         $menu_godmode['gservers']['sec2'] = 'godmode/servers/modificar_server';
         $menu_godmode['gservers']['id'] = 'god-servers';
-
         $sub = [];
-
-        if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
-            $sub['godmode/servers/modificar_server']['text'] = __('Manage servers');
-            $sub['godmode/servers/modificar_server']['id'] = 'Manage_servers';
-        }
-
-        if ((bool) check_acl($config['id_user'], 0, 'PM') === true
-            || is_user_admin($config['id_user']) === true
-        ) {
-            $sub['godmode/consoles/consoles']['text'] = __('Manage consoles');
-            $sub['godmode/consoles/consoles']['id'] = 'Manage consoles';
-        }
-
+        $sub['godmode/servers/modificar_server']['text'] = __('Manage servers');
+        $sub['godmode/servers/modificar_server']['id'] = 'Manage_servers';
+        $sub['godmode/consoles/consoles']['text'] = __('Manage consoles');
+        $sub['godmode/consoles/consoles']['id'] = 'Manage consoles';
         // This subtabs are only for Pandora Admin.
-        if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
-            enterprise_hook('ha_cluster');
-
-            $sub['godmode/servers/plugin']['text'] = __('Plugins');
-            $sub['godmode/servers/plugin']['id'] = 'Plugins';
-
-            $sub['godmode/servers/plugin_registration']['text'] = __('Register Plugin');
-            $sub['godmode/servers/plugin_registration']['id'] = 'register_plugin';
-
-            enterprise_hook('export_target_submenu');
-
-            enterprise_hook('manage_satellite_submenu');
-        }
-
+        enterprise_hook('ha_cluster');
+        $sub['godmode/servers/plugin']['text'] = __('Plugins');
+        $sub['godmode/servers/plugin']['id'] = 'Plugins';
+        $sub['godmode/servers/plugin_registration']['text'] = __('Register Plugin');
+        $sub['godmode/servers/plugin_registration']['id'] = 'register_plugin';
+        enterprise_hook('export_target_submenu');
+        enterprise_hook('manage_satellite_submenu');
         $menu_godmode['gservers']['sub'] = $sub;
-    }
 
-    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
         // Setup.
         $menu_godmode['gsetup']['text'] = __('Settings');
         $menu_godmode['gsetup']['sec2'] = 'general';
         $menu_godmode['gsetup']['id'] = 'god-setup';
 
         $sub = [];
-
         // Options Setup.
         $sub['general']['text'] = __('System Settings');
         $sub['general']['id'] = 'Setup';
@@ -457,41 +437,31 @@ if ($access_console_node === true) {
         $sub2['godmode/setup/setup&section=vis']['text'] = __('Visual styles');
         $sub2['godmode/setup/setup&section=vis']['refr'] = 0;
 
-        if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
-            if ((bool) $config['activate_netflow'] === true) {
-                $sub2['godmode/setup/setup&section=net']['text'] = __('Netflow');
-                $sub2['godmode/setup/setup&section=net']['refr'] = 0;
-            }
+        if ((bool) $config['activate_netflow'] === true) {
+            $sub2['godmode/setup/setup&section=net']['text'] = __('Netflow');
+            $sub2['godmode/setup/setup&section=net']['refr'] = 0;
+        }
 
-            if ((bool) $config['activate_sflow'] === true) {
-                $sub2['godmode/setup/setup&section=sflow']['text'] = __('Sflow');
-                $sub2['godmode/setup/setup&section=sflow']['refr'] = 0;
-            }
+        if ((bool) $config['activate_sflow'] === true) {
+            $sub2['godmode/setup/setup&section=sflow']['text'] = __('Sflow');
+            $sub2['godmode/setup/setup&section=sflow']['refr'] = 0;
         }
 
         $sub2['godmode/setup/setup&section=pandorarc']['text'] = __('Pandora RC');
         $sub2['godmode/setup/setup&section=pandorarc']['refr'] = 0;
-
         $sub2['godmode/setup/setup&section=ITSM']['text'] = __('ITSM');
         $sub2['godmode/setup/setup&section=ITSM']['refr'] = 0;
-
         enterprise_hook('module_library_submenu');
-
         $sub2['godmode/setup/setup&section=notifications']['text'] = __('Notifications');
         $sub2['godmode/setup/setup&section=notifications']['refr'] = 0;
-
         $sub2['godmode/setup/setup&section=quickshell']['text'] = __('QuickShell');
         $sub2['godmode/setup/setup&section=quickshell']['refr'] = 0;
-
         $sub2['godmode/setup/setup&section=external_tools']['text'] = __('External Tools');
         $sub2['godmode/setup/setup&section=external_tools']['refr'] = 0;
-
         $sub2['godmode/setup/setup&section=welcome_tips']['text'] = __('Welcome Tips');
         $sub2['godmode/setup/setup&section=welcome_tips']['refr'] = 0;
-
         $sub2['godmode/setup/setup&section=demo_data']['text'] = __('Demo data');
         $sub2['godmode/setup/setup&section=demo_data']['refr'] = 0;
-
         if ((bool) $config['activate_gis'] === true) {
             $sub2['godmode/setup/setup&section=gis']['text'] = __('Map conections GIS');
         }
