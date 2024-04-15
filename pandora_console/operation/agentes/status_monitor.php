@@ -1722,7 +1722,7 @@ if (empty($result) === false) {
             $agent_alias = !empty($row['agent_alias']) ? $row['agent_alias'] : $row['agent_name'];
 
             if (is_metaconsole() === true) {
-                $agent_link = '<a target="_blank" href="#" onclick="redirectNode(\''.$row['server_url'].'index.php?sec=estado&sec2=operation/agentes/ver_agente&loginhash=auto&id_agente='.$row['id_agent'].'\',\'_self\')">';
+                $agent_link = '<a target="_blank" href="#" onclick="redirectNode(\''.$row['server_url'].'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$row['id_agent'].'\',\'_self\')">';
 
                 $agent_alias = ui_print_truncate_text(
                     $agent_alias,
