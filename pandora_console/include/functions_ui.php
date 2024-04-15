@@ -3546,7 +3546,7 @@ function ui_print_status_sets(
     }
 
     if (empty($title) === false) {
-        $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
+        // $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
         $options['data-title'] = (empty($extra_info) === true) ? $title : $title.'<br>'.$extra_info;
         $options['data-use_title_for_force_title'] = 1;
         if (isset($options['class']) === true) {
