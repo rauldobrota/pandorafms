@@ -1674,6 +1674,12 @@ function events_get_all(
         }
     }
 
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        if (str_contains($fields[0], 'te.id_grupo') === false) {
+            $fields[0] .= ', te.id_grupo';
+        }
+    }
+
     if (((int) $filter['group_rep'] === EVENT_GROUP_REP_EVENTS
         || (int) $filter['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) && $count === false
     ) {

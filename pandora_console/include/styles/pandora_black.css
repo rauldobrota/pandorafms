@@ -2086,3 +2086,7 @@ li.agent-autocomplete-li-text-color a {
 select option:checked {
   background-color: var(--tertiary-color);
 }
+
+.basic-chart-widget .flot-base {
+  background-color: unset;
+}
