@@ -641,7 +641,7 @@ class BasicChart extends Widget
             $this->values['period'] = parent::getPeriod();
         }
 
-        $margin = 10;
+        $margin = 15;
         $size['height'] -= $margin;
         $graph_height = $size['height'];
         $margin_top = 0;
@@ -688,7 +688,7 @@ class BasicChart extends Widget
         ];
 
         $graph = \grafico_modulo_sparse($params);
-        $output = '<div class="container-center widget-mrgn-0px w100pi">';
+        $output = '<div class="container-center widget-mrgn-0px w100pi basic-chart-widget">';
         if (str_contains($graph, '<img') === false) {
             $output .= '<div class="basic-chart-title">';
             $output .= '<span style="color:'.$this->values['colorLabel'].'; font-size:'.$this->values['sizeLabel'].'px;">';

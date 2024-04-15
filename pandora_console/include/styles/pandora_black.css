@@ -2082,3 +2082,7 @@ li.agent-autocomplete-li-text-color a {
   background-color: var(--secondary-color);
   color: var(--text-color) !important;
 }
+
+.basic-chart-widget .flot-base {
+  background-color: unset;
+}
