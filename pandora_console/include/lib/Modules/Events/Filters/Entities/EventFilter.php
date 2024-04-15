@@ -402,49 +402,86 @@ final class EventFilter extends Entity
     private ?int $idEvent = null;
 
     private ?int $idEventFilter = null;
+
     private ?int $idGroupFilter = null;
+
     private ?string $name = null;
+
     private ?int $idGroup = null;
+
     private ?EventTypeEnum $eventType = null;
+
     private ?array $severity = null;
+
     private ?EventFilterStatusEnum $status = null;
+
     private ?string $search = null;
+
     private ?bool $isNotSearch = null;
+
     private ?string $textAgent = null;
+
     private ?int $idAgent = null;
+
     private ?int $idAgentModule = null;
+
     private ?int $pagination = null;
+
     private ?int $slice = null;
+
     private ?string $idUserAck = null;
+
     private ?EventFilterGroupByEnum $groupBy = null;
+
     private ?array $tagWith = null;
+
     private ?array $tagWithout = null;
+
     private ?EventFilterAlertEnum $filterOnlyAlert = null;
+
     private ?bool $searchSecondaryGroups = null;
+
     private ?bool $searchRecursiveGroups = null;
+
     private ?string $dateFrom = null;
+
     private ?string $dateTo = null;
+
     private ?string $source = null;
+
     private ?string $idExtra = null;
+
     private ?string $userComment = null;
+
     private ?int $idSourceEvent = null;
+
     private ?array $serverId = null;
+
     private ?string $timeFrom = null;
+
     private ?string $timeTo = null;
+
     private ?string $customData = null;
+
     private ?EventFilterCustomDataEnum $customDataFilterType = null;
+
     private ?string $ownerUser = null;
+
     private ?string $privateFilterUser = null;
+
     private ?string $regex = null;
+
 
     public function __construct()
     {
     }
 
+
     public function fieldsReadOnly(): array
     {
         return ['idEventFilter' => 1];
     }
+
 
     public function toTranslateFilters(): array
     {
@@ -462,6 +499,7 @@ final class EventFilter extends Entity
 
         return $result;
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -505,45 +543,46 @@ final class EventFilter extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
-            'idEventFilter' => [
+            'idEventFilter'         => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATERTHAN,
             ],
-            'idEvent' => [
+            'idEvent'               => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATERTHAN,
             ],
-            'idGroupFilter' => [
+            'idGroupFilter'         => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
-            'name'    => EventFilterValidator::STRING,
-            'idGroup' => [
+            'name'                  => EventFilterValidator::STRING,
+            'idGroup'               => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
-            'eventType'   => EventFilterValidator::VALIDFILTERTYPE,
-            'severity'    => EventFilterValidator::ARRAY,
-            'status'      => EventFilterValidator::VALIDFILTERSTATUS,
-            'search'      => EventFilterValidator::STRING,
-            'isNotSearch' => EventFilterValidator::BOOLEAN,
-            'textAgent'   => EventFilterValidator::STRING,
-            'idAgent'     => [
+            'eventType'             => EventFilterValidator::VALIDFILTERTYPE,
+            'severity'              => EventFilterValidator::ARRAY,
+            'status'                => EventFilterValidator::VALIDFILTERSTATUS,
+            'search'                => EventFilterValidator::STRING,
+            'isNotSearch'           => EventFilterValidator::BOOLEAN,
+            'textAgent'             => EventFilterValidator::STRING,
+            'idAgent'               => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
-            'idAgentModule' => [
+            'idAgentModule'         => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
-            'pagination' => [
+            'pagination'            => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
-            'slice' => [
+            'slice'                 => [
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
@@ -563,66 +602,82 @@ final class EventFilter extends Entity
                 EventFilterValidator::INTEGER,
                 EventFilterValidator::GREATEREQUALTHAN,
             ],
-            'serverId'             => EventFilterValidator::ARRAY,
-            'timeFrom'             => EventFilterValidator::TIME,
-            'timeTo'               => EventFilterValidator::TIME,
-            'customData'           => EventFilterValidator::STRING,
-            'customDataFilterType' => EventFilterValidator::VALIDFILTERCUSTOMDATA,
-            'ownerUser'            => EventFilterValidator::STRING,
-            'privateFilterUser'    => EventFilterValidator::STRING,
-            'regex'                => EventFilterValidator::STRING,
+            'serverId'              => EventFilterValidator::ARRAY,
+            'timeFrom'              => EventFilterValidator::TIME,
+            'timeTo'                => EventFilterValidator::TIME,
+            'customData'            => EventFilterValidator::STRING,
+            'customDataFilterType'  => EventFilterValidator::VALIDFILTERCUSTOMDATA,
+            'ownerUser'             => EventFilterValidator::STRING,
+            'privateFilterUser'     => EventFilterValidator::STRING,
+            'regex'                 => EventFilterValidator::STRING,
         ];
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new EventFilterValidator())->validate($filters);
     }
 
+
     public function getIdEventFilter(): ?int
     {
         return $this->idEventFilter;
     }
+
+
     public function setIdEventFilter(?int $idEventFilter): self
     {
         $this->idEventFilter = $idEventFilter;
         return $this;
     }
 
+
     public function getIdGroupFilter(): ?int
     {
         return $this->idGroupFilter;
     }
+
+
     public function setIdGroupFilter(?int $idGroupFilter): self
     {
         $this->idGroupFilter = $idGroupFilter;
         return $this;
     }
 
+
     public function getName(): ?string
     {
         return $this->name;
     }
+
+
     public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
+
     public function getIdGroup(): ?int
     {
         return $this->idGroup;
     }
+
+
     public function setIdGroup(?int $idGroup): self
     {
         $this->idGroup = $idGroup;
         return $this;
     }
 
+
     public function getEventType(): ?EventTypeEnum
     {
         return $this->eventType;
     }
+
+
     public function setEventType(null|string|EventTypeEnum $eventType): self
     {
         if (is_string($eventType) === true) {
@@ -630,23 +685,30 @@ final class EventFilter extends Entity
         } else {
             $this->eventType = $eventType;
         }
+
         return $this;
     }
+
 
     public function getSeverity(): ?array
     {
         return $this->severity;
     }
+
+
     public function setSeverity(?array $severity): self
     {
         $this->severity = $severity;
         return $this;
     }
 
+
     public function getStatus(): ?EventFilterStatusEnum
     {
         return $this->status;
     }
+
+
     public function setStatus(null|string|EventFilterStatusEnum $status): self
     {
         if (is_string($status) === true) {
@@ -658,90 +720,117 @@ final class EventFilter extends Entity
         return $this;
     }
 
+
     public function getSearch(): ?string
     {
         return $this->search;
     }
+
+
     public function setSearch(?string $search): self
     {
         $this->search = $search;
         return $this;
     }
 
+
     public function getIsNotSearch(): ?bool
     {
         return $this->isNotSearch;
     }
+
+
     public function setIsNotSearch(?bool $isNotSearch): self
     {
         $this->isNotSearch = $isNotSearch;
         return $this;
     }
 
+
     public function getTextAgent(): ?string
     {
         return $this->textAgent;
     }
+
+
     public function setTextAgent(?string $textAgent): self
     {
         $this->textAgent = $textAgent;
         return $this;
     }
 
+
     public function getIdAgent(): ?int
     {
         return $this->idAgent;
     }
+
+
     public function setIdAgent(?int $idAgent): self
     {
         $this->idAgent = $idAgent;
         return $this;
     }
 
+
     public function getIdAgentModule(): ?int
     {
         return $this->idAgentModule;
     }
+
+
     public function setIdAgentModule(?int $idAgentModule): self
     {
         $this->idAgentModule = $idAgentModule;
         return $this;
     }
 
+
     public function getPagination(): ?int
     {
         return $this->pagination;
     }
+
+
     public function setPagination(?int $pagination): self
     {
         $this->pagination = $pagination;
         return $this;
     }
 
+
     public function getSlice(): ?int
     {
         return $this->slice;
     }
+
+
     public function setSlice(?int $slice): self
     {
         $this->slice = $slice;
         return $this;
     }
 
+
     public function getIdUserAck(): ?string
     {
         return $this->idUserAck;
     }
+
+
     public function setIdUserAck(?string $idUserAck): self
     {
         $this->idUserAck = $idUserAck;
         return $this;
     }
 
+
     public function getGroupBy(): ?EventFilterGroupByEnum
     {
         return $this->groupBy;
     }
+
+
     public function setGroupBy(null|string|EventFilterGroupByEnum $groupBy): self
     {
         if (is_string($groupBy) === true) {
@@ -753,30 +842,39 @@ final class EventFilter extends Entity
         return $this;
     }
 
+
     public function getTagWith(): ?array
     {
         return $this->tagWith;
     }
+
+
     public function setTagWith(?array $tagWith): self
     {
         $this->tagWith = $tagWith;
         return $this;
     }
 
+
     public function getTagWithout(): ?array
     {
         return $this->tagWithout;
     }
+
+
     public function setTagWithout(?array $tagWithout): self
     {
         $this->tagWithout = $tagWithout;
         return $this;
     }
 
+
     public function getFilterOnlyAlert(): ?EventFilterAlertEnum
     {
         return $this->filterOnlyAlert;
     }
+
+
     public function setFilterOnlyAlert(null|string|EventFilterAlertEnum $filterOnlyAlert): self
     {
         if (is_string($filterOnlyAlert) === true) {
@@ -788,130 +886,169 @@ final class EventFilter extends Entity
         return $this;
     }
 
+
     public function getSearchSecondaryGroups(): ?bool
     {
         return $this->searchSecondaryGroups;
     }
+
+
     public function setSearchSecondaryGroups(?bool $searchSecondaryGroups): self
     {
         $this->searchSecondaryGroups = $searchSecondaryGroups;
         return $this;
     }
 
+
     public function getSearchRecursiveGroups(): ?bool
     {
         return $this->searchRecursiveGroups;
     }
+
+
     public function setSearchRecursiveGroups(?bool $searchRecursiveGroups): self
     {
         $this->searchRecursiveGroups = $searchRecursiveGroups;
         return $this;
     }
 
+
     public function getDateFrom(): ?string
     {
         return $this->dateFrom;
     }
+
+
     public function setDateFrom(?string $dateFrom): self
     {
         $this->dateFrom = $dateFrom;
         return $this;
     }
 
+
     public function getDateTo(): ?string
     {
         return $this->dateTo;
     }
+
+
     public function setDateTo(?string $dateTo): self
     {
         $this->dateTo = $dateTo;
         return $this;
     }
 
+
     public function getSource(): ?string
     {
         return $this->source;
     }
+
+
     public function setSource(?string $source): self
     {
         $this->source = $source;
         return $this;
     }
 
+
     public function getIdExtra(): ?string
     {
         return $this->idExtra;
     }
+
+
     public function setIdExtra(?string $idExtra): self
     {
         $this->idExtra = $idExtra;
         return $this;
     }
 
+
     public function getUserComment(): ?string
     {
         return $this->userComment;
     }
+
+
     public function setUserComment(?string $userComment): self
     {
         $this->userComment = $userComment;
         return $this;
     }
 
+
     public function getIdSourceEvent(): ?int
     {
         return $this->idSourceEvent;
     }
+
+
     public function setIdSourceEvent(?int $idSourceEvent): self
     {
         $this->idSourceEvent = $idSourceEvent;
         return $this;
     }
 
+
     public function getServerId(): ?array
     {
         return $this->serverId;
     }
+
+
     public function setServerId(?array $serverId): self
     {
         $this->serverId = $serverId;
         return $this;
     }
 
+
     public function getTimeFrom(): ?string
     {
         return $this->timeFrom;
     }
+
+
     public function setTimeFrom(?string $timeFrom): self
     {
         $this->timeFrom = $timeFrom;
         return $this;
     }
 
+
     public function getTimeTo(): ?string
     {
         return $this->timeTo;
     }
+
+
     public function setTimeTo(?string $timeTo): self
     {
         $this->timeTo = $timeTo;
         return $this;
     }
 
+
     public function getCustomData(): ?string
     {
         return $this->customData;
     }
+
+
     public function setCustomData(?string $customData): self
     {
         $this->customData = $customData;
         return $this;
     }
 
+
     public function getCustomDataFilterType(): ?EventFilterCustomDataEnum
     {
         return $this->customDataFilterType;
     }
+
+
     public function setCustomDataFilterType(null|string|EventFilterCustomDataEnum $customDataFilterType): self
     {
         if (is_string($customDataFilterType) === true) {
@@ -923,43 +1060,57 @@ final class EventFilter extends Entity
         return $this;
     }
 
+
     public function getOwnerUser(): ?string
     {
         return $this->ownerUser;
     }
+
+
     public function setOwnerUser(?string $ownerUser): self
     {
         $this->ownerUser = $ownerUser;
         return $this;
     }
 
+
     public function getPrivateFilterUser(): ?string
     {
         return $this->privateFilterUser;
     }
+
+
     public function setPrivateFilterUser(?string $privateFilterUser): self
     {
         $this->privateFilterUser = $privateFilterUser;
         return $this;
     }
 
+
     public function getRegex(): ?string
     {
         return $this->regex;
     }
+
+
     public function setRegex(?string $regex): self
     {
         $this->regex = $regex;
         return $this;
     }
 
+
     public function getIdEvent(): ?int
     {
         return $this->idEvent;
     }
+
+
     public function setIdEvent(?int $idEvent): self
     {
         $this->idEvent = $idEvent;
         return $this;
     }
+
+
 }

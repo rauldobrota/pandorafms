@@ -723,6 +723,11 @@ if ($is_management_allowed === true
                 ['id_grupo' => $id_group]
             );
 
+            $result_user_profile = db_process_sql_delete(
+                'tusuario_perfil',
+                ['id_grupo' => $id_group]
+            );
+
             if ($result && (!$usedGroup['return'])) {
                 db_process_sql_delete(
                     'tfavmenu_user',
@@ -1128,7 +1133,7 @@ if ($tab == 'tree') {
                     $confirm_message = __('The child groups will be updated to use the parent id of the deleted group').'. '.$confirm_message;
                 }
 
-                $table->data[$key][6] .= '<a href="'.$url_delete.'" onClick="if (!confirm(\' '.$confirm_message.'\')) return false;">'.html_print_image(
+                $table->data[$key][6] .= '<a href="'.$url_delete.'" onClick="event.preventDefault(); return preprocessDeletion('.$group['id_grupo'].', \''.$url_delete.'\',\''.$confirm_message.'\');">'.html_print_image(
                     'images/delete.svg',
                     true,
                     [
@@ -1214,7 +1219,6 @@ $tab = 'group_edition';
     });
 
     $('#button-filter').on('click', function(event) {
-        console.log('here');
         event.preventDefault();
 
         load_tree(show_full_hirearchy, show_not_init_agents, show_not_init_modules);
@@ -1314,5 +1318,39 @@ $tab = 'group_edition';
             });
     }
 
+    function preprocessDeletion(group_id, delete_URL, confirm_text) {
+        var parameters = {};
+        parameters['page'] = 'include/ajax/group';
+        parameters['method'] = 'checkGroupIsLinkedToElement';
+        parameters['group_id'] = group_id;
+        parameters['table_name'] = 'tusuario_perfil';
+        parameters['field_name'] = 'id_grupo';
+
+        $.ajax({
+                type: "POST",
+                url: "<?php echo ui_get_full_url('ajax.php', false, false, false); ?>",
+                data: parameters,
+                success: function(data) {
+                    if (data.result == '1') {
+                        confirmDialog({
+                            title: '<?php echo __('Are you sure?'); ?>',
+                            message: '<?php echo __('There are user profiles assigned to this group which will be deleted. Note that a user with no associated profiles will not be able to log in. Please ensure you want to proceed with the deletion.'); ?>',
+                            onAccept: function() {
+                                window.location.assign(delete_URL);
+                            }
+                        });
+                    } else {
+                        if (!confirm(confirm_text)) {
+                            return false;
+                        } else {
+                            window.location.assign(delete_URL);
+                        }
+                    }
+                },
+                dataType: "json"
+            });
+
+            return true;
+        }
     
 </script>

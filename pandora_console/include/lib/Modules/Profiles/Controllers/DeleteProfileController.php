@@ -13,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class DeleteProfileController extends Controller
 {
+
+
     public function __construct(
         private DeleteProfileAction $deleteProfileAction,
         private ValidateAclSystem $acl,
@@ -21,19 +23,20 @@ final class DeleteProfileController extends Controller
     ) {
     }
 
+
     /**
      * @OA\Delete(
      *   security={{ "bearerAuth": {}}},
      *   tags={"Profiles"},
      *   path="/profile/{idProfile}",
      *   summary="Deletes an profile object.",
-     *   @OA\Parameter(ref="#/components/parameters/parameterIdProfile"),
-     *   @OA\Response(response=200, ref="#/components/responses/successfullyDeleted"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Parameter(ref="#/components/parameters/parameterIdProfile"),
+     * @OA\Response(response=200,                                       ref="#/components/responses/successfullyDeleted"),
+     * @OA\Response(response=400,                                       ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                       ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                       ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                       ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                       ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -51,4 +54,6 @@ final class DeleteProfileController extends Controller
         $result = $this->deleteProfileAction->__invoke($profile);
         return $this->getResponse($response, $result);
     }
+
+
 }

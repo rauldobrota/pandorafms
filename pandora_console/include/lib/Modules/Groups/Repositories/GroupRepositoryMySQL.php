@@ -15,11 +15,14 @@ use PandoraFMS\Modules\Shared\Repositories\RepositoryMySQL;
 
 class GroupRepositoryMySQL extends RepositoryMySQL implements GroupRepository
 {
+
+
     public function __construct(
         private GroupDataMapper $groupDataMapper,
         private Config $config
     ) {
     }
+
 
     /**
      * @return Group[],
@@ -49,6 +52,7 @@ class GroupRepositoryMySQL extends RepositoryMySQL implements GroupRepository
         return $result;
     }
 
+
     public function count(GroupFilter $groupFilter): int
     {
         $sql = $this->getGroupsQuery($groupFilter, $this->groupDataMapper, true);
@@ -64,6 +68,7 @@ class GroupRepositoryMySQL extends RepositoryMySQL implements GroupRepository
 
         return (int) $count;
     }
+
 
     public function getOne(GroupFilter $groupFilter): Group
     {
@@ -85,11 +90,13 @@ class GroupRepositoryMySQL extends RepositoryMySQL implements GroupRepository
         return $this->groupDataMapper->fromDatabase($result);
     }
 
+
     public function create(Group $group): Group
     {
         $id = $this->__create($group, $this->groupDataMapper);
         return $group->setIdGroup($id);
     }
+
 
     public function update(Group $group): Group
     {
@@ -100,15 +107,17 @@ class GroupRepositoryMySQL extends RepositoryMySQL implements GroupRepository
         );
     }
 
+
     public function delete(int $id): void
     {
         $this->__delete($id, $this->groupDataMapper);
     }
 
+
     private function getGroupsQuery(
         FilterAbstract $filter,
         DataMapperAbstract $mapper,
-        bool $count = false
+        bool $count=false
     ): string {
         $pagination = '';
         $orderBy = '';
@@ -166,4 +175,6 @@ class GroupRepositoryMySQL extends RepositoryMySQL implements GroupRepository
 
         return $sql;
     }
+
+
 }

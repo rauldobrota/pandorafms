@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Users\Repositories\UserRepository;
 
 final class DeleteUserService
 {
+
+
     public function __construct(
         private Audit $audit,
         private UserRepository $userRepository,
     ) {
     }
+
 
     public function __invoke(User $user): void
     {
@@ -26,4 +29,6 @@ final class DeleteUserService
             ' Deleted user #'.$idUser
         );
     }
+
+
 }

@@ -99,9 +99,9 @@ function inventory_get_data(
     // Prepare pagination.
     $url = sprintf(
         '?sec=estado&sec2=operation/inventory/inventory&agent_id=%s&agent=%s&id_group=%s&export=%s&module_inventory_general_view=%s&search_string=%s&utimestamp=%s&period=%s&order_by_agent=%s&submit_filter=%d',
-        $pagination_url_parameters['inventory_id_agent'],
-        $pagination_url_parameters['inventory_agent'],
-        $pagination_url_parameters['inventory_id_group'],
+        (isset($pagination_url_parameters['inventory_id_agent']) ?? ''),
+        (isset($pagination_url_parameters['inventory_agent']) ?? ''),
+        (isset($pagination_url_parameters['inventory_id_group']) ?? ''),
         $export_csv,
         $inventory_module_name,
         $inventory_search_string,
@@ -709,7 +709,9 @@ function inventory_get_datatable(
     $inventory_search_string='',
     $export_csv=false,
     $return_mode=false,
-    $order_by_agent=false
+    $order_by_agent=false,
+    $date_init=false,
+    $status_agent=-1,
 ) {
     global $config;
 
@@ -736,6 +738,10 @@ function inventory_get_datatable(
         array_push($where, 'tagent_module_inventory.id_agente IN ('.implode(',', $agents_ids).')');
     }
 
+    if ($status_agent > -1) {
+        array_push($where, 'tagente.disabled ='.$status_agent);
+    }
+
     if ($inventory_module_name[0] !== '0'
         && $inventory_module_name !== ''
         && $inventory_module_name !== 'all'
@@ -745,25 +751,27 @@ function inventory_get_datatable(
     }
 
     if ($inventory_search_string != '') {
-        array_push($where, "REPLACE(tagente_datos_inventory.data, '&#x20;', ' ') LIKE '%".$inventory_search_string."%'");
+        array_push($where, "REPLACE(tagent_module_inventory.data, '&#x20;', ' ') LIKE '%".$inventory_search_string."%'");
     }
 
     if ($utimestamp > 0) {
-        array_push($where, 'tagente_datos_inventory.utimestamp <= '.$utimestamp.' ');
+        array_push($where, 'tagent_module_inventory.utimestamp <= '.$utimestamp.' ');
+    }
+
+    if ($date_init !== false) {
+        array_push($where, 'tagent_module_inventory.utimestamp >= '.$date_init.' ');
     }
 
     $sql = sprintf(
         'SELECT tmodule_inventory.*,
             tagent_module_inventory.*,
             tagente.alias as name_agent,
-            tagente_datos_inventory.utimestamp as last_update,
-            tagente_datos_inventory.timestamp as last_update_timestamp,
-            tagente_datos_inventory.data as data_inventory
+            tagent_module_inventory.utimestamp as last_update,
+            tagent_module_inventory.timestamp as last_update_timestamp,
+            tagent_module_inventory.data as data_inventory
         FROM tmodule_inventory
-        INNER JOIN tagent_module_inventory
+        LEFT JOIN tagent_module_inventory
             ON tmodule_inventory.id_module_inventory = tagent_module_inventory.id_module_inventory
-        INNER JOIN tagente_datos_inventory
-            ON tagent_module_inventory.id_agent_module_inventory = tagente_datos_inventory.id_agent_module_inventory
         LEFT JOIN tagente
             ON tagente.id_agente = tagent_module_inventory.id_agente
 
@@ -883,10 +891,12 @@ function get_data_basic_info_sql($params, $count=false)
     }
 
     $where = 'WHERE 1=1 ';
-    if ($params['id_agent'] > 0 && $count === true) {
-        $where .= sprintf(' AND id_agente = %d', $params['id_agent']);
-    } else if ($params['id_agent'] > 0 && $count === false) {
+    if ($params['id_agent'] > 0) {
         $where .= sprintf(' AND %s.id_agente = %d', $table, $params['id_agent']);
+    }
+
+    if ($params['status'] >= 0) {
+        $where .= sprintf(' AND %s.disabled = %d', $table, $params['status']);
     }
 
     if ($params['id_group'] > 0) {
@@ -909,7 +919,7 @@ function get_data_basic_info_sql($params, $count=false)
         );
     }
 
-    if ($params['utimestamp'] > 0 && $count === false) {
+    if ($params['utimestamp'] > 0) {
         $where .= sprintf(
             ' AND utimestamp BETWEEN %d AND %d',
             ($params['utimestamp'] - $params['period']),
@@ -976,21 +986,20 @@ function get_data_basic_info_sql($params, $count=false)
 
     $limit_condition = '';
     $order_condition = '';
-    $fields = 'count(*)';
     $innerjoin = '';
     $groupby = '';
 
-    if ($count !== true) {
-        if (is_metaconsole() === true) {
-            $fields = 'tmetaconsole_agent.*, tagent_secondary_group.*, tagent_custom_data.*';
-        } else {
-            $fields = 'tagente.*, tagent_secondary_group.*, tagent_custom_data.*';
-        }
+    if (is_metaconsole() === true) {
+        $fields = 'tmetaconsole_agent.*, tagent_secondary_group.*, tagent_custom_data.*';
+    } else {
+        $fields = 'tagente.*, tagent_secondary_group.*, tagent_custom_data.*';
+    }
 
-        $innerjoin = 'LEFT JOIN tagente_estado ON '.$table.'.id_agente = tagente_estado.id_agente ';
-        $innerjoin .= 'LEFT JOIN tagent_secondary_group ON '.$table.'.id_agente = tagent_secondary_group.id_agent ';
-        $innerjoin .= 'LEFT JOIN tagent_custom_data ON '.$table.'.id_agente = tagent_custom_data.id_agent ';
-        $groupby = 'GROUP BY '.$table.'.id_agente';
+    $innerjoin = 'LEFT JOIN tagente_estado ON '.$table.'.id_agente = tagente_estado.id_agente ';
+    $innerjoin .= 'LEFT JOIN tagent_secondary_group ON '.$table.'.id_agente = tagent_secondary_group.id_agent ';
+    $innerjoin .= 'LEFT JOIN tagent_custom_data ON '.$table.'.id_agente = tagent_custom_data.id_agent ';
+
+    if ($count !== true) {
         $limit_condition = sprintf(
             'LIMIT %d, %d',
             $params['start'],
@@ -998,7 +1007,11 @@ function get_data_basic_info_sql($params, $count=false)
         );
 
         $order_condition = sprintf('ORDER BY %s', $params['order']);
+    } else {
+        $fields = 'COUNT(*)';
     }
+
+    $groupby = 'GROUP BY '.$table.'.id_agente';
 
     $sql = sprintf(
         'SELECT %s
@@ -1017,13 +1030,19 @@ function get_data_basic_info_sql($params, $count=false)
         $limit_condition
     );
 
+    $sql_count = sprintf(
+        'SELECT COUNT(*)
+        FROM (%s) AS sub_sql',
+        $sql
+    );
+
     if ($count !== true) {
         $result = db_get_all_rows_sql($sql);
         if ($result === false) {
             $result = [];
         }
     } else {
-        $result = db_get_sql($sql);
+        $result = db_get_sql($sql_count);
         if ($result === false) {
             $result = 0;
         }

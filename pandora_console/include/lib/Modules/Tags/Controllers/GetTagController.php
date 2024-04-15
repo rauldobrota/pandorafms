@@ -11,11 +11,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class GetTagController extends Controller
 {
+
+
     public function __construct(
         private GetTagAction $getTagAction,
         private ValidateAclSystem $acl
     ) {
     }
+
 
     /**
      * @OA\Get(
@@ -23,13 +26,13 @@ final class GetTagController extends Controller
      *   path="/tag/{idTag}",
      *   tags={"Tags"},
      *   summary="Show tag",
-     *   @OA\Parameter(ref="#/components/parameters/parameterIdTag"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseTag"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Parameter(ref="#/components/parameters/parameterIdTag"),
+     * @OA\Response(response=200,                                   ref="#/components/responses/ResponseTag"),
+     * @OA\Response(response=400,                                   ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                   ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                   ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                   ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                   ref="#/components/responses/InternalServerError")
      *  )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -41,4 +44,6 @@ final class GetTagController extends Controller
         $result = $this->getTagAction->__invoke($idTag);
         return $this->getResponse($response, $result);
     }
+
+
 }

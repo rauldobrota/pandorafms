@@ -167,6 +167,8 @@ function menu_print_menu(&$menu)
         $sec2 = 'godmode/groups/group_list';
     } else if ($sec2 === 'godmode/users/configure_profile') {
         $sec2 = 'godmode/users/profile_list';
+    } else if ($sec2 === 'godmode/users/configure_token') {
+        $sec2 = 'godmode/users/token_list';
     } else {
         $sec2 = (string) get_parameter('sec2');
     }

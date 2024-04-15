@@ -11,11 +11,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class GetProfileController extends Controller
 {
+
+
     public function __construct(
         private GetProfileAction $getProfileAction,
         private ValidateAclSystem $acl
     ) {
     }
+
 
     /**
      * @OA\Get(
@@ -23,13 +26,13 @@ final class GetProfileController extends Controller
      *   path="/profile/{idProfile}",
      *   tags={"Profiles"},
      *   summary="Show profile",
-     *   @OA\Parameter(ref="#/components/parameters/parameterIdProfile"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseProfile"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Parameter(ref="#/components/parameters/parameterIdProfile"),
+     * @OA\Response(response=200,                                       ref="#/components/responses/ResponseProfile"),
+     * @OA\Response(response=400,                                       ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                       ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                       ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                       ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                       ref="#/components/responses/InternalServerError")
      *  )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -42,4 +45,6 @@ final class GetProfileController extends Controller
         $result = $this->getProfileAction->__invoke($idProfile);
         return $this->getResponse($response, $result);
     }
+
+
 }

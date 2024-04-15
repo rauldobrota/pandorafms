@@ -251,6 +251,13 @@ class ConsoleSupervisor
         $this->checkAllowOverrideEnabled();
 
         /*
+         * Check if OpenSearch is configured and log collector enabled
+         *  NOTIF.OPENSEARCH.CONSOLELOG
+         */
+
+        $this->checkOpenSearchLogCollector();
+
+        /*
          * Check if the Pandora Console log
          * file remains in old location.
          *  NOTIF.PANDORACONSOLE.LOG.OLD
@@ -539,6 +546,12 @@ class ConsoleSupervisor
          */
 
         $this->checkUpdateManagerRegistration();
+
+        /*
+         * Check if OpenSearch is configured and log collector enabled
+         *  NOTIF.OPENSEARCH.CONSOLELOG
+         */
+        $this->checkOpenSearchLogCollector();
 
         /*
          * Check if has API access.
@@ -2541,6 +2554,35 @@ class ConsoleSupervisor
 
 
     /**
+     * Check if OpenSearch is configured and log collector enabled.
+     *
+     * @return void
+     */
+    public function checkOpenSearchLogCollector()
+    {
+        global $config;
+        include_once $config['homedir'].'/include/functions_update_manager.php';
+        $login = get_parameter('login', false);
+
+        if ($config['log_collector'] !== '1' && empty($config['elasticsearch_ip']) === false && empty($config['elasticsearch_port']) === false) {
+            if (update_manager_verify_registration() === false) {
+                $this->notify(
+                    [
+                        'type'              => 'NOTIF.OPENSEARCH.CONSOLELOG',
+                        'title'             => __('The Log collector is not enabled'),
+                        'message'           => __('The OpenSearch is defined but the log collector is not enabled.'),
+                        'url'               => '__url__/index.php?sec=gsetup&sec2=godmode/setup/setup&section=log',
+                        'icon_notification' => self::ICON_QUESTION,
+                    ]
+                );
+            } else {
+                $this->cleanNotifications('NOTIF.OPENSEARCH.CONSOLELOG');
+            }
+        }
+    }
+
+
+    /**
      * Check if has access to the API
      *
      * @return void
@@ -3137,7 +3179,7 @@ class ConsoleSupervisor
             return;
         }
 
-        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer(true);
+        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer();
         $counts = $sync->getQueues(true);
 
         if (count($counts) === 0) {
@@ -3195,7 +3237,7 @@ class ConsoleSupervisor
             return;
         }
 
-        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer(true);
+        $sync = new PandoraFMS\Enterprise\Metaconsole\Synchronizer();
         $queues = $sync->getQueues();
         if (count($queues) === 0) {
             // Clean all.
@@ -3325,27 +3367,34 @@ class ConsoleSupervisor
     public function checkTotalModulesByAgent()
     {
         $modules_by_agent = db_process_sql(
-            'SELECT count(*) AS modules_by_agent
+            'SELECT count(*) AS count
             FROM tagente a
             LEFT JOIN tagente_modulo m ON a.id_agente = m.id_agente
+            WHERE m.disabled = 0
             GROUP BY m.id_agente'
         );
 
         $show_warning = false;
-        foreach ($modules_by_agent as $key => $total_modules) {
-            if ($total_modules['modules_by_agent'] > 200) {
-                $this->notify(
-                    [
-                        'type'              => 'NOTIF.MODULES_AGENT.ALERT',
-                        'title'             => __('Your system has an average of %s modules per agent', $total_modules['modules_by_agent']),
-                        'message'           => __('This is higher than the recommended maximum (200). This may result in poor performance of your system.'),
-                        'icon_notification' => self::ICON_HEADSUP,
-                        'url'               => '__url__index.php?sec=gagente&sec2=godmode/agentes/modificar_agente',
-                    ]
-                );
-                $show_warning = true;
-                break;
-            }
+
+        if ($modules_by_agent !== false) {
+            $agents = count($modules_by_agent);
+            $modules = array_sum(array_column($modules_by_agent, 'count'));
+
+            $ratio = ($modules / $agents);
+            $ratio = round($ratio, 2);
+        }
+
+        if ($ratio > 200) {
+            $this->notify(
+                [
+                    'type'              => 'NOTIF.MODULES_AGENT.ALERT',
+                    'title'             => __('Your system has an average of %s modules per agent', $ratio),
+                    'message'           => __('This is higher than the recommended maximum (200). This may result in poor performance of your system.'),
+                    'icon_notification' => self::ICON_HEADSUP,
+                    'url'               => '__url__index.php?sec=gagente&sec2=godmode/agentes/modificar_agente',
+                ]
+            );
+            $show_warning = true;
         }
 
         if ($show_warning === false) {

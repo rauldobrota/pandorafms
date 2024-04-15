@@ -9,6 +9,8 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class CreateEventService
 {
+
+
     public function __construct(
         private Audit $audit,
         private EventRepository $eventRepository,
@@ -17,6 +19,7 @@ final class CreateEventService
         private UpdateEventService $updateEventService
     ) {
     }
+
 
     public function __invoke(Event $event): Event
     {
@@ -35,10 +38,12 @@ final class CreateEventService
         );
 
         if (empty($event->getIdExtra()) === false) {
-            //$this->updateEventService->__invoke();
-            //'UPDATE tevento SET estado = 1, ack_utimestamp = ? WHERE estado IN (0,2) AND id_extra=?'
+            // $this->updateEventService->__invoke();
+            // 'UPDATE tevento SET estado = 1, ack_utimestamp = ? WHERE estado IN (0,2) AND id_extra=?'
         }
 
         return $event;
     }
+
+
 }

@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class DeleteProfileService
 {
+
+
     public function __construct(
         private Audit $audit,
         private ProfileRepository $profileRepository,
     ) {
     }
+
 
     public function __invoke(Profile $profile): void
     {
@@ -26,4 +29,6 @@ final class DeleteProfileService
             'Deleted profile '.$nameProfile
         );
     }
+
+
 }

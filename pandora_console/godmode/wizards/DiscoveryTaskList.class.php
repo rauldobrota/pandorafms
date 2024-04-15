@@ -100,6 +100,26 @@ class DiscoveryTaskList extends HTML
         // Load styles.
         parent::run();
 
+        $deploymentCenter = new DeploymentCenter();
+        echo $deploymentCenter->loadJS();
+        ui_require_css_file('deployment_list');
+
+        html_print_div(
+            [
+                'content' => '',
+                'id'      => 'modal_add_target',
+                'class'   => 'invisible',
+            ]
+        );
+
+        html_print_div(
+            [
+                'content' => '',
+                'id'      => 'modal_deploy_targets',
+                'class'   => 'invisible',
+            ]
+        );
+
         $this->prepareBreadcrum(
             [
                 [
@@ -184,7 +204,7 @@ class DiscoveryTaskList extends HTML
         }
 
         if (is_reporting_console_node() === false) {
-            $ret2 = $this->showList(__('Host & devices tasks'), [0, 1]);
+            $ret2 = $this->showList(__('Host & devices tasks'), [0, 1, 9]);
             $ret2 .= $this->showList(__('Applications tasks'), [3, 4, 5, 10, 11, 12], 'app');
             $ret2 .= $this->showList(__('Cloud tasks'), [6, 7, 8, 13, 14], 'cloud');
             $ret2 .= $this->showList(__('Custom tasks'), [-1], 'custom');
@@ -874,14 +894,12 @@ class DiscoveryTaskList extends HTML
                     break;
 
                     case DISCOVERY_DEPLOY_AGENTS:
-                        // Internal deployment task.
-                        $no_operations = true;
                         $data[6] = html_print_image(
                             'images/osx-terminal@groups.svg',
                             true,
                             ['title' => __('Agent deployment')]
                         ).'&nbsp;&nbsp;';
-                        $data[6] .= __('Discovery.Agent.Deployment (legacy)');
+                        $data[6] .= __('Discovery.Agent.Deployment');
                     break;
 
                     case DISCOVERY_APP_MICROSOFT_SQL_SERVER:
@@ -1007,6 +1025,7 @@ class DiscoveryTaskList extends HTML
                         && $task['type'] != DISCOVERY_APP_SAP
                         && $task['type'] != DISCOVERY_CLOUD_AWS_RDS
                         && $task['type'] != DISCOVERY_CLOUD_AWS_S3
+                        && $task['type'] != DISCOVERY_DEPLOY_AGENTS
                     ) {
                         if (check_acl($config['id_user'], 0, 'MR') && (int) $task['type'] !== DISCOVERY_EXTENSION) {
                             $data[9] .= '<a href="#" onclick="show_map('.$task['id_rt'].',\''.$task['name'].'\')">';
@@ -1066,25 +1085,40 @@ class DiscoveryTaskList extends HTML
                                 ).'</a>';
                             }
                         } else {
-                            $url_edit = sprintf(
-                                'index.php?sec=gservers&sec2=godmode/servers/discovery&%s&task=%d',
-                                $this->getTargetWiz($task, $recon_script_data),
-                                $task['id_rt']
-                            );
+                            // Create the url edit.
+                            switch ((int) $task['type']) {
+                                case DISCOVERY_EXTENSION:
+                                    $url_edit = ui_get_full_url(
+                                        sprintf(
+                                            'index.php?sec=gservers&sec2=godmode/servers/discovery&wiz=%s&mode=%s&id_task=%s',
+                                            $task['section'],
+                                            $task['short_name'],
+                                            $task['id_rt'],
+                                        )
+                                    );
+                                break;
 
-                            if ((int) $task['type'] === DISCOVERY_EXTENSION) {
-                                $url_edit = sprintf(
-                                    'index.php?sec=gservers&sec2=godmode/servers/discovery&wiz=%s&mode=%s&id_task=%s',
-                                    $task['section'],
-                                    $task['short_name'],
-                                    $task['id_rt'],
-                                );
+                                case DISCOVERY_DEPLOY_AGENTS:
+                                    if (empty($task['field1']) === false) {
+                                        $url_edit = 'javascript:show_deploy_targets('.$task['id_rt'].')';
+                                    } else {
+                                        $url_edit = 'javascript:show_scan_targets('.$task['id_rt'].')';
+                                    }
+                                break;
+
+                                default:
+                                    $url_edit = ui_get_full_url(
+                                        sprintf(
+                                            'index.php?sec=gservers&sec2=godmode/servers/discovery&%s&task=%d',
+                                            $this->getTargetWiz($task, $recon_script_data),
+                                            $task['id_rt']
+                                        )
+                                    );
+                                break;
                             }
 
                             // Check if is a H&D, Cloud or Application or IPAM.
-                            $data[9] .= '<a href="'.ui_get_full_url(
-                                $url_edit
-                            ).'">'.html_print_image(
+                            $data[9] .= '<a href="'.$url_edit.'">'.html_print_image(
                                 'images/edit.svg',
                                 true,
                                 [

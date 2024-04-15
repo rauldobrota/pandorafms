@@ -148,21 +148,23 @@ sub data_producer ($) {
       WHERE id_recon_server = ?
       AND disabled = 0
       AND ((utimestamp = 0 AND interval_sweep != 0 OR status = 1)
-        OR (status < 0 AND interval_sweep > 0 AND (utimestamp + interval_sweep) < UNIX_TIMESTAMP()))', $server_id);
+        OR (status < 0 AND interval_sweep > 0 AND (utimestamp + interval_sweep) < UNIX_TIMESTAMP())
+        OR (status < 0 AND utimestamp = 0 AND interval_sweep = 0))', $server_id);
   } else {
     @rows = get_db_rows ($dbh, 'SELECT * FROM trecon_task 
       WHERE (id_recon_server = ? OR id_recon_server NOT IN (SELECT id_server FROM tserver WHERE status = 1 AND server_type = ?))
       AND disabled = 0
       AND ((utimestamp = 0 AND interval_sweep != 0 OR status = 1)
-        OR (status < 0 AND interval_sweep > 0 AND (utimestamp + interval_sweep) < UNIX_TIMESTAMP()))', $server_id, DISCOVERYSERVER);
+        OR (status < 0 AND interval_sweep > 0 AND (utimestamp + interval_sweep) < UNIX_TIMESTAMP())
+        OR (status < 0 AND utimestamp = 0 AND interval_sweep = 0))', $server_id, DISCOVERYSERVER);
   }
 
   foreach my $row (@rows) {
     
-	# Discovery apps must be fully set up.
+    # Discovery apps must be fully set up.
     if ($row->{'type'} == DISCOVERY_APP && $row->{'setup_complete'} != 1) {
       logger($pa_config, 'Setup for recon app task ' . $row->{'id_app'} . ' not complete.', 10);
-	  next;
+      next;
     }
 
     # Update task status
@@ -313,13 +315,7 @@ sub data_consumer ($$) {
     # Clean tmp file.
     if (defined($cnf_extra{'creds_file'})
     && -f $cnf_extra{'creds_file'}) {
-    unlink($cnf_extra{'creds_file'});
-  }
-
-
-    # Clean one shot tasks
-    if ($task->{'type'} eq DISCOVERY_DEPLOY_AGENTS) {
-      db_delete_limit($dbh, ' trecon_task ', ' id_rt = ? ', 1, $task->{'id_rt'});   
+      unlink($cnf_extra{'creds_file'});
     }
   };
   if ($@) {

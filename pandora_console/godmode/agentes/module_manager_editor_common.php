@@ -442,7 +442,7 @@ $tableBasicThresholds->rowclass = [];
 $tableBasicThresholds->data = [];
 
 // WARNING THRESHOLD.
-$tableBasicThresholds->rowclass['caption_warning_threshold'] = 'field_half_width pdd_t_10px';
+$tableBasicThresholds->rowclass['caption_warning_threshold'] = 'field_half_width';
 $tableBasicThresholds->rowclass['warning_threshold'] = 'field_half_width';
 $tableBasicThresholds->data['caption_warning_threshold'][0] .= __('Warning threshold').'&nbsp;';
 
@@ -617,7 +617,7 @@ $tableBasicThresholds->data['critical_threshold'][0] .= html_print_input_text(
     $classdisabledBecauseInPolicy
 );
 
-$table_simple->rowstyle['thresholds_table'] = 'margin-top: 15px;height: 400px;width: 100%';
+$table_simple->rowstyle['thresholds_table'] = 'margin-top: 15px;height: 450px;width: 100%';
 $table_simple->cellclass['thresholds_table'][0] = 'table_section half_section_left';
 $table_simple->data['thresholds_table'][0] = html_print_table($tableBasicThresholds, true);
 if (modules_is_string_type($id_module_type) === false || (bool) $edit === true) {
@@ -705,7 +705,19 @@ if ((int) $moduletype === MODULE_DATA) {
     // be taken the agent interval (this code is at configurar_agente.php).
 } else {
     $interval = ($interval === '') ? '300' : $interval;
-    $outputExecutionInterval = html_print_extended_select_for_time('module_interval', $interval, '', '', '0', false, true, false, false, $classdisabledBecauseInPolicy, $disabledBecauseInPolicy);
+    $outputExecutionInterval = html_print_select_agentmodule_interval(
+        'module_interval',
+        $interval,
+        '',
+        '',
+        '0',
+        false,
+        true,
+        false,
+        false,
+        $classdisabledBecauseInPolicy,
+        $disabledBecauseInPolicy
+    );
 }
 
 $module_id_policy_module = 0;
@@ -884,7 +896,7 @@ $tagsAvailableData .= html_print_image(
     [
         'id'    => 'right',
         'title' => __('Add tags to module'),
-        'class' => 'main_menu_icon invert_filter clickable mrgn_lft_5px',
+        'class' => 'main_menu_icon invert_filter clickable mrgn_lft_5px black-and-white',
     ]
 );
 

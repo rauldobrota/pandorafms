@@ -1496,14 +1496,41 @@ function ui_format_alert_row(
         metaconsole_restore_db();
     }
 
-    if (empty($actions) === false || $actionDefault != '') {
-        $actionText = '<div><ul class="action_list">';
+    $actionText = '';
+
+    if ($actionDefault !== '' && $actionDefault !== false) {
+        $actionDefault_name = db_get_sql(
+            sprintf(
+                'SELECT name FROM talert_actions WHERE id = %d',
+                $actionDefault
+            )
+        );
         foreach ($actions as $action) {
-            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li>'.$action['name'];
+            if ($actionDefault_name === $action['name']) {
+                $hide_actionDefault = true;
+            } else {
+                $hide_actionDefault = false;
+            }
+        }
+
+        if ($hide_actionDefault !== true) {
+            $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
+        }
+    }
+
+    if (empty($actions) === false || $actionDefault != '') {
+        $actionText .= '<div><ul class="action_list">';
+        foreach ($actions as $action) {
+            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li class="">';
+            $actionText .= '<div class="flex_center mrgn_top-22px">';
+            $actionText .= '<div class="mrgn_lft_0px_imp">';
+            $actionText .= $action['name'];
             if ($action['fires_min'] != $action['fires_max']) {
                 $actionText .= ' ('.$action['fires_min'].' / '.$action['fires_max'].')';
             }
 
+            $actionText .= '</div>';
+            $actionText .= '<div class="flex_center table_action_buttons mrgn_lft_0px_imp">';
             $actionText .= ui_print_help_tip(__('The default actions will be executed every time that the alert is fired and no other action is executed'), true);
             // Is possible manage actions if have LW permissions in the agent group of the alert module.
             if (is_metaconsole() === true) {
@@ -1514,7 +1541,7 @@ function ui_format_alert_row(
                         [
                             'alt'   => __('Delete action'),
                             'title' => __('Delete action'),
-                            'class' => 'main_menu_icon invert_filter vertical_baseline',
+                            'class' => 'main_menu_icon invert_filter vertical_baseline action_button_hidden',
                         ]
                     ).'</a>';
                 }
@@ -1528,7 +1555,7 @@ function ui_format_alert_row(
                         true,
                         [
                             'title'   => __('Update action'),
-                            'class'   => 'main_menu_icon invert_filter',
+                            'class'   => 'main_menu_icon invert_filter action_button_hidden',
                             'onclick' => 'show_display_update_action(\''.$action['original_id'].'\',\''.$alert['id'].'\',\''.$alert['id_agent_module'].'\',\''.$action['original_id'].'\',\''.$alert['agent_name'].'\')',
                         ]
                     );
@@ -1536,32 +1563,15 @@ function ui_format_alert_row(
                 }
             }
 
+            $actionText .= '</div>';
+            $actionText .= '</div>';
+
             $actionText .= '<div id="update_action-div-'.$alert['id'].'" class="invisible">';
             $actionText .= '</div>';
             $actionText .= '</li></span></div>';
         }
 
         $actionText .= '</ul></div>';
-
-        if ($actionDefault !== '' && $actionDefault !== false) {
-            $actionDefault_name = db_get_sql(
-                sprintf(
-                    'SELECT name FROM talert_actions WHERE id = %d',
-                    $actionDefault
-                )
-            );
-            foreach ($actions as $action) {
-                if ($actionDefault_name === $action['name']) {
-                    $hide_actionDefault = true;
-                } else {
-                    $hide_actionDefault = false;
-                }
-            }
-
-            if ($hide_actionDefault !== true) {
-                $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
-            }
-        }
     }
 
     $data[$index['action']] = $actionText;
@@ -4267,6 +4277,12 @@ function ui_print_datatable(array $parameters)
     $js = '<script>';
     $js .= 'var dt = '.$json_data.';';
     $js .= 'var config = '.$json_config.';';
+    if (isset($parameters['data_element']) === true) {
+        $js .= 'var preload_elements = true;';
+    } else {
+        $js .= 'var preload_elements = false;';
+    }
+
     $js .= '</script>';
 
     $js .= '<script>';
@@ -4624,10 +4640,12 @@ function ui_toggle(
         $imageRotate = $rotateB;
         $style .= 'height:0;position:absolute;';
         $original = $img_b;
+        $data_close = 'true';
     } else {
         $imageRotate = $rotateA;
         $style .= 'height:auto;position:relative;';
         $original = $img_a;
+        $data_close = 'false';
     }
 
     $header_class = '';
@@ -4646,7 +4664,7 @@ function ui_toggle(
 
     // Link to toggle.
     $output = '<div class="'.$main_class.'" id="'.$id.'" '.$toggl_attr.'>';
-    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'">';
+    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'" data-close="'.$data_close.'">';
     if ($reverseImg === false) {
         if ($switch === true) {
             if (empty($switch_name) === true) {
@@ -4761,6 +4779,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', '".$position_div."');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateA."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', true);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'false');\n";
         $output .= $class_table;
         $output .= "			    }\n";
         $output .= "			    else {\n";
@@ -4769,6 +4788,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', 'absolute');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateB."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', false);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'true');\n";
         $output .= "			    }\n";
         $output .= "		    });\n";
         $output .= "	    }\n";
@@ -5425,6 +5445,7 @@ function ui_print_page_header(
             $buffer .= '</li>';
         }
 
+        $tabs_class = '';
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
@@ -6447,25 +6468,25 @@ function ui_print_agent_autocomplete_input($parameters)
 				switch (item.filter) {
 					default:
 					case \'agent\':
-						return $("<li style=\'background: #DFFFC4;\'></li>")
+						return $("<li style=\'background: #DFFFC4;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Agent').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'address\':
-						return $("<li style=\'background: #F7CFFF;\'></li>")
+						return $("<li style=\'background: #F7CFFF;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Address').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'description\':
-						return $("<li style=\'background: #FEFCC6;\'></li>")
+						return $("<li style=\'background: #FEFCC6;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Description').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'alias\':
-						return $("<li style=\"'.$background_results.'\"></li>")
+						return $("<li style=\"'.$background_results.'\" title=\''.__('Alias').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
@@ -8356,4 +8377,32 @@ function ui_print_status_secmon_div($status, $title=false)
         $title = ($title === false) ? __('critical') : $title;
         return ui_print_div('group_view_crit '.$class, $title);
     }
+}
+
+
+function ui_print_empty_view($title, $message, $img_name, $buttons=false)
+{
+    $img = html_print_image(
+        'images/empty_views/'.$img_name,
+        true,
+        [
+            'title' => __('Empty view image'),
+            'class' => '',
+        ]
+    );
+
+    $output = '
+        <div class="empty-view">
+            <div class="empty-view-img-text">
+                    '.$img.'
+                <div class="empty-view-text">
+                    <span>'.$title.'</span>
+                    <span>'.$message.'</span>
+                </div>
+            </div>
+            '.($buttons !== false ? '<div class="empty-view-buttons">'.$buttons.'</div>' : '').'
+        </div>
+    ';
+
+    return $output;
 }

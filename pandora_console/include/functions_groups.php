@@ -110,22 +110,6 @@ function groups_check_used($idGroup)
     switch ($config['dbtype']) {
         case 'mysql':
         case 'postgresql':
-            $numRows = db_get_num_rows('SELECT * FROM tgraph WHERE id_group = '.$idGroup.';');
-        break;
-
-        case 'oracle':
-            $numRows = db_get_num_rows('SELECT * FROM tgraph WHERE id_group = '.$idGroup);
-        break;
-    }
-
-    if ($numRows > 0) {
-        $return['return'] = true;
-        $return['tables'][] = __('Graphs');
-    }
-
-    switch ($config['dbtype']) {
-        case 'mysql':
-        case 'postgresql':
             $numRows = db_get_num_rows('SELECT * FROM treport WHERE id_group = '.$idGroup.';');
         break;
 

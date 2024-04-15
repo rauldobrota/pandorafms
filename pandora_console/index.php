@@ -662,6 +662,7 @@ if (isset($config['id_user']) === false) {
             db_logon($nick_in_db, $_SERVER['REMOTE_ADDR']);
             $_SESSION['id_usuario'] = $nick_in_db;
             $config['id_user'] = $nick_in_db;
+            $_SESSION['logged'] = true;
             config_prepare_expire_time_session(true);
 
             // Check if connection goes through F5 balancer. If it does, then
@@ -1542,6 +1543,9 @@ clippy_start($sec2);
 while (ob_get_length() > 0) {
     ob_end_flush();
 }
+
+// Results search header.
+echo '<div id="result_order" class="result_order"></div>';
 
 db_print_database_debug();
 echo '</html>';

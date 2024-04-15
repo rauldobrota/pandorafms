@@ -1645,13 +1645,10 @@ $url .= '';
 if ($pure) {
     // Fullscreen.
     // Floating menu - Start.
-    echo '<div id="vc-controls" class="zindex999"">';
+    echo '<div id="vc-controls" class="events-refresh-pure"">';
 
-    echo '<div id="menu_tab" class="menu_tab_pure">';
-    echo '<ul class="mn">';
-
+    echo '<div>';
     // Quit fullscreen.
-    echo '<li class="nomn">';
     echo '<a target="_top" href="'.$url.'&amp;pure=0">';
     echo html_print_image(
         'images/exit_fullscreen@svg.svg',
@@ -1662,12 +1659,10 @@ if ($pure) {
         ]
     );
     echo '</a>';
-    echo '</li>';
+    echo '</div>';
+
 
     // Countdown.
-    echo '<li class="nomn">';
-    echo '<div class="events-refr">';
-    echo '<div class="events-countdown"><span id="refrcounter"></span></div>';
     echo '<div id="events-refr-form">';
     echo __('Refresh').':';
     echo html_print_select(
@@ -1682,16 +1677,8 @@ if ($pure) {
         false
     );
     echo '</div>';
-    echo '</div>';
-    echo '</li>';
 
-    // Console name.
-    echo '<li class="nomn">';
-    echo '<div class="vc-title">'.__('Event viewer').'</div>';
-    echo '</li>';
-
-    echo '</ul>';
-    echo '</div>';
+    echo '<div class="events-countdown"><span id="refrcounter"></span></div>';
 
     echo '</div>';
     // Floating menu - End.
@@ -3839,4 +3826,9 @@ function show_events_graph(){
         }
     });
 }
+
+$(document).ready(function () {
+    var controls = document.querySelector('.events-refresh-pure');
+    autoHideElement(controls, 1000);
+});
 </script>

@@ -8,6 +8,6 @@ enum EventFilterCustomDataEnum: int
 {
     use EnumTrait;
 
-    case NAME = 0;
-    case VALUE = 1;
-}
+case NAME = 0;
+case VALUE = 1;
+    }

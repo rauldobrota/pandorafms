@@ -2737,6 +2737,16 @@ function menuTabsShowHide() {
   }
 }
 
+function resizeSearchHeader() {
+  if ($(".show_result_interpreter").width() && $("#keywords").position()) {
+    $(".show_result_interpreter").width($("#keywords").outerWidth() - 12);
+    $(".show_result_interpreter").css(
+      "left",
+      $("#keywords").position().left + 2
+    );
+  }
+}
+
 function redirectNode(url, target = "_blank") {
   if (
     typeof event !== "undefined" &&
@@ -2745,13 +2755,19 @@ function redirectNode(url, target = "_blank") {
     event.preventDefault();
   }
 
-  let pathAjax = "ajax.php";
+  let pathAjax = "";
 
   // Detect if view is phone.
-  if (window.settings && window.settings.mobile) {
-    pathAjax = "../ajax.php";
+  if (window.configHomeUrl && window.settings && !window.settings.mobile) {
+    pathAjax += window.configHomeUrl;
+  } else if (window.settings && window.settings.mobile) {
+    pathAjax += "../";
+  } else {
+    pathAjax += "../../";
   }
 
+  pathAjax += "ajax.php";
+  console.log("Entra a generar a token");
   $.ajax({
     method: "POST",
     url: pathAjax,
@@ -2761,6 +2777,7 @@ function redirectNode(url, target = "_blank") {
       get_jwt_for_login: 1
     },
     success: function(data) {
+      console.log(data);
       const unique_id = "token_form_" + uniqId();
       var $form = $(
         `<form class="invisible" id="${unique_id}" target="${target}"></form>`
@@ -2780,4 +2797,3 @@ function redirectNode(url, target = "_blank") {
       $("#" + unique_id).remove();
     }
   });
-}

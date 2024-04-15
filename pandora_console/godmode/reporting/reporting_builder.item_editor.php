@@ -1454,7 +1454,7 @@ $class = 'databox filters';
             <td class="bolder">
                 <?php
                 echo __('Module').ui_print_help_tip(
-                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: .*usage.* will match: cpu_usage, vram usage in matchine 1.'),
+                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in matchine 1.', '.*usage.*'),
                     true
                 );
                 ?>
@@ -2338,7 +2338,7 @@ if (is_metaconsole() === true) {
                 if ($idAgent) {
                     $sql = 'SELECT id_agente_modulo, nombre
 						FROM tagente_modulo
-						WHERE id_agente =  '.$idAgent.' AND  delete_pending = 0';
+						WHERE id_agente = "'.$idAgent['id_agent'].'" AND  delete_pending = 0';
 
                     if ($meta) {
                         $connection = metaconsole_get_connection($server_name);

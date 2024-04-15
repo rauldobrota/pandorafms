@@ -195,6 +195,18 @@
   width: 100%;
 }
 
+#tabs-sound-modal
+  div
+  .elements-discovered-alerts
+  ul
+  li
+  div.li-title
+  .sound-events-li-link
+  span {
+  line-break: anywhere;
+  line-height: 9pt;
+}
+
 .actions-sound-modal .buttons-sound-modal {
   display: flex;
   flex-direction: row;

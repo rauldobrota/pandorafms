@@ -7,13 +7,18 @@ use PandoraFMS\Modules\Tags\Repositories\TagRepository;
 
 final class ListTagService
 {
+
+
     public function __construct(
         private TagRepository $tagRepository,
     ) {
     }
 
+
     public function __invoke(TagFilter $tagFilter): array
     {
         return $this->tagRepository->list($tagFilter);
     }
+
+
 }
