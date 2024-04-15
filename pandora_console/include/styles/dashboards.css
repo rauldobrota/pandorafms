@@ -622,6 +622,7 @@ form.modal-dashboard
   .select2-selection__choice {
   margin: 0px;
   height: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .container-tabs {
