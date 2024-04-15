@@ -2678,7 +2678,6 @@ function perform_email_test() {
         $("#email_test_sent_message").show();
         $("#email_test_failure_message").hide();
       } else {
-        console.log($("#email_test_failure_message"));
         $("#email_test_failure_message").show();
         $("#email_test_sent_message").hide();
       }
@@ -2767,7 +2766,6 @@ function redirectNode(url, target = "_blank") {
   }
 
   pathAjax += "ajax.php";
-  console.log("Entra a generar a token");
   $.ajax({
     method: "POST",
     url: pathAjax,
@@ -2777,7 +2775,6 @@ function redirectNode(url, target = "_blank") {
       get_jwt_for_login: 1
     },
     success: function(data) {
-      console.log(data);
       const unique_id = "token_form_" + uniqId();
       var $form = $(
         `<form class="invisible" id="${unique_id}" target="${target}"></form>`
