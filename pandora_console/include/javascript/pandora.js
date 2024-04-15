@@ -2738,6 +2738,11 @@ function menuTabsShowHide() {
 }
 
 function resizeSearchHeader() {
-  $(".show_result_interpreter").width($("#keywords").outerWidth() - 12);
-  $(".show_result_interpreter").css("left", $("#keywords").position().left + 2);
+  if ($(".show_result_interpreter").width() && $("#keywords").position()) {
+    $(".show_result_interpreter").width($("#keywords").outerWidth() - 12);
+    $(".show_result_interpreter").css(
+      "left",
+      $("#keywords").position().left + 2
+    );
+  }
 }

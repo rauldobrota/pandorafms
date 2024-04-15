@@ -426,12 +426,12 @@ class OrderInterpreter extends Wizard
             echo $this->loadJS();
             echo '</ul>';
             if ($iterator > 10) {
-                echo '<div class="more_results"><span class="invert_filter">
+                echo '<div class="more_results"><span class="">
                   + '.$more_results.' '.__('results found').'</span></div>';
             }
 
             if ($iterator === 0) {
-                echo '<span class="invert_filter">'.__('Press enter to search').'</span>';
+                echo '<span class="">'.__('Press enter to search').'</span>';
             }
 
             echo '</div>';
