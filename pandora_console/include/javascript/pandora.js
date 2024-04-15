@@ -2797,3 +2797,4 @@ function redirectNode(url, target = "_blank") {
       $("#" + unique_id).remove();
     }
   });
+}
