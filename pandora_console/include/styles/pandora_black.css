@@ -24,6 +24,7 @@ Description: The default Pandora FMS theme layout
   --primary-color: #14524f;
   --primary-color-hover: #14524f;
   --secondary-color: #222;
+  --tertiary-color: #333;
 
   --text-color: #fff;
   --text-color-2: #ededed;
@@ -758,7 +759,6 @@ div#main_pure {
   margin-top: 30px;
   margin-left: 10px;
   margin-right: 10px;
-  height: 1000px;
   width: 98%;
   position: static;
 }
@@ -1221,13 +1221,13 @@ li > input[type="text"]:not(.search_input),
 li > input[type="email"],
 li > input[type="password"] {
   background-color: transparent;
-  border: none;
+  /*border: none;
   border-radius: 0;
   border-bottom: 1px solid #ccc;
   font-weight: inherit;
   padding: 0px 0px 2px 0px;
   box-sizing: border-box;
-  margin-bottom: 4px;
+  margin-bottom: 4px;*/
 }
 
 a:hover {
@@ -2081,6 +2081,10 @@ li.agent-autocomplete-li-text-color a {
 .ui-datepicker-calendar th * {
   background-color: var(--secondary-color);
   color: var(--text-color) !important;
+}
+
+select option:checked {
+  background-color: var(--tertiary-color);
 }
 
 .basic-chart-widget .flot-base {

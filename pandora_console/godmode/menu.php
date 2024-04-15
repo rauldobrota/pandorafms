@@ -738,7 +738,7 @@ if ($access_console_node === true) {
         $sub['operation/agentes/exportdata']['id'] = 'export_data';
     }
 
-    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
+    if ((bool) check_acl($config['id_user'], 0, 'PM') === true || enterprise_hook('enterprise_acl', [$config['id_user'], 'tools', 'operation/extensions', false]) === true) {
         $sub['godmode/files_repo/files_repo']['text'] = __('File repository');
         $sub['godmode/files_repo/files_repo']['id'] = 'file_repository';
     }

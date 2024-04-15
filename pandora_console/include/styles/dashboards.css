@@ -1000,3 +1000,7 @@ input.resize_button {
 .grid-stack-item-content .visual-console-container-dashboard {
   text-align: initial;
 }
+
+ul.select2-selection__rendered > li.select2-selection__choice {
+  box-sizing: border-box !important;
+}
