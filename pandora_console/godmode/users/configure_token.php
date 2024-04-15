@@ -202,21 +202,34 @@ ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript
         });
     });
 
+    function errordate() {
+        confirmDialog({
+            title: "<?php echo __('Error'); ?>",
+            message: "<?php echo __('Expiration date must be later than today.'); ?>",
+            hideCancelButton: true,
+        });
+    }
+
     $('#button-next').on('click', function() {
         event.preventDefault();
         var date = $('#text-date-expiration').val();
         var time = date+' '+$('#text-time-expiration').val();
-        if (date !== '' || time !== '') {
+        if (date !== '' && $('#text-time-expiration').val() !== '') {
             if (date < $('#hidden-today_date').val() || time < $('#hidden-today_date').val()+' '+$('#hidden-today_time').val()) {
-                confirmDialog({
-                    title: "<?php echo __('Error'); ?>",
-                    message: "<?php echo __('Expiration date must be later than today.'); ?>",
-                    hideCancelButton: true,
-                });
+                console.log("ENTRO AQUI");
+                errordate();
             } else{
                 $('#form_token').submit();
             }
-        } else {
+        } else if (date !== '' && time === ' ') {
+            if (date < $('#hidden-today_date').val()) {
+                errordate();
+            } else{
+                $('#form_token').submit();
+            }
+        } else if (date === '' && time !== ' ') {
+            errordate();
+        }else {
             $('#form_token').submit();
         }
     })
