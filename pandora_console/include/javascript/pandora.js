@@ -2407,7 +2407,9 @@ $(document).ready(function() {
         closeOnEscape: true,
         width: 700,
         height: 450,
-
+        close: function() {
+          closeAboutModal();
+        },
         create: function() {
           $("#about-tabs").tabs({});
           $(".ui-dialog-titlebar").remove();
@@ -2415,7 +2417,6 @@ $(document).ready(function() {
           $("#about-close").click(function() {
             $("#about-tabs").dialog("close");
             $("div.ui-dialog").remove();
-            $("#icon_about").removeClass("selected");
           });
         }
       });
@@ -2436,7 +2437,9 @@ $(document).ready(function() {
         closeOnEscape: true,
         width: 700,
         height: 450,
-
+        close: function() {
+          closeAboutModal();
+        },
         create: function() {
           $("#about-tabs").tabs({});
           $(".ui-dialog-titlebar").remove();
@@ -2444,7 +2447,6 @@ $(document).ready(function() {
           $("#about-close").click(function() {
             $("#about-tabs").dialog("close");
             $("div.ui-dialog").remove();
-            $("#icon_about_operation").removeClass("selected");
           });
         }
       });
@@ -2745,4 +2747,10 @@ function resizeSearchHeader() {
       $("#keywords").position().left + 2
     );
   }
+}
+
+function closeAboutModal() {
+  $("#icon_about_operation").removeClass("selected");
+  $("#icon_about").removeClass("selected");
+  $("#icon_about_div").removeClass("selected");
 }
