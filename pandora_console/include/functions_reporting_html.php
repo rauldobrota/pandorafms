@@ -112,8 +112,8 @@ function reporting_html_header(
         }
 
         $data[] = $title.$sizhfin;
-        $data[] = $sizh.$subtitle.$sizhfin;
-        $data[] = "<div class='right'>".$sizh.$date_text.$sizhfin.'</div>';
+        $data[] = $sizh.__('Group').': '.$subtitle.$sizhfin;
+        $data[] = '<div class="flex-content-right flex-items-center">'.$sizh.__('Data time').': '.$sizhfin."<div class='right mrgn_lft_15px'>".$sizh.$date_text.$sizhfin.'</div></div>';
     }
 
     array_push($table->data, $data);
@@ -194,6 +194,9 @@ function reporting_html_print_report($report, $mini=false, $report_info=1, $cust
         $table->head = [];
         $table->colspan = [];
         $table->rowstyle = ['background-color: #686868'];
+        $table->size[0] = '33%';
+        $table->size[1] = '33%';
+        $table->size[2] = '33%';
 
         if (isset($item['label']) && $item['label'] != '') {
             $id_agent = $item['id_agent'];
