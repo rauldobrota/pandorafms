@@ -1053,6 +1053,154 @@ function get_data_basic_info_sql($params, $count=false)
 }
 
 
+function get_inventory_basic_info_sql($params, $count=false)
+{
+    $table = 'tagente';
+    if (is_metaconsole() === true) {
+        $table = 'tmetaconsole_agent';
+    }
+
+    $where = 'WHERE 1=1 ';
+    if ($params['id_agent'] > 0) {
+        $where .= sprintf(' AND %s.id_agente = %d', $table, $params['id_agent']);
+    }
+
+    if ($params['status'] >= 0) {
+        $where .= sprintf(' AND %s.disabled = %d', $table, $params['status']);
+    }
+
+    if ($params['id_group'] > 0) {
+        $where .= sprintf(' AND id_grupo = %d', $params['id_group']);
+    } else {
+        global $config;
+        $user_groups = implode(',', array_keys(users_get_groups($config['id_user'])));
+        // Avoid errors if there are no groups.
+        if (empty($user_groups) === true) {
+            $user_groups = '"0"';
+        }
+
+        $where .= sprintf(' AND id_grupo IN (%s)', $user_groups);
+    }
+
+    if ($params['search'] > 0) {
+        $where .= sprintf(
+            ' AND ( REPLACE(alias, "&#x20;", " ") LIKE "%%%s%%" )',
+            $params['search']
+        );
+    }
+
+    if ($params['utimestamp'] > 0) {
+        $where .= sprintf(
+            ' AND UNIX_TIMESTAMP(ultimo_contacto) BETWEEN %d AND %d',
+            ($params['utimestamp'] - $params['period']),
+            $params['utimestamp']
+        );
+    }
+
+    if ($params['order'] > 0) {
+        $str_split = explode(' ', $params['order']);
+        switch ($str_split[0]) {
+            case 'alias':
+                $params['order'] = 'alias '.$str_split[1];
+            break;
+
+            case 'ip':
+                $params['order'] = 'direccion '.$str_split[1];
+            break;
+
+            case 'secondoaryIp':
+                $params['order'] = 'fixed_ip '.$str_split[1];
+            break;
+
+            case 'group':
+                $params['order'] = 'id_grupo '.$str_split[1];
+            break;
+
+            case 'description':
+                $params['order'] = 'comentarios '.$str_split[1];
+            break;
+
+            case 'os':
+                $params['order'] = 'id_os '.$str_split[1];
+            break;
+
+            case 'interval':
+                $params['order'] = 'intervalo '.$str_split[1];
+            break;
+
+            case 'lastContact':
+                $params['order'] = 'ultimo_contacto '.$str_split[1];
+            break;
+
+            default:
+                $params['order'] = 'alias '.$str_split[1];
+            break;
+        }
+    }
+
+    $limit_condition = '';
+    $order_condition = '';
+    $groupby = '';
+
+    if (is_metaconsole() === true) {
+        $fields = 'tmetaconsole_agent.*';
+    } else {
+        $fields = 'tagente.*';
+    }
+
+    if ($count !== true) {
+        $limit_condition = sprintf(
+            'LIMIT %d, %d',
+            $params['start'],
+            $params['length']
+        );
+
+        $order_condition = sprintf('ORDER BY %s', $params['order']);
+    } else {
+        $fields = 'COUNT(*)';
+    }
+
+    $groupby = 'GROUP BY '.$table.'.id_agente';
+
+    $sql = sprintf(
+        'SELECT %s
+        FROM %s
+        %s
+        %s
+        %s
+        %s
+        %s',
+        $fields,
+        $table,
+        $innerjoin,
+        $where,
+        $groupby,
+        $order_condition,
+        $limit_condition
+    );
+
+    $sql_count = sprintf(
+        'SELECT COUNT(*)
+        FROM (%s) AS sub_sql',
+        $sql
+    );
+
+    if ($count !== true) {
+        $result = db_get_all_rows_sql($sql);
+        if ($result === false) {
+            $result = [];
+        }
+    } else {
+        $result = db_get_sql($sql_count);
+        if ($result === false) {
+            $result = 0;
+        }
+    }
+    
+    return $result;
+}
+
+
 function inventory_get_dates($module_inventory_name, $inventory_agent, $inventory_id_group)
 {
     $sql = 'SELECT tagente_datos_inventory.utimestamp,
