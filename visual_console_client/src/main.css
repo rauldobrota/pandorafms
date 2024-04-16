@@ -12,7 +12,11 @@
 }
 
 .is-maintenance :nth-child(1) {
-  display: none;
+  display: none !important;
+}
+
+.is-maintenance .vc-item-nl-arrow {
+  display: none !important;
 }
 
 .visual-console-item {
