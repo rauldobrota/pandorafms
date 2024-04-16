@@ -2485,8 +2485,10 @@ sub pandora_process_module ($$$$$$$$$;$) {
 	}
 
 	# Generate alerts
+	my $inhibit_service_alerts = enterprise_hook('pandora_inhibit_service_alerts', [$pa_config, $module, $dbh, 0]);
+	$inhibit_service_alerts = 0 unless defined($inhibit_service_alerts);
 	if (pandora_inhibit_alerts ($pa_config, $agent, $dbh, 0) == 0 &&
-		(pandora_cps_enabled($agent, $module) == 0 || enterprise_hook('pandora_inhibit_service_alerts', [$pa_config, $module, $dbh, 0]) == 0))
+		(pandora_cps_enabled($agent, $module) == 0 || $inhibit_service_alerts == 0))
 	{		
 		pandora_generate_alerts ($pa_config, $processed_data, $status, $agent, $module, $utimestamp, $dbh, $timestamp, $extra_macros, $last_data_value);
 	}
