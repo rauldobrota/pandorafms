@@ -348,25 +348,19 @@ function extension_db_check_tables_differences(
             if ($config['mysqli'] === true) {
                 mysqli_select_db($connection_test, $db_name_test);
                 $result = mysqli_query($connection_test, 'SHOW CREATE TABLE '.$table);
-                $tables_test = [];
-                while ($row = mysql_fetch_array($result)) {
-                    ui_print_info_message(
-                        __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$row[1].'</pre>'
-                    );
-                }
-
+                $create_query = mysqli_fetch_assoc($result)["Create Table"];
                 mysqli_free_result($result);
+                ui_print_info_message(
+                    __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$create_query.'</pre>'
+                );
             } else {
                 mysql_select_db($db_name_test, $connection_test);
                 $result = mysql_query('SHOW CREATE TABLE '.$table, $connection_test);
-                $tables_test = [];
-                while ($row = mysql_fetch_array($result)) {
-                    ui_print_info_message(
-                        __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$row[1].'</pre>'
-                    );
-                }
-
+                $create_query = mysqli_fetch_assoc($result)["Create Table"];
                 mysql_free_result($result);
+                ui_print_info_message(
+                    __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$create_query.'</pre>'
+                );
             }
         }
     }
