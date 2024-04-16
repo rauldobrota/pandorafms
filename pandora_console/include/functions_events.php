@@ -1675,8 +1675,15 @@ function events_get_all(
     }
 
     if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
-        if (str_contains($fields[0], 'te.id_grupo') === false) {
-            $fields[0] .= ', te.id_grupo';
+        $exists_id_grupo = false;
+        foreach ($fields as $field) {
+            if (str_contains($field, 'te.id_grupo') === true || str_contains($field, 'te.*') === true) {
+                $exists_id_grupo = true;
+            }
+        }
+
+        if ($exists_id_grupo === false) {
+            $fields[] = 'te.id_grupo';
         }
     }
 
