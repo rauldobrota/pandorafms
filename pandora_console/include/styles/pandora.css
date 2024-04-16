@@ -2008,8 +2008,8 @@ div.title_line {
 #menu_tab_frame_view,
 #menu_tab_frame_view_bc {
   position: sticky;
-  top: 61px;
-  z-index: 3;
+  top: 60px;
+  z-index: 2;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -14224,4 +14224,8 @@ button.ui-button-text-only.ui-widget.sub:hover,
 
 .invert_filter.black-and-white {
   filter: invert(1) saturate(0) !important;
+}
+
+div.tox .tox-editor-header {
+  z-index: 1;
 }
