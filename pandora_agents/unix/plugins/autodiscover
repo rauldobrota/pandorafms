@@ -74,7 +74,7 @@ def win_service(servicelist, option=False, memcpu=False):
 def lnx_service(services_list, memcpu=False):
     """Creates modules for Linux servers"""
     modules = []
-    sysctl = getstatusoutput("command -v systemctl")[0]
+    sysctl = getstatusoutput("systemd-notify --booted")[0]
     servic = getstatusoutput("command -v service")[0]
     for srvc in services_list:
         status = None
