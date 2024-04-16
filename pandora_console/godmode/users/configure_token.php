@@ -216,7 +216,6 @@ ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript
         var time = date+' '+$('#text-time-expiration').val();
         if (date !== '' && $('#text-time-expiration').val() !== '') {
             if (date < $('#hidden-today_date').val() || time < $('#hidden-today_date').val()+' '+$('#hidden-today_time').val()) {
-                console.log("ENTRO AQUI");
                 errordate();
             } else{
                 $('#form_token').submit();
@@ -229,6 +228,12 @@ ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript
             }
         } else if (date === '' && time !== ' ') {
             errordate();
+        } else if (date !== '' && $('#text-time-expiration').val() === '') {
+            if (date < $('#hidden-today_date').val()) {
+                errordate();
+            } else{
+                $('#form_token').submit();
+            }
         }else {
             $('#form_token').submit();
         }
