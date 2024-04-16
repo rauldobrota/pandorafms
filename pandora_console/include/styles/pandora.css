@@ -12818,7 +12818,7 @@ tr[id^="network_component-plugin-snmp-fields-dynamicMacroRow-"] input {
 }
 
 .group_view_table > tbody > tr > td {
-  width: 350px !important;
+  width: 50% !important;
 }
 
 form.cfv_status_agent {
