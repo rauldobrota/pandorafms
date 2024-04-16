@@ -111,11 +111,8 @@ if (enterprise_installed()) {
     array_push($menu_tabs, $menu_tab_url);
     $menu_tab_url = '<a href="'.ui_get_full_url('index.php?sec=gsetup&sec2=godmode/setup/setup&section=hist_db').'">'.__('History database').'</a>';
     array_push($menu_tabs, $menu_tab_url);
-
-    if ($config['log_collector']) {
-        $menu_tab_url = '<a href="'.ui_get_full_url('index.php?sec=gsetup&sec2=godmode/setup/setup&section=log').'">'.__('Log collector').'</a>';
-        array_push($menu_tabs, $menu_tab_url);
-    }
+    $menu_tab_url = '<a href="'.ui_get_full_url('index.php?sec=gsetup&sec2=godmode/setup/setup&section=log').'">'.__('Log collector').'</a>';
+    array_push($menu_tabs, $menu_tab_url);
 }
 
 $buttons['auth'] = [
@@ -422,8 +419,14 @@ switch ($section) {
         $help_header = '';
     break;
 
+    case 'log':
+        $buttons['log']['active'] = true;
+        $subpage = __('Log Collector');
+        $help_header = 'opensearch_installation';
+    break;
+
     default:
-        $subpage = 'seccion: ';
+        $subpage = '';
         // Default.
     break;
 }
@@ -432,7 +435,7 @@ $dots = dot_tab($menu_tabs);
 
 // Header.
 ui_print_standard_header(
-    __('Setup').' &raquo; '.$subpage,
+    $subpage,
     '',
     false,
     $help_header,

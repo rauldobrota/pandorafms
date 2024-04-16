@@ -322,6 +322,11 @@ function clippy_context_help($help=null)
         $title = $clippy_modules_not_learning_mode['tours']['modules_not_learning_mode']['steps'][0]['title'];
         $intro = $clippy_modules_not_learning_mode['tours']['modules_not_learning_mode']['steps'][0]['intro'];
         $img   = $clippy_modules_not_learning_mode['tours']['modules_not_learning_mode']['steps'][0]['img'];
+    } else if ($help === 'agent_module_interval') {
+        $clippy_agent_module_interval = clippy_agent_module_interval();
+        $title = $clippy_agent_module_interval['tours']['agent_module_interval']['steps'][0]['title'];
+        $intro = $clippy_agent_module_interval['tours']['agent_module_interval']['steps'][0]['intro'];
+        $img   = $clippy_agent_module_interval['tours']['agent_module_interval']['steps'][0]['img'];
     } else {
         $img = html_print_image(
             'images/info-warning.svg',

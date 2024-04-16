@@ -1235,6 +1235,8 @@ function events_get_all(
             io_safe_input($filter['user_comment']),
             $filter['user_comment']
         );
+
+        array_unshift($fields, 'DISTINCT te.id_evento AS distinct_event');
     }
 
     // Source.
@@ -1669,6 +1671,12 @@ function events_get_all(
                 tmax_event.timestamp_first,
                 tmax_event.max_id_evento'
             );
+        }
+    }
+
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        if (str_contains($fields[0], 'te.id_grupo') === false) {
+            $fields[0] .= ', te.id_grupo';
         }
     }
 

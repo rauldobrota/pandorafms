@@ -475,64 +475,120 @@ use PandoraFMS\Modules\Users\Validators\UserValidator;
  */
 final class User extends Entity
 {
+
     private ?string $idUser = null;
+
     private ?string $fullName = null;
+
     private ?string $firstName = null;
+
     private ?string $lastName = null;
+
     private ?string $middleName = null;
+
     private ?string $password = null;
+
     private ?string $passwordValidate = null;
+
     private ?string $oldPassword = null;
+
     private ?string $comments = null;
+
     private ?int $lastConnect = null;
+
     private ?int $registered = null;
+
     private ?string $email = null;
+
     private ?string $phone = null;
+
     private ?bool $isAdmin = null;
+
     private ?LanguagesEnum $language = null;
+
     private ?string $timezone = null;
+
     private ?int $blockSize = null;
+
     private ?int $idSkin = null;
+
     private ?bool $disabled = null;
+
     private ?int $shortcut = null;
+
     private ?string $shortcutData = null;
+
     private ?UserHomeScreenEnum $section = null;
+
     private ?string $dataSection = null;
+
     private ?UserHomeScreenEnum $metaconsoleSection = null;
+
     private ?string $metaconsoleDataSection = null;
+
     private ?bool $forceChangePass = null;
+
     private ?string $lastPassChange = null;
+
     private ?string $lastFailedLogin = null;
+
     private ?int $failedAttempt = null;
+
     private ?bool $loginBlocked = null;
+
     private ?UserMetaconsoleAccessEnum $metaconsoleAccess = null;
+
     private ?bool $notLogin = null;
+
     private ?bool $localUser = null;
+
     private ?int $metaconsoleAgentsManager = null;
+
     private ?int $metaconsoleAccessNode = null;
+
     private ?bool $strictAcl = null;
+
     private ?int $idFilter = null;
+
     private ?int $sessionTime = null;
+
     private ?int $defaultEventFilter = null;
+
     private ?int $metaconsoleDefaultEventFilter = null;
+
     private ?bool $showTipsStartup = null;
+
     private ?array $autorefreshWhiteList = null;
+
     private ?int $timeAutorefresh = null;
+
     private ?int $defaultCustomView = null;
+
     private ?string $ehorusUserLevelUser = null;
+
     private ?string $ehorusUserLevelPass = null;
+
     private ?bool $ehorusUserLevelEnabled = null;
+
     private ?string $itsmUserLevelUser = null;
+
     private ?string $itsmUserLevelPass = null;
+
     private ?string $apiToken = null;
+
     private ?bool $allowedIpActive = null;
+
     private ?string $allowedIpList = null;
+
     private ?string $authTokenSecret = null;
+
     private ?string $sessionMaxTimeExpire = null;
+
 
     public function __construct()
     {
     }
+
 
     public function fieldsReadOnly(): array
     {
@@ -545,6 +601,7 @@ final class User extends Entity
             'authTokenSecret' => 1,
         ];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -601,66 +658,67 @@ final class User extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
-            'idUser'           => UserValidator::STRING,
-            'fullName'         => UserValidator::STRING,
-            'firstName'        => UserValidator::STRING,
-            'lastName'         => UserValidator::STRING,
-            'middleName'       => UserValidator::STRING,
-            'password'         => UserValidator::STRING,
-            'passwordValidate' => UserValidator::STRING,
-            'oldPassword'      => UserValidator::STRING,
-            'comments'         => UserValidator::STRING,
-            'lastConnect'      => [
+            'idUser'                        => UserValidator::STRING,
+            'fullName'                      => UserValidator::STRING,
+            'firstName'                     => UserValidator::STRING,
+            'lastName'                      => UserValidator::STRING,
+            'middleName'                    => UserValidator::STRING,
+            'password'                      => UserValidator::STRING,
+            'passwordValidate'              => UserValidator::STRING,
+            'oldPassword'                   => UserValidator::STRING,
+            'comments'                      => UserValidator::STRING,
+            'lastConnect'                   => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'registered' => [
+            'registered'                    => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'email'     => UserValidator::MAIL,
-            'phone'     => UserValidator::STRING,
-            'isAdmin'   => UserValidator::BOOLEAN,
-            'language'  => UserValidator::LANGUAGE,
-            'timezone'  => UserValidator::TIMEZONE,
-            'blockSize' => [
+            'email'                         => UserValidator::MAIL,
+            'phone'                         => UserValidator::STRING,
+            'isAdmin'                       => UserValidator::BOOLEAN,
+            'language'                      => UserValidator::LANGUAGE,
+            'timezone'                      => UserValidator::TIMEZONE,
+            'blockSize'                     => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'idSkin' => [
+            'idSkin'                        => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'disabled'               => UserValidator::BOOLEAN,
-            'shortcut'               => UserValidator::INTEGER,
-            'shortcutData'           => UserValidator::STRING,
-            'section'                => UserValidator::VALIDSECTION,
-            'dataSection'            => UserValidator::STRING,
-            'metaconsoleSection'     => UserValidator::VALIDSECTION,
-            'metaconsoleDataSection' => UserValidator::STRING,
-            'forceChangePass'        => UserValidator::BOOLEAN,
-            'lastPassChange'         => UserValidator::DATETIME,
-            'lastFailedLogin'        => UserValidator::DATETIME,
-            'failedAttempt'          => [
+            'disabled'                      => UserValidator::BOOLEAN,
+            'shortcut'                      => UserValidator::INTEGER,
+            'shortcutData'                  => UserValidator::STRING,
+            'section'                       => UserValidator::VALIDSECTION,
+            'dataSection'                   => UserValidator::STRING,
+            'metaconsoleSection'            => UserValidator::VALIDSECTION,
+            'metaconsoleDataSection'        => UserValidator::STRING,
+            'forceChangePass'               => UserValidator::BOOLEAN,
+            'lastPassChange'                => UserValidator::DATETIME,
+            'lastFailedLogin'               => UserValidator::DATETIME,
+            'failedAttempt'                 => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'loginBlocked'             => UserValidator::BOOLEAN,
-            'metaconsoleAccess'        => UserValidator::VALIDMETACONSOLEACCESS,
-            'notLogin'                 => UserValidator::BOOLEAN,
-            'localUser'                => UserValidator::BOOLEAN,
-            'metaconsoleAgentsManager' => UserValidator::INTEGER,
-            'metaconsoleAccessNode'    => UserValidator::INTEGER,
-            'strictAcl'                => UserValidator::BOOLEAN,
-            'idFilter'                 => [
+            'loginBlocked'                  => UserValidator::BOOLEAN,
+            'metaconsoleAccess'             => UserValidator::VALIDMETACONSOLEACCESS,
+            'notLogin'                      => UserValidator::BOOLEAN,
+            'localUser'                     => UserValidator::BOOLEAN,
+            'metaconsoleAgentsManager'      => UserValidator::INTEGER,
+            'metaconsoleAccessNode'         => UserValidator::INTEGER,
+            'strictAcl'                     => UserValidator::BOOLEAN,
+            'idFilter'                      => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'sessionTime'        => UserValidator::INTEGER,
-            'defaultEventFilter' => [
+            'sessionTime'                   => UserValidator::INTEGER,
+            'defaultEventFilter'            => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
@@ -668,35 +726,38 @@ final class User extends Entity
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'showTipsStartup'      => UserValidator::BOOLEAN,
-            'autorefreshWhiteList' => UserValidator::ARRAY,
-            'timeAutorefresh'      => UserValidator::INTEGER,
-            'defaultCustomView'    => [
+            'showTipsStartup'               => UserValidator::BOOLEAN,
+            'autorefreshWhiteList'          => UserValidator::ARRAY,
+            'timeAutorefresh'               => UserValidator::INTEGER,
+            'defaultCustomView'             => [
                 UserValidator::INTEGER,
                 UserValidator::GREATERTHAN,
             ],
-            'ehorusUserLevelUser'    => UserValidator::STRING,
-            'ehorusUserLevelPass'    => UserValidator::STRING,
-            'ehorusUserLevelEnabled' => UserValidator::BOOLEAN,
-            'itsmUserLevelUser'      => UserValidator::STRING,
-            'itsmUserLevelPass'      => UserValidator::STRING,
-            'apiToken'               => UserValidator::STRING,
-            'allowedIpActive'        => UserValidator::BOOLEAN,
-            'allowedIpList'          => UserValidator::STRING,
-            'authTokenSecret'        => UserValidator::STRING,
-            'sessionMaxTimeExpire'   => UserValidator::INTEGER,
+            'ehorusUserLevelUser'           => UserValidator::STRING,
+            'ehorusUserLevelPass'           => UserValidator::STRING,
+            'ehorusUserLevelEnabled'        => UserValidator::BOOLEAN,
+            'itsmUserLevelUser'             => UserValidator::STRING,
+            'itsmUserLevelPass'             => UserValidator::STRING,
+            'apiToken'                      => UserValidator::STRING,
+            'allowedIpActive'               => UserValidator::BOOLEAN,
+            'allowedIpList'                 => UserValidator::STRING,
+            'authTokenSecret'               => UserValidator::STRING,
+            'sessionMaxTimeExpire'          => UserValidator::INTEGER,
         ];
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new UserValidator())->validate($filters);
     }
 
+
     public function getIdUser(): ?string
     {
         return $this->idUser;
     }
+
 
     public function setIdUser(?string $idUser): self
     {
@@ -705,10 +766,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getFullName(): ?string
     {
         return $this->fullName;
     }
+
 
     public function setFullName(?string $fullName): self
     {
@@ -717,10 +780,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
+
 
     public function setFirstName(?string $firstName): self
     {
@@ -729,10 +794,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
+
 
     public function setLastName(?string $lastName): self
     {
@@ -741,10 +808,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMiddleName(): ?string
     {
         return $this->middleName;
     }
+
 
     public function setMiddleName(?string $middleName): self
     {
@@ -753,10 +822,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getPassword(): ?string
     {
         return $this->password;
     }
+
 
     public function setPassword(?string $password): self
     {
@@ -765,10 +836,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getComments(): ?string
     {
         return $this->comments;
     }
+
 
     public function setComments(?string $comments): self
     {
@@ -777,10 +850,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLastConnect(): ?int
     {
         return $this->lastConnect;
     }
+
 
     public function setLastConnect(?int $lastConnect): self
     {
@@ -789,10 +864,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getRegistered(): ?int
     {
         return $this->registered;
     }
+
 
     public function setRegistered(?int $registered): self
     {
@@ -801,10 +878,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getEmail(): ?string
     {
         return $this->email;
     }
+
 
     public function setEmail(?string $email): self
     {
@@ -813,10 +892,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getPhone(): ?string
     {
         return $this->phone;
     }
+
 
     public function setPhone(?string $phone): self
     {
@@ -825,10 +906,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getIsAdmin(): ?bool
     {
         return $this->isAdmin;
     }
+
 
     public function setIsAdmin(?bool $isAdmin): self
     {
@@ -837,10 +920,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLanguage(): ?LanguagesEnum
     {
         return $this->language;
     }
+
 
     public function setLanguage(null|string|LanguagesEnum $language): self
     {
@@ -853,10 +938,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getTimezone(): ?string
     {
         return $this->timezone;
     }
+
 
     public function setTimezone(?string $timezone): self
     {
@@ -865,10 +952,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getBlockSize(): ?int
     {
         return $this->blockSize;
     }
+
 
     public function setBlockSize(?int $blockSize): self
     {
@@ -877,10 +966,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getIdSkin(): ?int
     {
         return $this->idSkin;
     }
+
 
     public function setIdSkin(?int $idSkin): self
     {
@@ -889,10 +980,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getDisabled(): ?bool
     {
         return $this->disabled;
     }
+
 
     public function setDisabled(?bool $disabled): self
     {
@@ -901,10 +994,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getShortcut(): ?int
     {
         return $this->shortcut;
     }
+
 
     public function setShortcut(?int $shortcut): self
     {
@@ -913,10 +1008,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getShortcutData(): ?string
     {
         return $this->shortcutData;
     }
+
 
     public function setShortcutData(?string $shortcutData): self
     {
@@ -925,10 +1022,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getSection(): ?UserHomeScreenEnum
     {
         return $this->section;
     }
+
 
     public function setSection(null|string|UserHomeScreenEnum $section): self
     {
@@ -941,10 +1040,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getDataSection(): ?string
     {
         return $this->dataSection;
     }
+
 
     public function setDataSection(?string $dataSection): self
     {
@@ -953,10 +1054,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMetaconsoleSection(): ?UserHomeScreenEnum
     {
         return $this->metaconsoleSection;
     }
+
 
     public function setMetaconsoleSection(null|string|UserHomeScreenEnum $metaconsoleSection): self
     {
@@ -969,10 +1072,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMetaconsoleDataSection(): ?string
     {
         return $this->metaconsoleDataSection;
     }
+
 
     public function setMetaconsoleDataSection(?string $metaconsoleDataSection): self
     {
@@ -981,10 +1086,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getForceChangePass(): ?bool
     {
         return $this->forceChangePass;
     }
+
 
     public function setForceChangePass(?bool $forceChangePass): self
     {
@@ -993,10 +1100,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLastPassChange(): ?string
     {
         return $this->lastPassChange;
     }
+
 
     public function setLastPassChange(?string $lastPassChange): self
     {
@@ -1005,10 +1114,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLastFailedLogin(): ?string
     {
         return $this->lastFailedLogin;
     }
+
 
     public function setLastFailedLogin(?string $lastFailedLogin): self
     {
@@ -1017,10 +1128,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getFailedAttempt(): ?int
     {
         return $this->failedAttempt;
     }
+
 
     public function setFailedAttempt(?int $failedAttempt): self
     {
@@ -1029,10 +1142,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLoginBlocked(): ?bool
     {
         return $this->loginBlocked;
     }
+
 
     public function setLoginBlocked(?bool $loginBlocked): self
     {
@@ -1041,10 +1156,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMetaconsoleAccess(): ?UserMetaconsoleAccessEnum
     {
         return $this->metaconsoleAccess;
     }
+
 
     public function setMetaconsoleAccess(null|string|UserMetaconsoleAccessEnum $metaconsoleAccess): self
     {
@@ -1059,10 +1176,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getNotLogin(): ?bool
     {
         return $this->notLogin;
     }
+
 
     public function setNotLogin(?bool $notLogin): self
     {
@@ -1071,10 +1190,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getLocalUser(): ?bool
     {
         return $this->localUser;
     }
+
 
     public function setLocalUser(?bool $localUser): self
     {
@@ -1083,10 +1204,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMetaconsoleAgentsManager(): ?int
     {
         return $this->metaconsoleAgentsManager;
     }
+
 
     public function setMetaconsoleAgentsManager(?int $metaconsoleAgentsManager): self
     {
@@ -1095,10 +1218,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMetaconsoleAccessNode(): ?int
     {
         return $this->metaconsoleAccessNode;
     }
+
 
     public function setMetaconsoleAccessNode(?int $metaconsoleAccessNode): self
     {
@@ -1107,10 +1232,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getStrictAcl(): ?bool
     {
         return $this->strictAcl;
     }
+
 
     public function setStrictAcl(?bool $strictAcl): self
     {
@@ -1119,10 +1246,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getIdFilter(): ?int
     {
         return $this->idFilter;
     }
+
 
     public function setIdFilter(?int $idFilter): self
     {
@@ -1131,10 +1260,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getSessionTime(): ?int
     {
         return $this->sessionTime;
     }
+
 
     public function setSessionTime(?int $sessionTime): self
     {
@@ -1143,10 +1274,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getDefaultEventFilter(): ?int
     {
         return $this->defaultEventFilter;
     }
+
 
     public function setDefaultEventFilter(?int $defaultEventFilter): self
     {
@@ -1155,10 +1288,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getMetaconsoleDefaultEventFilter(): ?int
     {
         return $this->metaconsoleDefaultEventFilter;
     }
+
 
     public function setMetaconsoleDefaultEventFilter(?int $metaconsoleDefaultEventFilter): self
     {
@@ -1167,10 +1302,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getShowTipsStartup(): ?bool
     {
         return $this->showTipsStartup;
     }
+
 
     public function setShowTipsStartup(?bool $showTipsStartup): self
     {
@@ -1179,10 +1316,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getAutorefreshWhiteList(): ?array
     {
         return $this->autorefreshWhiteList;
     }
+
 
     public function setAutorefreshWhiteList(array|string|null $autorefreshWhiteList): self
     {
@@ -1197,10 +1336,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getTimeAutorefresh(): ?int
     {
         return $this->timeAutorefresh;
     }
+
 
     public function setTimeAutorefresh(?int $timeAutorefresh): self
     {
@@ -1209,10 +1350,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getDefaultCustomView(): ?int
     {
         return $this->defaultCustomView;
     }
+
 
     public function setDefaultCustomView(?int $defaultCustomView): self
     {
@@ -1221,10 +1364,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getEhorusUserLevelUser(): ?string
     {
         return $this->ehorusUserLevelUser;
     }
+
 
     public function setEhorusUserLevelUser(?string $ehorusUserLevelUser): self
     {
@@ -1233,10 +1378,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getEhorusUserLevelPass(): ?string
     {
         return $this->ehorusUserLevelPass;
     }
+
 
     public function setEhorusUserLevelPass(?string $ehorusUserLevelPass): self
     {
@@ -1245,10 +1392,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getEhorusUserLevelEnabled(): ?bool
     {
         return $this->ehorusUserLevelEnabled;
     }
+
 
     public function setEhorusUserLevelEnabled(?bool $ehorusUserLevelEnabled): self
     {
@@ -1257,10 +1406,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getItsmUserLevelUser(): ?string
     {
         return $this->itsmUserLevelUser;
     }
+
 
     public function setItsmUserLevelUser(?string $itsmUserLevelUser): self
     {
@@ -1269,10 +1420,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getItsmUserLevelPass(): ?string
     {
         return $this->itsmUserLevelPass;
     }
+
 
     public function setItsmUserLevelPass(?string $itsmUserLevelPass): self
     {
@@ -1281,10 +1434,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getApiToken(): ?string
     {
         return $this->apiToken;
     }
+
 
     public function setApiToken(?string $apiToken): self
     {
@@ -1293,10 +1448,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getAllowedIpActive(): ?bool
     {
         return $this->allowedIpActive;
     }
+
 
     public function setAllowedIpActive(?bool $allowedIpActive): self
     {
@@ -1305,10 +1462,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getAllowedIpList(): ?string
     {
         return $this->allowedIpList;
     }
+
 
     public function setAllowedIpList(?string $allowedIpList): self
     {
@@ -1317,10 +1476,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getAuthTokenSecret(): ?string
     {
         return $this->authTokenSecret;
     }
+
 
     public function setAuthTokenSecret(?string $authTokenSecret): self
     {
@@ -1329,10 +1490,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getSessionMaxTimeExpire(): ?string
     {
         return $this->sessionMaxTimeExpire;
     }
+
 
     public function setSessionMaxTimeExpire(?string $sessionMaxTimeExpire): self
     {
@@ -1341,10 +1504,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getPasswordValidate(): ?string
     {
         return $this->passwordValidate;
     }
+
 
     public function setPasswordValidate(?string $passwordValidate): self
     {
@@ -1353,10 +1518,12 @@ final class User extends Entity
         return $this;
     }
 
+
     public function getOldPassword(): ?string
     {
         return $this->oldPassword;
     }
+
 
     public function setOldPassword(?string $oldPassword): self
     {
@@ -1364,4 +1531,6 @@ final class User extends Entity
 
         return $this;
     }
+
+
 }

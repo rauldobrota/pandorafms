@@ -1126,3 +1126,29 @@ function user_print_header(int $pure=0, string $tab='user', ?string $title=null)
         ]
     );
 }
+
+
+/**
+ * Returns the timezone of the user given or the actual one.
+ *
+ * @param mixed $id_user Id usuario (No give notingh return current user).
+ *
+ * @return string Return timezone of the user.
+ */
+function user_get_timezone($id_user=null)
+{
+    global $config;
+
+    if (empty($id_user)) {
+        $id_user = $config['id_user'];
+    }
+
+    $timezone = db_get_value(
+        'timezone',
+        'tusuario',
+        'id_user',
+        $id_user
+    );
+
+    return $timezone;
+}

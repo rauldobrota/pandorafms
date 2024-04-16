@@ -9,12 +9,15 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class UpdateTokenService
 {
+
+
     public function __construct(
         private Audit $audit,
         private TokenRepository $tokenRepository,
         private TokenValidation $tokenValidation
     ) {
     }
+
 
     public function __invoke(Token $token, Token $oldToken): Token
     {
@@ -30,4 +33,6 @@ final class UpdateTokenService
 
         return $token;
     }
+
+
 }

@@ -35,7 +35,8 @@
 }
 .ui-datepicker .ui-datepicker-title select,
 .ui-datepicker .ui-datepicker-title option {
-  color: #111;
+  color: var(--text-color);
+  background-color: var(--secondary-color);
 }
 .ui-dialog .ui-dialog-title {
   color: #fff;
@@ -228,16 +229,16 @@ a.ui-state-default > span:hover {
   margin-right: 25px !important;
 }
 .ui-widget-header {
-  background: white;
+  background: var(--secondary-color);
   color: #ffffff;
 }
 .ui-datepicker-calendar th {
-  background-color: #fff;
+  background-color: var(--secondary-color);
   padding-left: 15px;
   text-align: initial;
 }
 .ui-datepicker-calendar th span {
-  color: #000;
+  color: var(--text-color);
 }
 .ui-widget-header {
   height: fit-content !important;
@@ -256,7 +257,7 @@ a.ui-state-default > span:hover {
   margin: 0px 15px 0px 15px;
 }
 .ui-timepicker-div .ui-datepicker-title {
-  color: black;
+  color: var(--text-color);
 }
 .ui-timepicker-div dl {
   margin-top: 0px !important;
@@ -321,7 +322,7 @@ a.ui-button:active,
 .ui-widget-header .ui-state-active {
   border: 1px solid #aaaaaa;
   border-bottom: 0;
-  background: #ffffff;
+  background: var(--secondary-color);
   font-weight: normal;
   color: #212121;
 }

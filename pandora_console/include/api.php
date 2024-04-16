@@ -114,6 +114,7 @@ if ($info === 'version') {
     exit;
 }
 
+$user_in_db = null;
 if (empty($apiPassword) === true
     || (empty($apiPassword) === false && $api_password === $apiPassword)
     || $apiTokenValid === true

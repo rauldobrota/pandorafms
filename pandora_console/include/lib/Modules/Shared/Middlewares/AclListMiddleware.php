@@ -7,16 +7,19 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class AclListMiddleware
 {
+
+
     public function __construct(
         private readonly Config $config
     ) {
     }
 
+
     public function check(string $ipOrigin): bool
     {
         $result = true;
         try {
-            require_once $this->config->get('homedir').'/include/functions_api.php';
+            include_once $this->config->get('homedir').'/include/functions_api.php';
             if ((bool) \isInACL($ipOrigin) === false) {
                 $result = false;
             }
@@ -26,4 +29,6 @@ final class AclListMiddleware
 
         return $result;
     }
+
+
 }

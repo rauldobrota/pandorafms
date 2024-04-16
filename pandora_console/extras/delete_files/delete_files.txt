@@ -1749,3 +1749,6 @@ enterprise/include/class/SAP.app.php
 enterprise/include/class/VMware.app.php
 enterprise/include/class/DatabaseHA.class.php
 enterprise/godmode/servers/HA_cluster.php
+enterprise/godmode/setup/edit_skin.php
+enterprise/godmode/setup/setup_skins.php
+enterprise/include/functions_skins.php

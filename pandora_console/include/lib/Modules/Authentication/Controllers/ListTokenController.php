@@ -10,10 +10,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class ListTokenController extends Controller
 {
+
+
     public function __construct(
         private ListTokenAction $listTokenAction
     ) {
     }
+
 
     /**
      * @OA\Post(
@@ -30,19 +33,19 @@ final class ListTokenController extends Controller
      *   response="200",
      *   description="List Incidence object",
      *   content={
-     *     @OA\MediaType(
+     * @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(
-     *         @OA\Property(
+     * @OA\Schema(
+     * @OA\Property(
      *           property="paginationData",
      *           type="object",
      *           ref="#/components/schemas/paginationData",
      *           description="Page object",
      *         ),
-     *         @OA\Property(
+     * @OA\Property(
      *           property="data",
      *           type="array",
-     *           @OA\Items(
+     * @OA\Items(
      *             ref="#/components/schemas/Token",
      *             description="Array of Token objects"
      *           )
@@ -51,11 +54,11 @@ final class ListTokenController extends Controller
      *     )
      *   }
      * ),
-     * @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     * @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     * @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     * @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     * @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\Response(response=400,                                                ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401,                                                ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403,                                                ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404,                                                ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500,                                                ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -66,4 +69,6 @@ final class ListTokenController extends Controller
         $result = $this->listTokenAction->__invoke($tokenFilter);
         return $this->getResponse($response, $result);
     }
+
+
 }

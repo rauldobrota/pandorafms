@@ -615,7 +615,7 @@ class EventsListWidget extends Widget
             if (in_array('0', $this->values['groupId'])) {
                 $filter['id_group_filter'] = 0;
             } else {
-                $filter['id_group_filter'] = (!empty($this->values['groupId'][0])) ? $this->values['groupId'] : 0;
+                $filter['id_group_filter'] = (!empty($customFilter['id_group'])) ? $customFilter['id_group'] : 0;
             }
 
             $filter['tag_with'] = base64_encode(

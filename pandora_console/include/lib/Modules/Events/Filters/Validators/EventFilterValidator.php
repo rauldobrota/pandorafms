@@ -17,11 +17,13 @@ class EventFilterValidator extends Validator
     public const VALIDFILTERSTATUS = 'ValidFilterStatus';
     public const VALIDFILTERTYPE = 'ValidFilterType';
 
+
     protected function isValidFilterAlert($section): bool
     {
         $result = EventFilterAlertEnum::get(strtoupper($section));
         return empty($result) === true ? false : true;
     }
+
 
     protected function isValidFilterCustomData($status): bool
     {
@@ -29,11 +31,13 @@ class EventFilterValidator extends Validator
         return empty($result) === true ? false : true;
     }
 
+
     protected function isValidFilterGroupBy($type): bool
     {
         $result = EventFilterGroupByEnum::get(strtoupper($type));
         return empty($result) === true ? false : true;
     }
+
 
     protected function isValidFilterStatus($status): bool
     {
@@ -41,9 +45,12 @@ class EventFilterValidator extends Validator
         return empty($result) === true ? false : true;
     }
 
+
     protected function isValidFilterType($type): bool
     {
         $result = EventTypeEnum::get(strtoupper($type));
         return empty($result) === true ? false : true;
     }
+
+
 }

@@ -3546,7 +3546,7 @@ function ui_print_status_sets(
     }
 
     if (empty($title) === false) {
-        $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
+        // $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
         $options['data-title'] = (empty($extra_info) === true) ? $title : $title.'<br>'.$extra_info;
         $options['data-use_title_for_force_title'] = 1;
         if (isset($options['class']) === true) {
@@ -4283,6 +4283,12 @@ function ui_print_datatable(array $parameters)
     $js = '<script>';
     $js .= 'var dt = '.$json_data.';';
     $js .= 'var config = '.$json_config.';';
+    if (isset($parameters['data_element']) === true) {
+        $js .= 'var preload_elements = true;';
+    } else {
+        $js .= 'var preload_elements = false;';
+    }
+
     $js .= '</script>';
 
     $js .= '<script>';
@@ -4640,10 +4646,12 @@ function ui_toggle(
         $imageRotate = $rotateB;
         $style .= 'height:0;position:absolute;';
         $original = $img_b;
+        $data_close = 'true';
     } else {
         $imageRotate = $rotateA;
         $style .= 'height:auto;position:relative;';
         $original = $img_a;
+        $data_close = 'false';
     }
 
     $header_class = '';
@@ -4662,7 +4670,7 @@ function ui_toggle(
 
     // Link to toggle.
     $output = '<div class="'.$main_class.'" id="'.$id.'" '.$toggl_attr.'>';
-    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'">';
+    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'" data-close="'.$data_close.'">';
     if ($reverseImg === false) {
         if ($switch === true) {
             if (empty($switch_name) === true) {
@@ -4777,6 +4785,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', '".$position_div."');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateA."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', true);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'false');\n";
         $output .= $class_table;
         $output .= "			    }\n";
         $output .= "			    else {\n";
@@ -4785,6 +4794,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', 'absolute');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateB."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', false);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'true');\n";
         $output .= "			    }\n";
         $output .= "		    });\n";
         $output .= "	    }\n";
@@ -5441,6 +5451,7 @@ function ui_print_page_header(
             $buffer .= '</li>';
         }
 
+        $tabs_class = '';
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
@@ -6463,25 +6474,25 @@ function ui_print_agent_autocomplete_input($parameters)
 				switch (item.filter) {
 					default:
 					case \'agent\':
-						return $("<li style=\'background: #DFFFC4;\'></li>")
+						return $("<li style=\'background: #DFFFC4;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Agent').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'address\':
-						return $("<li style=\'background: #F7CFFF;\'></li>")
+						return $("<li style=\'background: #F7CFFF;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Address').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'description\':
-						return $("<li style=\'background: #FEFCC6;\'></li>")
+						return $("<li style=\'background: #FEFCC6;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Description').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'alias\':
-						return $("<li style=\"'.$background_results.'\"></li>")
+						return $("<li style=\"'.$background_results.'\" title=\''.__('Alias').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
@@ -8372,4 +8383,32 @@ function ui_print_status_secmon_div($status, $title=false)
         $title = ($title === false) ? __('critical') : $title;
         return ui_print_div('group_view_crit '.$class, $title);
     }
+}
+
+
+function ui_print_empty_view($title, $message, $img_name, $buttons=false)
+{
+    $img = html_print_image(
+        'images/empty_views/'.$img_name,
+        true,
+        [
+            'title' => __('Empty view image'),
+            'class' => '',
+        ]
+    );
+
+    $output = '
+        <div class="empty-view">
+            <div class="empty-view-img-text">
+                    '.$img.'
+                <div class="empty-view-text">
+                    <span>'.$title.'</span>
+                    <span>'.$message.'</span>
+                </div>
+            </div>
+            '.($buttons !== false ? '<div class="empty-view-buttons">'.$buttons.'</div>' : '').'
+        </div>
+    ';
+
+    return $output;
 }

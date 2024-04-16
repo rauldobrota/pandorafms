@@ -8,10 +8,13 @@ use PandoraFMS\Modules\Events\Repositories\EventRepository;
 
 final class GetEventService
 {
+
+
     public function __construct(
         private EventRepository $eventRepository,
     ) {
     }
+
 
     public function __invoke(int $idEvent): Event
     {
@@ -20,4 +23,6 @@ final class GetEventService
 
         return $this->eventRepository->getOne($eventFilter);
     }
+
+
 }

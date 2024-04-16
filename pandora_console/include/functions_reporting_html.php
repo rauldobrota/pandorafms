@@ -2644,7 +2644,7 @@ function reporting_html_inventory($table, $item, $pdf=0)
     } else {
         // Grouped type inventory.
         $type_modules = array_reduce(
-            $item['data'],
+            ($item['data'] ?? []),
             function ($carry, $it) {
                 $carry[$it['name']][] = $it;
                 return $carry;
@@ -3690,7 +3690,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
     if ((int) $ttl === 2) {
         $out .= '<img src="data:image/png;base64,';
     } else {
-        $out .= '<div id="status_pie" style="margin: auto; width: '.$graph_width.'px;">';
+        $out .= '<div id="status_pie" style="margin: auto;">';
     }
 
     $out .= pie_graph($data, $options);
@@ -3732,7 +3732,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
     if ((int) $ttl === 2) {
         $out .= '<img src="data:image/png;base64,';
     } else {
-        $out .= '<div id="status_pie" style="margin: auto; width: '.$graph_width.'px;">';
+        $out .= '<div id="status_pie" style="margin: auto;">';
     }
 
     $out .= pie_graph($data, $options);
@@ -4044,6 +4044,10 @@ function reporting_html_historical_data($table, $item, $pdf=0)
         __('Date'),
         __('Data'),
     ];
+
+    $table1->headStyle['Date'] = 'text-align: center;';
+    $table1->headStyle['Data'] = 'text-align: center;';
+
     $table1->data = [];
     foreach ($item['data'] as $data) {
         if (!is_numeric($data[__('Data')])) {
@@ -4098,6 +4102,13 @@ function reporting_html_historical_data($table, $item, $pdf=0)
         $table1->titleclass = 'title_table_pdf';
         $table1->titlestyle = 'text-align:left;';
 
+        // Center every row
+        foreach ($table1->data[0] as $k => $v) {
+            for ($i = 0; $i < count($table1->data); $i++){
+                $table1->cellstyle[$i][$k] = 'text-align: center;';
+            }
+        }
+
         return html_print_table($table1, true);
     }
 
@@ -4129,6 +4140,10 @@ function reporting_html_database_serialized($table, $item, $pdf=0)
         __('Date'),
         __('Data'),
     ];
+
+    $table1->headStyle['Date'] = 'text-align: center;';
+    $table1->headStyle['Data'] = 'text-align: center;';
+
     if (!empty($item['keys'])) {
         $table1->head = array_merge($table1->head, $item['keys']);
     }
@@ -4169,6 +4184,14 @@ function reporting_html_database_serialized($table, $item, $pdf=0)
         $table1->title = $item['title'];
         $table1->titleclass = 'title_table_pdf';
         $table1->titlestyle = 'text-align:left;';
+
+        // Center every row
+        foreach ($table1->data[0] as $k => $v) {
+            for ($i = 0; $i < count($table1->data); $i++){
+                $table1->cellstyle[$i][$k] = 'text-align: center;';
+            }
+        }
+
         return html_print_table(
             $table1,
             true
@@ -4195,15 +4218,18 @@ function reporting_html_last_value($table, $item, $pdf=0)
         $table_data->width = '100%';
         $table_data->class = 'info_table';
         $table_data->headstyle = [];
-        $table_data->headstyle[0] = 'text-align: left;';
         $table_data->style = [];
-        $table_data->style[0] = 'text-align: left;';
         $table_data->head = [
             __('Name'),
             __('Date'),
             __('Data'),
             __('Status'),
         ];
+
+        $table_data->headStyle['Name'] = 'text-align: center;';
+        $table_data->headStyle['Date'] = 'text-align: center;';
+        $table_data->headStyle['Data'] = 'text-align: center;';
+        $table_data->headStyle['Status'] = 'text-align: center;';
 
         $table_data->data = [];
         $table_data->data[1][0] = $item['data']['agent_name'];
@@ -4329,6 +4355,11 @@ function reporting_html_last_value($table, $item, $pdf=0)
                 true
             );
         } else {
+            // Center every row
+            for ($i = 0; $i < 4; $i++) {
+                $table_data->cellstyle['1'][$i] = 'text-align: center;';
+            }
+
             return html_print_table(
                 $table_data,
                 true
@@ -5169,7 +5200,7 @@ function reporting_html_value(
         $table->colspan['data']['cell'] = 3;
         $table->cellstyle['data']['cell'] = 'text-align: left;';
 
-        $table->data['data']['cell'] = '<p class="bolder" style="font-size: '.$font_size.'; color: #000000;">';
+        $table->data['data']['cell'] = '<p class="bolder" style="font-size: '.$font_size.';">';
 
         if ($check_empty && empty($item['data']['value'])) {
             $table->data['data']['cell'] .= __('Unknown');
@@ -6380,6 +6411,7 @@ function reporting_html_sql($table, $item, $pdf=0)
                 // Print the header.
                 foreach ($row as $key => $value) {
                     $table2->head[] = $key;
+                    $table2->headStyle[$key] = 'text-align: center;';
                 }
             }
 
@@ -6397,6 +6429,14 @@ function reporting_html_sql($table, $item, $pdf=0)
             $table2->title = $item['title'];
             $table2->titleclass = 'title_table_pdf';
             $table2->titlestyle = 'text-align:left;';
+
+            // Center every row
+            foreach ($table2->data[0] as $k => $v) {
+                for ($i = 0; $i < count($table2->data); $i++){
+                    $table2->cellstyle[$i][$k] = 'text-align: center;';
+                }
+            }
+
             $return_pdf .= html_print_table(
                 $table2,
                 true

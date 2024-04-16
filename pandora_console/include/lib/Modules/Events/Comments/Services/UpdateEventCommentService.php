@@ -9,6 +9,8 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class UpdateEventCommentService
 {
+
+
     public function __construct(
         private Audit $audit,
         private EventCommentRepository $eventCommentRepository,
@@ -16,17 +18,19 @@ final class UpdateEventCommentService
     ) {
     }
 
+
     public function __invoke(EventComment $eventComment, EventComment $oldEventComment): EventComment
     {
         $this->eventCommentValidation->__invoke($eventComment, $oldEventComment);
 
         $eventComment = $this->eventCommentRepository->update($eventComment);
 
-        //$this->audit->write(
-        //    'Incidence Management',
-        //    ' Update Field #'.$eventComment->getIdEventComment().' in a incidence type #'.$eventComment->getIdEvent()
-        //);
-
+        // $this->audit->write(
+        // 'Incidence Management',
+        // ' Update Field #'.$eventComment->getIdEventComment().' in a incidence type #'.$eventComment->getIdEvent()
+        // );
         return $eventComment;
     }
+
+
 }
