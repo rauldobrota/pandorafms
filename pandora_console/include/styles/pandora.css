@@ -14225,3 +14225,7 @@ button.ui-button-text-only.ui-widget.sub:hover,
 .invert_filter.black-and-white {
   filter: invert(1) saturate(0) !important;
 }
+
+div.tox .tox-editor-header {
+  z-index: 1;
+}
