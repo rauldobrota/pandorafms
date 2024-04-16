@@ -2090,3 +2090,7 @@ select option:checked {
 .basic-chart-widget .flot-base {
   background-color: unset;
 }
+
+#horizontalBar > .labels > .label > div[style^="background"] {
+  filter: invert(1);
+}
