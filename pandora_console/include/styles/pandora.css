@@ -14250,3 +14250,21 @@ div.tox .tox-editor-header {
 .select2-multiselect-text-wrap .select2-selection__choice__remove {
   flex-basis: 0% !important;
 }
+
+table.filter-table-adv td > div.row-flex {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+table.filter-table-adv td > div.row-flex.flex-end {
+  justify-content: flex-end;
+}
+
+table.filter-table-adv td > div.row-flex label.custom_checkbox {
+  margin: 0px;
+}
+
+table.filter-table-adv td > div.row-flex input {
+  width: 100%;
+}
