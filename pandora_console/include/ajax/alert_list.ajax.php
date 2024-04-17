@@ -331,7 +331,7 @@ if ($show_update_action_menu) {
                     false,
                     '',
                     false,
-                    false
+                    true
                 );
             $data .= '</td>';
         $data .= '</tr>';
