@@ -239,7 +239,7 @@
                         <div class="subtitle">
                             <?php echo __('Currently triggered'); ?>
                         </div>
-                        <a href="index.php?sec=galertas&sec2=godmode/alerts/alert_list&status_alert=fired"><?php echo $Alerts->getCurrentlyTriggered(); ?></a>
+                        <a href="index.php?sec=galertas&sec2=godmode/alerts/alert_list&status_alert=fired&standby=1"><?php echo $Alerts->getCurrentlyTriggered(); ?></a>
                     </div>
                     <div class="col-6 br-l">
                         <div class="subtitle">
