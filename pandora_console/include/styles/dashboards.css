@@ -1001,3 +1001,15 @@ input.resize_button {
 .grid-stack-item-content .visual-console-container-dashboard {
   text-align: initial;
 }
+
+.select2-container.select2-container--default.select2-container--open,
+.select2-container.select2-container--default.select2-container--open
+  .select2-dropdown {
+  box-sizing: border-box !important;
+}
+
+.select2-container.select2-container--default.select2-container--open
+  .select2-dropdown
+  .select2-results__option {
+  line-break: anywhere;
+}
