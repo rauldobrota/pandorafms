@@ -50,10 +50,14 @@ function extension_db_status()
     }
 
     ui_print_info_message(
-        __('This extension checks the DB is correct. Because sometimes the old DB from a migration has not some fields in the tables or the data is changed.')
-    );
-    ui_print_info_message(
-        __('At the moment the checks is for MySQL/MariaDB.')
+        " - " . 
+        __('This extension checks the DB is correct. Because sometimes the old DB from a migration has not some fields in the tables or the data is changed.') . 
+        "<br>" . 
+        " - " . 
+        __('At the moment the checks is for MySQL/MariaDB.') . 
+        "<br>" .
+        " - " .  
+        __('User must have Select, Drop, Create and References privileges.')
     );
 
     echo "<form method='post' class='max_floating_element_size'>";
@@ -164,61 +168,109 @@ function extension_db_status_execute_checks($db_user, $db_password, $db_host, $d
     $db_name = explode(' ', $db_name);
     $db_name = $db_name[0];
 
-    if ($config['mysqli'] === true) {
-        $connection_test = mysqli_connect($db_host, $db_user, $db_password);
-    } else {
-        $connection_test = mysql_connect($db_host, $db_user, $db_password);
+    if (!$db_host) {
+        ui_print_error_message(__('A host must be provided'));
+        return;
+    }
+
+    if (!$db_name) {
+        ui_print_error_message(__('A DB name must be provided'));
+        return;
+    }
+
+    try {
+        if ($config['mysqli']) {
+            $connection_test = mysqli_connect($db_host, $db_user, $db_password);
+        } else {
+            $connection_test = mysql_connect($db_host, $db_user, $db_password);
+        }
+    } catch (Exception $e) {
+        $connection_test = false;
     }
 
     if (!$connection_test) {
-        ui_print_error_message(
-            __('Unsuccessful connected to the DB')
-        );
-    } else {
-        if ($config['mysqli'] === true) {
+        ui_print_error_message(__('Unsuccessful connected to the DB'));
+        return;
+    }
+
+    try {
+        $query = "SELECT IF(EXISTS(SELECT 1 FROM information_schema.SCHEMATA WHERE schema_name = '$db_name'), 'true', 'false') AS result";
+        if ($config['mysqli']) {    
+            $exist_db = mysqli_fetch_assoc(mysqli_query($connection_test, $query))['result'];
+        } else {
+            $exist_db = mysql_fetch_assoc(mysqli_query($connection_test, $query))['result'];
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__("There was a problem during verification of the existence of the `$db_name` table"));
+        return;
+    }
+   
+    if ($exist_db == 'true') {
+        ui_print_error_message(__("The testing DB `$db_name` already exists"));
+        return;
+    }
+
+    if (check_drop_privileges($connection_test) == 0) {
+        return;
+    }
+
+    try {
+        if ($config['mysqli']) {
             $create_db = mysqli_query($connection_test, "CREATE DATABASE `$db_name`");
         } else {
             $create_db = mysql_query("CREATE DATABASE `$db_name`");
         }
-
-        if (!$create_db) {
-            ui_print_error_message(
-                __('Unsuccessful created the testing DB')
-            );
-        } else {
-            if ($config['mysqli'] === true) {
-                mysqli_select_db($connection_test, $db_name);
-            } else {
-                mysql_select_db($db_name, $connection_test);
-            }
-
-            $install_tables = extension_db_status_execute_sql_file(
-                $config['homedir'].'/pandoradb.sql',
-                $connection_test
-            );
-
-            if (!$install_tables) {
-                ui_print_error_message(
-                    __('Unsuccessful installed tables into the testing DB')
-                );
-            } else {
-                extension_db_check_tables_differences(
-                    $connection_test,
-                    $connection_system,
-                    $db_name,
-                    $config['dbname']
-                );
-            }
-
-            if ($config['mysqli'] === true) {
-                mysqli_select_db($connection_test, $db_name);
-                mysqli_query($connection_test, "DROP DATABASE IF EXISTS `$db_name`");
-            } else {
-                mysql_select_db($db_name, $connection_test);
-                mysql_query("DROP DATABASE IF EXISTS `$db_name`", $connection_test);
-            }
-        }
+    } catch (Exception $e) {
+        $connection_test = false;
     }
+
+    if (!$create_db) {
+        ui_print_error_message(__('Unsuccessful created the testing DB'));
+        return;
+    }
+
+    if (check_ref_privileges($connection_test) == 0) {
+        drop_database($connection_test, $db_name);
+        ui_print_error_message(__("Unable to <b>create references</b> with the provided user please check its privileges"));
+        return;
+    }
+
+    if (check_explain_privileges($connection_test) == 0) {
+        drop_database($connection_test, $db_name);
+        ui_print_error_message(__("Unable to <b>explain</b> with the provided user please check its privileges"));
+        return;
+    }
+
+    try {
+        if ($config['mysqli'] === true) {
+            mysqli_select_db($connection_test, $db_name);
+        } else {
+            mysql_select_db($db_name, $connection_test);
+        }
+    } catch (Exception $e) {
+        drop_database($connection_test, $db_name);
+        ui_print_error_message(__('There was an error selecting the DB'));
+        return;
+    }
+
+    $install_tables = extension_db_status_execute_sql_file(
+        $config['homedir'].'/pandoradb.sql',
+        $connection_test
+    );
+
+    if (!$install_tables) {
+        ui_print_error_message(__('Unsuccessful installed tables into the testing DB'));
+        return;
+    } 
+
+    extension_db_check_tables_differences(
+        $connection_test,
+        $connection_system,
+        $db_name,
+        $config['dbname']
+    );
+    
+    drop_database($connection_test, $db_name);
 }
 
 
@@ -296,25 +348,19 @@ function extension_db_check_tables_differences(
             if ($config['mysqli'] === true) {
                 mysqli_select_db($connection_test, $db_name_test);
                 $result = mysqli_query($connection_test, 'SHOW CREATE TABLE '.$table);
-                $tables_test = [];
-                while ($row = mysql_fetch_array($result)) {
-                    ui_print_info_message(
-                        __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$row[1].'</pre>'
-                    );
-                }
-
+                $create_query = mysqli_fetch_assoc($result)["Create Table"];
                 mysqli_free_result($result);
+                ui_print_info_message(
+                    __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$create_query.'</pre>'
+                );
             } else {
                 mysql_select_db($db_name_test, $connection_test);
                 $result = mysql_query('SHOW CREATE TABLE '.$table, $connection_test);
-                $tables_test = [];
-                while ($row = mysql_fetch_array($result)) {
-                    ui_print_info_message(
-                        __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$row[1].'</pre>'
-                    );
-                }
-
+                $create_query = mysqli_fetch_assoc($result)["Create Table"];
                 mysql_free_result($result);
+                ui_print_info_message(
+                    __('You can execute this SQL query for to fix.').'<br />'.'<pre>'.$create_query.'</pre>'
+                );
             }
         }
     }
@@ -489,19 +535,15 @@ function extension_db_status_execute_sql_file($url, $connection)
                 $query .= $sql_line;
                 if (preg_match("/;[\040]*\$/", $sql_line)) {
                     if ($config['mysqli'] === true) {
-                        if (!$result = mysqli_query($connection, $query)) {
-                            echo mysqli_error();
-                            // Uncomment for debug
-                            echo "<i><br>$query<br></i>";
-                            return 0;
-                        }
+                        $result = mysqli_query($connection, $query);
                     } else {
-                        if (!$result = mysql_query($query, $connection)) {
-                            echo mysql_error();
-                            // Uncomment for debug
-                            echo "<i><br>$query<br></i>";
-                            return 0;
-                        }
+                        $result = mysql_query($query, $connection);
+                    }
+                    if (!$result) {
+                        echo mysqli_error($connection);
+                        // Uncomment for debug
+                        echo "<i><br>$query<br></i>";
+                        return 0;
                     }
 
                     $query = '';
@@ -512,6 +554,205 @@ function extension_db_status_execute_sql_file($url, $connection)
         return 1;
     } else {
         return 0;
+    }
+}
+
+
+function check_explain_privileges($connection)
+{
+    global $config;
+    $has_privileges = 1;
+
+    $explain_check= "EXPLAIN tb1";
+
+    $create_tb1= "CREATE TABLE tb1 (
+        id INT AUTO_INCREMENT PRIMARY KEY
+    )";
+
+    drop_database($connection, 'pandora_tmp_privilege_check');
+
+    try {
+        if ($config['mysqli']) {
+            mysqli_query($connection, "CREATE DATABASE `pandora_tmp_privilege_check`");
+        } else {
+            mysql_query("CREATE DATABASE `pandora_tmp_privilege_check`", $connection);
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__('There was an error creating the DB during reference check'));
+        return 0;
+    }
+
+    try {
+        if ($config['mysqli'] === true) {
+            mysqli_select_db($connection, "pandora_tmp_privilege_check");
+        } else {
+            mysql_select_db("reference_check", $connection);
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__('There was an error selecting the DB during reference check'));
+        return 0;
+    }
+
+    try {
+        if ($config['mysqli'] === true) {
+            $result = mysqli_query($connection, $create_tb1);
+        } else {
+            $result = mysql_query($create_tb1, $connection);
+        }
+
+        if(!$result){
+            throw new Exception("Error on explain check: " . $connection->error);
+        }
+
+        if ($config['mysqli'] === true) {
+            $result = mysqli_query($connection, $explain_check);
+        } else {
+            $result = mysql_query($explain_check, $connection);
+        }
+
+        if(!$result){
+            throw new Exception("Error on explain check: " . $connection->error);
+        }
+
+    } catch (Exception $e) {
+        $has_privileges = 0;
+    } finally {
+        drop_database($connection, 'pandora_tmp_privilege_check');
+        return $has_privileges;
+    }
+}
+
+
+function check_drop_privileges($connection)
+{
+    global $config;
+    $has_privileges = 1;
+
+    try {
+        if ($config['mysqli']) {
+            $create_db = mysqli_query($connection, "CREATE DATABASE IF NOT EXISTS`pandora_tmp_privilege_check`");
+        } else {
+            $create_db = mysql_query("CREATE DATABASE IF NOT EXISTS `pandora_tmp_privilege_check`", $connection);
+        }
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
+    }
+
+    if (!$create_db) {
+        if (stripos($error_message, "access denied for user") !== false) {
+            preg_match("/'.+?'\@'.+?'/", $error_message, $error_user);
+            $error_user = $error_user[0];
+            ui_print_error_message(__("Unable to <b>create databases</b> with the provided user please check its privileges"));
+            return 0;
+        }
+        
+        ui_print_error_message(__('There was an error creating the DB during drop check'));
+        return 0;
+    }
+ 
+    try {
+        if ($config['mysqli'] === true) {
+            mysqli_select_db($connection, "pandora_tmp_privilege_check");
+        } else {
+            mysql_select_db("reference_check", $connection);
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__('There was an error selecting the DB during drop check'));
+        return 0;
+    }
+
+    try {
+        drop_database($connection, 'pandora_tmp_privilege_check');
+    } catch (Exception $e) {
+        $has_privileges = 0;
+        ui_print_error_message(
+            __("Unable to <b>drop databases</b> with the provided user please check its privileges.") . 
+            "<br>" .
+            __("Test databases may have been left over due to lack of drop privileges.")
+        );
+    } finally {
+        return $has_privileges;
+    }
+}
+
+
+function check_ref_privileges($connection)
+{
+    global $config;
+    $has_privileges = 1;
+
+    drop_database($connection, 'pandora_tmp_privilege_check');
+
+    $create_tb1= "CREATE TABLE tb1 (
+        id INT AUTO_INCREMENT PRIMARY KEY
+    )";
+
+    $create_tb2 = "CREATE TABLE tb2 (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        id_tb1 INT,
+        FOREIGN KEY (id_tb1) REFERENCES tb2(id)
+    )";
+    
+    try {
+        if ($config['mysqli']) {
+            mysqli_query($connection, "CREATE DATABASE `pandora_tmp_privilege_check`");
+        } else {
+            mysql_query("CREATE DATABASE `pandora_tmp_privilege_check`", $connection);
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__('There was an error creating the DB during reference check'));
+        return 0;
+    }
+
+    try {
+        if ($config['mysqli'] === true) {
+            mysqli_select_db($connection, "pandora_tmp_privilege_check");
+        } else {
+            mysql_select_db("reference_check", $connection);
+        }
+    } catch (Exception $e) {
+        ui_print_error_message(__('There was an error selecting the DB during reference check'));
+        return 0;
+    }
+
+    try {
+        if ($config['mysqli'] === true) {
+            $result = mysqli_query($connection, $create_tb1);
+        } else {
+            $result = mysql_query($create_tb1, $connection);
+        }
+
+        if(!$result){
+            throw new Exception("Error on reference check: " . $connection->error);
+        }
+
+        if ($config['mysqli'] === true) {
+            $result = mysqli_query($connection, $create_tb2);
+        } else {
+            $result = mysql_query($create_tb2, $connection);
+        }
+
+        if(!$result){
+            throw new Exception("Error on reference check: " . $connection->error);
+        }
+
+    } catch (Exception $e) {
+        $has_privileges = 0;
+    } finally {
+        drop_database($connection, 'pandora_tmp_privilege_check');
+        return $has_privileges;
+    }
+}
+
+
+function drop_database($connection, $database)
+{
+    global $config;
+
+    if ($config['mysqli'] === true) {
+        mysqli_query($connection, "DROP DATABASE IF EXISTS `$database`");
+    } else {
+        mysql_query("DROP DATABASE IF EXISTS `$database`", $connection);
     }
 }
 
