@@ -14229,3 +14229,24 @@ button.ui-button-text-only.ui-widget.sub:hover,
 div.tox .tox-editor-header {
   z-index: 1;
 }
+
+.select2-multiselect-widget-width {
+  max-width: 230px !important;
+}
+
+.select2-container--default.select2-multiselect-text-wrap
+  .select2-selection--multiple
+  .select2-selection__rendered {
+  box-sizing: border-box !important;
+  padding-right: 0px !important;
+}
+
+.select2-multiselect-text-wrap .select2-selection__choice {
+  text-wrap: wrap;
+  line-break: anywhere;
+  line-height: normal;
+}
+
+.select2-multiselect-text-wrap .select2-selection__choice__remove {
+  flex-basis: 0% !important;
+}
