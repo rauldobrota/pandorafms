@@ -65,11 +65,7 @@ function create_module_latency_goliat($id_agent, $module_name, $id_group, $url_s
         'id_export'             => '0',
         'plugin_user'           => '',
         'plugin_pass'           => '0',
-        'plugin_parameter'      => 'task_begin
-get '.$url_search.'
-resource 1
-'.$str_search.'
-task_end',
+        'plugin_parameter'      => io_safe_input("task_begin\nget $url_search\nresource 1\ncheck_string $url_search\ntask_end\n"),
         'id_plugin'             => '0',
         'post_process'          => '0',
         'prediction_module'     => '0',
@@ -157,13 +153,9 @@ function create_module_status_goliat($id_agent, $module_name, $id_group, $url_se
         'tcp_rcv'               => '',
         'tcp_send'              => '',
         'id_export'             => '0',
-        'plugin_user'           => '',
-        'plugin_pass'           => '0',
-        'plugin_parameter'      => 'task_begin
-get '.$url_search.'
-resource 1
-'.$str_search.'
-task_end',
+        'plugin_user'           => io_safe_input('Pandora FMS / Webcheck'),
+        'plugin_pass'           => '1',
+        'plugin_parameter'      => io_safe_input("task_begin\nget $url_search\nresource 1\ncheck_string $url_search\ntask_end\n"),
         'id_plugin'             => '0',
         'post_process'          => '0',
         'prediction_module'     => '0',
