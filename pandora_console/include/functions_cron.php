@@ -989,3 +989,123 @@ function cron_list_table()
         ui_print_info_message(['no_close' => true, 'message' => __('There are no jobs') ]);
     }
 }
+
+
+/**
+ * GetNextExecutionCron give string and return datetime with the date of the next execution
+ *
+ * @param string $cron String with cron.
+ *
+ * @return DateTime Datetime with the next execution.
+ */
+function GetNextExecutionCron($cron)
+{
+    // Parseamos el formato cron.
+    $cronsplit = preg_split('/\s+/', $cron);
+    $current_date = new DateTime();
+    // Extract the current hour and minute.
+    $current_hour = (int) $current_date->format('H');
+    $current_minute = (int) $current_date->format('i');
+
+    // If the current time has already passed, we increment the date to the next day.
+    if ($current_hour > $cronsplit[1] || ($current_hour == $cronsplit[1] && $current_minute >= $cronsplit[0])) {
+        $current_date->add(new DateInterval('P1D'));
+    }
+
+    // Calculamos la próxima ejecución basada en el formato cron.
+    $next_minute = $current_date->format('i');
+    $next_hour = $current_date->format('H');
+    $next_day = $current_date->format('d');
+    $next_month = $current_date->format('m');
+    $next_day_week = $current_date->format('w');
+
+    // Minutes.
+    $minutes = cronToArray($cronsplit[0], 0, 59);
+    $next_minute = check_next_value($minutes, $next_minute);
+
+    // Hours.
+    $hours = cronToArray($cronsplit[1], 0, 23);
+    $next_hour = check_next_value($hours, $next_hour);
+
+    // Day of month.
+    $day_month = cronToArray($cronsplit[2], 1, 31);
+    $next_day = check_next_value($day_month, $next_day);
+
+    // Month.
+    $month = cronToArray($cronsplit[3], 1, 12);
+    $next_month = check_next_value($month, $next_month);
+
+    // Day of week.
+    $week_day = cronToArray($cronsplit[4], 0, 6);
+    $next_day_week = check_next_value($week_day, $next_day_week);
+
+    // Next execution.
+    $next_execution = new DateTime();
+    $next_execution->setTime($next_hour, $next_minute);
+    $next_execution->setDate($current_date->format('Y'), $next_month, $next_day);
+
+    // If the next execution falls on a day of the week other than the current one, we adjust the date.
+    while ($next_execution->format('w') != $next_day_week) {
+        $next_execution->add(new DateInterval('P1D'));
+    }
+
+    return $next_execution;
+}
+
+
+/**
+ * Split cron into array for checks.
+ *
+ * @param  integer $cron
+ * @param  mixed   $min
+ * @param  mixed   $max
+ * @return void
+ */
+function cronToArray($cron, $min, $max)
+{
+    $values = [];
+    if ($cron == '*') {
+        for ($i = $min; $i <= $max; $i++) {
+            $values[] = $i;
+        }
+    } else {
+        $$elements = explode(',', $cron);
+        foreach ($$elements as $$element) {
+            if (strpos($$element, '/') !== false) {
+                $division = explode('/', $$element);
+                $start = $division[0];
+                $count = $division[1];
+                for ($i = $start; $i <= $max; $i += $count) {
+                    if ($i >= $min && $i <= $max) {
+                        $values[] = $i;
+                    }
+                }
+            } else {
+                $values[] = $$element;
+            }
+        }
+    }
+
+    sort($values);
+    return $values;
+}
+
+
+/**
+ * Check if the next value is valid.
+ *
+ * @param array    $valores Values.
+ * @param interger $actual  Value.
+ *
+ * @return integer Return the value.
+ */
+function check_next_value($valores, $actual)
+{
+    foreach ($valores as $valor) {
+        if ($valor >= $actual) {
+            return $valor;
+        }
+    }
+
+    return $valores[0];
+}
