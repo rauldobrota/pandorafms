@@ -436,7 +436,7 @@ function ui_print_message($message, $class='', $attributes='', $return=false, $t
         $_SESSION['info_box_count']++;
     }
 
-    $position = (20 + ((int) $_SESSION['info_box_count'] * 100));
+    $position = (20 + (int) $_SESSION['info_box_count'] + 120);
 
     $output = html_print_div(
         [
@@ -3546,7 +3546,7 @@ function ui_print_status_sets(
     }
 
     if (empty($title) === false) {
-        $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
+        // $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
         $options['data-title'] = (empty($extra_info) === true) ? $title : $title.'<br>'.$extra_info;
         $options['data-use_title_for_force_title'] = 1;
         if (isset($options['class']) === true) {

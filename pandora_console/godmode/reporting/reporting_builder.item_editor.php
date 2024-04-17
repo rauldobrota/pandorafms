@@ -52,6 +52,11 @@ if (! check_acl($config['id_user'], 0, 'RW')
     exit;
 }
 
+// Get pandora black theme.
+if ($config['style'] === 'pandora_black') {
+    html_print_input_hidden('selected_style_theme', 'pandora_black');
+}
+
 $meta = false;
 if (($config['metaconsole'] == 1) && (defined('METACONSOLE'))) {
     $meta = true;
@@ -6190,7 +6195,12 @@ $(document).ready (function () {
         });
     });
 
-    defineTinyMCE('#textarea_render_definition');
+    var consoleStyle = $("#hidden-selected_style_theme").val();
+    if (consoleStyle == "pandora_black") {
+        defineTinyMCEDark('#textarea_render_definition');
+    } else {
+        defineTinyMCE('#textarea_render_definition');
+    }
 
     $("#checkbox-select_by_group").change(function () {
         var select_by_group  = $('#checkbox-select_by_group').prop('checked');

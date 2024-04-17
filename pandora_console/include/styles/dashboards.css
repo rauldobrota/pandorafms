@@ -1002,6 +1002,10 @@ input.resize_button {
   text-align: initial;
 }
 
+ul.select2-selection__rendered > li.select2-selection__choice {
+  box-sizing: border-box !important;
+}
+
 .select2-container.select2-container--default.select2-container--open,
 .select2-container.select2-container--default.select2-container--open
   .select2-dropdown {

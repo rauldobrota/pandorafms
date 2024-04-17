@@ -10946,6 +10946,7 @@ button.submitButton.link {
   box-shadow: none;
   justify-content: flex-start;
   height: 24px;
+  padding: 1px;
 }
 
 button.buttonButton.link > div,
@@ -12818,7 +12819,7 @@ tr[id^="network_component-plugin-snmp-fields-dynamicMacroRow-"] input {
 }
 
 .group_view_table > tbody > tr > td {
-  width: 350px !important;
+  width: 50% !important;
 }
 
 form.cfv_status_agent {
@@ -14223,6 +14224,10 @@ button.ui-button-text-only.ui-widget.sub:hover,
 
 .invert_filter.black-and-white {
   filter: invert(1) saturate(0) !important;
+}
+
+div.tox .tox-editor-header {
+  z-index: 1;
 }
 
 .select2-multiselect-widget-width {

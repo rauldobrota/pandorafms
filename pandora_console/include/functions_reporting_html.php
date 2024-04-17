@@ -3690,7 +3690,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
     if ((int) $ttl === 2) {
         $out .= '<img src="data:image/png;base64,';
     } else {
-        $out .= '<div id="status_pie" style="margin: auto; width: '.$graph_width.'px;">';
+        $out .= '<div id="status_pie" style="margin: auto;">';
     }
 
     $out .= pie_graph($data, $options);
@@ -3732,7 +3732,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
     if ((int) $ttl === 2) {
         $out .= '<img src="data:image/png;base64,';
     } else {
-        $out .= '<div id="status_pie" style="margin: auto; width: '.$graph_width.'px;">';
+        $out .= '<div id="status_pie" style="margin: auto;">';
     }
 
     $out .= pie_graph($data, $options);
