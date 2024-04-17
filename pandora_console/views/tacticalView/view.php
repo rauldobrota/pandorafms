@@ -369,7 +369,7 @@
                         <a href="index.php?sec=templates&sec2=godmode/modules/manage_module_templates" class="col-4 flex flex-column center pdd_20px br-r">
                             <?php echo $Configurations->getTotalModuleTemplate(); ?>
                         </a>
-                        <a href="index.php?sec=view&sec2=operation/agentes/estado_agente&status=5" class="col-4 flex flex-column center pdd_20px br-r">
+                        <a href="index.php?sec=view&sec2=operation/agentes/status_monitor&refr=0&ag_group=0&ag_freestring=&module_option=1&ag_modulename=&moduletype=&datatype=0&status=5&sort_field=&sort=none" class="col-4 flex flex-column center pdd_20px br-r">
                             <?php echo $Configurations->getNotInitModules(); ?>
                         </a>
                         <a href="index.php?sec=view&sec2=operation/agentes/estado_agente&status=3" class="col-4 flex flex-column center pdd_20px br-r">
