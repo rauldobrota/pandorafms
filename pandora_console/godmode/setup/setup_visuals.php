@@ -597,7 +597,7 @@ if (enterprise_installed() === true) {
                     $config['custom_splash_login'],
                     '',
                     __('Default'),
-                    'default',
+                    'default.png',
                     true,
                     false,
                     true,
