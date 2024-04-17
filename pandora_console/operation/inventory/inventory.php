@@ -200,8 +200,8 @@ if (is_ajax() === true) {
             'status'     => $status_agent,
         ];
 
-        $data = get_data_basic_info_sql($params);
-        $count = get_data_basic_info_sql($params, true);
+        $data = get_inventory_basic_info_sql($params); // Aca se retorna 
+        $count = get_inventory_basic_info_sql($params, true);
 
         try {
             ob_start();
