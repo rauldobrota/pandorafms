@@ -1653,42 +1653,46 @@ function groups_monitor_fired_alerts($group_array)
 
 function groups_monitor_alerts_total_counters($group_array, $secondary_group=true)
 {
-    // If there are not groups to query, we jump to nextone
+    // If there are not groups to query, we jump to nextone.
     $default_total = [
         'total' => 0,
         'fired' => 0,
     ];
-    if (empty($group_array)) {
+
+    if (empty($group_array) === true) {
         return $default_total;
-    } else if (!is_array($group_array)) {
+    } else if (is_array($group_array) === false) {
         $group_array = [$group_array];
     }
 
     $group_clause = implode(',', $group_array);
     if ($secondary_group === true) {
-        $group_clause = "(tasg.id_group IN ($group_clause) OR ta.id_grupo IN ($group_clause))";
+        $group_clause = '(tagent_secondary_group.id_group IN ('.$group_clause.') OR tagente.id_grupo IN ('.$group_clause.'))';
     } else {
-        $group_clause = "(ta.id_grupo IN ($group_clause))";
+        $group_clause = '(tagente.id_grupo IN ('.$group_clause.'))';
     }
 
-    $sql = 'SELECT
-                COUNT(tatm.id) AS total,
-                SUM(IF(tatm.times_fired > 0, 1, 0)) AS fired
-            FROM talert_template_modules tatm
-            INNER JOIN tagente_modulo tam
-                ON tatm.id_agent_module = tam.id_agente_modulo
-            INNER JOIN tagente ta
-                ON ta.id_agente = tam.id_agente
-            WHERE ta.id_agente IN (
-                SELECT ta.id_agente
-                FROM tagente ta';
+    $sql_join_secondary_group = '';
     if ($secondary_group === true) {
-        $sql .= ' LEFT JOIN tagent_secondary_group tasg ON ta.id_agente = tasg.id_agent';
+        $sql_join_secondary_group = 'LEFT JOIN tagent_secondary_group ON tagente.id_agente = tagent_secondary_group.id_agent';
     }
 
-    $sql .= " WHERE ta.disabled = 0
-                    AND $group_clause
-            ) AND tam.disabled = 0";
+    $sql = sprintf(
+        'SELECT
+                COUNT(talert_template_modules.id) AS total,
+                SUM(IF(talert_template_modules.times_fired > 0, 1, 0)) AS fired
+            FROM talert_template_modules
+            INNER JOIN tagente_modulo
+                ON talert_template_modules.id_agent_module = tagente_modulo.id_agente_modulo
+            INNER JOIN tagente
+                ON tagente.id_agente = tagente_modulo.id_agente
+                %s
+            WHERE tagente.disabled = 0
+                AND tagente_modulo.disabled = 0
+                AND %s',
+        $sql_join_secondary_group,
+        $group_clause
+    );
 
     $alerts = db_get_row_sql($sql);
 
@@ -2697,7 +2701,7 @@ function tactical_groups_get_stats_alerts($id_groups, $data='')
     global $config;
 
     if ($data === '') {
-        $alerts = groups_monitor_alerts_total_counters($id_groups, false);
+        $alerts = groups_monitor_alerts_total_counters($id_groups, true);
         $data = [
             'monitor_alerts'       => $alerts['total'],
             'monitor_alerts_fired' => $alerts['fired'],
