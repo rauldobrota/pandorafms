@@ -451,11 +451,11 @@ span.warning {
   align-items: center;
   justify-content: space-between;
 }
-.ui-dialog-content.ui-widget-content p {
+/*.ui-dialog-content.ui-widget-content p {
   font-size: 10pt;
   word-break: keep-all;
   text-align: justify;
-}
+}*/
 
 .license_text {
   text-align: left;

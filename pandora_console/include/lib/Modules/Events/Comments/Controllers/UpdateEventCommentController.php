@@ -21,16 +21,18 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  *   @OA\Parameter(ref="#/components/parameters/parameterIdEvent"),
  *   @OA\Parameter(ref="#/components/parameters/parameterIdEventComment"),
  *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyEventComment"),
- *   @OA\Response(response=200, ref="#/components/responses/ResponseEventComment"),
- *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
- *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
- *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
- *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
- *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+ *   @OA\Response(response=200,                                                 ref="#/components/responses/ResponseEventComment"),
+ *   @OA\Response(response=400,                                                 ref="#/components/responses/BadRequest"),
+ *   @OA\Response(response=401,                                                 ref="#/components/responses/Unauthorized"),
+ *   @OA\Response(response=403,                                                 ref="#/components/responses/Forbidden"),
+ *   @OA\Response(response=404,                                                 ref="#/components/responses/NotFound"),
+ *   @OA\Response(response=500,                                                 ref="#/components/responses/InternalServerError")
  * )
  */
 final class UpdateEventCommentController extends Controller
 {
+
+
     public function __construct(
         private UpdateEventCommentAction $updateEventCommentAction,
         private ValidateAclSystem $acl,
@@ -38,6 +40,7 @@ final class UpdateEventCommentController extends Controller
         private GetEventCommentAction $getEventCommentAction
     ) {
     }
+
 
     public function __invoke(Request $request, Response $response): Response
     {
@@ -62,4 +65,6 @@ final class UpdateEventCommentController extends Controller
 
         return $this->getResponse($response, $result);
     }
+
+
 }

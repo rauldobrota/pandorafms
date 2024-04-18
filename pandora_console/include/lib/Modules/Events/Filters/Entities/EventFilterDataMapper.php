@@ -52,6 +52,7 @@ final class EventFilterDataMapper extends DataMapperAbstract
     public const PRIVATE_FILTER_USER = 'private_filter_user';
     public const REGEX = 'regex';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -62,69 +63,78 @@ final class EventFilterDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return EventFilter::class;
     }
 
+
     public function fromDatabase(array $data): EventFilter
     {
         $severity = null;
-        if(empty($data[self::SEVERITY]) === false) {
+        if (empty($data[self::SEVERITY]) === false) {
             $severities = explode(',', $data[self::SEVERITY]);
             foreach ($severities as $value) {
                 $severity[] = EventSeverityEnum::get($value, 'value')?->name;
             }
         }
 
-        return $this->builder->build(new EventFilter(), [
-            'idEventFilter'         => $data[self::ID_FILTER],
-            'idGroupFilter'         => $data[self::ID_GROUP_FILTER],
-            'name'                  => $this->repository->safeOutput($data[self::NAME]),
-            'idGroup'               => $data[self::ID_GROUP],
-            'eventType'             => EventTypeEnum::get($data[self::EVENT_TYPE]),
-            'severity'              => $severity,
-            'status'                => EventFilterStatusEnum::get($data[self::STATUS]),
-            'search'                => $this->repository->safeOutput($data[self::SEARCH]),
-            'isNotSearch'           => $data[self::NOT_SEARCH],
-            'textAgent'             => $this->repository->safeOutput($data[self::TEXT_AGENT]),
-            'idAgent'               => $data[self::ID_AGENT],
-            'idAgentModule'         => $data[self::ID_AGENT_MODULE],
-            'pagination'            => $data[self::PAGINATION],
-            'slice'                 => $data[self::SLICE],
-            'idUserAck'             => $data[self::ID_USER_ACK],
-            'groupBy'               => EventFilterGroupByEnum::get($data[self::ORDER_BY]),
-            'tagWith'               => (empty($data[self::TAG_WITH]) === false) ? explode(',', $this->repository->safeOutput($data[self::TAG_WITH])) : null,
-            'tagWithout'            => (empty($data[self::TAG_WITHOUT]) === false) ? explode(',', $this->repository->safeOutput($data[self::TAG_WITHOUT])) : null,
-            'filterOnlyAlert'       => EventFilterAlertEnum::get($data[self::FILTER_ONLY_ALERT]),
-            'searchSecondaryGroups' => $data[self::SEARCH_SECONDARY_GROUPS],
-            'searchRecursiveGroups' => $data[self::SEARCH_RECURSIVE_GROUPS],
-            'dateFrom'              => $data[self::DATE_FROM],
-            'dateTo'                => $data[self::DATE_TO],
-            'source'                => $this->repository->safeOutput($this->repository->safeOutput($data[self::SOURCE])),
-            'idExtra'               => $this->repository->safeOutput($data[self::ID_EXTRA]),
-            'userComment'           => $this->repository->safeOutput($data[self::USER_COMMENT]),
-            'idSourceEvent'         => $data[self::ID_SOURCE_EVENT],
-            'serverId'              => (empty($data[self::SERVER_ID]) === false) ? explode(',', $data[self::SERVER_ID]) : null,
-            'timeFrom'              => $data[self::TIME_FROM],
-            'timeTo'                => $data[self::TIME_TO],
-            'customData'            => $this->repository->safeOutput($data[self::CUSTOM_DATA]),
-            'customDataFilterType'  => EventFilterCustomDataEnum::get($data[self::CUSTOM_DATA_FILTER_TYPE]),
-            'ownerUser'             => $data[self::OWNER_USER],
-            'privateFilterUser'     => $data[self::PRIVATE_FILTER_USER],
-            'regex'                 => $this->repository->safeOutput($data[self::REGEX]),
-        ]);
+        return $this->builder->build(
+            new EventFilter(),
+            [
+                'idEventFilter'         => $data[self::ID_FILTER],
+                'idGroupFilter'         => $data[self::ID_GROUP_FILTER],
+                'name'                  => $this->repository->safeOutput($data[self::NAME]),
+                'idGroup'               => $data[self::ID_GROUP],
+                'eventType'             => EventTypeEnum::get($data[self::EVENT_TYPE]),
+                'severity'              => $severity,
+                'status'                => EventFilterStatusEnum::get($data[self::STATUS]),
+                'search'                => $this->repository->safeOutput($data[self::SEARCH]),
+                'isNotSearch'           => $data[self::NOT_SEARCH],
+                'textAgent'             => $this->repository->safeOutput($data[self::TEXT_AGENT]),
+                'idAgent'               => $data[self::ID_AGENT],
+                'idAgentModule'         => $data[self::ID_AGENT_MODULE],
+                'pagination'            => $data[self::PAGINATION],
+                'slice'                 => $data[self::SLICE],
+                'idUserAck'             => $data[self::ID_USER_ACK],
+                'groupBy'               => EventFilterGroupByEnum::get($data[self::ORDER_BY]),
+                'tagWith'               => (empty($data[self::TAG_WITH]) === false) ? explode(',', $this->repository->safeOutput($data[self::TAG_WITH])) : null,
+                'tagWithout'            => (empty($data[self::TAG_WITHOUT]) === false) ? explode(',', $this->repository->safeOutput($data[self::TAG_WITHOUT])) : null,
+                'filterOnlyAlert'       => EventFilterAlertEnum::get($data[self::FILTER_ONLY_ALERT]),
+                'searchSecondaryGroups' => $data[self::SEARCH_SECONDARY_GROUPS],
+                'searchRecursiveGroups' => $data[self::SEARCH_RECURSIVE_GROUPS],
+                'dateFrom'              => $data[self::DATE_FROM],
+                'dateTo'                => $data[self::DATE_TO],
+                'source'                => $this->repository->safeOutput($this->repository->safeOutput($data[self::SOURCE])),
+                'idExtra'               => $this->repository->safeOutput($data[self::ID_EXTRA]),
+                'userComment'           => $this->repository->safeOutput($data[self::USER_COMMENT]),
+                'idSourceEvent'         => $data[self::ID_SOURCE_EVENT],
+                'serverId'              => (empty($data[self::SERVER_ID]) === false) ? explode(',', $data[self::SERVER_ID]) : null,
+                'timeFrom'              => $data[self::TIME_FROM],
+                'timeTo'                => $data[self::TIME_TO],
+                'customData'            => $this->repository->safeOutput($data[self::CUSTOM_DATA]),
+                'customDataFilterType'  => EventFilterCustomDataEnum::get($data[self::CUSTOM_DATA_FILTER_TYPE]),
+                'ownerUser'             => $data[self::OWNER_USER],
+                'privateFilterUser'     => $data[self::PRIVATE_FILTER_USER],
+                'regex'                 => $this->repository->safeOutput($data[self::REGEX]),
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var EventFilter $data */
+        /*
+            @var EventFilter $data
+        */
         $severity = null;
-        if(empty($data->getSeverity()) === false) {
+        if (empty($data->getSeverity()) === false) {
             $severities = [];
             foreach ($data->getSeverity() as $value) {
                 $severities[] = EventSeverityEnum::get($value)?->value;
             }
+
             $severity = implode(',', $severities);
         }
 
@@ -166,4 +176,6 @@ final class EventFilterDataMapper extends DataMapperAbstract
             self::REGEX                   => $this->repository->safeInput($data->getRegex()),
         ];
     }
+
+
 }

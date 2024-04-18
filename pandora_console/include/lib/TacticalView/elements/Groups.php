@@ -454,12 +454,16 @@ class Groups extends Element
         // ACL Check.
         $agent_a = check_acl($config['id_user'], 0, 'AR');
         $agent_w = check_acl($config['id_user'], 0, 'AW');
+        $acl = ($agent_a == true) ? 'AR' : (($agent_w == true) ? 'AW' : 'AR');
 
         $groups_list = groupview_get_groups_list(
             $config['id_user'],
-            ($agent_a == true) ? 'AR' : (($agent_w == true) ? 'AW' : 'AR'),
+            $acl,
             true
         );
+
+        // Recursive groups.
+        $groups_list = get_recursive_groups_heatmap($groups_list, $acl);
 
         $total_groups = $groups_list['counter'];
         $groups = $groups_list['groups'];

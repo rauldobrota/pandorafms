@@ -36,6 +36,7 @@ final class ProfileDataMapper extends DataMapperAbstract
     public const IS_NETWORK_CONFIG_EDIT = 'network_config_edit';
     public const IS_NETWORK_CONFIG_MANAGEMENT = 'network_config_management';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -46,45 +47,53 @@ final class ProfileDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return Profile::class;
     }
 
+
     public function fromDatabase(array $data): Profile
     {
-        return $this->builder->build(new Profile(), [
-            'idProfile'                 => $data[self::ID_PROFILE],
-            'name'                      => $this->repository->safeOutput($data[self::NAME]),
-            'isAgentView'               => $data[self::IS_AGENT_VIEW],
-            'isAgentEdit'               => $data[self::IS_AGENT_EDIT],
-            'isAlertEdit'               => $data[self::IS_ALERT_EDIT],
-            'isUserManagement'          => $data[self::IS_USER_MANAGEMENT],
-            'isDbManagement'            => $data[self::IS_DB_MANAGEMENT],
-            'isAlertManagement'         => $data[self::IS_ALERT_MANAGEMENT],
-            'isPandoraManagement'       => $data[self::IS_PANDORA_MANAGEMENT],
-            'isReportView'              => $data[self::IS_REPORT_VIEW],
-            'isReportEdit'              => $data[self::IS_REPORT_EDIT],
-            'isReportManagement'        => $data[self::IS_REPORT_MANAGEMENT],
-            'isEventView'               => $data[self::IS_EVENT_VIEW],
-            'isEventEdit'               => $data[self::IS_EVENT_EDIT],
-            'isEventManagement'         => $data[self::IS_EVENT_MANAGEMENT],
-            'isAgentDisable'            => $data[self::IS_AGENT_DISABLE],
-            'isMapView'                 => $data[self::IS_MAP_VIEW],
-            'isMapEdit'                 => $data[self::IS_MAP_EDIT],
-            'isMapManagement'           => $data[self::IS_MAP_MANAGEMENT],
-            'isVconsoleView'            => $data[self::IS_VCONSOLE_VIEW],
-            'isVconsoleEdit'            => $data[self::IS_VCONSOLE_EDIT],
-            'isVconsoleManagement'      => $data[self::IS_VCONSOLE_MANAGEMENT],
-            'isNetworkConfigView'       => $data[self::IS_NETWORK_CONFIG_VIEW],
-            'isNetworkConfigEdit'       => $data[self::IS_NETWORK_CONFIG_EDIT],
-            'isNetworkConfigManagement' => $data[self::IS_NETWORK_CONFIG_MANAGEMENT],
-        ]);
+        return $this->builder->build(
+            new Profile(),
+            [
+                'idProfile'                 => $data[self::ID_PROFILE],
+                'name'                      => $this->repository->safeOutput($data[self::NAME]),
+                'isAgentView'               => $data[self::IS_AGENT_VIEW],
+                'isAgentEdit'               => $data[self::IS_AGENT_EDIT],
+                'isAlertEdit'               => $data[self::IS_ALERT_EDIT],
+                'isUserManagement'          => $data[self::IS_USER_MANAGEMENT],
+                'isDbManagement'            => $data[self::IS_DB_MANAGEMENT],
+                'isAlertManagement'         => $data[self::IS_ALERT_MANAGEMENT],
+                'isPandoraManagement'       => $data[self::IS_PANDORA_MANAGEMENT],
+                'isReportView'              => $data[self::IS_REPORT_VIEW],
+                'isReportEdit'              => $data[self::IS_REPORT_EDIT],
+                'isReportManagement'        => $data[self::IS_REPORT_MANAGEMENT],
+                'isEventView'               => $data[self::IS_EVENT_VIEW],
+                'isEventEdit'               => $data[self::IS_EVENT_EDIT],
+                'isEventManagement'         => $data[self::IS_EVENT_MANAGEMENT],
+                'isAgentDisable'            => $data[self::IS_AGENT_DISABLE],
+                'isMapView'                 => $data[self::IS_MAP_VIEW],
+                'isMapEdit'                 => $data[self::IS_MAP_EDIT],
+                'isMapManagement'           => $data[self::IS_MAP_MANAGEMENT],
+                'isVconsoleView'            => $data[self::IS_VCONSOLE_VIEW],
+                'isVconsoleEdit'            => $data[self::IS_VCONSOLE_EDIT],
+                'isVconsoleManagement'      => $data[self::IS_VCONSOLE_MANAGEMENT],
+                'isNetworkConfigView'       => $data[self::IS_NETWORK_CONFIG_VIEW],
+                'isNetworkConfigEdit'       => $data[self::IS_NETWORK_CONFIG_EDIT],
+                'isNetworkConfigManagement' => $data[self::IS_NETWORK_CONFIG_MANAGEMENT],
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var Profile $data */
+        /*
+            @var Profile $data
+        */
         return [
             self::ID_PROFILE                   => $data->getIdProfile(),
             self::NAME                         => $this->repository->safeInput($data->getName()),
@@ -113,4 +122,6 @@ final class ProfileDataMapper extends DataMapperAbstract
             self::IS_NETWORK_CONFIG_MANAGEMENT => $data->getIsNetworkConfigManagement(),
         ];
     }
+
+
 }

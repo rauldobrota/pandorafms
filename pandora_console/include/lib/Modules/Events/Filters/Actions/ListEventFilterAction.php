@@ -10,11 +10,14 @@ use PandoraFMS\Modules\Shared\Entities\PaginationData;
 
 final class ListEventFilterAction
 {
+
+
     public function __construct(
         private ListEventFilterService $listEventFilterService,
         private CountEventFilterService $countEventFilterService
     ) {
     }
+
 
     public function __invoke(EventFilterFilter $eventFilterFilter): array
     {
@@ -25,4 +28,6 @@ final class ListEventFilterAction
             $this->listEventFilterService->__invoke($eventFilterFilter)
         ))->toArray();
     }
+
+
 }

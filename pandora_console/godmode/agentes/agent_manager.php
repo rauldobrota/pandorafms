@@ -558,7 +558,7 @@ if ($broker === false) {
     $tableAgent->data['caption_interval'][0] = __('Interval').ui_print_help_tip(__('Time that elapses when updating data in the agent. Remote modules have their own interval, but this time is used to find out if an agent stopped responding (unknown state). When twice the time interval defined in an agent goes by, it is considered to be in unknown state (or also if all its remote modules are in unknown state). An agent may be in unknown state if all of its local (software agent-based) modules have a last contact time longer than twice the agent interval, even if it has updated remote modules.'), true);
     // $tableAgent->rowstyle['interval'] = 'width: 260px';
     $tableAgent->rowclass['interval'] = 'w540px';
-    $tableAgent->data['interval'][0] = html_print_extended_select_for_time(
+    $tableAgent->data['interval'][0] = html_print_select_agentmodule_interval(
         'intervalo',
         $intervalo,
         '',
@@ -936,7 +936,7 @@ $switchButtons[] = html_print_radio_button_extended(
 );
 
 $tableAdvancedAgent->data['module_definition'][] = html_print_label_input_block(
-    __('Module definition').ui_print_help_tip(__('Three working modes can be selected for module definition. Learning mode: Default mode, if an XML arrives with new modules, they will be created automatically; it is a learning behavior. Normal mode: If an XML arrives with new modules, they will only be created if they are previously declared in the Console. Autodisable mode: It is the same as learning mode, but if all modules go into unknown, the agent will be disabled until information arrives again.'), true),
+    __('Module definition').ui_print_help_tip(__('Three working modes can be selected for module definition. Learning mode: Default mode, if an XML arrives with new modules, they will be created automatically; it is a learning behavior. Normal mode: If an XML arrives with new modules, they will only be created if they are previously declared in the Console. Autodisable mode: It is the same as learning mode, but if all modules go into unknown, the agent will be disabled until information arrives again.'), true).clippy_context_help('modules_not_learning_mode'),
     html_print_div(
         [
             'class'   => 'switch_radio_button',
@@ -1297,7 +1297,6 @@ if ($modo == 0) {
     echo "<span id='modules_not_learning_mode_context_help' class='invisible'>";
 }
 
-echo clippy_context_help('modules_not_learning_mode');
 echo '</span>';
 
 if ($new_agent === false) {
@@ -1434,15 +1433,15 @@ ui_require_jquery_file('bgiframe');
     
     function show_modules_not_learning_mode_context_help() {
         if ($("input[name='modo'][value=0]").is(':checked')) {
-            $("#modules_not_learning_mode_context_help").show().css('padding-right','8px');
-        }
-        else {
-            $("#modules_not_learning_mode_context_help").hide();
+            $(".div-modules_not_learning_mode").show();
+        } else {
+            $(".div-modules_not_learning_mode").hide();
         }
     }
 
 
     $(document).ready (function() {
+        show_modules_not_learning_mode_context_help();
 
         var $id_agent = '<?php echo $id_agente; ?>';
         var previous_primary_group_select;

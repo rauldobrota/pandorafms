@@ -240,27 +240,27 @@ class SnmpConsole extends HTML
                 'status',
                 [
                     'text'  => 'snmp_agent',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'enterprise_string',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'count',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'trap_subtype',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'user_id',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'timestamp',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 'alert',
                 [
@@ -791,7 +791,7 @@ class SnmpConsole extends HTML
                         // SNMP Agent.
                         $agent = agents_get_agent_with_ip($tmp->source);
                         if ($agent === false) {
-                            $tmp->snmp_agent .= '<a href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
+                            $tmp->snmp_agent .= '<a class="'.$severity_class.' href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
                         } else {
                             $tmp->snmp_agent .= '<div class="'.$severity_class.' snmp-div"><a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].'" title="'.__('View agent details').'">';
                             $tmp->snmp_agent .= '<strong>'.$agent['alias'].ui_print_help_tip($tmp->source, true);

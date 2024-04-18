@@ -10,6 +10,8 @@ use PandoraFMS\Modules\Shared\Services\Timestamp;
 
 final class EventCommentValidation
 {
+
+
     public function __construct(
         private Config $config,
         private Timestamp $timestamp,
@@ -17,7 +19,8 @@ final class EventCommentValidation
     ) {
     }
 
-    public function __invoke(EventComment $eventComment, ?EventComment $oldEventComment = null): void
+
+    public function __invoke(EventComment $eventComment, ?EventComment $oldEventComment=null): void
     {
         if (!$eventComment->getComment()) {
             throw new BadRequestException(__('Comment is missing'));
@@ -33,8 +36,11 @@ final class EventCommentValidation
         }
     }
 
+
     protected function getCurrentUtimestamp(): int
     {
         return $this->timestamp->getMysqlSystemUtimestamp();
     }
+
+
 }

@@ -442,6 +442,10 @@ li#li-image-item label img {
   color: #343434;
 }
 
+.discovery.modal .tox-tinymce * {
+  color: var(--text-color);
+}
+
 .discovery.modal select {
   width: 100px;
 }

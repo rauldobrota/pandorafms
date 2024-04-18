@@ -32,7 +32,7 @@ function clippy_data_configuration_module()
     $return_tours['tours']['data_configuration_module']['steps'] = [];
     $return_tours['tours']['data_configuration_module']['steps'][] = [
         'init_step_context' => true,
-        'intro'             => __('Please note that information provided here affects how the agent collect information and generate the data XML. Any data/configuration reported by the agent, different from data or description is discarded, and the configuration shown in the console prevails over any configuration coming from the agent, this applies for example for crit/warn thresholds, interval, module group, min/max value, tags, etc.').__('Information imported FIRST time from the XML will fill the information you can see in the console, but after the first import, system will ignore any update coming from the XML/Agent.'),
+        'intro'             => __('Please note that information provided here affects how the agent collects information and generate the data XML. Any data/configuration reported by the agent, different from data or description is discarded, and the configuration shown in the console prevails over any configuration coming from the agent, this applies for example to crit/warn thresholds, interval, module group, min/max value, tags, etc.').'&nbsp'.__('Information imported FIRST time from the XML will fill the information you can see in the console, but after the first import, system will ignore any update coming from the XML/Agent.'),
         'title'             => __('Data Configuration Module.'),
         'img'               => html_print_image(
             'images/info-warning.svg',

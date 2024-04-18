@@ -84,6 +84,7 @@ function groupview_get_modules_counters($groups_ids=false)
 		INNER JOIN $table_sec tasg
 			ON ta.id_agente = tasg.id_agent
 		WHERE tasg.id_group IN ($groups_ids)
+		AND ta.disabled = 0
 		GROUP BY tasg.id_group
 	) x GROUP BY g";
     $data = db_get_all_rows_sql($sql);
@@ -205,4 +206,44 @@ function groupview_get_groups_list($id_user=false, $access='AR', $is_not_paginat
         'groups'  => $list,
         'counter' => $counter,
     ];
+}
+
+
+function get_recursive_groups_heatmap($parent_group, $acl)
+{
+    if ($parent_group['counter'] > 0) {
+        foreach ($parent_group['groups'] as $group_key => $group_value) {
+            if ((int) $group_value['_id_'] === 0) {
+                continue;
+            }
+
+            $childrens = groups_get_children($group_value['_id_'], true, $acl, false);
+            if (empty($childrens) === false) {
+                foreach ($childrens as $children) {
+                    $children_status = groups_get_status($children['id_grupo']);
+                    $parent_group['groups'][$group_key]['_monitor_checks_']++;
+                    switch ($children_status) {
+                        case AGENT_STATUS_CRITICAL:
+                            $parent_group['groups'][$group_key]['_monitors_critical_']++;
+                        break;
+
+                        case AGENT_STATUS_WARNING:
+                            $parent_group['groups'][$group_key]['_monitors_warning_']++;
+                        break;
+
+                        case AGENT_STATUS_UNKNOWN:
+                            $parent_group['groups'][$group_key]['_monitors_unknown_']++;
+                        break;
+
+                        case AGENT_STATUS_NORMAL:
+                        default:
+                            $parent_group['groups'][$group_key]['_monitors_ok_']++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return $parent_group;
 }

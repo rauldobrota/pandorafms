@@ -18,22 +18,25 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  *   summary="Updates an event",
  *   @OA\Parameter(ref="#/components/parameters/parameterIdEvent"),
  *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyEvent"),
- *   @OA\Response(response=200, ref="#/components/responses/ResponseEvent"),
- *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
- *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
- *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
- *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
- *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+ *   @OA\Response(response=200,                                          ref="#/components/responses/ResponseEvent"),
+ *   @OA\Response(response=400,                                          ref="#/components/responses/BadRequest"),
+ *   @OA\Response(response=401,                                          ref="#/components/responses/Unauthorized"),
+ *   @OA\Response(response=403,                                          ref="#/components/responses/Forbidden"),
+ *   @OA\Response(response=404,                                          ref="#/components/responses/NotFound"),
+ *   @OA\Response(response=500,                                          ref="#/components/responses/InternalServerError")
  * )
  */
 final class UpdateEventController extends Controller
 {
+
+
     public function __construct(
         private UpdateEventAction $updateEventAction,
         private ValidateAclSystem $acl,
         private GetEventAction $getEventAction
     ) {
     }
+
 
     public function __invoke(Request $request, Response $response): Response
     {
@@ -49,4 +52,6 @@ final class UpdateEventController extends Controller
         $result = $this->updateEventAction->__invoke($event, $oldEvent);
         return $this->getResponse($response, $result);
     }
+
+
 }

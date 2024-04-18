@@ -68,7 +68,7 @@ if ($renew_license_result !== null) {
 }
 
 if ($update_settings) {
-    if (!is_metaconsole()) {
+    if (is_metaconsole() === false) {
         // Node.
         foreach ($_POST['keys'] as $key => $value) {
             db_process_sql_update(

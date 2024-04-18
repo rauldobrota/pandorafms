@@ -9,15 +9,18 @@ use PandoraFMS\Modules\Shared\Repositories\Repository;
 
 class TagRepository
 {
+
+
     public function __construct(
         private Repository $repository,
         private TagDataMapper $tagDataMapper
     ) {
     }
 
+
     /**
      * @return Tag[],
-    */
+     */
     public function list(TagFilter $tagFilter): array
     {
         return $this->repository->__list(
@@ -25,6 +28,7 @@ class TagRepository
             $this->tagDataMapper
         );
     }
+
 
     public function count(TagFilter $tagFilter): int
     {
@@ -34,6 +38,7 @@ class TagRepository
         );
     }
 
+
     public function getOne(TagFilter $tagFilter): Tag
     {
         return $this->repository->__getOne(
@@ -42,11 +47,13 @@ class TagRepository
         );
     }
 
+
     public function create(Tag $tag): Tag
     {
         $id = $this->repository->__create($tag, $this->tagDataMapper);
         return $tag->setIdTag($id);
     }
+
 
     public function update(Tag $tag): Tag
     {
@@ -57,9 +64,11 @@ class TagRepository
         );
     }
 
+
     public function delete(int $id): void
     {
         $this->repository->__delete($id, $this->tagDataMapper);
     }
+
 
 }

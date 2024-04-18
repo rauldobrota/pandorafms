@@ -932,7 +932,7 @@ function add_macro_field(macro, row_model_id, type_copy, k) {
       .html();
 
     field_desc = field_desc.replace("macro_desc", macro_desc);
-    field_desc = field_desc.replace("macro_help", macro_help);
+    field_desc = field_desc.replaceAll("macro_help", macro_help);
 
     $("#" + row_id)
       .children()

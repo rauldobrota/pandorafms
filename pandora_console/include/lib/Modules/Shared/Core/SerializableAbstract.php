@@ -8,22 +8,30 @@ use PandoraFMS\Modules\Shared\Exceptions\InvalidFilterException;
 
 abstract class SerializableAbstract implements JsonSerializable
 {
+
+
     public function __construct()
     {
     }
 
+
     abstract public function fieldsReadOnly(): array;
+
 
     abstract public function jsonSerialize(): mixed;
 
+
     abstract public function getValidations(): array;
 
+
     abstract public function validateFields(array $filters): array;
+
 
     public function toArray()
     {
         return $this->jsonSerialize();
     }
+
 
     public function validate(array $params): array
     {
@@ -39,6 +47,7 @@ abstract class SerializableAbstract implements JsonSerializable
 
         return $this->validateFields($filters);
     }
+
 
     public function fromArray(array $params): static
     {
@@ -63,4 +72,6 @@ abstract class SerializableAbstract implements JsonSerializable
 
         return $this;
     }
+
+
 }

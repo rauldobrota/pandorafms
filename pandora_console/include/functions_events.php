@@ -1235,6 +1235,8 @@ function events_get_all(
             io_safe_input($filter['user_comment']),
             $filter['user_comment']
         );
+
+        array_unshift($fields, 'DISTINCT te.id_evento AS distinct_event');
     }
 
     // Source.
@@ -1669,6 +1671,19 @@ function events_get_all(
                 tmax_event.timestamp_first,
                 tmax_event.max_id_evento'
             );
+        }
+    }
+
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        $exists_id_grupo = false;
+        foreach ($fields as $field) {
+            if (str_contains($field, 'te.id_grupo') === true || str_contains($field, 'te.*') === true) {
+                $exists_id_grupo = true;
+            }
+        }
+
+        if ($exists_id_grupo === false) {
+            $fields[] = 'te.id_grupo';
         }
     }
 
@@ -2713,6 +2728,7 @@ function events_print_type_img(
             $icon = 'images/module_warning.png';
         break;
 
+        case 'unknown':
         case 'going_unknown':
             $icon = 'images/module_unknown.png';
         break;
@@ -2741,7 +2757,6 @@ function events_print_type_img(
             $icon = 'images/configuration@svg.svg';
         break;
 
-        case 'unknown':
         default:
             $style .= ' invert_filter';
             $icon = 'images/event.svg';
@@ -2993,6 +3008,9 @@ function events_print_type_description($type, $return=false)
         break;
 
         case 'unknown':
+            $output .= __('Unknown');
+        break;
+
         default:
             $output .= __('Unknown type:').': '.$type;
         break;
@@ -5861,6 +5879,7 @@ function events_get_instructions($event, $max_text_length=300)
     }
 
     switch ($event['event_type']) {
+        case 'unknown':
         case 'going_unknown':
             if ($event['unknown_instructions'] != '') {
                 $value = str_replace(

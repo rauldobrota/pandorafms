@@ -1292,10 +1292,18 @@ if ($update_agent) {
         // Get all plugins (BASIC OPTIONS).
         $agent = new PandoraFMS\Agent($id_agente);
         $plugins = $agent->getPlugins();
+        $pluginsToWrite = [
+            'security_hardening' => [
+                'write' => $security_hardening,
+                'raw'   => "module_begin \nmodule_plugin /usr/share/pandora_agent/plugins/pandora_hardening -t 150 \nmodule_absoluteinterval 7d \nmodule_end",
+            ],
+        ];
+
         foreach ($plugins as $key => $row) {
             // Only check plugins when agent package is bigger than 774.
             if ($options_package === '1') {
                 if (preg_match('/pandora_hardening/', $row['raw']) === 1) {
+                    $pluginsToWrite['security_hardening']['write'] = 0;
                     if ($security_hardening === 1) {
                         if ($row['disabled'] === 1) {
                             $agent->enablePlugins($row['raw']);
@@ -1344,6 +1352,12 @@ if ($update_agent) {
                         $agent->disablePlugins($row['raw']);
                     }
                 }
+            }
+        }
+
+        foreach ($pluginsToWrite as $name => $val) {
+            if ($val['write'] === 1) {
+                $result = $agent->addPlugins(io_safe_output($val['raw']), true);
             }
         }
 
@@ -1487,6 +1501,11 @@ if ($update_module === true || $create_module === true) {
     $min = (int) get_parameter('min');
     $max = (int) get_parameter('max');
     $interval = (int) get_parameter('module_interval', $intervalo);
+    // Limit module interval to at least 60 secs.
+    if ($interval > 0) {
+        $interval = max($interval, 60);
+    }
+
     $ff_interval = (int) get_parameter('module_ff_interval');
     $quiet_module = (int) get_parameter('quiet_module');
     $cps_module = (int) get_parameter('cps_module');
@@ -2411,10 +2430,7 @@ if ($delete_module) {
     if ($error != 0) {
         ui_print_error_message(__('There was a problem deleting the module'));
     } else {
-        echo '<script type="text/javascript">
-		location="index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=module&id_agente='.$id_agente.'";
-		alert("'.__('Module deleted succesfully').'");
-		</script>';
+        ui_print_success_message(__('Module deleted succesfully'));
 
         $agent = db_get_row('tagente', 'id_agente', $id_agente);
         db_pandora_audit(

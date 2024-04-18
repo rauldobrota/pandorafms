@@ -24,6 +24,7 @@ final class GroupDataMapper extends DataMapperAbstract
     public const PASSWORD = 'password';
     public const MAX_AGENTS = 'max_agents';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -34,33 +35,41 @@ final class GroupDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return Group::class;
     }
 
+
     public function fromDatabase(array $data): Group
     {
-        return $this->builder->build(new Group(), [
-            'idGroup'     => $data[self::ID_GROUP],
-            'name'        => $this->repository->safeOutput($data[self::NAME]),
-            'icon'        => $data[self::ICON],
-            'parent'      => $data[self::PARENT],
-            'isPropagate' => $data[self::IS_PROPAGATE],
-            'isAlertEnabled'  => $data[self::IS_DISABLED],
-            'customId'    => $data[self::CUSTOM_ID],
-            'idSkin'      => $data[self::ID_SKIN],
-            'description' => $this->repository->safeOutput($data[self::DESCRIPTION]),
-            'contact'     => $this->repository->safeOutput($data[self::CONTACT]),
-            'other'       => $this->repository->safeOutput($data[self::OTHER]),
-            'password'    => $data[self::PASSWORD],
-            'maxAgents'   => $data[self::MAX_AGENTS],
-        ]);
+        return $this->builder->build(
+            new Group(),
+            [
+                'idGroup'        => $data[self::ID_GROUP],
+                'name'           => $this->repository->safeOutput($data[self::NAME]),
+                'icon'           => $data[self::ICON],
+                'parent'         => $data[self::PARENT],
+                'isPropagate'    => $data[self::IS_PROPAGATE],
+                'isAlertEnabled' => $data[self::IS_DISABLED],
+                'customId'       => $data[self::CUSTOM_ID],
+                'idSkin'         => $data[self::ID_SKIN],
+                'description'    => $this->repository->safeOutput($data[self::DESCRIPTION]),
+                'contact'        => $this->repository->safeOutput($data[self::CONTACT]),
+                'other'          => $this->repository->safeOutput($data[self::OTHER]),
+                'password'       => $data[self::PASSWORD],
+                'maxAgents'      => $data[self::MAX_AGENTS],
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var Group $data */
+        /*
+            @var Group $data
+        */
         return [
             self::ID_GROUP     => $data->getIdGroup(),
             self::NAME         => $this->repository->safeInput($data->getName()),
@@ -77,4 +86,6 @@ final class GroupDataMapper extends DataMapperAbstract
             self::MAX_AGENTS   => $data->getMaxAgents(),
         ];
     }
+
+
 }

@@ -154,10 +154,10 @@ if ($aclWrite === true || $aclManage === true) {
         $baseUrl = 'index.php?operation=edit_visualmap&sec=screen&sec2=screens/screens&action=visualmap&pure='.$pure.'&action2='.$action;
     }
 
-    $hash = User::generatePublicHash();
+    $hash = User::generatePublicHash($visualConsoleId);
 
     $options['public_link']['text'] = '<a href="'.ui_get_full_url(
-        'operation/visual_console/public_console.php?hash='.$hash.'&id_layout='.$visualConsoleId.'&refr='.$refr.'&id_user='.$config['id_user'],
+        'operation/visual_console/public_console.php?hash='.$hash.'&refr='.$refr.'&id_user='.$config['id_user'],
         false,
         false,
         false
@@ -627,6 +627,14 @@ if ($pure === true) {
     <?php
 }
 
+?>
+    <style type="text/css">
+        .visual-console-item-label p,pre,h4,h5,h6 {
+            margin-block-start: <?php echo $config['vc_text_margin'].'em'; ?>;
+            margin-block-end: <?php echo $config['vc_text_margin'].'em'; ?>;
+        }
+    </style>
+<?php
 // Check groups can access user.
 $aclUserGroups = [];
 if (users_can_manage_group_all('AR') === false) {
@@ -766,17 +774,6 @@ ui_require_css_file('form');
 
             var regex_hash = /(hash=)[^&]+(&?)/gi;
             var replacement_hash = '$1' + newProps.hash + '$2';
-            // Tab links.
-            var menuLinks = document.querySelectorAll("div#menu_tab a");
-            if (menuLinks !== null) {
-                menuLinks.forEach(function (menuLink) {
-                    menuLink.href = menuLink.href.replace(regex, replacement);
-                    menuLink.href = menuLink.href.replace(
-                        regex_hash,
-                        replacement_hash
-                    );
-                });
-            }
 
             // Go back from fullscreen button.
             var btnNoFull = document.querySelector("a.vc-btn-no-fullscreen");

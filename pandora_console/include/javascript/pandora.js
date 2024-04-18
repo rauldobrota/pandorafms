@@ -1490,7 +1490,12 @@ function defineTinyMCEDark(selector) {
       { text: "C#", value: "csharp" },
       { text: "C++", value: "cpp" }
     ],
-    toolbar: defaultToolbar
+    toolbar: defaultToolbar,
+    content_style: `
+            body {
+              color: #fff;
+            }
+            `
   });
 }
 
@@ -2407,7 +2412,9 @@ $(document).ready(function() {
         closeOnEscape: true,
         width: 700,
         height: 450,
-
+        close: function() {
+          closeAboutModal();
+        },
         create: function() {
           $("#about-tabs").tabs({});
           $(".ui-dialog-titlebar").remove();
@@ -2415,7 +2422,6 @@ $(document).ready(function() {
           $("#about-close").click(function() {
             $("#about-tabs").dialog("close");
             $("div.ui-dialog").remove();
-            $("#icon_about").removeClass("selected");
           });
         }
       });
@@ -2436,7 +2442,9 @@ $(document).ready(function() {
         closeOnEscape: true,
         width: 700,
         height: 450,
-
+        close: function() {
+          closeAboutModal();
+        },
         create: function() {
           $("#about-tabs").tabs({});
           $(".ui-dialog-titlebar").remove();
@@ -2444,7 +2452,6 @@ $(document).ready(function() {
           $("#about-close").click(function() {
             $("#about-tabs").dialog("close");
             $("div.ui-dialog").remove();
-            $("#icon_about_operation").removeClass("selected");
           });
         }
       });
@@ -2735,4 +2742,20 @@ function menuTabsShowHide() {
       $(tabsLi).hide();
     }
   }
+}
+
+function resizeSearchHeader() {
+  if ($(".show_result_interpreter").width() && $("#keywords").position()) {
+    $(".show_result_interpreter").width($("#keywords").outerWidth() - 12);
+    $(".show_result_interpreter").css(
+      "left",
+      $("#keywords").position().left + 2
+    );
+  }
+}
+
+function closeAboutModal() {
+  $("#icon_about_operation").removeClass("selected");
+  $("#icon_about").removeClass("selected");
+  $("#icon_about_div").removeClass("selected");
 }

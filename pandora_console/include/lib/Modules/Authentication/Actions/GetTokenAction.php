@@ -7,13 +7,18 @@ use PandoraFMS\Modules\Authentication\Services\GetTokenService;
 
 final class GetTokenAction
 {
+
+
     public function __construct(
         private GetTokenService $getTokenService
     ) {
     }
 
+
     public function __invoke(int $idToken): Token
     {
         return $this->getTokenService->__invoke($idToken);
     }
+
+
 }

@@ -31,7 +31,9 @@ global $config;
 
 require_once 'include/functions_agents.php';
 require_once 'include/functions_custom_graphs.php';
-ui_require_javascript_file('calendar');
+ui_require_css_file('datepicker');
+ui_include_time_picker();
+ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript/i18n/');
 
 if ((bool) check_acl($config['id_user'], $id_grupo, 'AR') === false && (bool) check_acl($config['id_user'], 0, 'AW') === false) {
     db_pandora_audit(
@@ -223,13 +225,6 @@ $table->data[0][1] = html_print_label_input_block(
         10,
         40,
         true
-    ).html_print_image(
-        'images/calendar_view_day.png',
-        true,
-        [
-            'class'   => 'invert_filter',
-            'onclick' => "scwShow(scwID('text-start_date'),this);",
-        ]
     ).'</div>'
 );
 
@@ -472,6 +467,14 @@ echo '</div>';
 
     // Load graphs
     $(document).ready(function() {
+        $('#text-start_date').datepicker ({
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true,
+            showAnim: 'slideDown',
+            firstDay: "<?php echo $config['datepicker_first_day']; ?>",
+        });
+
         $('#combined').change(function() {
             if ($('#combined').val() == 1) {
                 $('#option_type').empty();

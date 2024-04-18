@@ -912,23 +912,30 @@ if ($modules !== false) {
 
                 if ((bool) $linked !== false) {
                     if ((bool) $adopt === true) {
-                        $img = 'images/policies_brick.png';
+                        $img = 'images/policies_brick.svg';
                         $title = '('.__('Adopted').') '.$policyInfo['name_policy'];
                     } else {
-                        $img = 'images/policies_mc.png';
+                        $img = 'images/policy@svg.svg';
                         $title = $policyInfo['name_policy'];
                     }
                 } else {
                     if ((bool) $adopt === true) {
-                        $img = 'images/policies_not_brick.png';
+                        $img = 'images/policies_not_brick.svg';
                         $title = '('.__('Unlinked').') ('.__('Adopted').') '.$policyInfo['name_policy'];
                     } else {
-                        $img = 'images/unlinkpolicy.png';
+                        $img = 'images/unlinkpolicy.svg';
                         $title = '('.__('Unlinked').') '.$policyInfo['name_policy'];
                     }
                 }
 
-                $data[1] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
+                $data[1] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image(
+                    $img,
+                    true,
+                    [
+                        'title' => $title,
+                        'class' => 'main_menu_icon',
+                    ]
+                ).'</a>';
             }
         }
 
@@ -1201,7 +1208,7 @@ $createModuleTable->data[1][] = html_print_label_input_block(
     html_print_anchor(
         [
             'href'    => 'https://pandorafms.com/Library/Library/',
-            'class'   => 'color-black-grey invert_filter',
+            'class'   => 'color-black-grey',
             'content' => __('Get more modules on Monitoring Library'),
         ],
         true
@@ -1358,4 +1365,9 @@ html_print_div(
         
         
     }
+
+    $(document).ready(function () {
+        $('#module_action').select2('open');
+        $('#module_action').select2('close');
+    });
 </script>

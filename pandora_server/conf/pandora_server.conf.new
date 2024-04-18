@@ -711,11 +711,11 @@ ncmserver_threads 1
 # NCM utility to avoid Net::SSH::Expect issues in multi-threaded environments.
 ncm_ssh_utility /usr/share/pandora_server/util/ncm_ssh_extension
 
+# Utility to deploy software agents via SSH or WinRM.
+agent_deployer_utility /usr/share/pandora_server/util/pandora_agent_deployer
+
 # Pandora FMS Daemon Watchdog execution interval in seconds (PANDORA FMS ENTERPRISE ONLY).
 ha_interval 30
-
-# HA operation mode. For backward compatibility with pacemaker. Do not change this value (PANDORA FMS ENTERPRISE ONLY).
-ha_mode pandora
 
 # Comma separated list of HA host IPs or FQDNs (PANDORA FMS ENTERPRISE ONLY).
 #ha_hosts 172.16.0.8,172.168.0.16

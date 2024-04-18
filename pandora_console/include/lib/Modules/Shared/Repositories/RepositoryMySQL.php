@@ -9,6 +9,8 @@ use PandoraFMS\Modules\Shared\Services\Config;
 
 class RepositoryMySQL extends Repository
 {
+
+
     protected function dbGetRow(
         string $field,
         string $table,
@@ -29,18 +31,20 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
+
     protected function dbGetValue(
         string $field,
         string $table,
         array $filters,
-        string $whereJoin = 'AND'
+        string $whereJoin='AND'
     ): mixed {
         return \db_get_value_filter($field, $table, $filters, $whereJoin);
     }
 
+
     protected function dbGetValueSql(
         string $sql,
-        ?bool $cache = false
+        ?bool $cache=false
     ): string {
         ob_start();
         $result = \db_get_value_sql($sql, $cache);
@@ -56,6 +60,7 @@ class RepositoryMySQL extends Repository
 
         return $result;
     }
+
 
     protected function dbGetRowSql(
         string $sql
@@ -75,9 +80,10 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
+
     protected function dbGetAllRowsSql(
         string $sql,
-        ?bool $cache = false
+        ?bool $cache=false
     ): array {
         ob_start();
         $result = \db_get_all_rows_sql($sql, $cache);
@@ -94,6 +100,7 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
+
     protected function dbInsert(string $table, array $values): mixed
     {
         ob_start();
@@ -109,6 +116,7 @@ class RepositoryMySQL extends Repository
 
         return $result;
     }
+
 
     protected function dbUpdate(string $table, array $values, array $condition): mixed
     {
@@ -130,6 +138,7 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
+
     protected function dbDelete(string $table, array $where): mixed
     {
         ob_start();
@@ -147,7 +156,8 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
-    protected function dbFormatWhereClauseSQL(array $values, $prefix = ''): string
+
+    protected function dbFormatWhereClauseSQL(array $values, $prefix=''): string
     {
         ob_start();
         $values_prefix = [];
@@ -165,15 +175,32 @@ class RepositoryMySQL extends Repository
         return $result;
     }
 
-    public function buildQueryFilters(FilterAbstract $filter, DataMapperAbstract $mapper): string
+
+    public function buildQueryFilters(FilterAbstract $filter, ?DataMapperAbstract $mapper=null): string
     {
         $where_clause = '1=1';
 
-        if ($filter->getEntityFilter() !== null) {
+        if ($mapper !== null && $filter->getEntityFilter() !== null) {
             $searchEntity = $mapper->toDatabase($filter->getEntityFilter());
             $searchEntity = array_filter($searchEntity, fn ($value) => !is_null($value) && $value !== '' && $value !== 'null');
             if (empty($searchEntity) === false) {
                 $where_clause .= ' AND '.$this->dbFormatWhereClauseSQL($searchEntity, '`'.$mapper->getTableName().'`.');
+            }
+        } else {
+            $searchEntity = $filter->getEntityFilter()->toArray();
+            $translates = $filter->fieldsTranslate();
+            $searchEntity = array_filter($searchEntity, fn ($value) => !is_null($value) && $value !== '' && $value !== 'null');
+            if (empty($searchEntity) === false) {
+                $resultEntity = [];
+                foreach ($searchEntity as $key => $value) {
+                    if (isset($translates[$key]) === true) {
+                        $resultEntity[$translates[$key]] = $value;
+                    }
+                }
+
+                if (empty($resultEntity) === false) {
+                    $where_clause .= ' AND '.$this->dbFormatWhereClauseSQL($resultEntity);
+                }
             }
         }
 
@@ -201,6 +228,7 @@ class RepositoryMySQL extends Repository
         return $where_clause;
     }
 
+
     private function freeSearch(array $fields, string $value): string
     {
         $clause = ' AND (';
@@ -218,28 +246,57 @@ class RepositoryMySQL extends Repository
         return $clause;
     }
 
+
     private function multipleSearch(FilterAbstract $filter): string
     {
         $fields = $filter->fieldsTranslate();
         $field = '';
-        if (empty($fields) === false) {
+        if (empty($fields) === false
+            && isset($fields[($filter->getMultipleSearch()['field'])]) === true
+        ) {
             $field = ($fields[($filter->getMultipleSearch()['field'] ?? '')] ?? '');
+        } else {
+            throw new Exception(
+                __(
+                    'Bad request, multiple field %s is not a valid field',
+                    $filter->getMultipleSearch()['field']
+                )
+            );
         }
 
         if (empty($field) === true) {
             return '';
         }
 
-        $clause = ' AND '.$field.' IN ('.implode(',', $filter->getMultipleSearch()['data']).')';
+        $clause = ' AND ('.$field.' IN ('.implode(',', $filter->getMultipleSearch()['data']).')';
+
+        if (isset($filter->getMultipleSearch()['secondaryGroup']) === true
+            && $filter->getMultipleSearch()['secondaryGroup'] === true
+        ) {
+            $clause .= ' OR tagent_secondary_group.id_group IN ('.implode(',', $filter->getMultipleSearch()['data']).')';
+        }
+
+        $clause .= ')';
+
         return $clause;
     }
+
 
     private function multipleSearchString(FilterAbstract $filter): string
     {
         $fields = $filter->fieldsTranslate();
         $field = '';
-        if (empty($fields) === false) {
+        if (empty($fields) === false
+            && isset($fields[($filter->getMultipleSearchString()['field'])]) === true
+        ) {
             $field = ($fields[($filter->getMultipleSearchString()['field'] ?? '')] ?? '');
+        } else {
+            throw new Exception(
+                __(
+                    'Bad request, multiple field %s is not a valid field',
+                    $filter->getMultipleSearchString()['field']
+                )
+            );
         }
 
         if (empty($field) === true) {
@@ -249,6 +306,7 @@ class RepositoryMySQL extends Repository
         $clause = ' AND '.$field.' IN ("'.implode('","', $filter->getMultipleSearchString()['data']).'")';
         return $clause;
     }
+
 
     public function buildQueryPagination(FilterAbstract $filter): string
     {
@@ -266,6 +324,7 @@ class RepositoryMySQL extends Repository
 
         return $sqlLimit;
     }
+
 
     public function buildQueryOrderBy(FilterAbstract $filter): string
     {
@@ -297,6 +356,7 @@ class RepositoryMySQL extends Repository
         return $return;
     }
 
+
     public function buildQueryGroupBy(FilterAbstract $filter): string
     {
         $groupBy = '';
@@ -319,6 +379,7 @@ class RepositoryMySQL extends Repository
         return $groupBy;
     }
 
+
     private function checkDirectionOrderByMsql(?string $direction): string
     {
         $directionArray = [
@@ -329,7 +390,8 @@ class RepositoryMySQL extends Repository
         return (isset($directionArray[$direction]) === true) ? $directionArray[$direction] : 'ASC';
     }
 
-    public function checkAclGroupMysql(string $field, ?string $mode = ''): string
+
+    public function checkAclGroupMysql(string $field, ?string $mode=''): string
     {
         $config = new Config();
         $isAdmin = \users_is_admin($config->get('id_user'));
@@ -377,10 +439,11 @@ class RepositoryMySQL extends Repository
         return $filter;
     }
 
+
     public function buildQuery(
         FilterAbstract $filter,
         DataMapperAbstract $mapper,
-        bool $count = false
+        bool $count=false
     ): string {
         $filters = $this->buildQueryFilters($filter, $mapper);
         if (empty($mapper->getSearchFieldRelated()) === false) {
@@ -448,18 +511,23 @@ class RepositoryMySQL extends Repository
         return $sql;
     }
 
+
     public function maxFieldSql(string $field): string
     {
         return 'MAX('.$field.')';
     }
+
 
     public function safeInput(?string $value): ?string
     {
         return \io_safe_input($value);
     }
 
+
     public function safeOutput(?string $value): ?string
     {
         return \io_safe_output($value);
     }
+
+
 }

@@ -612,6 +612,7 @@ sub set_file_permissions($$;$) {
 			my $uid  = getpwnam($pa_config->{'user'});
 			my $gid  = getgrnam($pa_config->{'group'});
 			my $perm = $grants & (~oct($pa_config->{'umask'}));
+			$gid = getgrnam("www-data") if (!defined($gid));
 
 			chown $uid, $gid, $file;
 			chmod ( $perm, $file );
@@ -647,6 +648,7 @@ sub safe_input($) {
 
 	return "" unless defined($value);
 
+    $value =~ s/<\/?script(.*?)>//gs;
 	$value =~ s/(.)/$CHR2ENT{$1}||$1/ge;
 	
 	return $value;

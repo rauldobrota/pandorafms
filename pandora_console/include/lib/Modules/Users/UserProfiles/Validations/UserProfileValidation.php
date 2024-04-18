@@ -14,6 +14,8 @@ use PandoraFMS\Modules\Users\UserProfiles\Services\ExistUserProfileService;
 
 final class UserProfileValidation
 {
+
+
     public function __construct(
         private GetGroupService $getGroupService,
         private GetUserService $getUserService,
@@ -24,6 +26,7 @@ final class UserProfileValidation
         private Config $config
     ) {
     }
+
 
     public function __invoke(UserProfile $userProfile): void
     {
@@ -74,20 +77,24 @@ final class UserProfileValidation
         }
     }
 
+
     private function validateUser(string $idUser): void
     {
         $this->getUserService->__invoke($idUser);
     }
+
 
     private function validateProfile(int $idProfile): void
     {
         $this->getProfileService->__invoke($idProfile);
     }
 
+
     protected function validateGroup(int $idGroup): void
     {
         $this->getGroupService->__invoke($idGroup);
     }
+
 
     protected function validatePolicy(int $idPolicy): void
     {
@@ -97,10 +104,13 @@ final class UserProfileValidation
         }
     }
 
+
     protected function validateTags(array $tags): void
     {
         foreach ($tags as $tag) {
             $this->getTagService->__invoke((int) $tag);
         }
     }
+
+
 }

@@ -122,7 +122,7 @@ $table->data[1][1] = html_print_input_text(
     50,
     255,
     true
-);
+).html_print_input_hidden('today_date', date('Y-m-d'), true);
 
 $table->data[1][2] = __('Expiration Time');
 $table->data[1][3] = html_print_input_text(
@@ -132,9 +132,9 @@ $table->data[1][3] = html_print_input_text(
     50,
     255,
     true
-);
+).html_print_input_hidden('today_time', date('H:i:s'), true);
 
-echo '<form class="max_floating_element_size" method="post" action="'.$url_list.'">';
+echo '<form class="max_floating_element_size" id="form_token" method="post" action="'.$url_list.'">';
 
 html_print_table($table);
 
@@ -143,7 +143,7 @@ $actionButtons = [];
 if (empty($id_token) === true) {
     $actionButtons[] = html_print_submit_button(
         __('Create'),
-        'crt',
+        'next',
         false,
         ['icon' => 'wand'],
         true
@@ -152,7 +152,7 @@ if (empty($id_token) === true) {
 } else {
     $actionButtons[] = html_print_submit_button(
         __('Update'),
-        'upd',
+        'next',
         false,
         ['icon' => 'update'],
         true
@@ -201,4 +201,41 @@ ui_require_jquery_file('ui.datepicker-'.get_user_language(), 'include/javascript
             closeText: '<?php echo __('Close'); ?>'
         });
     });
+
+    function errordate() {
+        confirmDialog({
+            title: "<?php echo __('Error'); ?>",
+            message: "<?php echo __('Expiration date must be later than today.'); ?>",
+            hideCancelButton: true,
+        });
+    }
+
+    $('#button-next').on('click', function() {
+        event.preventDefault();
+        var date = $('#text-date-expiration').val();
+        var time = date+' '+$('#text-time-expiration').val();
+        if (date !== '' && $('#text-time-expiration').val() !== '') {
+            if (date < $('#hidden-today_date').val() || time < $('#hidden-today_date').val()+' '+$('#hidden-today_time').val()) {
+                errordate();
+            } else{
+                $('#form_token').submit();
+            }
+        } else if (date !== '' && time === ' ') {
+            if (date < $('#hidden-today_date').val()) {
+                errordate();
+            } else{
+                $('#form_token').submit();
+            }
+        } else if (date === '' && time !== ' ') {
+            errordate();
+        } else if (date !== '' && $('#text-time-expiration').val() === '') {
+            if (date < $('#hidden-today_date').val()) {
+                errordate();
+            } else{
+                $('#form_token').submit();
+            }
+        }else {
+            $('#form_token').submit();
+        }
+    })
 </script>

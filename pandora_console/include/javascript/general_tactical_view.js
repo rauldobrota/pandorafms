@@ -199,7 +199,7 @@ function redirectAgentStatus(e, element) {
     switch (e.chart.legend.legendItems[element[0].index].text) {
       case "No monitors":
         window.location.assign(
-          `index.php?sec=view&sec2=operation/agentes/estado_agente`
+          `index.php?sec=view&sec2=operation/agentes/estado_agente&status=5`
         );
         break;
 

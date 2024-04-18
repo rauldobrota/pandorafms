@@ -113,23 +113,34 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class UserProfile extends Entity
 {
+
     private ?int $idUserProfile = null;
+
     private ?string $idUser = null;
+
     private ?int $idProfile = null;
+
     private ?int $idGroup = null;
+
     private ?bool $isNoHierarchy = null;
+
     private ?string $assignedBy = null;
+
     private ?int $idPolicy = null;
+
     private ?array $tags = null;
+
 
     public function __construct()
     {
     }
 
+
     public function fieldsReadOnly(): array
     {
         return ['idUserProfile' => 1];
     }
+
 
     public function jsonSerialize(): mixed
     {
@@ -145,6 +156,7 @@ final class UserProfile extends Entity
         ];
     }
 
+
     public function getValidations(): array
     {
         return [
@@ -152,12 +164,12 @@ final class UserProfile extends Entity
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
-            'idUser'    => Validator::STRING,
-            'idProfile' => [
+            'idUser'        => Validator::STRING,
+            'idProfile'     => [
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
-            'idGroup' => [
+            'idGroup'       => [
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
@@ -167,19 +179,23 @@ final class UserProfile extends Entity
                 Validator::INTEGER,
                 Validator::GREATEREQUALTHAN,
             ],
-            'tags' => Validator::ARRAY,
+            'tags'          => Validator::ARRAY,
         ];
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
 
+
     public function getIdUserProfile(): ?int
     {
         return $this->idUserProfile;
     }
+
+
     public function setIdUserProfile(?int $idUserProfile): self
     {
         $this->idUserProfile = $idUserProfile;
@@ -187,10 +203,13 @@ final class UserProfile extends Entity
         return $this;
     }
 
+
     public function getIdUser(): ?string
     {
         return $this->idUser;
     }
+
+
     public function setIdUser(?string $idUser): self
     {
         $this->idUser = $idUser;
@@ -198,10 +217,13 @@ final class UserProfile extends Entity
         return $this;
     }
 
+
     public function getIdProfile(): ?int
     {
         return $this->idProfile;
     }
+
+
     public function setIdProfile(?int $idProfile): self
     {
         $this->idProfile = $idProfile;
@@ -209,10 +231,13 @@ final class UserProfile extends Entity
         return $this;
     }
 
+
     public function getIdGroup(): ?int
     {
         return $this->idGroup;
     }
+
+
     public function setIdGroup(?int $idGroup): self
     {
         $this->idGroup = $idGroup;
@@ -220,10 +245,13 @@ final class UserProfile extends Entity
         return $this;
     }
 
+
     public function getAssignedBy(): ?string
     {
         return $this->assignedBy;
     }
+
+
     public function setAssignedBy(?string $assignedBy): self
     {
         $this->assignedBy = $assignedBy;
@@ -231,30 +259,39 @@ final class UserProfile extends Entity
         return $this;
     }
 
+
     public function getIsNoHierarchy(): ?bool
     {
         return $this->isNoHierarchy;
     }
+
+
     public function setIsNoHierarchy(?bool $isNoHierarchy): self
     {
         $this->isNoHierarchy = $isNoHierarchy;
         return $this;
     }
 
+
     public function getIdPolicy(): ?int
     {
         return $this->idPolicy;
     }
+
+
     public function setIdPolicy(?int $idPolicy): self
     {
         $this->idPolicy = $idPolicy;
         return $this;
     }
 
+
     public function getTags(): ?array
     {
         return $this->tags;
     }
+
+
     public function setTags(array|string|null $tags): self
     {
         if (is_string($tags) === true) {
@@ -265,4 +302,6 @@ final class UserProfile extends Entity
 
         return $this;
     }
+
+
 }

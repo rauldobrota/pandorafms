@@ -90,6 +90,10 @@ function io_safe_input($value)
         $value = utf8_encode($value);
     }
 
+    if (preg_match('/<\/?script(.*?)>/', $value)) {
+        $value = preg_replace('/<\/?script(.*?)>/', '', $value);
+    }
+
     $valueHtmlEncode = htmlentities(($value ?? ''), ENT_QUOTES, 'UTF-8', true);
 
     // Replace the character '\' for the equivalent html entitie

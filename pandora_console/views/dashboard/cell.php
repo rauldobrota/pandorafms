@@ -71,6 +71,7 @@ if ($manageDashboards !== 0 || $writeDashboards !== 0) {
         $output .= '<a id="configure-widget-'.$cellData['id'].'" class="">';
         $widget_description = db_get_value_sql('SELECT description FROM twidget WHERE id ='.$cellData['id_widget']);
         $output .= html_print_input_hidden('widget_name_'.$cellData['id'], $widget_description, true);
+        $output .= html_print_input_hidden('widget_id_'.$cellData['id'], $cellData['id_widget'], true);
         $output .= html_print_image(
             'images/configuration@svg.svg',
             true,
