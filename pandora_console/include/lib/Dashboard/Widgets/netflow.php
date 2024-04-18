@@ -462,7 +462,7 @@ class Netflow extends Widget
     public function getSizeModalConfiguration(): array
     {
         $size = [
-            'width'  => 400,
+            'width'  => 600,
             'height' => 530,
         ];
 
