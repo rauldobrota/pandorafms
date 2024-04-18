@@ -2094,3 +2094,11 @@ select option:checked {
 #horizontalBar > .labels > .label > div[style^="background"] {
   filter: invert(1);
 }
+
+.black-and-white {
+  filter: saturate(0);
+}
+
+.invert_filter.black-and-white {
+  filter: invert(1) saturate(0) !important;
+}

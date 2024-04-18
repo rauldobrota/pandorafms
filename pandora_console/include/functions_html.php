@@ -1686,38 +1686,6 @@ function html_print_select_multiple_modules_filtered(array $data):string
     );
     $output .= '</div>';
 
-    if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
-        $output .= '<div>';
-
-        $output .= '<div>';
-        $output .= html_print_input(
-            [
-                'type'        => 'text',
-                'name'        => 'agent-searchBar-'.$uniqId,
-                'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
-                'placeholder' => __('Type to search agents'),
-                'return'      => true,
-            ]
-        );
-
-        $output .= '</div>';
-
-        $output .= '<div>';
-        $output .= html_print_input(
-            [
-                'type'        => 'text',
-                'name'        => 'module-searchBar-'.$uniqId,
-                'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
-                'return'      => true,
-                'placeholder' => __('Type to search modules'),
-            ]
-        );
-
-        $output .= '</div>';
-
-        $output .= '</div>';
-    }
-
     $output .= '<div>';
     // Agent.
     $agents = agents_get_group_agents(
@@ -1853,6 +1821,54 @@ function html_print_select_multiple_modules_filtered(array $data):string
 
     $output .= '</div>';
 
+    if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
+        $output .= '<div class="agents-modules-multiple-search-bar">';
+
+        if (isset($data['searchBarAgents']) === false) {
+            $data['searchBarAgents'] = true;
+        }
+
+        if (isset($data['searchBarModules']) === false) {
+            $data['searchBarModules'] = true;
+        }
+
+        if ($data['searchBarAgents'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'name'        => 'agent-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
+                    'placeholder' => __('Type to search agents'),
+                    'return'      => true,
+                ]
+            );
+
+            $output .= '</div>';
+        } else {
+            $output .= '<div></div>';
+        }
+
+        if ($data['searchBarModules'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'name'        => 'module-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
+                    'return'      => true,
+                    'placeholder' => __('Type to search modules'),
+                ]
+            );
+
+            $output .= '</div>';
+        } else {
+            $output .= '<div></div>';
+        }
+
+        $output .= '</div>';
+    }
+
     if ($data['return'] === false) {
         echo $output;
     }
@@ -1929,7 +1945,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             'return'        => true,
             'nothing'       => __('All'),
             'nothing_value' => 0,
-            'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+            'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
         ]
     );
     $output .= '</div>';
@@ -1965,7 +1981,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             'name'        => 'filtered-module-show-common-modules-'.$uniqId,
             'id'          => 'filtered-module-show-common-modules-'.$uniqId,
             'return'      => true,
-            'onchange'    => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+            'onchange'    => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
         ]
     );
 
@@ -2053,7 +2069,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
                 'return'        => true,
                 'multiple'      => true,
                 'style'         => 'min-width: 200px;max-width:200px;',
-                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
                 'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
                 'truncate_size' => 300,
             ]
@@ -2070,7 +2086,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
                 'return'        => true,
                 'multiple'      => true,
                 'style'         => 'min-width: 200px;max-width:200px;',
-                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
                 'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
                 'truncate_size' => 300,
             ]

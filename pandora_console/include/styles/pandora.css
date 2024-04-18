@@ -14218,14 +14218,6 @@ button.ui-button-text-only.ui-widget.sub:hover,
   box-shadow: none;
 }
 
-.black-and-white {
-  filter: saturate(0);
-}
-
-.invert_filter.black-and-white {
-  filter: invert(1) saturate(0) !important;
-}
-
 div.tox .tox-editor-header {
   z-index: 1;
 }
@@ -14267,4 +14259,21 @@ table.filter-table-adv td > div.row-flex label.custom_checkbox {
 
 table.filter-table-adv td > div.row-flex input {
   width: 100%;
+}
+
+.custom-graph-editor
+  #select_multiple_modules_filtered
+  > div.agents-modules-multiple-search-bar
+  > div {
+  width: 37%;
+}
+
+.custom-graph-editor
+  #select_multiple_modules_filtered
+  > div.agents-modules-multiple-search-bar
+  > div
+  > input {
+  width: 100%;
+  max-width: 100%;
+  height: 30px;
 }
