@@ -92,12 +92,10 @@ RUN dnf install -y --setopt=tsflags=nodocs \
     php-yaml \
     libzstd \
     openldap-clients \
-    http://firefly.artica.es/centos8/chromium-110.0.5481.177-1.el7.x86_64.rpm \
-    http://firefly.artica.es/centos8/chromium-common-110.0.5481.177-1.el7.x86_64.rpm \
+    chromium \
     http://firefly.artica.es/centos8/perl-Net-Telnet-3.04-1.el8.noarch.rpm \
-    http://firefly.artica.es/centos7/wmic-1.4-1.el7.x86_64.rpm \
-    http://firefly.artica.es/centos8/phantomjs-2.1.1-1.el7.x86_64.rpm
-
+    http://firefly.artica.es/centos7/wmic-1.4-1.el7.x86_64.rpm 
+    
 RUN mkdir -p /run/php-fpm/ ; chown -R root:apache /run/php-fpm/
 # Not installed perl-Net-Telnet gtk-update-icon-cach ghostscript-fonts
 
