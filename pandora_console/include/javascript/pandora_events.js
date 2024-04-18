@@ -1345,7 +1345,7 @@ function check_event_sound(settings) {
     let element_time = $(this)
       .children(".li-hidden")
       .val();
-    let obj_time = new Date(element_time);
+    let obj_time = new Date(element_time * 1000);
     let current_dt = new Date();
     let timestamp = current_dt.getTime() - obj_time.getTime();
     timestamp = timestamp / 1000;
@@ -1427,7 +1427,7 @@ function check_event_sound(settings) {
           li.insertAdjacentHTML(
             "beforeend",
             '<input type="hidden" value="' +
-              element.event_timestamp +
+              element.utimestamp +
               '" class="li-hidden"/>'
           );
           $("#tabs-sound-modal .elements-discovered-alerts ul").prepend(li);
