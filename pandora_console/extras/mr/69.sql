@@ -7712,6 +7712,8 @@ UPDATE `twelcome_tip` SET url = 'https://pandorafms.com/manual/!current/start?id
 
 DELETE FROM tconfig WHERE `token` = 'legacy_database_ha';
 
+UPDATE tncm_script SET `content` = 'sleep:1&#x0d;&#x0a;capture:export&#92;n&#92;r&#x20;&#x0d;&#x0a;exit&#92;n&#92;r' where `content` = 'sleep:1&#x0d;&#x0a;capture:system&#x20;resource&#x20;print&#92;n&#92;r&#x20;&#x0d;&#x0a;exit&#92;n&#92;r';
+
 -- Add new columns in tdeployment_hosts
 ALTER TABLE `tdeployment_hosts` ADD COLUMN `deploy_method` ENUM('SSH', 'HTTP', 'HTTPS') DEFAULT 'SSH';
 ALTER TABLE `tdeployment_hosts` ADD COLUMN `deploy_port` INT UNSIGNED NOT NULL DEFAULT 22;
@@ -7723,7 +7725,7 @@ UPDATE
 SET
     `tdeployment_hosts`.`deploy_method` = 'HTTP',
     `tdeployment_hosts`.`deploy_port` = 5985,
-    `tdeployment_hosts`.`temp_folder` = 'C:&#92;Widnows&#92;Temp'
+    `tdeployment_hosts`.`temp_folder` = 'C:&#92;Windows&#92;Temp'
 WHERE
     `tdeployment_hosts`.`id_os` = `tconfig_os`.`id_os` AND `tconfig_os`.`name` = 'Windows' AND `tdeployment_hosts`.`deployed` = 0;
 

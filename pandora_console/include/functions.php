@@ -4419,7 +4419,18 @@ function generator_chart_to_pdf(
         $browserFactory = new BrowserFactory($chromium_dir);
 
         // Starts headless chrome.
-        $browser = $browserFactory->createBrowser(['noSandbox' => true]);
+        $browser = $browserFactory->createBrowser(
+            [
+                'noSandbox'               => true,
+                'customFlags'             => [
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--disable-web-security',
+                    '--font-render-hinting=medium',
+                ],
+                'ignoreCertificateErrors' => true,
+            ]
+        );
 
         // Creates a new page.
         $page = $browser->createPage();
