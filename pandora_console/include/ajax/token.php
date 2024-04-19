@@ -171,7 +171,7 @@ if ($list_user_tokens === true) {
 if ($get_jwt_for_login === true) {
     global $config;
     if (is_metaconsole() === true
-        && (users_is_admin($config['id_user']) === true || can_user_access_node() === true)
+        && ((bool) users_is_admin($config['id_user']) === true || (bool) can_user_access_node() === true)
         && empty($config['JWT_signature']) === false
     ) {
         $jwtRepository = new JWTRepository($config['JWT_signature']);
