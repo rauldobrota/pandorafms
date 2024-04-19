@@ -3,6 +3,7 @@
 use PandoraFMS\Modules\Users\Controllers\CreateUserController;
 use PandoraFMS\Modules\Users\Controllers\DeleteUserController;
 use PandoraFMS\Modules\Users\Controllers\GetUserController;
+use PandoraFMS\Modules\Users\Controllers\GetUserLoginController;
 use PandoraFMS\Modules\Users\Controllers\ListUserController;
 use PandoraFMS\Modules\Users\Controllers\UpdateUserController;
 use PandoraFMS\Modules\Users\UserProfiles\Controllers\CreateUserProfileController;
@@ -17,6 +18,7 @@ return function (App $app) {
     $app->post('/user', CreateUserController::class);
     $app->put('/user/{idUser}', UpdateUserController::class);
     $app->delete('/user/{idUser}', DeleteUserController::class);
+    $app->get('/user/{idUser}/login', GetUserLoginController::class);
 
     $app->map(['GET', 'POST'], '/user/{idUser}/profiles', ListUserProfileController::class);
     $app->get('/user/{idUser}/profile/{idProfile}', GetUserProfileController::class);
