@@ -64,7 +64,7 @@ switch ($graph) {
         if ($os == 'windows') {
             $data = exec('(FOR /F "skip=2 tokens=2 delims=\," %P IN (\'typeperf "\\Process(pandora_server)\\% processor time" -sc 1\') DO @echo %P)|find /V /I "..."');
         } else {
-            $data = exec("ps aux | grep pandora_server | grep -v grep | awk '{ print $3 }'");
+            $data = exec("ps aux | grep pandora_server | grep -v grep | awk '{ sum+=$3 } END { print sum }'");
         }
     break;
 
