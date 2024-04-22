@@ -2343,7 +2343,7 @@ if (is_metaconsole() === true) {
                 if ($idAgent) {
                     $sql = 'SELECT id_agente_modulo, nombre
 						FROM tagente_modulo
-						WHERE id_agente = "'.$idAgent["id_agent"].'" AND  delete_pending = 0';
+						WHERE id_agente = "'.$idAgent.'" AND  delete_pending = 0';
 
                     if ($meta) {
                         $connection = metaconsole_get_connection($server_name);
