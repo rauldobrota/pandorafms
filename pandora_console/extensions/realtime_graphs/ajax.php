@@ -27,7 +27,7 @@ switch ($graph) {
         if ($os == 'windows') {
             $data = exec('wmic cpu get loadpercentage|find /I /V "Loadpercentage" | findstr /r "[0-9]" ');
         } else {
-            $data = exec("top -bn 2 -d 0.01 | grep '^Cpu' | tail -n 1 | awk '{ print $2+$4+$6 }'");
+            $data = exec("top -bn 2 -d 0.01 | grep 'Cpu' | tail -n 1 | awk '{ print $2+$4+$6 }'");
         }
     break;
 
@@ -55,7 +55,8 @@ switch ($graph) {
         if ($os == 'windows') {
             $data = exec('(FOR /F "skip=2 tokens=2 delims=\," %P IN (\'typeperf "\\Process(httpd)\\% processor time" -sc 1\') DO @echo %P)|find /V /I "..."');
         } else {
-            $data = exec("ps aux | grep apache2 | grep -v safe | grep -v grep | awk '{ sum+=$3 } END { print sum }'");
+            $apache = exec("ps aux | grep apache2 | grep -v safe | grep -v grep && echo 1 || echo 0") == 1 ? "apache2" : "apache";
+            $data = exec("ps aux | grep $apache | grep -v safe | grep -v grep | awk '{ sum+=$3 } END { print sum }'");
         }
     break;
 
