@@ -547,6 +547,7 @@ function line_graph(
 function get_build_setup_charts($type, $options, $data)
 {
     global $config;
+    $user_info = get_user_info($config['id_user']);
 
     $factory = new Factory();
 
@@ -1292,6 +1293,10 @@ function get_build_setup_charts($type, $options, $data)
                 $chart->options()->getPlugins()->getTooltip()->callbacks()->setTitle('(item) => item[0].dataset.data[item[0].dataIndex].full_title');
             }
         }
+    }
+
+    if (isset($user_info['id_skin']) === true) {
+        $chart->options()->setTheme($user_info['id_skin']);
     }
 
     // Add Datasets.

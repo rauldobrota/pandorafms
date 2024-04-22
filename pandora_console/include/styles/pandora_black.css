@@ -2094,3 +2094,7 @@ select option:checked {
 #horizontalBar > .labels > .label > div[style^="background"] {
   filter: invert(1);
 }
+
+.color_666 {
+  color: var(--text-color);
+}
