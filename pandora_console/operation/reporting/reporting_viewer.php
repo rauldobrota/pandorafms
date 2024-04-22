@@ -94,6 +94,9 @@ if (empty($schedule_report) === false) {
     echo '<br>';
 }
 
+if (empty($time) === true) {
+    $time = date(TIME_FORMAT);
+}
 
 // ------------------- INIT HEADER --------------------------------------
 $url = "index.php?sec=reporting&sec2=operation/reporting/reporting_viewer&id=$id_report&date=$date&time=$time&pure=$pure";
