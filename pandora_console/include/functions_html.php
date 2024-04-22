@@ -3535,7 +3535,8 @@ function html_print_input_text(
     $disabled=false,
     $list='',
     $placeholder=null,
-    $pattern=null
+    $pattern=null,
+    $id=false
 ) {
     if ($maxlength == 0) {
         $maxlength = 255;
@@ -3593,7 +3594,7 @@ function html_print_input_text(
     return html_print_input_text_extended(
         $name,
         $value,
-        'text-'.$name,
+        (($id === false) ? 'text-'.$name : $id),
         $alt,
         $size,
         $maxlength,
@@ -7894,7 +7895,7 @@ function html_print_select_date_range(
     $fields['chose_range'] = __('Chose start/end date period');
     $fields['none'] = __('None');
 
-    $output = html_print_input_hidden('custom_date', $custom_date, true);
+    $output = html_print_input_hidden('custom_date', $custom_date, true, false, false, 'hidden-custom_date_'.$name);
     $output .= '<div id="'.$name.'_default" class="wauto inline_flex" '.$display_default.'>';
         $output .= html_print_select(
             $fields,
@@ -7914,13 +7915,13 @@ function html_print_select_date_range(
         $table->data = [];
         $table->class = 'table-adv-filter';
         $table->data[0][0] = '<div><div><div><span class="font-title-font">'.__('From').':</span></div>';
-            $table->data[0][0] .= html_print_input_text('date_init', $date_init, '', 12, 10, true).' ';
-            $table->data[0][0] .= html_print_input_text('time_init', $time_init, '', 10, 7, true).' ';
+            $table->data[0][0] .= html_print_input_text('date_init', $date_init, '', 12, 10, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'date_init_'.$name).' ';
+            $table->data[0][0] .= html_print_input_text('time_init', $time_init, '', 10, 7, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'time_init_'.$name).' ';
         $table->data[0][0] .= '</div>';
         $table->data[0][0] .= '<div><div><span class="font-title-font">'.__('to').':</span></div>';
-            $table->data[0][0] .= html_print_input_text('date_end', $date_end, '', 12, 10, true).' ';
+            $table->data[0][0] .= html_print_input_text('date_end', $date_end, '', 12, 10, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'date_end_'.$name).' ';
         $table->data[0][0] .= '<div id="'.$name.'_manual" class="w100p inline_line">';
-            $table->data[0][0] .= html_print_input_text('time_end', $time_end, '', 10, 7, true).' ';
+            $table->data[0][0] .= html_print_input_text('time_end', $time_end, '', 10, 7, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'time_end_'.$name).' ';
             $table->data[0][0] .= ' <a href="javascript:">'.html_print_image(
                 'images/logs@svg.svg',
                 true,
@@ -7991,13 +7992,13 @@ function html_print_select_date_range(
                     $('#".$name."_range').show();
                     $('#".$name."_default').hide();
                     $('#".$name."_extend').hide();
-                    $('#hidden-custom_date').val('1');
+                    $('#hidden-custom_date_".$name."').val('1');
                     $('.filter_label_position_before').addClass('filter_label_position_after');
                 } else if ($(this).val() === 'custom') {
                     $('#".$name."_range').hide();
                     $('#".$name."_default').hide();
                     $('#".$name."_extend').show();
-                    $('#hidden-custom_date').val('2');
+                    $('#hidden-custom_date_".$name."').val('2');
                     $('.filter_label_position_before').removeClass('filter_label_position_after');
                 } else {
                     $('.filter_label_position_before').removeClass('filter_label_position_after');
@@ -8015,8 +8016,8 @@ function html_print_select_date_range(
             $('#".$name."_range').show();
             $('#".$name."_default').hide();
             $('#".$name."_extend').hide();
-            position_top_init = $('#text-date_init').offset().top + $('#text-date_init').outerHeight();
-            position_top_end = $('#text-date_end').offset().top + $('#text-date_end').outerHeight();
+            position_top_init = $('[id^=date_init_".$name."]').offset().top + $('[id^=date_init_".$name."]').outerHeight();
+            position_top_end = $('[id^=date_end_".$name."]').offset().top + $('[id^=date_end_".$name."]').outerHeight();
             if(def_state_range){
                 $('#".$name."_range').show();
             } else {
@@ -8042,7 +8043,7 @@ function html_print_select_date_range(
             $('#".$name."_range').hide();
             $('#".$name."_extend').hide();
             $('#".$name."').val('".SECONDS_1DAY."').trigger('change');
-            $('#hidden-custom_date').val('0');
+            $('#hidden-custom_date_".$name."').val('0');
         }
 
         $('#text-date').datepicker({
@@ -8052,7 +8053,7 @@ function html_print_select_date_range(
             showAnim: 'slideDown'
         });
 
-        $('[id^=text-time_init]').timepicker({
+        $('[id^=time_init_".$name."]').timepicker({
             showSecond: true,
             timeFormat: '".$time_format_js."',
             timeOnlyTitle: '".__('Choose time')."',
@@ -8064,7 +8065,7 @@ function html_print_select_date_range(
             closeText: '".__('Close')."'
         });
 
-        $('[id^=text-date_init]').datepicker ({
+        $('[id^=date_init_".$name."]').datepicker ({
             dateFormat: '".$date_format_js."',
             changeMonth: true,
             changeYear: true,
@@ -8073,9 +8074,9 @@ function html_print_select_date_range(
             beforeShowDay: function (date) {
                 show_datepicker = 'date_init';
                 var date_now = date.getTime();
-                var date_ini_split = $('[id^=text-date_init]').val().split('/');
+                var date_ini_split = $('[id^=date_init_".$name."]').val().split('/');
                 var date_ini = new Date(date_ini_split[1]+'/'+date_ini_split[2]+'/'+date_ini_split[0]).getTime();
-                var date_end_split = $('[id^=text-date_end]').val().split('/');
+                var date_end_split = $('[id^=date_end_".$name."]').val().split('/');
                 var date_end = new Date(date_end_split[1]+'/'+date_end_split[2]+'/'+date_end_split[0]).getTime();
                 if (date_now > date_ini && date_now < date_end) {
                     return [true, 'ui-date-range-in', 'prueba'];
@@ -8086,7 +8087,7 @@ function html_print_select_date_range(
             }
         });
 
-        $('[id^=text-date_end]').datepicker ({
+        $('[id^=date_end_".$name."]').datepicker ({
             dateFormat: '".$date_format_js."',
             changeMonth: true,
             changeYear: true,
@@ -8095,9 +8096,9 @@ function html_print_select_date_range(
             beforeShowDay: function (date) {
                 show_datepicker = 'date_end';
                 var date_now = date.getTime();
-                var date_ini_split = $('[id^=text-date_init]').val().split('/');
+                var date_ini_split = $('[id^=date_init_".$name."]').val().split('/');
                 var date_ini = new Date(date_ini_split[1]+'/'+date_ini_split[2]+'/'+date_ini_split[0]).getTime();
-                var date_end_split = $('[id^=text-date_end]').val().split('/');
+                var date_end_split = $('[id^=date_end_".$name."]').val().split('/');
                 var date_end = new Date(date_end_split[1]+'/'+date_end_split[2]+'/'+date_end_split[0]).getTime();
                 if (date_now > date_ini && date_now < date_end) {
                     return [true, 'ui-date-range-in', 'prueba'];
@@ -8105,10 +8106,10 @@ function html_print_select_date_range(
                     return [true, 'ui-datepicker-current-day', ''];
                 }
                 return [true, '', ''];
-            }
+            },
         });
 
-        $('[id^=text-time_end]').timepicker({
+        $('[id^=time_end_".$name."]').timepicker({
             showSecond: true,
             timeFormat: '".$time_format_js."',
             timeOnlyTitle: '".__('Choose time')."',

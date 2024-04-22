@@ -270,8 +270,8 @@ class SecurityHardening extends Widget
             'id'        => 'row_date',
             'class'     => 'row_input',
             'arguments' => [
-                'id'        => 'range',
-                'name'      => 'range',
+                'id'        => 'range_vulnerability',
+                'name'      => 'range_vulnerability',
                 'type'      => 'date_range',
                 'selected'  => 'chose_range',
                 'date_init' => date('Y/m/d', $values['date_init']),
@@ -301,7 +301,7 @@ class SecurityHardening extends Widget
         $values['limit'] = \get_parameter('limit', 10);
         $values['category'] = \get_parameter('category', 6);
         $values['ignore_skipped'] = \get_parameter_switch('ignore_skipped', 0);
-        $date = $this->getDateParameter();
+        $date = \get_parameter_date('range_vulnerability', '', 'U');
         $values['date_init'] = $date['date_init'];
         $values['date_end'] = $date['date_end'];
         return $values;
@@ -363,75 +363,6 @@ class SecurityHardening extends Widget
 
         return $output;
 
-    }
-
-
-    /**
-     * Returns the date in an object obtained by parameter.
-     *
-     * @return object Object with date_init, date_end and period.
-     */
-    private function getDateParameter()
-    {
-        $date_end = get_parameter('date_end', 0);
-        $time_end = get_parameter('time_end');
-        $datetime_end = strtotime($date_end.' '.$time_end);
-
-        $custom_date = get_parameter('custom_date', 0);
-        $range = get_parameter('range', SECONDS_1DAY);
-        $date_text = get_parameter('range_text', SECONDS_1DAY);
-        $date_init_less = (strtotime(date('Y/m/d')) - SECONDS_1DAY);
-        $date_init = get_parameter('date_init', date(DATE_FORMAT, $date_init_less));
-        $time_init = get_parameter('time_init', date(TIME_FORMAT, $date_init_less));
-        $datetime_init = strtotime($date_init.' '.$time_init);
-        if ($custom_date === '1') {
-            if ($datetime_init >= $datetime_end) {
-                $datetime_init = $date_init_less;
-            }
-
-            $date_init = date('Y/m/d H:i:s', $datetime_init);
-            $date_end = date('Y/m/d H:i:s', $datetime_end);
-            $period = ($datetime_end - $datetime_init);
-        } else if ($custom_date === '2') {
-            $date_units = get_parameter('range_units');
-            $date_end = date('Y/m/d H:i:s');
-            $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - ((int) $date_text * (int) $date_units)));
-            $period = (strtotime($date_end) - strtotime($date_init));
-        } else if (in_array($range, ['this_week', 'this_month', 'past_week', 'past_month'])) {
-            if ($range === 'this_week') {
-                $monday = date('Y/m/d', strtotime('last monday'));
-
-                $sunday = date('Y/m/d', strtotime($monday.' +6 days'));
-                $period = (strtotime($sunday) - strtotime($monday));
-                $date_init = $monday;
-                $date_end = $sunday;
-            } else if ($range === 'this_month') {
-                $date_end = date('Y/m/d', strtotime('last day of this month'));
-                $first_of_month = date('Y/m/d', strtotime('first day of this month'));
-                $date_init = $first_of_month;
-                $period = (strtotime($date_end) - strtotime($first_of_month));
-            } else if ($range === 'past_month') {
-                $date_end = date('Y/m/d', strtotime('last day of previous month'));
-                $first_of_month = date('Y/m/d', strtotime('first day of previous month'));
-                $date_init = $first_of_month;
-                $period = (strtotime($date_end) - strtotime($first_of_month));
-            } else if ($range === 'past_week') {
-                $date_end = date('Y/m/d', strtotime('sunday', strtotime('last week')));
-                $first_of_week = date('Y/m/d', strtotime('monday', strtotime('last week')));
-                $date_init = $first_of_week;
-                $period = (strtotime($date_end) - strtotime($first_of_week));
-            }
-        } else {
-            $date_end = date('Y/m/d H:i:s');
-            $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - $range));
-            $period = (strtotime($date_end) - strtotime($date_init));
-        }
-
-        return [
-            'date_init' => strtotime($date_init),
-            'date_end'  => strtotime($date_end),
-            'period'    => $period,
-        ];
     }
 
 
@@ -692,6 +623,7 @@ class SecurityHardening extends Widget
      */
     private function vulnerabilitiesByCategory($group, $category, $ignore_skipped=true)
     {
+        global $config;
         $labels = [
             __('Passed'),
             __('Failed'),
@@ -749,7 +681,7 @@ class SecurityHardening extends Widget
 
             $total = (count($vulnerabilities['pass']) + count($vulnerabilities['fail']));
 
-            if ($ignore_skipped === false) {
+            if ($ignore_skipped === false && isset($vulnerabilities['skipped']) === true) {
                 $data[] = count($vulnerabilities['skipped']);
                 $total += count($vulnerabilities['skipped']);
                 $labels[] = __('Skipped');
@@ -763,18 +695,19 @@ class SecurityHardening extends Widget
                     'display'  => true,
                     'position' => 'right',
                     'align'    => 'center',
+                    'fonts'    => [ 'size' => '12' ],
                 ],
                 'elements' => [
                     'center' => [
                         'text'  => $total,
-                        'color' => '#2c3e50',
+                        'color' => ($config['style'] === 'pandora_black') ? '#ffffff' : '#2c3e50',
                     ],
                 ],
                 'labels'   => $labels,
                 'colors'   => [
                     '#82b92e',
                     '#e63c52',
-                    '#E4E4E4',
+                    ($config['style'] === 'pandora_black') ? '#666' : '#E4E4E4',
                 ],
             ]
         );
