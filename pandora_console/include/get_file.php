@@ -92,7 +92,7 @@ if (empty($file) === true || empty($hash) === true || $hash !== md5($file_raw.$c
             break;
 
             case $main_collections:
-                $downloadable_file = $_SERVER['DOCUMENT_ROOT'].'/pandora_console/attachment/collection/'.$file;
+                $downloadable_file = io_safe_output($config['attachment_store']).'/collection/'.$file;
             break;
 
             case 'godmode/setup/file_manager':
