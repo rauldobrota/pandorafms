@@ -2094,3 +2094,9 @@ select option:checked {
 #horizontalBar > .labels > .label > div[style^="background"] {
   filter: invert(1);
 }
+
+.d2h-file-list-header,
+.d2h-file-name-wrapper,
+.d2h-file-collapse {
+  color: #333 !important;
+}
