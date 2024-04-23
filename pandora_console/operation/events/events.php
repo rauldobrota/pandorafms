@@ -1249,27 +1249,7 @@ if (is_ajax() === true) {
                             }
                         }
 
-                        $regex_validation = false;
-                        if (empty($tmp) === false && $regex !== '') {
-                            foreach (json_decode(json_encode($tmp), true) as $key => $field) {
-                                if ($key === 'b64') {
-                                    continue;
-                                }
-
-                                $field = strip_tags($field);
-
-                                if (preg_match('/'.io_safe_output($regex).'/', $field)) {
-                                    $regex_validation = true;
-                                }
-                            }
-
-                            if ($regex_validation === true) {
-                                $carry[] = $tmp;
-                            }
-                        } else {
-                            $carry[] = $tmp;
-                        }
-
+                        $carry[] = $tmp;
                         return $carry;
                     }
                 );
@@ -1289,11 +1269,10 @@ if (is_ajax() === true) {
             // RecordsTotal && recordsfiltered resultados totales.
             echo json_encode(
                 [
-                    'data'                 => ($data ?? []),
-                    'buffers'              => $buffers,
-                    'recordsTotal'         => $count,
-                    'recordsFiltered'      => $count,
-                    'showAlwaysPagination' => (empty($regex) === false) ? true : false,
+                    'data'            => ($data ?? []),
+                    'buffers'         => $buffers,
+                    'recordsTotal'    => $count,
+                    'recordsFiltered' => $count,
                 ]
             );
         } catch (Exception $e) {
