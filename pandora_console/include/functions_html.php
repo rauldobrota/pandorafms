@@ -1686,6 +1686,60 @@ function html_print_select_multiple_modules_filtered(array $data):string
     );
     $output .= '</div>';
 
+    $agent_class = '';
+    if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
+        $output .= '<div class="agents-modules-multiple-search-bar">';
+
+        if (isset($data['searchBarAgents']) === false) {
+            $data['searchBarAgents'] = true;
+        }
+
+        if (isset($data['searchBarModules']) === false) {
+            $data['searchBarModules'] = true;
+        }
+
+        if ($data['searchBarAgents'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'label_class' => 'font-title-font',
+                    'label'       => __('Filter agent'),
+                    'name'        => 'agent-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
+                    'placeholder' => __('Type to search agents'),
+                    'return'      => true,
+                ]
+            );
+
+            $output .= '</div>';
+        } else {
+            $agent_class = 'custom-graph-editor-agents-module-filter';
+            $output .= '<div></div>';
+        }
+
+        if ($data['searchBarModules'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'label_class' => 'font-title-font',
+                    'label'       => __('Filter module'),
+                    'name'        => 'module-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
+                    'return'      => true,
+                    'placeholder' => __('Type to search modules'),
+                ]
+            );
+
+            $output .= '</div>';
+        } else {
+            $output .= '<div></div>';
+        }
+
+        $output .= '</div>';
+    }
+
     $output .= '<div>';
     // Agent.
     $agents = agents_get_group_agents(
@@ -1738,6 +1792,7 @@ function html_print_select_multiple_modules_filtered(array $data):string
                 'style'       => 'min-width: 200px;max-width:200px;',
                 'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
                 'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'input_class' => $agent_class,
             ]
         );
     } else {
@@ -1754,6 +1809,7 @@ function html_print_select_multiple_modules_filtered(array $data):string
                 'style'       => 'min-width: 200px;max-width:200px;',
                 'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
                 'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'input_class' => $agent_class,
             ]
         );
     }
@@ -1820,54 +1876,6 @@ function html_print_select_multiple_modules_filtered(array $data):string
     );
 
     $output .= '</div>';
-
-    if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
-        $output .= '<div class="agents-modules-multiple-search-bar">';
-
-        if (isset($data['searchBarAgents']) === false) {
-            $data['searchBarAgents'] = true;
-        }
-
-        if (isset($data['searchBarModules']) === false) {
-            $data['searchBarModules'] = true;
-        }
-
-        if ($data['searchBarAgents'] === true) {
-            $output .= '<div>';
-            $output .= html_print_input(
-                [
-                    'type'        => 'text',
-                    'name'        => 'agent-searchBar-'.$uniqId,
-                    'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
-                    'placeholder' => __('Type to search agents'),
-                    'return'      => true,
-                ]
-            );
-
-            $output .= '</div>';
-        } else {
-            $output .= '<div></div>';
-        }
-
-        if ($data['searchBarModules'] === true) {
-            $output .= '<div>';
-            $output .= html_print_input(
-                [
-                    'type'        => 'text',
-                    'name'        => 'module-searchBar-'.$uniqId,
-                    'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
-                    'return'      => true,
-                    'placeholder' => __('Type to search modules'),
-                ]
-            );
-
-            $output .= '</div>';
-        } else {
-            $output .= '<div></div>';
-        }
-
-        $output .= '</div>';
-    }
 
     if ($data['return'] === false) {
         echo $output;

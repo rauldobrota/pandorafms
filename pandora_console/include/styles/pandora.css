@@ -14272,8 +14272,29 @@ table.filter-table-adv td > div.row-flex input {
   #select_multiple_modules_filtered
   > div.agents-modules-multiple-search-bar
   > div
+  > div
   > input {
   width: 100%;
   max-width: 100%;
-  height: 30px;
+}
+
+.custom-graph-editor
+  #select_multiple_modules_filtered
+  > div.agents-modules-multiple-search-bar
+  > div
+  > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.custom-graph-editor-agents-module-filter {
+  margin-top: -69px;
+}
+
+.custom-graph-editor-agents-module-filter > span.select2.select2-container {
+  height: 189px;
 }
