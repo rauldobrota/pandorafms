@@ -43,7 +43,7 @@ if (!reporting_user_can_see_report($id_report)) {
     exit;
 }
 
-$date_params = get_parameter_date('date', '', 'U');
+$date_params = get_parameter_date('date', 'none', 'U');
 $date_end = date('Y/m/d', $date_params['date_end']);
 $time_end = date('H:i:s', $date_params['date_end']);
 

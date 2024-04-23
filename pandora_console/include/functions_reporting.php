@@ -205,14 +205,21 @@ function reporting_make_reporting_data(
         $contents = io_safe_output($report['contents']);
     } else {
         $report = io_safe_output(db_get_row('treport', 'id_report', $id_report));
-        $contents = io_safe_output(
-            db_get_all_rows_field_filter(
-                'treport_content',
-                'id_report',
-                $id_report,
-                db_escape_key_identifier('order')
-            )
+
+        $contents = db_get_all_rows_field_filter(
+            'treport_content',
+            'id_report',
+            $id_report,
+            db_escape_key_identifier('order')
         );
+
+        foreach ($contents as $key_content => $content) {
+            foreach ($content as $key_item => $item) {
+                if ($key_item !== 'macros_definition') {
+                    $contents[$key_content][$key_item] = io_safe_output($item);
+                }
+            }
+        }
     }
 
     $datetime = strtotime($date.' '.$time);
@@ -5772,10 +5779,17 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
     if (isset($content['macros_definition']) === true
         && empty($content['macros_definition']) === false
     ) {
-        $macros = json_decode(
-            io_safe_output($content['macros_definition']),
-            true
-        );
+        $macros = json_decode($content['macros_definition'], true);
+        if ($macros === null && json_last_error() !== JSON_ERROR_NONE) {
+            $return['data'] = ui_print_error_message(
+                __('Error decoded json macros definition'),
+                '',
+                true
+            );
+
+            return reporting_check_structure_content($return);
+        }
+
         if (empty($macros) === false && is_array($macros) === true) {
             foreach ($macros as $key_macro => $data_macro) {
                 switch ($data_macro['type']) {
@@ -5784,7 +5798,7 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
                         $patterns[] = addslashes(
                             '/_'.$data_macro['name'].'_/'
                         );
-                        $substitutions[] = $data_macro['value'];
+                        $substitutions[] = io_safe_output($data_macro['value']);
                     break;
 
                     case 1:
@@ -5800,7 +5814,7 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
                             $error_reporting = error_reporting();
                             error_reporting(0);
                             $value_query = db_get_value_sql(
-                                trim($data_macro['value'], ';')
+                                trim(io_safe_output($data_macro['value']), ';')
                             );
 
                             if ($value_query === false) {
@@ -5826,7 +5840,7 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
                             $error_reporting = error_reporting();
                             error_reporting(0);
                             $data_query = db_get_all_rows_sql(
-                                trim($data_macro['value'], ';')
+                                trim(io_safe_output($data_macro['value']), ';')
                             );
 
                             error_reporting($error_reporting);

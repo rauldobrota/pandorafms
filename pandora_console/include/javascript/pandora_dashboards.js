@@ -24,12 +24,6 @@ function show_option_dialog(settings) {
       method: "updateDashboard",
       dataType: "json"
     },
-    oncancel: {
-      reload: true
-    },
-    onclose: {
-      reload: true
-    },
     ajax_callback: update_dashboard
   });
 }
@@ -483,10 +477,6 @@ function initialiceLayout(data) {
   function configurationWidget(cellId, widgetId, size) {
     var reload = 0;
     var overlay = false;
-    if (widgetId == 46) {
-      reload = 1;
-      overlay = true;
-    }
     title = $("#hidden-widget_name_" + cellId).val();
     load_modal({
       target: $("#modal-config-widget"),

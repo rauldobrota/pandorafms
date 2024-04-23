@@ -814,7 +814,7 @@ form ul.form_flex {
 
 .container-layout {
   border-radius: 5px;
-  border: 3px dashed #fff;
+  border: 3px dashed var(--border-color);
   background: #222;
   padding: 10px 0px 10px 0px;
 }
@@ -1585,7 +1585,7 @@ a.autorefresh_txt,
 }
 
 .grid-stack-item-content {
-  box-shadow: 0px 0px 15px -10px #888;
+  box-shadow: 0px 0px 7px 1px #8888882b;
   border-radius: 0px 0px 0px 0px;
 }
 
@@ -2093,6 +2093,14 @@ select option:checked {
 
 #horizontalBar > .labels > .label > div[style^="background"] {
   filter: invert(1);
+}
+
+.grid-stack-item-content {
+  background-color: var(--secondary-color);
+}
+
+#result_order .show_result_interpreter #result_items li.active {
+  background-color: var(--secondary-color);
 }
 
 .black-and-white {
