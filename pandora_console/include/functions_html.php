@@ -6862,6 +6862,11 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 (isset($data['time_end']) === true) ? $data['time_end'] : '',
                 (isset($data['date_text']) === true) ? $data['date_text'] : SECONDS_1DAY,
                 (isset($data['class']) === true) ? $data['class'] : 'w100p',
+                (isset($data['date_format_php']) === true) ? $data['date_format_php'] : 'Y/m/d',
+                (isset($data['time_format_php']) === true) ? $data['time_format_php'] : 'H:i:s',
+                (isset($data['date_format_js']) === true) ? $data['date_format_js'] : 'yy/mm/dd',
+                (isset($data['time_format_js']) === true) ? $data['time_format_js'] : 'HH/mm/ss',
+                (isset($data['id']) === true) ? $data['id'] : '',
             );
         break;
 
@@ -7844,7 +7849,8 @@ function html_print_select_date_range(
     $date_format_php='Y/m/d',
     $time_format_php='H:i:s',
     $date_format_js='yy/mm/dd',
-    $time_format_js='HH:mm:ss'
+    $time_format_js='HH:mm:ss',
+    $id='',
 ) {
     global $config;
 
@@ -7895,7 +7901,7 @@ function html_print_select_date_range(
     $fields['chose_range'] = __('Chose start/end date period');
     $fields['none'] = __('None');
 
-    $output = html_print_input_hidden('custom_date', $custom_date, true, false, false, 'hidden-custom_date_'.$name);
+    $output = html_print_input_hidden('custom_date', $custom_date, true, false, false, 'hidden-custom_date'.$id);
     $output .= '<div id="'.$name.'_default" class="wauto inline_flex" '.$display_default.'>';
         $output .= html_print_select(
             $fields,
@@ -7915,13 +7921,101 @@ function html_print_select_date_range(
         $table->data = [];
         $table->class = 'table-adv-filter';
         $table->data[0][0] = '<div><div><div><span class="font-title-font">'.__('From').':</span></div>';
-            $table->data[0][0] .= html_print_input_text('date_init', $date_init, '', 12, 10, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'date_init_'.$name).' ';
-            $table->data[0][0] .= html_print_input_text('time_init', $time_init, '', 10, 7, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'time_init_'.$name).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'date_init',
+                $date_init,
+                '',
+                12,
+                10,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-date_init'.$id : false,
+            ).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'time_init',
+                $time_init,
+                '',
+                10,
+                7,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-time_init'.$id : false,
+            ).' ';
         $table->data[0][0] .= '</div>';
         $table->data[0][0] .= '<div><div><span class="font-title-font">'.__('to').':</span></div>';
-            $table->data[0][0] .= html_print_input_text('date_end', $date_end, '', 12, 10, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'date_end_'.$name).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'date_end',
+                $date_end,
+                '',
+                12,
+                10,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-date_end'.$id : false,
+            ).' ';
         $table->data[0][0] .= '<div id="'.$name.'_manual" class="w100p inline_line">';
-            $table->data[0][0] .= html_print_input_text('time_end', $time_end, '', 10, 7, true, false, false, '', '', '', 'off', false, '', '', '', false, '', null, null, 'time_end_'.$name).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'time_end',
+                $time_end,
+                '',
+                10,
+                7,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-time_end'.$id : false,
+            ).' ';
             $table->data[0][0] .= ' <a href="javascript:">'.html_print_image(
                 'images/logs@svg.svg',
                 true,
@@ -7992,13 +8086,13 @@ function html_print_select_date_range(
                     $('#".$name."_range').show();
                     $('#".$name."_default').hide();
                     $('#".$name."_extend').hide();
-                    $('#hidden-custom_date_".$name."').val('1');
+                    $('#hidden-custom_date".$id."').val('1');
                     $('.filter_label_position_before').addClass('filter_label_position_after');
                 } else if ($(this).val() === 'custom') {
                     $('#".$name."_range').hide();
                     $('#".$name."_default').hide();
                     $('#".$name."_extend').show();
-                    $('#hidden-custom_date_".$name."').val('2');
+                    $('#hidden-custom_date".$id."').val('2');
                     $('.filter_label_position_before').removeClass('filter_label_position_after');
                 } else {
                     $('.filter_label_position_before').removeClass('filter_label_position_after');
@@ -8016,8 +8110,8 @@ function html_print_select_date_range(
             $('#".$name."_range').show();
             $('#".$name."_default').hide();
             $('#".$name."_extend').hide();
-            position_top_init = $('[id^=date_init_".$name."]').offset().top + $('[id^=date_init_".$name."]').outerHeight();
-            position_top_end = $('[id^=date_end_".$name."]').offset().top + $('[id^=date_end_".$name."]').outerHeight();
+            position_top_init = $('[id^=text-date_init".$id."]').offset().top + $('[id^=text-date_init".$id."]').outerHeight();
+            position_top_end = $('[id^=text-date_end".$id."]').offset().top + $('[id^=text-date_end".$id."]').outerHeight();
             if(def_state_range){
                 $('#".$name."_range').show();
             } else {
@@ -8043,7 +8137,7 @@ function html_print_select_date_range(
             $('#".$name."_range').hide();
             $('#".$name."_extend').hide();
             $('#".$name."').val('".SECONDS_1DAY."').trigger('change');
-            $('#hidden-custom_date_".$name."').val('0');
+            $('#hidden-custom_date".$id."').val('0');
         }
 
         $('#text-date').datepicker({
@@ -8053,7 +8147,7 @@ function html_print_select_date_range(
             showAnim: 'slideDown'
         });
 
-        $('[id^=time_init_".$name."]').timepicker({
+        $('[id^=text-time_init".$id."]').timepicker({
             showSecond: true,
             timeFormat: '".$time_format_js."',
             timeOnlyTitle: '".__('Choose time')."',
@@ -8065,7 +8159,7 @@ function html_print_select_date_range(
             closeText: '".__('Close')."'
         });
 
-        $('[id^=date_init_".$name."]').datepicker ({
+        $('[id^=text-date_init".$id."]').datepicker ({
             dateFormat: '".$date_format_js."',
             changeMonth: true,
             changeYear: true,
@@ -8074,9 +8168,9 @@ function html_print_select_date_range(
             beforeShowDay: function (date) {
                 show_datepicker = 'date_init';
                 var date_now = date.getTime();
-                var date_ini_split = $('[id^=date_init_".$name."]').val().split('/');
+                var date_ini_split = $('[id^=text-date_init".$id."]').val().split('/');
                 var date_ini = new Date(date_ini_split[1]+'/'+date_ini_split[2]+'/'+date_ini_split[0]).getTime();
-                var date_end_split = $('[id^=date_end_".$name."]').val().split('/');
+                var date_end_split = $('[id^=text-date_end".$id."]').val().split('/');
                 var date_end = new Date(date_end_split[1]+'/'+date_end_split[2]+'/'+date_end_split[0]).getTime();
                 if (date_now > date_ini && date_now < date_end) {
                     return [true, 'ui-date-range-in', 'prueba'];
@@ -8087,7 +8181,7 @@ function html_print_select_date_range(
             }
         });
 
-        $('[id^=date_end_".$name."]').datepicker ({
+        $('[id^=text-date_end".$id."]').datepicker ({
             dateFormat: '".$date_format_js."',
             changeMonth: true,
             changeYear: true,
@@ -8096,9 +8190,9 @@ function html_print_select_date_range(
             beforeShowDay: function (date) {
                 show_datepicker = 'date_end';
                 var date_now = date.getTime();
-                var date_ini_split = $('[id^=date_init_".$name."]').val().split('/');
+                var date_ini_split = $('[id^=text-date_init".$id."]').val().split('/');
                 var date_ini = new Date(date_ini_split[1]+'/'+date_ini_split[2]+'/'+date_ini_split[0]).getTime();
-                var date_end_split = $('[id^=date_end_".$name."]').val().split('/');
+                var date_end_split = $('[id^=text-date_end".$id."]').val().split('/');
                 var date_end = new Date(date_end_split[1]+'/'+date_end_split[2]+'/'+date_end_split[0]).getTime();
                 if (date_now > date_ini && date_now < date_end) {
                     return [true, 'ui-date-range-in', 'prueba'];
@@ -8109,7 +8203,7 @@ function html_print_select_date_range(
             },
         });
 
-        $('[id^=time_end_".$name."]').timepicker({
+        $('[id^=text-time_end".$id."]').timepicker({
             showSecond: true,
             timeFormat: '".$time_format_js."',
             timeOnlyTitle: '".__('Choose time')."',

@@ -270,7 +270,7 @@ class SecurityHardening extends Widget
             'id'        => 'row_date',
             'class'     => 'row_input',
             'arguments' => [
-                'id'        => 'range_vulnerability',
+                'id'        => '_range_vulnerability',
                 'name'      => 'range_vulnerability',
                 'type'      => 'date_range',
                 'selected'  => 'chose_range',
