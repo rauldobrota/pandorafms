@@ -3609,7 +3609,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
     }
 
     $graph_width = 280;
-    $graph_height = 250;
+    $graph_height = 300;
 
     $out = '<table width="100%" class="info_table">';
     $out .= '<tbody>';
@@ -3691,7 +3691,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
 
     $out .= '<div id="events_per_agent_pie" style="height: '.$graph_height.'px">';
     if ((int) $ttl === 2) {
-        $out .= '<img src="data:image/png;base64,';
+        $out .= '<img width="350" src="data:image/png;base64,';
     } else {
         $out .= '<div id="status_pie" style="margin: auto;">';
     }
@@ -3733,7 +3733,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
 
     $out .= '<div id="group_os_pie" style="height: '.$graph_height.'px">';
     if ((int) $ttl === 2) {
-        $out .= '<img src="data:image/png;base64,';
+        $out .= '<img width="350" src="data:image/png;base64,';
     } else {
         $out .= '<div id="status_pie" style="margin: auto;">';
     }
