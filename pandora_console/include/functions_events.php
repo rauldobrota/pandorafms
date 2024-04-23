@@ -1193,7 +1193,7 @@ function events_get_all(
                     ($key === 0) ? '' : $nexo,
                     $field,
                     $not_search,
-                    str_replace('"', '', io_safe_output($filter['search'])),
+                    preg_replace('/(?<!\\\\)"/', '', io_safe_output($filter['search'])),
                 );
                 $sql_search .= ' ';
             }
