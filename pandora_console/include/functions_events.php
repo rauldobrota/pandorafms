@@ -5888,6 +5888,12 @@ function events_get_instructions($event, $max_text_length=300)
                     io_safe_output($event['unknown_instructions'])
                 );
             }
+
+            $event_name = str_replace(
+                "'",
+                '',
+                io_safe_output($event['evento'])
+            );
         break;
 
         case 'going_up_warning':
@@ -5899,6 +5905,12 @@ function events_get_instructions($event, $max_text_length=300)
                     io_safe_output($event['warning_instructions'])
                 );
             }
+
+            $event_name = str_replace(
+                "'",
+                '',
+                io_safe_output($event['evento'])
+            );
         break;
 
         case 'going_up_critical':
@@ -5910,6 +5922,12 @@ function events_get_instructions($event, $max_text_length=300)
                     io_safe_output($event['critical_instructions'])
                 );
             }
+
+            $event_name = str_replace(
+                "'",
+                '',
+                io_safe_output($event['evento'])
+            );
         break;
 
         default:
@@ -5928,17 +5946,21 @@ function events_get_instructions($event, $max_text_length=300)
         return $value;
     }
 
+    $over_event_name = ui_print_truncate_text($event_name, 51, false, true, false);
     $output  = '<div id="hidden_event_instructions_'.$event['id_evento'].'"';
     $output .= ' class="event_instruction">';
     $output .= $value;
     $output .= '</div>';
     $output .= '<span id="value_event_'.$event['id_evento'].'" class="nowrap">';
     $output .= '<span id="value_event_text_'.$event['id_evento'].'"></span>';
-    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].')">';
+    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].',\''.$over_event_name.'\')">';
     $output .= html_print_image(
         'images/default_list.png',
         true,
-        ['title' => $over_text]
+        [
+            'title' => $over_text,
+            'class' => 'invert_filter',
+        ]
     ).'</a></span>';
 
     return $output;

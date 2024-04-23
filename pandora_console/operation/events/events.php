@@ -3715,11 +3715,16 @@ function datetime_picker_callback() {
 
 datetime_picker_callback();
 
-function show_instructions(id){
+function show_instructions(id, title_event){
     title = "<?php echo __('Instructions'); ?>";
     $('#hidden_event_instructions_' + id).dialog({
-        title: title,
-        width: 600
+        title: `${title+' '+title_event}`,
+        width: 650,
+        draggable: false,
+    });
+
+    $(document).on('click','div', function(){
+        $('#hidden_event_instructions_' + id).dialog('close');
     });
 }
 
