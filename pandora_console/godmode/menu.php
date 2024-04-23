@@ -473,6 +473,15 @@ if ($access_console_node === true) {
         enterprise_hook('translate_string_submenu');
 
         $menu_godmode['gsetup']['sub'] = $sub;
+    } else if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
+        $menu_godmode['gservers']['text'] = __('Servers');
+        $menu_godmode['gservers']['sec2'] = 'godmode/servers/modificar_server';
+        $menu_godmode['gservers']['id'] = 'god-servers';
+        $sub = [];
+        $sub['godmode/servers/modificar_server']['text'] = __('Manage servers');
+        $sub['godmode/servers/modificar_server']['id'] = 'Manage_servers';
+        enterprise_hook('manage_satellite_submenu');
+        $menu_godmode['gservers']['sub'] = $sub;
     }
 }
 

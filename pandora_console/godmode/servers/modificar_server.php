@@ -34,7 +34,7 @@ require_once $config['homedir'].'/include/functions_graph.php';
 
 check_login();
 
-if (! check_acl($config['id_user'], 0, 'PM')) {
+if (! check_acl($config['id_user'], 0, 'AW')) {
     db_pandora_audit(
         AUDIT_LOG_ACL_VIOLATION,
         'Trying to access Server Management'
