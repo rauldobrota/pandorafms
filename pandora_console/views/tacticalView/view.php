@@ -239,7 +239,7 @@
                         <div class="subtitle">
                             <?php echo __('Currently triggered'); ?>
                         </div>
-                        <a href="index.php?sec=galertas&sec2=godmode/alerts/alert_list&status_alert=fired"><?php echo $Alerts->getCurrentlyTriggered(); ?></a>
+                        <a href="index.php?sec=galertas&sec2=godmode/alerts/alert_list&status_alert=fired&standby=1"><?php echo $Alerts->getCurrentlyTriggered(); ?></a>
                     </div>
                     <div class="col-6 br-l">
                         <div class="subtitle">
@@ -369,13 +369,13 @@
                         <a href="index.php?sec=templates&sec2=godmode/modules/manage_module_templates" class="col-4 flex flex-column center pdd_20px br-r">
                             <?php echo $Configurations->getTotalModuleTemplate(); ?>
                         </a>
-                        <a href="index.php?sec=view&sec2=operation/agentes/estado_agente&status=5" class="col-4 flex flex-column center pdd_20px br-r">
+                        <a href="index.php?sec=view&sec2=operation/agentes/status_monitor&refr=0&ag_group=0&ag_freestring=&module_option=1&ag_modulename=&moduletype=&datatype=0&status=5&sort_field=&sort=none" class="col-4 flex flex-column center pdd_20px br-r">
                             <?php echo $Configurations->getNotInitModules(); ?>
                         </a>
                         <a href="index.php?sec=view&sec2=operation/agentes/estado_agente&status=3" class="col-4 flex flex-column center pdd_20px br-r">
                             <?php echo $Configurations->getTotalUnknowAgents(); ?>
                         </a>
-                        <a href="index.php?sec=eventos&sec2=operation/events/events" class="col-4 flex flex-column center pdd_20px">
+                        <a href="index.php?sec=eventos&sec2=operation/events/events&filter[event_view_hr]=24&filter[tag_with]=WyIwIl0=&filter[tag_without]=WyIwIl0=" class="col-4 flex flex-column center pdd_20px">
                             <?php echo $Configurations->getTotalEvents(); ?>
                         </a>
                     </div>

@@ -994,6 +994,27 @@ class Manager implements PublicLogin
         ui_require_css_file('modal');
         ui_require_css_file('form');
 
+        $hash_aux = get_parameter('hash');
+        if (empty($dashboardId)) {
+            $dashboards = $this->getDashboards();
+            $dashboards = array_reduce(
+                $dashboards,
+                function ($carry, $item) {
+                    $carry[$item['id']] = $item['name'];
+                    return $carry;
+                },
+                []
+            );
+
+            foreach ($dashboards as $key => $layout) {
+                $hash_compare = self::generatePublicHash($key);
+                if (hash_equals($hash_aux, $hash_compare)) {
+                    $this->dashboardId = $key;
+                    break;
+                }
+            }
+        }
+
         if ($this->dashboardId === 0
             || $this->deleteDashboard === true
             || $this->copyDashboard === true
@@ -1164,11 +1185,10 @@ class Manager implements PublicLogin
                 [
                     'dashboards'     => $dashboards,
                     'ajaxController' => $this->ajaxController,
-                    'dashboardId'    => $this->dashboardId,
                     'refr'           => $this->refr,
                     'url'            => $this->url,
                     'dashboardName'  => $this->dashboardFields['name'],
-                    'hash'           => self::generatePublicHash(),
+                    'hash'           => self::generatePublicHash($this->dashboardId),
                     'publicLink'     => $this->publicLink,
                     'dashboardGroup' => $this->dashboardFields['id_group'],
                     'dashboardUser'  => $this->dashboardFields['id_user'],
@@ -1210,7 +1230,7 @@ class Manager implements PublicLogin
                     'updateDashboard' => $this->updateDashboard,
                     'cellIdCreate'    => \get_parameter('cellIdCreate', 0),
                     'class'           => (($config['public_dashboard'] === true) ? quotemeta(__CLASS__) : ''),
-                    'hash'            => (($config['public_dashboard'] === true) ? self::generatePublicHash() : ''),
+                    'hash'            => (($config['public_dashboard'] === true) ? self::generatePublicHash($this->dashboardId) : ''),
                 ]
             );
         } else {

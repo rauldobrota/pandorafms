@@ -197,13 +197,6 @@ sub exec_prediction_module ($$$$) {
 		return;
 	}
 	
-	# Netflow modules
-	if ($agent_module->{'prediction_module'} == 4) {
-		logger ($pa_config, "Executing netflow module " . $agent_module->{'nombre'}, 10);
-		enterprise_hook ('exec_netflow_module', [$pa_config, $agent_module, $server_id, $dbh]);
-		return;
-	}
-	
 	# Cluster status module.
 	if ($agent_module->{'prediction_module'} == 5) {
 		logger ($pa_config, "Executing cluster status module " . $agent_module->{'nombre'}, 10);

@@ -1328,6 +1328,25 @@ switch ($action) {
                 ],
                 true
             );
+        } else if (check_acl($config['id_user'], 0, 'RR')) {
+            $tablePagination = ui_pagination(
+                $total_reports,
+                $url,
+                $offset,
+                $pagination,
+                true,
+                'offset',
+                $show_count
+            );
+
+            echo html_print_action_buttons(
+                '',
+                [
+                    'type'          => 'form_action',
+                    'right_content' => $tablePagination,
+                ],
+                true
+            );
         }
     return;
 

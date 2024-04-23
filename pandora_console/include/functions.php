@@ -1006,10 +1006,10 @@ function get_parameter($name, $default='')
 
 function get_parameter_date($name, $default='', $date_format='Y/m/d')
 {
-    // TODO: Configure default value.
     $date_end = get_parameter('date_end', 0);
     $time_end = get_parameter('time_end');
     $datetime_end = strtotime($date_end.' '.$time_end);
+    $date_none = get_parameter($name, $default);
 
     $custom_date = get_parameter('custom_date', 0);
     $range = get_parameter($name, SECONDS_1DAY);
@@ -1055,6 +1055,9 @@ function get_parameter_date($name, $default='', $date_format='Y/m/d')
             $date_init = $first_of_week;
             $period = (strtotime($date_end) - strtotime($first_of_week));
         }
+    } else if ($date_none === 'none') {
+        // Prioritize the report item period based on the current local date/time.
+        $date_end = date('Y/m/d H:i:s');
     } else {
         $date_end = date('Y/m/d H:i:s');
         $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - $range));
@@ -4419,7 +4422,18 @@ function generator_chart_to_pdf(
         $browserFactory = new BrowserFactory($chromium_dir);
 
         // Starts headless chrome.
-        $browser = $browserFactory->createBrowser(['noSandbox' => true]);
+        $browser = $browserFactory->createBrowser(
+            [
+                'noSandbox'               => true,
+                'customFlags'             => [
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--disable-web-security',
+                    '--font-render-hinting=medium',
+                ],
+                'ignoreCertificateErrors' => true,
+            ]
+        );
 
         // Creates a new page.
         $page = $browser->createPage();

@@ -774,6 +774,7 @@ function html_print_select(
     $order=false,
     $custom_id=null,
     $placeholder='',
+    $select2_container_class=false
 ) {
     $output = "\n";
 
@@ -1187,6 +1188,12 @@ function html_print_select(
                         }
                     }
                     });';
+        $output .= '</script>';
+    }
+
+    if ($select2_container_class !== false) {
+        $output .= '<script>';
+        $output .= '$("#'.$id.'").data("select2").$container.addClass("'.$select2_container_class.'")';
         $output .= '</script>';
     }
 
@@ -6616,7 +6623,12 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 false,
                 true,
                 true,
-                true
+                true,
+                '',
+                false,
+                null,
+                '',
+                'select2-multiselect-widget-width select2-multiselect-text-wrap'
             );
             $output .= '</li>';
 
@@ -6684,7 +6696,12 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 false,
                 true,
                 true,
-                true
+                true,
+                '',
+                false,
+                null,
+                '',
+                'select2-multiselect-widget-width select2-multiselect-text-wrap'
             );
             $output .= '</li>';
 

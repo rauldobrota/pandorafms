@@ -597,7 +597,7 @@ if (enterprise_installed() === true) {
                     $config['custom_splash_login'],
                     '',
                     __('Default'),
-                    'default',
+                    'default.png',
                     true,
                     false,
                     true,
@@ -1301,10 +1301,9 @@ $table_chars->data[$row][] = html_print_label_input_block(
             'content' => html_print_div(
                 [
                     'class'   => '',
-                    'content' => __('Area').'&nbsp;'.html_print_radio_button(
+                    'content' => __('Area').'&nbsp;'.html_print_checkbox_switch(
                         'type_module_charts',
                         'area',
-                        '',
                         $config['type_module_charts'] == 'area',
                         true
                     ),
@@ -1313,10 +1312,9 @@ $table_chars->data[$row][] = html_print_label_input_block(
             ).html_print_div(
                 [
                     'class'   => '',
-                    'content' => __('Line').'&nbsp;'.html_print_radio_button(
+                    'content' => __('Line').'&nbsp;'.html_print_checkbox_switch(
                         'type_module_charts',
                         'line',
-                        '',
                         $config['type_module_charts'] != 'area',
                         true
                     ),

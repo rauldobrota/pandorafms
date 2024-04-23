@@ -31,16 +31,16 @@ Description: The default Pandora FMS theme layout
   --text-color-3: #d5d5d5;
   --text-color-4: #dddddd;
 
-  --background-main-color: #f6f7fb;
+  --background-main-color: #111;
   --background-2: #95a3bf;
 
   --border-color: #484848;
-  --border-color-4: #e5e9ed;
+  --border-color-4: #404040;
   --border-dark-color: #e1e1e1;
 
   --input-border: #c0ccdc;
 
-  --table-hover-background: #edfffe;
+  --table-hover-background: #333;
 }
 
 /* General styles */
@@ -1263,7 +1263,7 @@ a.pandora_pagination,
 }
 
 a.pandora_pagination {
-  background-color: #111;
+  background-color: #111 !important;
 }
 
 a.pandora_pagination:hover {
@@ -2089,4 +2089,8 @@ select option:checked {
 
 .basic-chart-widget .flot-base {
   background-color: unset;
+}
+
+#horizontalBar > .labels > .label > div[style^="background"] {
+  filter: invert(1);
 }

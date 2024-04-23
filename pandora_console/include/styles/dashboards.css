@@ -622,6 +622,7 @@ form.modal-dashboard
   .select2-selection__choice {
   margin: 0px;
   height: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .container-tabs {
@@ -1003,4 +1004,16 @@ input.resize_button {
 
 ul.select2-selection__rendered > li.select2-selection__choice {
   box-sizing: border-box !important;
+}
+
+.select2-container.select2-container--default.select2-container--open,
+.select2-container.select2-container--default.select2-container--open
+  .select2-dropdown {
+  box-sizing: border-box !important;
+}
+
+.select2-container.select2-container--default.select2-container--open
+  .select2-dropdown
+  .select2-results__option {
+  line-break: anywhere;
 }
