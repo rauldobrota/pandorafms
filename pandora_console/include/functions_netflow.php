@@ -1658,8 +1658,8 @@ function netflow_draw_item(
                 netflow_aggregate_is_ip($aggregate)
             );
 
-            $data_circular['width'] = 390;
-            $data_circular['height'] = 390;
+            $data_circular['width'] = $width_content;
+            $data_circular['height'] = $height_content;
 
             $html = '<div class="center">';
             $html .= graph_netflow_circular_mesh($data_circular);
