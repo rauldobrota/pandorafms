@@ -7754,4 +7754,6 @@ ALTER TABLE `tdeployment_hosts` DROP COLUMN `arch`;
 -- Update all deployment recon tasks port
 UPDATE `trecon_task` SET `field4` = 41121 WHERE `type` = 9;
 
+UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.vmware';
+
 COMMIT;
