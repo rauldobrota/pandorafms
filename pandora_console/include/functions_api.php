@@ -13175,10 +13175,12 @@ function api_set_create_event($id, $trash1, $other, $returnType)
             $values['id_extra'] = '';
         }
 
-        if ($other['data'][21] != '') {
-            $values['event_custom_id'] = $other['data'][21];
-        } else {
-            $values['event_custom_id'] = '';
+        if (empty($values['event_custom_id']) === true) {
+            if ($other['data'][21] != '') {
+                $values['event_custom_id'] = $other['data'][21];
+            } else {
+                $values['event_custom_id'] = '';
+            }
         }
 
         $custom_data = base64_decode($values['custom_data']);
