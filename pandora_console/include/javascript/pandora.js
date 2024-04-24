@@ -2566,19 +2566,13 @@ function menuActionButtonResizing() {
 
 function check_period_warning(time, title, message) {
   var period = time.value;
-  var times = 0;
+
   if (period >= 2592000 && period < 7776000) {
     WarningPeriodicityModal(title, message);
   } else if (period >= 7776000 && period < 15552000) {
-    do {
-      WarningPeriodicityModal(title, message);
-      times = times + 1;
-    } while (times < 2);
+    WarningPeriodicityModal(title, message);
   } else if (period >= 15552000) {
-    do {
-      WarningPeriodicityModal(title, message);
-      times = times + 1;
-    } while (times < 3);
+    WarningPeriodicityModal(title, message);
   }
 }
 
