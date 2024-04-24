@@ -25,6 +25,8 @@
  * GNU General Public License for more details.
  * ============================================================================
  */
+
+global $config;
 require_once $config['homedir'].'/include/class/JWTRepository.class.php';
 
 $list_user_tokens = (bool) get_parameter('list_user_tokens');
@@ -32,8 +34,6 @@ $get_jwt_for_login = (bool) get_parameter('get_jwt_for_login', false);
 
 // Tokens for api 2.0.
 if ($list_user_tokens === true) {
-    global $config;
-
     // Datatables offset, limit and order.
     $filter = get_parameter('filter', []);
     $page = (int) get_parameter('start', 0);
@@ -169,7 +169,6 @@ if ($list_user_tokens === true) {
 
 // Token for JWT auth in metaconsole.
 if ($get_jwt_for_login === true) {
-    global $config;
     if (is_metaconsole() === true
         && ((bool) users_is_admin($config['id_user']) === true || (bool) can_user_access_node() === true)
         && empty($config['JWT_signature']) === false
