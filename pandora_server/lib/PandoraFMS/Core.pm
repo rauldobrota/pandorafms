@@ -3674,12 +3674,12 @@ Updates the keep_alive module for the given agent.
 sub pandora_module_keep_alive ($$$$$) {
 	my ($pa_config, $id_agent, $agent_name, $server_id, $dbh) = @_;
 	
-	logger($pa_config, "Updating keep_alive module for agent '" . safe_output($agent_name) . "'.", 10);
+	logger($pa_config, "Updating keep_alive modules for agent '" . safe_output($agent_name) . "'.", 10);
 	
-	# Update keepalive module 
-	my $module = get_db_single_row ($dbh, 'SELECT * FROM tagente_modulo WHERE id_agente = ? AND delete_pending = 0 AND id_tipo_modulo = 100', $id_agent);
-	if (defined ($module)) {
-		my %data = ('data' => 1);
+	# Update keepalive modules
+	my @modules = get_db_rows($dbh, 'SELECT * FROM tagente_modulo WHERE id_agente = ? AND delete_pending = 0 AND id_tipo_modulo = 100', $id_agent);
+	my %data = ('data' => 1);
+	foreach my $module (@modules) {
 		pandora_process_module ($pa_config, \%data, '', $module, 'keep_alive', '', time(), $server_id, $dbh);
 	}
 }
