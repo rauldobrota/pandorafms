@@ -3718,13 +3718,16 @@ datetime_picker_callback();
 function show_instructions(id, title_event){
     title = "<?php echo __('Instructions'); ?>";
     $('#hidden_event_instructions_' + id).dialog({
-        title: `${title+' '+title_event}`,
+        title: `${title+' '+atob(title_event)}`,
         width: 650,
-        draggable: false,
-    });
-
-    $(document).on('click','div', function(){
-        $('#hidden_event_instructions_' + id).dialog('close');
+        draggable: true,
+        modal: true,
+        closeOnEscape: true,
+        open: function(){
+            $('.ui-widget-overlay').bind('click',function(){
+                $('#hidden_event_instructions_' + id).dialog('close');
+            })
+        }
     });
 }
 

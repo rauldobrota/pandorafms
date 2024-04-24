@@ -5888,12 +5888,6 @@ function events_get_instructions($event, $max_text_length=300)
                     io_safe_output($event['unknown_instructions'])
                 );
             }
-
-            $event_name = str_replace(
-                "'",
-                '',
-                io_safe_output($event['evento'])
-            );
         break;
 
         case 'going_up_warning':
@@ -5905,12 +5899,6 @@ function events_get_instructions($event, $max_text_length=300)
                     io_safe_output($event['warning_instructions'])
                 );
             }
-
-            $event_name = str_replace(
-                "'",
-                '',
-                io_safe_output($event['evento'])
-            );
         break;
 
         case 'going_up_critical':
@@ -5922,12 +5910,6 @@ function events_get_instructions($event, $max_text_length=300)
                     io_safe_output($event['critical_instructions'])
                 );
             }
-
-            $event_name = str_replace(
-                "'",
-                '',
-                io_safe_output($event['evento'])
-            );
         break;
 
         default:
@@ -5946,7 +5928,16 @@ function events_get_instructions($event, $max_text_length=300)
         return $value;
     }
 
-    $over_event_name = ui_print_truncate_text($event_name, 51, false, true, false);
+    $event_name = ui_print_truncate_text(
+        io_safe_output($event['evento']),
+        GENERIC_SIZE_TEXT,
+        false,
+        true,
+        false,
+        '...'
+    );
+
+    $over_event_name = base64_encode($event_name);
     $output  = '<div id="hidden_event_instructions_'.$event['id_evento'].'"';
     $output .= ' class="event_instruction">';
     $output .= $value;
