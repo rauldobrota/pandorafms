@@ -7273,6 +7273,10 @@ div.graph div.legend table {
   margin-left: 10px;
 }
 
+.mrgn_lft_10px_imp {
+  margin-left: 10px !important;
+}
+
 .mrgn_lft_15px {
   margin-left: 15px;
 }

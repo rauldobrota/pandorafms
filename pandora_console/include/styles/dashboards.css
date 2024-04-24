@@ -1017,3 +1017,7 @@ ul.select2-selection__rendered > li.select2-selection__choice {
   .select2-results__option {
   line-break: anywhere;
 }
+
+#period_manual > input[type="text"] {
+  box-sizing: border-box !important;
+}
