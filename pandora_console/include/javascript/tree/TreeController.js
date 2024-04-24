@@ -1543,7 +1543,7 @@ var TreeController = {
         } else if (controller.tree.length == 0) {
           controller.recipient.empty();
           controller.recipient.html(
-            "<div>" + controller.emptyMessage + "</div>"
+            "<div class='recipent'>" + controller.emptyMessage + "</div>"
           );
           return;
         }

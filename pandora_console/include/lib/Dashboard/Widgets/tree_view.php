@@ -684,7 +684,7 @@ class TreeViewWidget extends Widget
             'dateFormat'   => DATE_FORMAT_JS,
             'userLanguage' => get_user_language(),
             'translate'    => [
-                'emptyMessage'  => __('No data found'),
+                'emptyMessage'  => ui_print_info_message(['no_close' => true, 'message' => __('No data found.')], '', true),
                 'foundMessage'  => $foundMessage,
                 'total'         => [
                     'agents'  => __('Total agents'),
