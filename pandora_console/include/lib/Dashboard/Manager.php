@@ -411,6 +411,33 @@ class Manager implements PublicLogin
             $config['public_dashboard'] = true;
             $config['force_instant_logout'] = true;
             return true;
+        } else {
+            $dashboards = self::getDashboards();
+            $dashboards = array_reduce(
+                $dashboards,
+                function ($carry, $item) {
+                    $carry[$item['id']] = $item['name'];
+                    return $carry;
+                },
+                []
+            );
+
+            foreach ($dashboards as $key => $layout) {
+                $hash_compare = self::generatePublicHash($key);
+                if (hash_equals($hash, $hash_compare)) {
+                    // "Log" user in.
+                    if (session_status() !== PHP_SESSION_ACTIVE) {
+                        session_start();
+                    }
+
+                    $_SESSION['id_usuario'] = get_parameter('id_user');
+                    session_write_close();
+
+                    $config['public_dashboard'] = true;
+                    $config['force_instant_logout'] = true;
+                    return true;
+                }
+            }
         }
 
         // Remove id user from config array if authentication has failed.

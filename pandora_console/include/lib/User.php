@@ -230,7 +230,7 @@ class User extends Entity implements PublicLogin
         global $config;
 
         $str = $config['dbpass'];
-        $str .= $config['id_user'];
+        $str .= ($config['id_user'] ?? get_parameter('id_user'));
         $str .= $other_secret;
         return hash('sha256', $str);
     }
