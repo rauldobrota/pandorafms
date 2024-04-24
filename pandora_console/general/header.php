@@ -52,7 +52,7 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         }
 
         // ======= Servers List ===============================================
-        if ((bool) check_acl($config['id_user'], 0, 'AW') !== false) {
+        if ((bool) check_acl($config['id_user'], 0, 'PM') !== false) {
             $servers = [];
             $servers_info = servers_get_info();
 
