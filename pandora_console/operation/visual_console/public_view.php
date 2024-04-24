@@ -13,6 +13,12 @@
 // GNU General Public License for more details.
 require_once '../../include/config.php';
 
+$id_layout = get_parameter('id_layout', null);
+if ($id_layout !== null) {
+    include '../../general/noaccess.php';
+    return;
+}
+
 use PandoraFMS\User;
 
 // Set root on homedir, as defined in setup.
