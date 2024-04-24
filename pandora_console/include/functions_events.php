@@ -1155,7 +1155,7 @@ function events_get_all(
     }
 
     // Free search.
-    if (empty($filter['search']) === false && (bool) $filter['regex'] === false) {
+    if (empty($filter['search']) === false) {
         if (isset($config['dbconnection']->server_version) === true
             && $config['dbconnection']->server_version > 50600
         ) {
@@ -1185,22 +1185,38 @@ function events_get_all(
             $array_search[] = 'lower(ta.alias)';
         }
 
-        // Disregard repeated whitespaces when searching.
-        $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+        if ((bool) $filter['regex'] === true) {
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s %s %s REGEXP "%s" ',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    preg_replace('/(?<!\\\\)"/', '', io_safe_output($filter['search'])),
+                );
+                $sql_search .= ' ';
+            }
 
-        $sql_search = ' AND (';
-        foreach ($array_search as $key => $field) {
-            $sql_search .= sprintf(
-                '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
-                ($key === 0) ? '' : $nexo,
-                $field,
-                $not_search,
-                $collapsed_spaces_search
-            );
-            $sql_search .= ' ';
+            $sql_search .= ' )';
+        } else {
+            // Disregard repeated whitespaces when searching.
+            $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    $collapsed_spaces_search
+                );
+                $sql_search .= ' ';
+            }
+
+            $sql_search .= ' )';
         }
-
-        $sql_search .= ' )';
 
         $sql_filters[] = $sql_search;
     }
