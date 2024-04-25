@@ -169,6 +169,8 @@ function menu_print_menu(&$menu)
         $sec2 = 'godmode/users/profile_list';
     } else if ($sec2 === 'godmode/users/configure_token') {
         $sec2 = 'godmode/users/token_list';
+    } else if ($sec2 === 'godmode/servers/modificar_server' && check_acl($config['id_user'], 0, 'AW')) {
+        $sec2 = 'enterprise/godmode/servers/list_satellite';
     } else {
         $sec2 = (string) get_parameter('sec2');
     }

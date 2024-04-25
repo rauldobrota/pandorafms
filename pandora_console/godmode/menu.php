@@ -478,8 +478,6 @@ if ($access_console_node === true) {
         $menu_godmode['gservers']['sec2'] = 'godmode/servers/modificar_server';
         $menu_godmode['gservers']['id'] = 'god-servers';
         $sub = [];
-        $sub['godmode/servers/modificar_server']['text'] = __('Manage servers');
-        $sub['godmode/servers/modificar_server']['id'] = 'Manage_servers';
         enterprise_hook('manage_satellite_submenu');
         $menu_godmode['gservers']['sub'] = $sub;
     }
