@@ -7755,6 +7755,8 @@ ALTER TABLE `tdeployment_hosts` DROP COLUMN `arch`;
 UPDATE `trecon_task` SET `field4` = 41121 WHERE `type` = 9;
 
 --Update execution in proxmox discovery plugin
-UPDATE `tdiscovery_apps_executions` SET `execution` = '&#039;_exec1_&#039;&#x20;--conf&#x20;&#039;_tempfileProxmox_&#039;' WHERE `short_name` = 'pandorafms.proxmox';
+SET @short_name = 'pandorafms.proxmox';
+SELECT @id_app := `id_app` FROM `tdiscovery_apps` WHERE `short_name` = @short_name;
+UPDATE `tdiscovery_apps_executions` SET `execution` = '&#039;_exec1_&#039;&#x20;--conf&#x20;&#039;_tempfileProxmox_&#039;' WHERE `id_app` = @id_app;
 
 COMMIT;
