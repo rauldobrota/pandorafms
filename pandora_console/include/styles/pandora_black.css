@@ -2102,3 +2102,7 @@ select option:checked {
 #result_order .show_result_interpreter #result_items li.active {
   background-color: var(--secondary-color);
 }
+
+.color_666 {
+  color: var(--text-color);
+}
