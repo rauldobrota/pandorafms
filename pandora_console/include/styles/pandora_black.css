@@ -2102,3 +2102,8 @@ select option:checked {
 #result_order .show_result_interpreter #result_items li.active {
   background-color: var(--secondary-color);
 }
+
+.content-widget .legend_background,
+.content-widget .flot-base {
+  background-color: unset;
+}
