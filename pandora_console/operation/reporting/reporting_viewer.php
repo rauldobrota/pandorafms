@@ -53,6 +53,8 @@ $time_start = date('H:i:s', $date_params['date_init']);
 $date_init = date('Y/m/d', $date_params['date_init']);
 $time_init = date('H:i:s', $date_params['date_init']);
 
+$time = $time_end;
+
 $custom_date_end = date('Y/m/d H:i:s', $date_params['date_end']);
 
 $period = $date_params['period'];
