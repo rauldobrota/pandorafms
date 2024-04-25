@@ -6191,7 +6191,7 @@ sub cli_create_group() {
 				eval {
 					$group_id_nodo = db_insert ($dbh_metaconsole, 'id_grupo', 'INSERT INTO tgrupo (id_grupo, nombre, icon, parent, propagate, disabled,
 							custom_id, id_skin, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', $group_name, safe_input($group_name), $icon, 
-							$parent_group_id, 0, 0, '', 0, $description);
+							$parent_group_id, 0, 0, '', 0, safe_input($description));
 				};
 				if ($@) {
 					print_log "[ERROR] Problems with IDS and doesn't created group\n\n";
@@ -6293,15 +6293,15 @@ sub cli_update_group() {
 					
 				if(defined($icon)){
 					if(defined($description)){
-						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? , description=? WHERE id_grupo=?',$group_name,$parent_group_id,$icon,$description,$group_id);
+						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? , description=? WHERE id_grupo=?',safe_input($group_name),$parent_group_id,$icon, safe_input($description) ,$group_id);
 					}else{
-						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? WHERE id_grupo=?',$group_name,$parent_group_id,$icon,$group_id);
+						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? WHERE id_grupo=?',safe_input($group_name),$parent_group_id,$icon,$group_id);
 					}
 				}else{
-					db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? WHERE id_grupo=?',$group_name,$parent_group_id,$group_id);
+					db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? WHERE id_grupo=?',safe_input($group_name),$parent_group_id,$group_id);
 				}
 			}else{
-				db_do ($dbh,'UPDATE tgrupo SET nombre=? WHERE id_grupo=?',$group_name,$group_id);
+				db_do ($dbh,'UPDATE tgrupo SET nombre=? WHERE id_grupo=?',safe_input($group_name),$group_id);
 			}
 			print_log "[INFO] Updated group '$group_id'\n\n";
 		}
