@@ -710,8 +710,10 @@ function config_update_config()
                         $error_update[] = __('Admin LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
-                        $error_update[] = __('Admin LDAP password');
+                    if ((bool) get_parameter('ldap_admin_pass_password_changed', false) === true) {
+                        if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
+                            $error_update[] = __('Admin LDAP password');
+                        }
                     }
 
                     if (config_update_value('ldap_search_timeout', (int) get_parameter('ldap_search_timeout', 5), true) === false) {
