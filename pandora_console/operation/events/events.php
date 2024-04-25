@@ -2645,20 +2645,22 @@ try {
 
 
     // Always add options column.
-    $fields = array_merge(
-        $fields,
-        [
+    if ((bool) check_acl($config['id_user'], 0, 'EW') === true) {
+        $fields = array_merge(
+            $fields,
             [
-                'text'  => 'options',
-                'class' => 'table_action_buttons mw100px',
-            ],
-            [
-                'text'  => 'm',
-                'extra' => $checkbox_all,
-                'class' => 'w20px no-text-imp',
-            ],
-        ]
-    );
+                [
+                    'text'  => 'options',
+                    'class' => 'table_action_buttons mw100px',
+                ],
+                [
+                    'text'  => 'm',
+                    'extra' => $checkbox_all,
+                    'class' => 'w20px no-text-imp',
+                ],
+            ]
+        );
+    }
 
     // Get column names.
     $column_names = events_get_column_names($fields, true);
@@ -2869,8 +2871,8 @@ try {
                     'column_names'                   => $column_names,
                     'columns'                        => $fields,
                     'no_sortable_columns'            => [
-                        -1,
-                        -2,
+                        'options',
+                        'm',
                         'column-instructions',
                         'user_comment',
                     ],

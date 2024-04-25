@@ -1119,11 +1119,13 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
-        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $EM_groups = users_get_groups($config['id_user'], 'EM', true, true);
         $EW_groups = users_get_groups($config['id_user'], 'EW', true, true);
+    }
 
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
         // Get groups where user have ER grants.
         if ((bool) $filter['search_secondary_groups'] === true) {
             $sql_filters[] = sprintf(
@@ -1690,7 +1692,7 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $exists_id_grupo = false;
         foreach ($fields as $field) {
             if (str_contains($field, 'te.id_grupo') === true || str_contains($field, 'te.*') === true) {
@@ -1814,7 +1816,7 @@ function events_get_all(
         return $sql;
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $can_manage = '0 as user_can_manage';
         if (empty($EM_groups) === false) {
             $can_manage = sprintf(
