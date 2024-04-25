@@ -625,6 +625,10 @@ var TreeController = {
                 $("#fixed-bottom-box-head-title").html(
                   $("#fixedBottomHeadTitle").html()
                 );
+
+                $("#fixed-bottom-box-head-title")
+                  .closest(".fixed-bottom-box")
+                  .addClass("tree-view-bottom-modal");
               },
               error: function(xhr, textStatus, errorThrown) {
                 callback(errorThrown);
