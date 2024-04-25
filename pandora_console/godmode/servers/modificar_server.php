@@ -34,7 +34,7 @@ require_once $config['homedir'].'/include/functions_graph.php';
 
 check_login();
 
-if (! check_acl($config['id_user'], 0, 'PM')) {
+if (! check_acl($config['id_user'], 0, 'PM') && ((bool) check_acl($config['id_user'], 0, 'AW') === true && $_GET['server_remote'] === null)) {
     db_pandora_audit(
         AUDIT_LOG_ACL_VIOLATION,
         'Trying to access Server Management'
@@ -286,19 +286,21 @@ if (isset($_GET['server']) === true) {
         $id_server
     );
 
-    $buttons = '';
+    $buttons = [];
 
     // Buttons.
-    $buttons = [
-        'standard_editor' => [
-            'active' => false,
-            'text'   => '<a href="index.php?sec=gservers&sec2=godmode/servers/modificar_server&server_remote='.$id_server.'&ext='.$ext.'&tab=standard_editor&pure='.$pure.'">'.html_print_image('images/list.png', true, ['title' => __('Standard editor')]).'</a>',
-        ],
-        'advanced_editor' => [
-            'active' => false,
-            'text'   => '<a href="index.php?sec=gservers&sec2=godmode/servers/modificar_server&server_remote='.$id_server.'&ext='.$ext.'&tab=advanced_editor&pure='.$pure.'">'.html_print_image('images/pen.png', true, ['title' => __('Advanced editor')]).'</a>',
-        ],
-    ];
+    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
+        $buttons = [
+            'standard_editor' => [
+                'active' => false,
+                'text'   => '<a href="index.php?sec=gservers&sec2=godmode/servers/modificar_server&server_remote='.$id_server.'&ext='.$ext.'&tab=standard_editor&pure='.$pure.'">'.html_print_image('images/list.png', true, ['title' => __('Standard editor')]).'</a>',
+            ],
+            'advanced_editor' => [
+                'active' => false,
+                'text'   => '<a href="index.php?sec=gservers&sec2=godmode/servers/modificar_server&server_remote='.$id_server.'&ext='.$ext.'&tab=advanced_editor&pure='.$pure.'">'.html_print_image('images/pen.png', true, ['title' => __('Advanced editor')]).'</a>',
+            ],
+        ];
+    }
 
     if ($server_type === SERVER_TYPE_ENTERPRISE_SATELLITE) {
         $buttons['agent_editor'] = [

@@ -553,7 +553,6 @@ class SatelliteCollection extends HTML
                                     },
                                     datatype: "json",
                                     success: function(data) {
-                                        console.log(data);
                                         showMsg(data);
                                     },
                                     error: function(e) {
@@ -596,7 +595,6 @@ class SatelliteCollection extends HTML
                                     },
                                     datatype: "json",
                                     success: function(data) {
-                                        console.log(data);
                                         showMsg(data);
                                     },
                                     error: function(e) {
@@ -615,7 +613,7 @@ class SatelliteCollection extends HTML
             function showMsg(data) {
                 var title = "<?php echo __('Success'); ?>";
                 var dt_satellite_agents = $("#satellite_collections").DataTable();
-                dt_<?php echo $this->tableId; ?>.draw(false);
+                dt_satellite_agents.draw(false);
 
                 var text = '';
                 var failed = 0;
