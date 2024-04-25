@@ -2387,7 +2387,11 @@ if (empty($result) === false) {
         $tablePagination = ui_pagination($count_modules, false, $offset, 0, true, 'offset', $show_count);
     }
 } else {
-    ui_print_info_message(['no_close' => true, 'message' => __('Please apply a filter to display the data')]);
+    if (get_parameter('ag_group', false) !== false) {
+        ui_print_info_message(['no_close' => true, 'message' => __('No data to show')]);
+    } else {
+        ui_print_info_message(['no_close' => true, 'message' => __('Please apply a filter to display the data')]);
+    }
 }
 
 if (isset($tablePagination) === false) {
