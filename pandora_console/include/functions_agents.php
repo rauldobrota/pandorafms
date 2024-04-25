@@ -4934,7 +4934,7 @@ function get_resume_agent_concat($id_agente, $all_groups, $agent)
         $module_score = modules_get_agentmodule_id(io_safe_input('Hardening - Score'), $agent['id_agente']);
         $hardening = '';
         if (is_array($module_score) === true && key_exists('id_agente_modulo', $module_score) == true) {
-            $raw_data_score = modules_get_raw_data($module_score['id_agente_modulo'], 0, time());
+            $raw_data_score = modules_get_raw_data($module_score['id_agente_modulo'], 0, time(), false);
             $hardening = format_numeric($raw_data_score[0]['datos'], 2);
             $data = [];
             $data[0] = '<b>'.__('Hardening').'</b>';
