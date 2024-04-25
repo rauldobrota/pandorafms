@@ -299,9 +299,9 @@ $(document).ready (function () {
             id_agent: { valueNotEquals: "" },
         },
         messages: {
-            id_agent_module: { valueNotEquals: "Please select an item!" },
-            template: { valueNotEquals: "Please select a templete!" },
-            id_agent: { valueNotEquals: "Please select an agent!" }
+            id_agent_module: { valueNotEquals: "<?php echo __('Please select an item'); ?>!"},
+            template: { valueNotEquals: "<?php echo __('Please select a templete'); ?>!"},
+            id_agent: { valueNotEquals: "<?php echo __('Please select an agent'); ?>!"},
         }
     });
     $("select#template").change (function () {
