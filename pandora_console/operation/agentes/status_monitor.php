@@ -2388,7 +2388,7 @@ if (empty($result) === false) {
     }
 } else {
     if (get_parameter('ag_group', false) !== false) {
-        ui_print_info_message(['no_close' => true, 'message' => __('No data to show')]);
+        ui_print_info_message(['no_close' => true, 'message' => __('There are no monitors with these features or status')]);
     } else {
         ui_print_info_message(['no_close' => true, 'message' => __('Please apply a filter to display the data')]);
     }
