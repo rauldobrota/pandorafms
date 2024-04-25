@@ -4755,7 +4755,10 @@ function get_resume_agent_concat($id_agente, $all_groups, $agent)
             'force_checks',
             false,
             'window.location.assign("'.$url.'&amp;flag_agent=1")',
-            [ 'mode' => 'link' ],
+            [
+                'mode'  => 'link',
+                'class' => 'mrgn_lft_20px ',
+            ],
             true
         );
     }
