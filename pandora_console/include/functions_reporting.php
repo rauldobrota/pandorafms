@@ -6686,6 +6686,7 @@ function reporting_sql_graph(
     $type_sql_graph
 ) {
     global $config;
+    $layout = false;
 
     switch ($type_sql_graph) {
         case 'sql_graph_hbar':
@@ -6694,6 +6695,7 @@ function reporting_sql_graph(
         break;
 
         case 'sql_graph_vbar':
+            $layout = ['padding' => ['top' => '40']];
             $return['type'] = 'sql_graph_vbar';
         break;
 
@@ -6768,7 +6770,8 @@ function reporting_sql_graph(
                 $only_image,
                 ui_get_full_url(false, false, false, false),
                 $ttl,
-                $content['top_n_value']
+                $content['top_n_value'],
+                $layout
             );
         break;
 
