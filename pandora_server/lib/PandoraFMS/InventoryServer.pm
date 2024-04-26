@@ -83,7 +83,7 @@ sub data_producer ($) {
 	my @tasks;
 	my @rows;
 
-	if (pandora_is_master($pa_config) == 0) {
+	if (pandora_is_master($pa_config, $dbh) == 0) {
 		if ($pa_config->{'dbengine'} ne 'oracle') {
 			@rows = get_db_rows ($dbh,
 				'SELECT tagent_module_inventory.id_agent_module_inventory, tagent_module_inventory.flag, tagent_module_inventory.timestamp
