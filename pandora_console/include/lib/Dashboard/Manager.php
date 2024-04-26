@@ -364,6 +364,27 @@ class Manager implements PublicLogin
 
 
     /**
+     * Generates a hash to authenticate in public dashboards with user form url.
+     *
+     * @param string|null $other_secret To authenticate some parts
+     * of public dashboards (like visual consoles or wux widgets)
+     * another hash is needed. Other secret avoid
+     * to reuse the main hash to view other components.
+     *
+     * @return string Returns a hash with the authenticaction.
+     */
+    public static function generatePublicHashUser(?string $other_secret='', $id_user=''):string
+    {
+        global $config;
+
+        $str = $config['dbpass'];
+        $str .= ($id_user ?? $config['id_user']);
+        $str .= $other_secret;
+        return hash('sha256', $str);
+    }
+
+
+    /**
      * Validates a hash to authenticate in public dashboards.
      *
      * @param string $hash         Hash to be checked.
@@ -1038,6 +1059,17 @@ class Manager implements PublicLogin
                 if (hash_equals($hash_aux, $hash_compare)) {
                     $this->dashboardId = $key;
                     break;
+                }
+            }
+
+            if (empty($this->dashboardId) === true) {
+                $id_user_url = get_parameter('id_user', $config['id_user']);
+                foreach ($dashboards as $key => $layout) {
+                    $hash_compare = self::generatePublicHashUser($key, $id_user_url);
+                    if (hash_equals($hash_aux, $hash_compare)) {
+                        $this->dashboardId = $key;
+                        break;
+                    }
                 }
             }
         }

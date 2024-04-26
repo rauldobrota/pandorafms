@@ -237,6 +237,25 @@ class User extends Entity implements PublicLogin
 
 
     /**
+     * Generates a hash to authenticate in public views with user from url.
+     *
+     * @param string|null $other_secret If you need to authenticate using a
+     * varable string, use this 'other_secret' to customize the hash.
+     *
+     * @return string Returns a hash with the authenticaction.
+     */
+    public static function generatePublicHashUser(?string $other_secret='', $id_user_url=''): string
+    {
+        global $config;
+
+        $str = $config['dbpass'];
+        $str .= ($id_user_url ?? $config['id_user']);
+        $str .= $other_secret;
+        return hash('sha256', $str);
+    }
+
+
+    /**
      * Validates a hash to authenticate in public view.
      *
      * @param string $hash         Hash to be checked.

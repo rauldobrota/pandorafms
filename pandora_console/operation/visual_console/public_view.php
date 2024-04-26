@@ -79,6 +79,17 @@ foreach ($vcs as $key => $data) {
     }
 }
 
+$id_user_url = get_parameter('id_user', $config['id_user']);
+if (empty($visualConsoleId) === true) {
+    foreach ($vcs as $key => $data) {
+        $hash_compare = User::generatePublicHashUser($key, $id_user_url);
+        if (hash_equals($hash_compare, $hash)) {
+            $visualConsoleId = (int) $key;
+            break;
+        }
+    }
+}
+
 if (empty($visualConsoleId) === true) {
     db_pandora_audit(
         AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT,
