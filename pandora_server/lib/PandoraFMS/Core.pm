@@ -7010,8 +7010,21 @@ Returns 1 if this server is the current master, 0 otherwise.
 
 =cut
 ##########################################################################
-sub pandora_is_master ($) {
-	my ($pa_config) = @_;
+sub pandora_is_master ($;$) {
+	my ($pa_config, $dbh) = @_;
+
+	# When multiprocess is enabled the variable $Master is not shared between
+	# servers.
+	if (defined($dbh) && $pa_config->{'multiprocess'} == 1) {
+		my $current_master = get_db_value_limit ($dbh, 'SELECT name FROM tserver 
+	                                  WHERE master <> 0 AND status = 1
+									  ORDER BY master DESC', 1);
+		if (defined($current_master) && $current_master eq $pa_config->{'servername'}) {
+			return 1;
+		}
+
+		return 0;
+	}
 
 	if ($Master eq $pa_config->{'servername'}) {
 		return 1;

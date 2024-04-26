@@ -625,6 +625,10 @@ var TreeController = {
                 $("#fixed-bottom-box-head-title").html(
                   $("#fixedBottomHeadTitle").html()
                 );
+
+                $("#fixed-bottom-box-head-title")
+                  .closest(".fixed-bottom-box")
+                  .addClass("tree-view-bottom-modal");
               },
               error: function(xhr, textStatus, errorThrown) {
                 callback(errorThrown);
@@ -1543,7 +1547,7 @@ var TreeController = {
         } else if (controller.tree.length == 0) {
           controller.recipient.empty();
           controller.recipient.html(
-            "<div>" + controller.emptyMessage + "</div>"
+            "<div class='recipent'>" + controller.emptyMessage + "</div>"
           );
           return;
         }

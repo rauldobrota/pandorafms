@@ -7273,6 +7273,10 @@ div.graph div.legend table {
   margin-left: 10px;
 }
 
+.mrgn_lft_10px_imp {
+  margin-left: 10px !important;
+}
+
 .mrgn_lft_15px {
   margin-left: 15px;
 }
@@ -14267,4 +14271,9 @@ table.filter-table-adv td > div.row-flex label.custom_checkbox {
 
 table.filter-table-adv td > div.row-flex input {
   width: 100%;
+}
+
+div.fixed-bottom-box.tree-view-bottom-modal {
+  z-index: 1;
+  border: 1px solid var(--border-color);
 }
