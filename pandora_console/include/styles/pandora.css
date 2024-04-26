@@ -14272,3 +14272,8 @@ table.filter-table-adv td > div.row-flex label.custom_checkbox {
 table.filter-table-adv td > div.row-flex input {
   width: 100%;
 }
+
+div.fixed-bottom-box.tree-view-bottom-modal {
+  z-index: 1;
+  border: 1px solid var(--border-color);
+}
