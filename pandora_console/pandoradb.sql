@@ -1326,6 +1326,7 @@ CREATE TABLE IF NOT EXISTS `tusuario` (
   `allowed_ip_list` TEXT,
   `auth_token_secret` VARCHAR(45) DEFAULT NULL,
   `session_max_time_expire` INT NOT NULL DEFAULT 0,
+  `stop_lts_modal` TINYINT NOT NULL DEFAULT 0,
   CONSTRAINT `fk_filter_id` FOREIGN KEY (`id_filter`) REFERENCES tevent_filter (`id_filter`) ON DELETE SET NULL,
   UNIQUE KEY `id_user` (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -2991,18 +2992,6 @@ CREATE TABLE IF NOT EXISTS `tsesion_extended` (
   KEY idx_session (id_sesion)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
--- -----------------------------------------------------
--- Table `tskin`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tskin` ( 
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `name` TEXT ,
-  `relative_path` TEXT , 
-  `description` TEXT ,
-  `disabled` TINYINT NOT NULL DEFAULT 0, 
-  PRIMARY KEY  (id)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
-
 -- ---------------------------------------------------------------------
 -- Table `tpolicy_queue`
 -- ---------------------------------------------------------------------
@@ -3944,19 +3933,18 @@ CREATE TABLE IF NOT EXISTS `tdeployment_hosts` (
   `id` SERIAL,
   `id_cs` VARCHAR(100),
   `ip` VARCHAR(100) NOT NULL UNIQUE,
-  `id_os` INT UNSIGNED DEFAULT 0,
-  `os_version` VARCHAR(100) DEFAULT '' COMMENT 'OS version in STR format',
-  `arch` ENUM('x64', 'x86') DEFAULT 'x64',
   `current_agent_version` VARCHAR(100) DEFAULT '' COMMENT 'String latest installed agent',
   `target_agent_version_id` BIGINT UNSIGNED,
   `deployed` BIGINT NOT NULL DEFAULT 0 COMMENT 'When it was deployed',
   `server_ip` VARCHAR(100) DEFAULT NULL COMMENT 'Where to point target agent',
   `last_err` TEXT,
+  `deploy_method` ENUM('SSH', 'HTTP', 'HTTPS') DEFAULT 'SSH',
+  `deploy_port` INT UNSIGNED NOT NULL DEFAULT 22,
+  `server_port` INT UNSIGNED NOT NULL DEFAULT 41121,
+  `temp_folder` VARCHAR(500) DEFAULT '/tmp',
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id_cs`) REFERENCES `tcredential_store`(`identifier`)
   ON UPDATE CASCADE ON DELETE SET NULL,
-  FOREIGN KEY (`id_os`) REFERENCES `tconfig_os`(`id_os`)
-  ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`target_agent_version_id`) REFERENCES  `tagent_repository`(`id`)
   ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -4443,7 +4431,8 @@ CREATE TABLE IF NOT EXISTS `tfavmenu_user` (
   `url` TEXT NOT NULL,
   `label` VARCHAR(255) NOT NULL,
   `section` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`));
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- ---------------------------------------------------------------------
 -- Table `tsesion_filter_log_viewer`
@@ -4589,7 +4578,7 @@ CREATE TABLE IF NOT EXISTS `tfiles_repo` (
 	`description` varchar(500) NULL default '',
 	`hash` varchar(8) NULL default '',
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- ---------------------------------------------------------------------
 -- Table `tfiles_repo_group`
@@ -4600,7 +4589,7 @@ CREATE TABLE IF NOT EXISTS `tfiles_repo_group` (
 	`id_group` int(4) unsigned NOT NULL,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`id_file`) REFERENCES tfiles_repo(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- -----------------------------------------------------
 -- Table `tmodule_synth`

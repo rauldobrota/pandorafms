@@ -81,30 +81,34 @@ function pandora_realtime_graphs()
     $table->style = [];
     $table->data = [];
 
-    $graph_fields['cpu_load'] = __('%s Server CPU', get_product_name());
-    $graph_fields['pending_packets'] = __(
-        'Pending packages from %s Server',
-        get_product_name()
-    );
-    $graph_fields['disk_io_wait'] = __(
-        '%s Server Disk IO Wait',
-        get_product_name()
-    );
-    $graph_fields['apache_load'] = __(
-        '%s Server Apache load',
-        get_product_name()
-    );
-    $graph_fields['mysql_load'] = __(
-        '%s Server MySQL load',
-        get_product_name()
-    );
-    $graph_fields['server_load'] = __(
-        '%s Server load',
-        get_product_name()
-    );
+    $graph = get_parameter('graph', 'snmp_interface');
+    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
+        $graph = get_parameter('graph', 'cpu_load');
+        $graph_fields['cpu_load'] = __('%s Server CPU', get_product_name());
+        $graph_fields['pending_packets'] = __(
+            'Pending packages from %s Server',
+            get_product_name()
+        );
+        $graph_fields['disk_io_wait'] = __(
+            '%s Server Disk IO Wait',
+            get_product_name()
+        );
+        $graph_fields['apache_load'] = __(
+            '%s Server Apache load',
+            get_product_name()
+        );
+        $graph_fields['mysql_load'] = __(
+            '%s Server MySQL load',
+            get_product_name()
+        );
+        $graph_fields['server_load'] = __(
+            '%s Server load',
+            get_product_name()
+        );
+    }
+
     $graph_fields['snmp_interface'] = __('SNMP Interface throughput');
 
-    $graph = get_parameter('graph', 'cpu_load');
     $refresh = get_parameter('refresh', '1000');
 
     if ($graph != 'snmp_module') {
@@ -196,6 +200,15 @@ function pandora_realtime_graphs()
         [
             'class'   => 'action-buttons',
             'content' => html_print_submit_button(
+                __('Filter'),
+                'filterbutton',
+                false,
+                [
+                    'icon' => 'search',
+                    'mode' => 'mini',
+                ],
+                true
+            ).html_print_submit_button(
                 __('Clear graph'),
                 'srcbutton',
                 false,

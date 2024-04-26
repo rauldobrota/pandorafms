@@ -139,7 +139,7 @@ class View extends \HTML
                             });
                             ui.jqXHR.fail(function () {
                                 ui.panel.html(
-                                    "Couldn\'t load Data. Plz Reload Page or Try Again Later."
+                                    "'.__('The data could not be loaded. Please reload the page or try again later.').'"
                                 );
                             });
                         },

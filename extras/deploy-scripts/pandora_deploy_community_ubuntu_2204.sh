@@ -371,7 +371,7 @@ ln -s /usr/bin/fping /usr/sbin/fping &>> "$LOGFILE"
 
 # Chrome
 rm -f /usr/bin/chromium-browser &>> "$LOGFILE"
-CHROME_VERSION=google-chrome-stable_110.0.5481.177-1_amd64.deb
+CHROME_VERSION=google-chrome-stable_122.0.6261.128-1_amd64.deb
 execute_cmd "wget https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/${CHROME_VERSION}" "Downloading google chrome"
 execute_cmd "apt install -y ./${CHROME_VERSION}" "Intalling google chrome"
 execute_cmd "ln -s /usr/bin/google-chrome /usr/bin/chromium-browser" "Creating /usr/bin/chromium-browser Symlink"
@@ -601,6 +601,7 @@ EOF_PARAM
 
 a2enmod ssl &>> "$LOGFILE"
 a2enmod headers &>> "$LOGFILE"
+a2enmod rewrite &>> "$LOGFILE" 
 a2enconf ssl-params &>> "$LOGFILE"
 a2ensite default-ssl &>> "$LOGFILE"
 a2enconf ssl-params &>> "$LOGFILE"
@@ -640,23 +641,13 @@ EO_CONFIG_F
 
 #Enable allow Override
 cat > /etc/apache2/conf-enabled/pandora_security.conf << EO_CONFIG_F
+ServerTokens Prod
 <Directory "/var/www/html">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride All
     Require all granted
 </Directory>
 EO_CONFIG_F
-
-#Enable quickshell proxy
-cat >> /etc/apache2/mods-enabled/00-proxy.conf << 'EO_HTTPD_WSTUNNEL'
-ProxyRequests Off
-<Proxy *>
-    Require all granted
-</Proxy>
-
-ProxyPass /ws ws://127.0.0.1:8080
-ProxyPassReverse /ws ws://127.0.0.1:8080
-EO_HTTPD_WSTUNNEL
 
 # Fixing console permissions
 chmod 600 $PANDORA_CONSOLE/include/config.php &>> "$LOGFILE"
@@ -811,16 +802,6 @@ EO_LRA
 
 chmod 0644 /etc/logrotate.d/pandora_server
 chmod 0644 /etc/logrotate.d/pandora_agent
-
-# Add websocket engine start script.
-mv /var/www/html/pandora_console/pandora_websocket_engine /etc/init.d/ &>> "$LOGFILE"
-chmod +x /etc/init.d/pandora_websocket_engine &>> "$LOGFILE"
-
-# Start Websocket engine
-/etc/init.d/pandora_websocket_engine start &>> "$LOGFILE"
-
-# Configure websocket to be started at start.
-systemctl enable pandora_websocket_engine &>> "$LOGFILE"
 
 # Enable pandora ha service
 execute_cmd "/etc/init.d/pandora_server start" "Starting Pandora FMS Server"

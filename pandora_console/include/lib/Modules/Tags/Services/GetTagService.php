@@ -8,18 +8,25 @@ use PandoraFMS\Modules\Tags\Repositories\TagRepository;
 
 final class GetTagService
 {
+
+
     public function __construct(
         private TagRepository $tagRepository,
     ) {
     }
 
+
     public function __invoke(int $idTag): Tag
     {
         $tagFilter = new TagFilter();
-        /** @var Tag $entityFilter */
+        /*
+            @var Tag $entityFilter
+        */
         $entityFilter = $tagFilter->getEntityFilter();
         $entityFilter->setIdTag($idTag);
 
         return $this->tagRepository->getOne($tagFilter);
     }
+
+
 }

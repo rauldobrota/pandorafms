@@ -9,6 +9,8 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class CreateTokenService
 {
+
+
     public function __construct(
         private Audit $audit,
         private TokenRepository $tokenRepository,
@@ -18,6 +20,7 @@ final class CreateTokenService
         private PrepareUserTokenService $prepareUserTokenService
     ) {
     }
+
 
     public function __invoke(Token $token): Token
     {
@@ -40,4 +43,6 @@ final class CreateTokenService
 
         return $token;
     }
+
+
 }

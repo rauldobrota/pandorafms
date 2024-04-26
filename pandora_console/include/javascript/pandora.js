@@ -1490,7 +1490,12 @@ function defineTinyMCEDark(selector) {
       { text: "C#", value: "csharp" },
       { text: "C++", value: "cpp" }
     ],
-    toolbar: defaultToolbar
+    toolbar: defaultToolbar,
+    content_style: `
+            body {
+              color: #fff;
+            }
+            `
   });
 }
 
@@ -2407,7 +2412,9 @@ $(document).ready(function() {
         closeOnEscape: true,
         width: 700,
         height: 450,
-
+        close: function() {
+          closeAboutModal();
+        },
         create: function() {
           $("#about-tabs").tabs({});
           $(".ui-dialog-titlebar").remove();
@@ -2415,7 +2422,6 @@ $(document).ready(function() {
           $("#about-close").click(function() {
             $("#about-tabs").dialog("close");
             $("div.ui-dialog").remove();
-            $("#icon_about").removeClass("selected");
           });
         }
       });
@@ -2436,7 +2442,9 @@ $(document).ready(function() {
         closeOnEscape: true,
         width: 700,
         height: 450,
-
+        close: function() {
+          closeAboutModal();
+        },
         create: function() {
           $("#about-tabs").tabs({});
           $(".ui-dialog-titlebar").remove();
@@ -2444,7 +2452,6 @@ $(document).ready(function() {
           $("#about-close").click(function() {
             $("#about-tabs").dialog("close");
             $("div.ui-dialog").remove();
-            $("#icon_about_operation").removeClass("selected");
           });
         }
       });
@@ -2559,19 +2566,13 @@ function menuActionButtonResizing() {
 
 function check_period_warning(time, title, message) {
   var period = time.value;
-  var times = 0;
+
   if (period >= 2592000 && period < 7776000) {
     WarningPeriodicityModal(title, message);
   } else if (period >= 7776000 && period < 15552000) {
-    do {
-      WarningPeriodicityModal(title, message);
-      times = times + 1;
-    } while (times < 2);
+    WarningPeriodicityModal(title, message);
   } else if (period >= 15552000) {
-    do {
-      WarningPeriodicityModal(title, message);
-      times = times + 1;
-    } while (times < 3);
+    WarningPeriodicityModal(title, message);
   }
 }
 
@@ -2704,4 +2705,51 @@ function show_email_test(id) {
       background: "black"
     }
   });
+}
+
+function menuTabsShowHide() {
+  const dotsLi = $(".menu-dots-li");
+  if (dotsLi.length) {
+    const tabsLi = $("#menu_tab .nomn:not(.menu-dots-li)");
+    const menuTabWidth = $("#menu_tab_frame_view").width();
+    const menuTabLeftWidth = $(".menu_tab_left_bc").width();
+    const menuTabsRightCount = $("#menu_tab > ul.mn > li").length * 46;
+    const margins = 50;
+
+    const menuTabFree = menuTabWidth - (menuTabLeftWidth + margins);
+
+    if (menuTabFree >= menuTabsRightCount) {
+      // Big.
+      if ($(dotsLi).hasClass("menu-dots-show") === true) {
+        if ($(tabsLi).hasClass("tabs-hide") === false) {
+          $(tabsLi).show();
+        }
+      } else {
+        $(dotsLi).hide();
+        if ($(tabsLi).hasClass("tabs-hide") === false) {
+          $(tabsLi).show();
+        }
+      }
+    } else {
+      // Small.
+      $(dotsLi).show();
+      $(tabsLi).hide();
+    }
+  }
+}
+
+function resizeSearchHeader() {
+  if ($(".show_result_interpreter").width() && $("#keywords").position()) {
+    $(".show_result_interpreter").width($("#keywords").outerWidth() - 12);
+    $(".show_result_interpreter").css(
+      "left",
+      $("#keywords").position().left + 2
+    );
+  }
+}
+
+function closeAboutModal() {
+  $("#icon_about_operation").removeClass("selected");
+  $("#icon_about").removeClass("selected");
+  $("#icon_about_div").removeClass("selected");
 }

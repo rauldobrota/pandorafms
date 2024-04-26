@@ -240,27 +240,27 @@ class SnmpConsole extends HTML
                 'status',
                 [
                     'text'  => 'snmp_agent',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'enterprise_string',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'count',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'trap_subtype',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'user_id',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 [
                     'text'  => 'timestamp',
-                    'class' => 'snmp-td datos_green',
+                    'class' => 'snmp-td',
                 ],
                 'alert',
                 [
@@ -554,6 +554,10 @@ class SnmpConsole extends HTML
         $filters = get_parameter('filter', []);
 
         // Build ranges.
+        if (empty($filters['filter_hours_ago']) === true) {
+            $filters['filter_hours_ago'] = 8;
+        }
+
         $now_timestamp = time();
         $interval_seconds = ($filters['filter_hours_ago'] * 3600);
         $ago_timestamp = ($now_timestamp - $interval_seconds);
@@ -637,42 +641,25 @@ class SnmpConsole extends HTML
                 $whereSubquery .= ' AND alerted = '.$filters['filter_alert'];
             }
 
+            $filters['filter_severity'] = (int) $filters['filter_severity'];
             if ($filters['filter_severity'] != -1) {
                 // There are two special severity values aimed to match two different trap standard severities
                 // in database: warning/critical and critical/normal.
-                if ($filters['filter_severity'] != EVENT_CRIT_OR_NORMAL
-                    && $filters['filter_severity'] != EVENT_CRIT_WARNING_OR_CRITICAL
+                if ($filters['filter_severity'] !== EVENT_CRIT_OR_NORMAL
+                    && $filters['filter_severity'] !== EVENT_CRIT_WARNING_OR_CRITICAL
+                    && $filters['filter_severity'] !== EVENT_CRIT_NOT_NORMAL
                 ) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    if ($config['enterprise_installed']) {
-                        $whereSubquery .= ' AND (
-                            (alerted = 0 AND severity = '.$filters['filter_severity'].') OR
-                            (alerted = 1 AND priority = '.$filters['filter_severity'].'))';
-                    } else {
-                        $whereSubquery .= ' AND (
-                            (alerted = 0 AND 1 = '.$filters['filter_severity'].') OR
-                            (alerted = 1 AND priority = '.$filters['filter_severity'].'))';
-                    }
+                    $whereSubquery .= ' AND severity = '.$filters['filter_severity'];
                 } else if ($filters['filter_severity'] === EVENT_CRIT_WARNING_OR_CRITICAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    if ($config['enterprise_installed']) {
-                        $whereSubquery .= ' AND (
-                        (alerted = 0 AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.')) OR
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_WARNING.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    } else {
-                        $whereSubquery .= ' AND (
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_WARNING.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    }
+                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_WARNING_OR_CRITICAL.')';
                 } else if ($filters['filter_severity'] === EVENT_CRIT_OR_NORMAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    if ($config['enterprise_installed']) {
-                        $whereSubquery .= ' AND (
-                        (alerted = 0 AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.')) OR
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_NORMAL.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    } else {
-                        $whereSubquery .= ' AND (
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_NORMAL.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    }
+                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_OR_NORMAL.')';
+                } else if ($filters['filter_severity'] === EVENT_CRIT_NOT_NORMAL) {
+                    // Test if enterprise is installed to search oid in text or oid field in ttrap.
+                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_NOT_NORMAL.')';
                 }
             }
 
@@ -791,7 +778,7 @@ class SnmpConsole extends HTML
                         // SNMP Agent.
                         $agent = agents_get_agent_with_ip($tmp->source);
                         if ($agent === false) {
-                            $tmp->snmp_agent .= '<a href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
+                            $tmp->snmp_agent .= '<a class="'.$severity_class.' href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
                         } else {
                             $tmp->snmp_agent .= '<div class="'.$severity_class.' snmp-div"><a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].'" title="'.__('View agent details').'">';
                             $tmp->snmp_agent .= '<strong>'.$agent['alias'].ui_print_help_tip($tmp->source, true);
@@ -1142,42 +1129,25 @@ class SnmpConsole extends HTML
                 $whereSubquery .= ' AND alerted = '.$$alert;
             }
 
-            if ($severity != -1) {
+            $severity = (int) $severity;
+            if ($severity !== -1) {
                 // There are two special severity values aimed to match two different trap standard severities
                 // in database: warning/critical and critical/normal.
-                if ($severity != EVENT_CRIT_OR_NORMAL
-                    && $severity != EVENT_CRIT_WARNING_OR_CRITICAL
+                if ($severity !== EVENT_CRIT_OR_NORMAL
+                    && $severity !== EVENT_CRIT_WARNING_OR_CRITICAL
+                    && $severity !== EVENT_CRIT_NOT_NORMAL
                 ) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    if ($config['enterprise_installed']) {
-                        $whereSubquery .= ' AND (
-                            (alerted = 0 AND severity = '.$severity.') OR
-                            (alerted = 1 AND priority = '.$severity.'))';
-                    } else {
-                        $whereSubquery .= ' AND (
-                            (alerted = 0 AND 1 = '.$severity.') OR
-                            (alerted = 1 AND priority = '.$severity.'))';
-                    }
+                    $whereSubquery .= ' AND severity = '.$severity;
                 } else if ($severity === EVENT_CRIT_WARNING_OR_CRITICAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    if ($config['enterprise_installed']) {
-                        $whereSubquery .= ' AND (
-                        (alerted = 0 AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.')) OR
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_WARNING.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    } else {
-                        $whereSubquery .= ' AND (
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_WARNING.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    }
+                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_WARNING_OR_CRITICAL.')';
                 } else if ($severity === EVENT_CRIT_OR_NORMAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    if ($config['enterprise_installed']) {
-                        $whereSubquery .= ' AND (
-                        (alerted = 0 AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.')) OR
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_NORMAL.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    } else {
-                        $whereSubquery .= ' AND (
-                        (alerted = 1 AND (priority = '.EVENT_CRIT_NORMAL.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
-                    }
+                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_OR_NORMAL.')';
+                } else if ($severity === EVENT_CRIT_NOT_NORMAL) {
+                    // Test if enterprise is installed to search oid in text or oid field in ttrap.
+                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_NOT_NORMAL.')';
                 }
             }
 

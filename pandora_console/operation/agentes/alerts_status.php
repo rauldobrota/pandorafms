@@ -493,6 +493,11 @@ if (is_metaconsole() === false) {
                 ['type' => 'form_action']
             );
         }
+    } else {
+        html_print_action_buttons(
+            '',
+            ['type' => 'form_action']
+        );
     }
 } else {
     echo "<form method='post' action='index.php?sec=galertas&sec2=godmode/alerts/alert_list&tab=builder&pure=0'>";
@@ -592,6 +597,33 @@ function alerts_table_controls() {
             $('[id^=checkbox-validate]').parent().parent().removeClass('checkselected');
             $('[name^=validate]').prop("checked", false);
         }
+    });
+
+    $("[id^='div_tip_']").click(function() {
+        var id = $(this)
+        .attr("id")
+        .split("_")[2];
+
+        $("#tip_dialog_" + id).dialog({
+            title: $("#tip_dialog_" + id).data("title"),
+            modal: true,
+            maxWidth: 600,
+            minWidth: 400,
+            show: {
+                effect: "fade",
+                duration: 200
+            },
+            hide: {
+                effect: "fade",
+                duration: 200
+            },
+            closeOnEscape: true,
+            buttons: {
+                Close: function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
     });
 
 }

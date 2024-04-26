@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "API Pandora FMS",
-    "description": "<p>This is the new API framework for Pandora FMS.</p>\n<p>The old API is deprecated but still functional, and not all old endpoints are supported in the new API, but new endpoints will be added in each release.</p>\n<p>Using this web interface, you can play around and see how it works each endpoint interactively.</p>\n\nMore useful links:\n\n* <a target='_blank' href='https://pandorafms.com/en/pandora-fms-license-2024_en/'>Pandora FMS Licence </a>\n* <a target='_blank' href='https://support.pandorafms.com'> Pandora FMS Official Support </a>\n* <a target='_blank' href='https://pandorafms.com/en/community/'> Pandora FMS Community </a>\n* <a target='_blank' href='https://pandorafms.com/en/security/vulnerability-disclosure-policy/'> Vulnerability Disclosure Policy </a>\n* <a target='_blank' href='https://pandorafms.com/en/faq/'> Pandora FMS FAQ </a>",
+    "description": "<p>This is the new API framework for Pandora FMS.</p>\n<p>The old API is deprecated but still functional, and not all old endpoints are supported in the new API, but new endpoints will be added in each release.</p>\n<p>Using this web interface, you can play around and see how it works each endpoint interactively.</p>\n\nMore useful links:\n\n * <a target='_blank' href='https://pandorafms.com/en/pandora-fms-license-2024_en/'>Pandora FMS Licence </a>\n * <a target='_blank' href='https://support.pandorafms.com'> Pandora FMS Official Support </a>\n * <a target='_blank' href='https://pandorafms.com/en/community/'> Pandora FMS Community </a>\n * <a target='_blank' href='https://pandorafms.com/en/security/vulnerability-disclosure-policy/'> Vulnerability Disclosure Policy </a>\n * <a target='_blank' href='https://pandorafms.com/en/faq/'> Pandora FMS FAQ </a>",
     "version": "0.0.1"
   },
   "servers": [
@@ -1118,6 +1118,110 @@
         ]
       }
     },
+    "/pandoraITSM/inventory/{idPandoraITSMInventory}": {
+      "get": {
+        "tags": ["PandoraITSM"],
+        "summary": "Show pandoraITSMInventory",
+        "operationId": "09b6d1f91536441fc65dc66142a6f9cb",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/parameterIdPandoraITSMInventory"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ResponsePandoraITSMInventory"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/pandoraITSM/inventory/list": {
+      "post": {
+        "tags": ["PandoraITSM"],
+        "summary": "List pandoraITSMInventories",
+        "operationId": "149f20397779ed681c1f7680c1214974",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/parameterPage"
+          },
+          {
+            "$ref": "#/components/parameters/parameterSizePage"
+          },
+          {
+            "$ref": "#/components/parameters/parameterSortField"
+          },
+          {
+            "$ref": "#/components/parameters/parameterSortDirection"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/requestBodyPandoraITSMInventoryFilter"
+        },
+        "responses": {
+          "200": {
+            "description": "List PandoraITSM Inventories Object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "paginationData": {
+                      "$ref": "#/components/schemas/paginationData"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PandoraITSMInventory"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/profile": {
       "post": {
         "tags": ["Profiles"],
@@ -1687,6 +1791,46 @@
         ]
       }
     },
+    "/user/{idUser}/login": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "show user when login process",
+        "operationId": "1b50ee1984a43d87d69342174571775c",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/parameterIdUser"
+          },
+          {
+            "$ref": "#/components/parameters/parameterIdUserPass"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ResponseUser"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/user/list": {
       "post": {
         "tags": ["Users"],
@@ -2080,6 +2224,192 @@
             "type": "object"
           }
         ]
+      },
+      "Event": {
+        "properties": {
+          "idEvent": {
+            "description": "Id event",
+            "type": "integer",
+            "readOnly": true,
+            "nullable": false
+          },
+          "idAgent": {
+            "description": "Id agent",
+            "type": "integer",
+            "default": null,
+            "nullable": true
+          },
+          "idUser": {
+            "description": "Id user",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "idGroup": {
+            "description": "Id group",
+            "type": "integer",
+            "default": null,
+            "nullable": true
+          },
+          "status": {
+            "description": "Event status, the available status are: new, validated, inprocess",
+            "type": "integer",
+            "default": "new",
+            "enum": ["new", "validated", "inprocess"],
+            "nullable": false
+          },
+          "timestamp": {
+            "description": "Event registration date",
+            "type": "string",
+            "default": null,
+            "readOnly": true,
+            "example": "2023-02-21 08:34:16",
+            "nullable": true
+          },
+          "event": {
+            "description": "Description event",
+            "type": "string",
+            "default": "Event created for api",
+            "nullable": false
+          },
+          "utimestamp": {
+            "description": "Event registration date",
+            "type": "integer",
+            "default": null,
+            "readOnly": true,
+            "example": "1704898868",
+            "nullable": true
+          },
+          "eventType": {
+            "description": "Event status, the available status are: going_unknown, unknown, alert_fired, alert_recovered, alert_ceased, alert_manual_validation, recon_host_detected, system, error, new_agent, going_up_critical, going_down_critical, going_up_warning, going_down_warning, going_up_normal, going_down_normal, configuration_change, ncm",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+              "going_unknown",
+              "unknown",
+              "alert_fired",
+              "alert_recovered",
+              "alert_ceased",
+              "alert_manual_validation",
+              "recon_host_detected",
+              "system",
+              "error",
+              "new_agent",
+              "going_up_critical",
+              "going_down_critical",
+              "going_up_warning",
+              "going_down_warning",
+              "going_up_normal",
+              "going_down_normal",
+              "configuration_change",
+              "ncm"
+            ],
+            "nullable": false
+          },
+          "idAgentModule": {
+            "description": "Id agent module",
+            "type": "integer",
+            "default": null,
+            "nullable": true
+          },
+          "idAlertAm": {
+            "description": "Id alert action",
+            "type": "integer",
+            "default": null,
+            "nullable": true
+          },
+          "severity": {
+            "description": "Event severity, the available severity are: maintenance, informational, normal, warning, critical, minor, major",
+            "type": "integer",
+            "default": "maintenance",
+            "enum": [
+              "maintenance",
+              "informational",
+              "normal",
+              "warning",
+              "critical",
+              "minor",
+              "major"
+            ],
+            "nullable": false
+          },
+          "tags": {
+            "description": "Tags",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "source": {
+            "description": "Source",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "idExtra": {
+            "description": "Extra id",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "criticalInstructions": {
+            "description": "Critical instructions",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "warningInstructions": {
+            "description": "Warning instructions",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "unknownInstructions": {
+            "description": "Unknows instructions",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "ownerUser": {
+            "description": "Id user",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "ackUtimestamp": {
+            "description": "Event ack utimestamp",
+            "type": "integer",
+            "default": null,
+            "readOnly": true,
+            "example": "1704898868",
+            "nullable": true
+          },
+          "customData": {
+            "description": "Custom data",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "data": {
+            "description": "Data",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "moduleStatus": {
+            "description": "Module status",
+            "type": "integer",
+            "default": null,
+            "readOnly": true,
+            "nullable": true
+          },
+          "eventCustomId": {
+            "description": "Events Custom Id",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        },
+        "type": "object"
       },
       "EventFilter": {
         "properties": {
@@ -2529,6 +2859,96 @@
           }
         ]
       },
+      "PandoraITSMInventory": {
+        "properties": {
+          "idPandoraITSMInventory": {
+            "description": "Id Agent pandoraITSMInventory",
+            "type": "integer",
+            "readOnly": true,
+            "nullable": false
+          },
+          "agentAlias": {
+            "description": "Agent Name pandoraITSMInventory",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "osVersion": {
+            "description": "Agent os version pandoraITSMInventory",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "agentAddress": {
+            "description": "Agent address pandoraITSMInventory",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "agentUrlAddress": {
+            "description": "Agent url address pandoraITSMInventory",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "agentDisabled": {
+            "description": "Agent disable pandoraITSMInventory",
+            "type": "boolean",
+            "default": null,
+            "nullable": true
+          },
+          "groupName": {
+            "description": "Agent group name pandoraITSMInventory",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "groupId": {
+            "description": "Agent group id pandoraITSMInventory",
+            "type": "integer",
+            "default": null,
+            "nullable": true
+          },
+          "osName": {
+            "description": "Agent OS name pandoraITSMInventory",
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        },
+        "type": "object"
+      },
+      "PandoraITSMInventoryFilter": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PandoraITSMInventory"
+          },
+          {
+            "properties": {
+              "idPandoraITSMInventory": {
+                "default": null,
+                "readOnly": false
+              },
+              "freeSearch": {
+                "description": "Find word in name field.",
+                "type": "string",
+                "default": null,
+                "nullable": true
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "multipleSearch": {
+                "$ref": "#/components/schemas/multipleSearch"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
       "Profile": {
         "properties": {
           "idProfile": {
@@ -2706,6 +3126,42 @@
             "type": "object"
           }
         ]
+      },
+      "multipleSearch": {
+        "properties": {
+          "field": {
+            "description": "Field to search of query",
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "description": "Values to search of query IN()",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "nullable": true
+          }
+        },
+        "type": "object"
+      },
+      "multipleSearchString": {
+        "properties": {
+          "field": {
+            "description": "Field to search of query",
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "description": "Values to search of query IN()",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "type": "object"
       },
       "paginationData": {
         "description": "Info pagination data",
@@ -3196,12 +3652,14 @@
                 "type": "string",
                 "default": null,
                 "nullable": true
-              },
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
               "multipleSearchString": {
-                "description": "search string in field.",
-                "type": "string",
-                "default": null,
-                "nullable": true
+                "$ref": "#/components/schemas/multipleSearch"
               }
             },
             "type": "object"
@@ -3316,6 +3774,16 @@
           }
         }
       },
+      "ResponseEvent": {
+        "description": "Event object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Event"
+            }
+          }
+        }
+      },
       "ResponseEventFilter": {
         "description": "EventFilter object",
         "content": {
@@ -3332,6 +3800,16 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/Group"
+            }
+          }
+        }
+      },
+      "ResponsePandoraITSMInventory": {
+        "description": "PandoraITSMInventory object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PandoraITSMInventory"
             }
           }
         }
@@ -3499,6 +3977,16 @@
           "default": 1
         }
       },
+      "parameterIdEvent": {
+        "name": "idEvent",
+        "in": "path",
+        "description": "Event id",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "default": 1
+        }
+      },
       "parameterIdEventFilter": {
         "name": "idEventFilter",
         "in": "path",
@@ -3513,6 +4001,16 @@
         "name": "idGroup",
         "in": "path",
         "description": "Group id",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "default": 1
+        }
+      },
+      "parameterIdPandoraITSMInventory": {
+        "name": "idPandoraITSMInventory",
+        "in": "path",
+        "description": "PandoraITSMInventory id",
         "required": true,
         "schema": {
           "type": "integer",
@@ -3580,6 +4078,16 @@
           "default": 1
         }
       },
+      "parameterIdUserPass": {
+        "name": "password",
+        "in": "query",
+        "description": "User password",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "default": null
+        }
+      },
       "parameterIdUser": {
         "name": "idUser",
         "in": "path",
@@ -3642,6 +4150,16 @@
           }
         }
       },
+      "requestBodyEvent": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Event"
+            }
+          }
+        }
+      },
       "requestBodyEventFilter": {
         "required": true,
         "content": {
@@ -3678,6 +4196,26 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/GroupFilter"
+            }
+          }
+        }
+      },
+      "requestBodyPandoraITSMInventory": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PandoraITSMInventory"
+            }
+          }
+        }
+      },
+      "requestBodyPandoraITSMInventoryFilter": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PandoraITSMInventoryFilter"
             }
           }
         }
@@ -3797,6 +4335,10 @@
     {
       "name": "Users",
       "description": "API Endpoints of users"
+    },
+    {
+      "name": "PandoraITSM",
+      "description": "API Endpoints of integration pandoraITSM"
     }
   ]
 }

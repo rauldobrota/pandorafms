@@ -3308,7 +3308,8 @@ function graph_custom_sql_graph(
     $only_image=false,
     $homeurl='',
     $ttl=1,
-    $max_num_elements=8
+    $max_num_elements=8,
+    $layout=false
 ) {
     global $config;
 
@@ -3398,8 +3399,10 @@ function graph_custom_sql_graph(
 
         if ($count <= $max_num_elements) {
             $label = __('Data');
+            $full_label = __('Data');
             if (empty($data_item['label']) === false) {
                 $label = io_safe_output($data_item['label']);
+                $full_label = io_safe_output($data_item['label']);
                 if (strlen($label) > $SQL_GRAPH_MAX_LABEL_SIZE) {
                     $first_label = $label;
                     $label = substr(
@@ -3413,13 +3416,15 @@ function graph_custom_sql_graph(
             $labels_bar[] = $label;
             if ($type === 'sql_graph_hbar') {
                 $data_bar[] = [
-                    'y' => $label,
-                    'x' => $value,
+                    'full_title' => $full_label,
+                    'y'          => $label,
+                    'x'          => $value,
                 ];
             } else {
                 $data_bar[] = [
-                    'x' => $label,
-                    'y' => $value,
+                    'full_title' => $full_label,
+                    'x'          => $label,
+                    'y'          => $value,
                 ];
             }
 
@@ -3493,6 +3498,9 @@ function graph_custom_sql_graph(
                         'grid' => ['display' => false],
                     ],
                 ],
+                'tooltip'   => [
+                    'title' => ['fullTitle' => true],
+                ],
                 'labels'    => $labels_bar,
             ];
 
@@ -3502,6 +3510,10 @@ function graph_custom_sql_graph(
 
             if ((int) $ttl === 2) {
                 $options['dataLabel'] = ['display' => 'auto'];
+
+                if ($layout !== false && is_array($layout) === true) {
+                    $options['layout'] = $layout;
+                }
             }
 
             $output .= vbar_graph(
@@ -4093,7 +4105,7 @@ function fullscale_data(
             $data['sum'.$series_suffix]['min'] = $min_value_total;
             $data['sum'.$series_suffix]['max'] = $max_value_total;
             $data['sum'.$series_suffix]['avg'] = 0;
-            if (isset($count_data_total) === true) {
+            if (isset($count_data_total) === true && $count_data_total > 0) {
                 $data['sum'.$series_suffix]['avg'] = ($sum_data_total / $count_data_total);
             }
         }

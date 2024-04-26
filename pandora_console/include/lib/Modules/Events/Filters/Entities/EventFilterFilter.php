@@ -39,8 +39,11 @@ use PandoraFMS\Modules\Shared\Validators\Validator;
  */
 final class EventFilterFilter extends FilterAbstract
 {
+
     private ?string $freeSearch = null;
+
     private ?string $fieldAclGroupMysql = EventFilterDataMapper::ID_GROUP;
+
 
     public function __construct()
     {
@@ -48,6 +51,7 @@ final class EventFilterFilter extends FilterAbstract
         $this->setDefaultDirectionOrder($this::ASC);
         $this->setEntityFilter(new EventFilter());
     }
+
 
     public function fieldsTranslate(): array
     {
@@ -93,6 +97,7 @@ final class EventFilterFilter extends FilterAbstract
         ];
     }
 
+
     public function fieldsReadOnly(): array
     {
         return [
@@ -101,6 +106,7 @@ final class EventFilterFilter extends FilterAbstract
         ];
     }
 
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -108,20 +114,24 @@ final class EventFilterFilter extends FilterAbstract
         ];
     }
 
+
     public function getValidations(): array
     {
         $validations = [];
-        if($this->getEntityFilter() !== null) {
+        if ($this->getEntityFilter() !== null) {
             $validations = $this->getEntityFilter()->getValidations();
         }
+
         $validations['freeSearch'] = Validator::STRING;
         return $validations;
     }
+
 
     public function validateFields(array $filters): array
     {
         return (new Validator())->validate($filters);
     }
+
 
     /**
      * Get the value of freeSearch.
@@ -133,17 +143,18 @@ final class EventFilterFilter extends FilterAbstract
         return $this->freeSearch;
     }
 
+
     /**
      * Set the value of freeSearch.
      *
-     * @param ?string $freeSearch
-     *
+     * @param string $freeSearch
      */
     public function setFreeSearch(?string $freeSearch): self
     {
         $this->freeSearch = $freeSearch;
         return $this;
     }
+
 
     /**
      * Get the value of fieldsFreeSearch.
@@ -155,6 +166,7 @@ final class EventFilterFilter extends FilterAbstract
         return [EventFilterDataMapper::NAME];
     }
 
+
     /**
      * Get the value of fieldAclGroupMysql.
      *
@@ -165,11 +177,11 @@ final class EventFilterFilter extends FilterAbstract
         return $this->fieldAclGroupMysql;
     }
 
+
     /**
      * Set the value of fieldAclGroupMysql.
      *
-     * @param ?string $fieldAclGroupMysql
-     *
+     * @param string $fieldAclGroupMysql
      */
     public function setFieldAclGroupMysql(?string $fieldAclGroupMysql): self
     {
@@ -177,6 +189,7 @@ final class EventFilterFilter extends FilterAbstract
 
         return $this;
     }
+
 
     /**
      * Get the value of mode for check ACL.
@@ -187,4 +200,6 @@ final class EventFilterFilter extends FilterAbstract
     {
         return '';
     }
+
+
 }

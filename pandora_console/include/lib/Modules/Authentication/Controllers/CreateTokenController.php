@@ -11,10 +11,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class CreateTokenController extends Controller
 {
+
+
     public function __construct(
         private CreateTokenAction $createTokenAction
     ) {
     }
+
 
     /**
      * @OA\Post(
@@ -22,13 +25,13 @@ final class CreateTokenController extends Controller
      *   tags={"Authentication"},
      *   path="/token",
      *   summary="Creates a new tokens",
-     *   @OA\RequestBody(ref="#/components/requestBodies/requestBodyToken"),
-     *   @OA\Response(response=200, ref="#/components/responses/ResponseToken"),
-     *   @OA\Response(response=400, ref="#/components/responses/BadRequest"),
-     *   @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
-     *   @OA\Response(response=403, ref="#/components/responses/Forbidden"),
-     *   @OA\Response(response=404, ref="#/components/responses/NotFound"),
-     *   @OA\Response(response=500, ref="#/components/responses/InternalServerError")
+     * @OA\RequestBody(ref="#/components/requestBodies/requestBodyToken"),
+     * @OA\Response(response=200, ref="#/components/responses/ResponseToken"),
+     * @OA\Response(response=400, ref="#/components/responses/BadRequest"),
+     * @OA\Response(response=401, ref="#/components/responses/Unauthorized"),
+     * @OA\Response(response=403, ref="#/components/responses/Forbidden"),
+     * @OA\Response(response=404, ref="#/components/responses/NotFound"),
+     * @OA\Response(response=500, ref="#/components/responses/InternalServerError")
      * )
      */
     public function __invoke(Request $request, Response $response): Response
@@ -40,4 +43,6 @@ final class CreateTokenController extends Controller
 
         return $this->getResponse($response, $result);
     }
+
+
 }

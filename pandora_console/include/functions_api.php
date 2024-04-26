@@ -13175,10 +13175,12 @@ function api_set_create_event($id, $trash1, $other, $returnType)
             $values['id_extra'] = '';
         }
 
-        if ($other['data'][21] != '') {
-            $values['event_custom_id'] = $other['data'][21];
-        } else {
-            $values['event_custom_id'] = '';
+        if (empty($values['event_custom_id']) === true) {
+            if ($other['data'][21] != '') {
+                $values['event_custom_id'] = $other['data'][21];
+            } else {
+                $values['event_custom_id'] = '';
+            }
         }
 
         $custom_data = base64_decode($values['custom_data']);
@@ -13488,6 +13490,19 @@ function api_set_validate_event_by_id($id, $trash1=null, $trash2=null, $returnTy
                 'ack_utimestamp' => $ack_utimestamp,
                 'estado'         => 1,
             ];
+
+            $name = events_get_description($id);
+
+            db_pandora_audit(
+                AUDIT_LOG_EVENT,
+                sprintf(
+                    'ID event %s validated by %s - %s',
+                    $id,
+                    $config['id_user'],
+                    $name
+                ),
+                $config['id_user']
+            );
 
             $result = db_process_sql_update('tevento', $values, ['id_evento' => $id]);
 

@@ -1135,7 +1135,7 @@ if (check_login()) {
 
                     if ((bool) $linked === true) {
                         if ((bool) $adopt === true) {
-                            $img = 'images/policies_brick.png';
+                            $img = 'images/policies_brick.svg';
                             $title = '('.__('Adopted').') '.$name_policy;
                         } else {
                             $img = 'images/policy@svg.svg';
@@ -1143,10 +1143,10 @@ if (check_login()) {
                         }
                     } else {
                         if ((bool) $adopt === true) {
-                            $img = 'images/policies_not_brick.png';
+                            $img = 'images/policies_not_brick.svg';
                             $title = '('.__('Unlinked').') ('.__('Adopted').') '.$name_policy;
                         } else {
-                            $img = 'images/unlinkpolicy.png';
+                            $img = 'images/unlinkpolicy.svg';
                             $title = '('.__('Unlinked').') '.$name_policy;
                         }
                     }
@@ -1196,7 +1196,7 @@ if (check_login()) {
             $data[2] .= ui_print_truncate_text($module['nombre'], 'module_medium', false, true, true, '&hellip;', 'font-size: 9pt;');
             $data[2] .= '</a>';
             if (empty($module['extended_info']) === false) {
-                $data[2] .= ui_print_help_tip($module['extended_info'], true, '/images/default_list.png');
+                $data[2] .= ui_print_help_tip(io_safe_output($module['extended_info']), true, '/images/default_list.png');
             }
 
             // Adds tag context information.
@@ -1929,13 +1929,13 @@ if (check_login()) {
             );
         }
 
-
+        // Search module name.
         if (empty($search) === false) {
-            $where .= ' AND tagente_modulo.nombre LIKE "%%'.$search.'%%"';
+            $where .= ' AND tagente_modulo.nombre LIKE "%%'.io_safe_output($search).'%%"';
         }
 
         if (empty($search_agent) === false) {
-            $where .= ' AND tagente.alias LIKE "%%'.$search_agent.'%%"';
+            $where .= ' AND tagente.alias LIKE "%%'.io_safe_output($search_agent).'%%"';
         }
 
         if (str_contains($status, '6') === true) {

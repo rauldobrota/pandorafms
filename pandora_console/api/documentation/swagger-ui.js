@@ -4819,20 +4819,18 @@
                     k().createElement(
                       "div",
                       { className: "modal-ux-content" },
-                      o
-                        .valueSeq()
-                        .map((o, c) =>
-                          k().createElement(l, {
-                            key: c,
-                            AST: s,
-                            definitions: o,
-                            getComponent: r,
-                            errSelectors: a,
-                            authSelectors: e,
-                            authActions: t,
-                            specSelectors: n
-                          })
-                        )
+                      o.valueSeq().map((o, c) =>
+                        k().createElement(l, {
+                          key: c,
+                          AST: s,
+                          definitions: o,
+                          getComponent: r,
+                          errSelectors: a,
+                          authSelectors: e,
+                          authActions: t,
+                          specSelectors: n
+                        })
+                      )
                     )
                   )
                 )
@@ -7258,15 +7256,13 @@
                   k().createElement(
                     "tbody",
                     null,
-                    e
-                      .entrySeq()
-                      .map(([e, t]) =>
-                        k().createElement(r, {
-                          key: `${e}-${t}`,
-                          xKey: e,
-                          xVal: t
-                        })
-                      )
+                    e.entrySeq().map(([e, t]) =>
+                      k().createElement(r, {
+                        key: `${e}-${t}`,
+                        xKey: e,
+                        xVal: t
+                      })
+                    )
                   )
                 )
               )
@@ -7698,15 +7694,13 @@
                   k().createElement(C, { source: a.get("description") })
                 ),
                 y && f.size
-                  ? f
-                      .entrySeq()
-                      .map(([e, t]) =>
-                        k().createElement(_, {
-                          key: `${e}-${t}`,
-                          xKey: e,
-                          xVal: t
-                        })
-                      )
+                  ? f.entrySeq().map(([e, t]) =>
+                      k().createElement(_, {
+                        key: `${e}-${t}`,
+                        xKey: e,
+                        xVal: t
+                      })
+                    )
                   : null,
                 g && a.get("content")
                   ? k().createElement(
@@ -10816,16 +10810,14 @@
                 k().createElement("span", { className: "brace-close" }, "}")
               ),
               w.size
-                ? w
-                    .entrySeq()
-                    .map(([e, t]) =>
-                      k().createElement(j, {
-                        key: `${e}-${t}`,
-                        propKey: e,
-                        propVal: t,
-                        propClass: "property"
-                      })
-                    )
+                ? w.entrySeq().map(([e, t]) =>
+                    k().createElement(j, {
+                      key: `${e}-${t}`,
+                      propKey: e,
+                      propVal: t,
+                      propClass: "property"
+                    })
+                  )
                 : null
             );
           }
@@ -10882,16 +10874,14 @@
                 { title: E, expanded: a <= n, collapsedContent: "[...]" },
                 "[",
                 m.size
-                  ? m
-                      .entrySeq()
-                      .map(([e, t]) =>
-                        k().createElement(f, {
-                          key: `${e}-${t}`,
-                          propKey: e,
-                          propVal: t,
-                          propClass: "property"
-                        })
-                      )
+                  ? m.entrySeq().map(([e, t]) =>
+                      k().createElement(f, {
+                        key: `${e}-${t}`,
+                        propKey: e,
+                        propVal: t,
+                        propClass: "property"
+                      })
+                    )
                   : null,
                 c
                   ? k().createElement(h, { source: c })
@@ -11008,28 +10998,24 @@
                       ")"
                     ),
                   g.size
-                    ? g
-                        .entrySeq()
-                        .map(([e, t]) =>
-                          k().createElement(_, {
-                            key: `${e}-${t}`,
-                            propKey: e,
-                            propVal: t,
-                            propClass: ln
-                          })
-                        )
+                    ? g.entrySeq().map(([e, t]) =>
+                        k().createElement(_, {
+                          key: `${e}-${t}`,
+                          propKey: e,
+                          propVal: t,
+                          propClass: ln
+                        })
+                      )
                     : null,
                   l && h.size
-                    ? h
-                        .entrySeq()
-                        .map(([e, t]) =>
-                          k().createElement(_, {
-                            key: `${e}-${t}`,
-                            propKey: e,
-                            propVal: t,
-                            propClass: ln
-                          })
-                        )
+                    ? h.entrySeq().map(([e, t]) =>
+                        k().createElement(_, {
+                          key: `${e}-${t}`,
+                          propKey: e,
+                          propVal: t,
+                          propClass: ln
+                        })
+                      )
                     : null,
                   d ? k().createElement(S, { source: d }) : null,
                   y &&
@@ -12452,15 +12438,13 @@
                                     ")"
                                   ),
                                 C && i.size
-                                  ? i
-                                      .entrySeq()
-                                      .map(([e, r]) =>
-                                        k().createElement(t, {
-                                          key: `${e}-${r}`,
-                                          xKey: e,
-                                          xVal: r
-                                        })
-                                      )
+                                  ? i.entrySeq().map(([e, r]) =>
+                                      k().createElement(t, {
+                                        key: `${e}-${r}`,
+                                        xKey: e,
+                                        xVal: r
+                                      })
+                                    )
                                   : null
                               ),
                               k().createElement(
@@ -12703,19 +12687,17 @@
                               ? k().createElement(
                                   "select",
                                   { "data-variable": e, onChange: i },
-                                  r
-                                    .get("enum")
-                                    .map(r =>
-                                      k().createElement(
-                                        "option",
-                                        {
-                                          selected: r === n(t, e),
-                                          key: r,
-                                          value: r
-                                        },
-                                        r
-                                      )
+                                  r.get("enum").map(r =>
+                                    k().createElement(
+                                      "option",
+                                      {
+                                        selected: r === n(t, e),
+                                        key: r,
+                                        value: r
+                                      },
+                                      r
                                     )
+                                  )
                                 )
                               : k().createElement("input", {
                                   type: "text",
@@ -17499,7 +17481,8 @@
             const { examples: t, example: r, default: a } = e;
             return (
               !!(Array.isArray(t) && t.length >= 1) ||
-              void 0 !== a || void 0 !== r
+              void 0 !== a ||
+              void 0 !== r
             );
           },
           extractExample = e => {

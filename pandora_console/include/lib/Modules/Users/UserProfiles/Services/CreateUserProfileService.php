@@ -10,6 +10,8 @@ use PandoraFMS\Modules\Users\UserProfiles\Validations\UserProfileValidation;
 
 final class CreateUserProfileService
 {
+
+
     public function __construct(
         private UserProfileRepository $userProfileRepository,
         private UserProfileValidation $userProfileValidation,
@@ -17,6 +19,7 @@ final class CreateUserProfileService
         private Audit $audit
     ) {
     }
+
 
     public function __invoke(UserProfile $userProfile): UserProfile
     {
@@ -34,4 +37,6 @@ final class CreateUserProfileService
 
         return $userProfile;
     }
+
+
 }

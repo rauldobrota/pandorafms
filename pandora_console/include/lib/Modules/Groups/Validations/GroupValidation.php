@@ -10,6 +10,8 @@ use PandoraFMS\Modules\Shared\Services\ValidateAclSystem;
 
 final class GroupValidation
 {
+
+
     public function __construct(
         private ValidateAclSystem $acl,
         private GetGroupService $getGroupService,
@@ -17,14 +19,15 @@ final class GroupValidation
     ) {
     }
 
-    public function __invoke(Group $group, ?Group $oldGroup = null): void
+
+    public function __invoke(Group $group, ?Group $oldGroup=null): void
     {
         if (!$group->getName()) {
             throw new BadRequestException(__('Name is missing'));
         }
 
         if ($oldGroup === null || $oldGroup->getName() !== $group->getName()) {
-            if($this->existNameGroupService->__invoke($group->getName()) === true) {
+            if ($this->existNameGroupService->__invoke($group->getName()) === true) {
                 throw new BadRequestException(
                     __('Name %s is already exists', $group->getName())
                 );
@@ -65,10 +68,12 @@ final class GroupValidation
         }
     }
 
+
     protected function validateGroup(int $idGroup): void
     {
         $this->getGroupService->__invoke($idGroup);
     }
+
 
     protected function validateSkin(int $idSkin): void
     {
@@ -77,4 +82,6 @@ final class GroupValidation
             throw new BadRequestException(__('Invalid id skin'));
         }
     }
+
+
 }

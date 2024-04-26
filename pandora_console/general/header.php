@@ -52,7 +52,7 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         }
 
         // ======= Servers List ===============================================
-        if ((bool) check_acl($config['id_user'], 0, 'AW') !== false) {
+        if ((bool) check_acl($config['id_user'], 0, 'PM') !== false) {
             $servers = [];
             $servers_info = servers_get_info();
 
@@ -140,7 +140,6 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                 }
             }
 
-            $search_bar .= '<div id="result_order" class="result_order"></div>';
             $search_bar .= '<input id="keywords" name="keywords"';
             if (!isset($config['search_keywords'])) {
                 $search_bar .= "value='".__('Enter keywords to search')."'";
@@ -408,6 +407,27 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         $modal_box .= '<a href="https://discord.com/invite/xVt2ruSxmr" target="_blank">'.__('Join discord community').'</a>';
         $modal_box .= '</div>';
 
+        // Move help modal (header) fix z-index.
+        $modal_box .= '
+            <script>
+                $(document).ready(function() {
+                    let helpModalIcon = $("#modal-help-content > img");
+                    let helpModal = $("#modal_help");
+                
+                    if (helpModalIcon.length > 0) {
+                    let distanceRight =
+                        $(window).width() - (helpModalIcon.offset().left + helpModalIcon.width());
+                
+                    helpModal.css("z-index", "3");
+                    helpModal.css("position", "fixed");
+                    helpModal.css("top", "16px");
+                    helpModal.css("right", `${Math.floor(distanceRight) + 34}px`);
+                    helpModal.appendTo(document.body);
+                    }
+                });
+            </script>
+        ';
+
         if ($config['activate_feedback'] === '1') {
             $modal_help = html_print_div(
                 [
@@ -599,21 +619,12 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
     function filter_notification() {
         let notification_type = '';
         $('.notification-item').hide();
-        $(".checkbox_filter_notifications:checkbox:checked").each(function() {
-            notification_type = $(this).val();
-            console.log(notification_type);
-            $('.notification-item[value='+notification_type+']').show();
-            if (notification_type == 'All'){
-                $('.notification-item').show();
-            }
-        });
+        notification_type = $("#notifications_filter_options").val()
 
-        if (notification_type == 'All'){
+        if (notification_type === 'All') {
             $('.notification-item').show();
-        }
-
-        if (notification_type == ''){
-            $('.notification-item').hide();
+        } else {
+            $('.notification-item[value='+notification_type+']').show();
         }
     }
 
@@ -892,7 +903,8 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                     enterprise: <?php echo (int) enterprise_installed(); ?>,
                 },
                 success: function (data) {
-                   $('#result_order').html(data);
+                    $('#result_order').html(data);
+                    resizeSearchHeader()
                 },
                 error: function (data) {
                     console.error("Fatal error in AJAX call to interpreter order", data)
@@ -1058,8 +1070,10 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                         })
                     }
                 },
+                closeOnEscape: true,
                 onload: () => {
                     $(document).ready(function () {
+                        $(".ui-dialog-titlebar-close").hide();
                         var buttonpane = $("div[aria-describedby='welcome_modal_window'] .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix");
                         $(buttonpane).append(`
                         <div class="welcome-wizard-buttons">
@@ -1215,4 +1229,8 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         });
     });
 /* ]]> */
+
+$(window).resize(function () { 
+    resizeSearchHeader()
+});
 </script>

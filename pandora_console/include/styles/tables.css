@@ -248,7 +248,7 @@
 .info_table > tbody > tr:hover {
   /* This !important is necessary to overwrite the white background of tables with less than 5 rows. */
   /*background-color: #eee !important;*/
-  background-color: #d9efee !important;
+  background-color: #d9efee;
 }
 
 .info_table > tbody > tr:hover .table_action_buttons > a,

@@ -9,6 +9,8 @@ use PandoraFMS\Modules\Shared\Services\Config;
 
 final class DeleteEventCommentService
 {
+
+
     public function __construct(
         private Config $config,
         private Audit $audit,
@@ -24,9 +26,11 @@ final class DeleteEventCommentService
         $this->eventCommentRepository->delete($idEventComment);
 
         // Audit.
-        //$this->audit->write(
-        //    'Incidence Management',
-        //    ' Deleted field incidence type #'.$idEventComment
-        //);
+        // $this->audit->write(
+        // 'Incidence Management',
+        // ' Deleted field incidence type #'.$idEventComment
+        // );
     }
+
+
 }

@@ -1119,11 +1119,13 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
-        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $EM_groups = users_get_groups($config['id_user'], 'EM', true, true);
         $EW_groups = users_get_groups($config['id_user'], 'EW', true, true);
+    }
 
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
         // Get groups where user have ER grants.
         if ((bool) $filter['search_secondary_groups'] === true) {
             $sql_filters[] = sprintf(
@@ -1155,7 +1157,7 @@ function events_get_all(
     }
 
     // Free search.
-    if (empty($filter['search']) === false && (bool) $filter['regex'] === false) {
+    if (empty($filter['search']) === false) {
         if (isset($config['dbconnection']->server_version) === true
             && $config['dbconnection']->server_version > 50600
         ) {
@@ -1185,22 +1187,38 @@ function events_get_all(
             $array_search[] = 'lower(ta.alias)';
         }
 
-        // Disregard repeated whitespaces when searching.
-        $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+        if ((bool) $filter['regex'] === true) {
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s %s %s REGEXP "%s" ',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    preg_replace('/(?<!\\\\)"/', '', io_safe_output($filter['search'])),
+                );
+                $sql_search .= ' ';
+            }
 
-        $sql_search = ' AND (';
-        foreach ($array_search as $key => $field) {
-            $sql_search .= sprintf(
-                '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
-                ($key === 0) ? '' : $nexo,
-                $field,
-                $not_search,
-                $collapsed_spaces_search
-            );
-            $sql_search .= ' ';
+            $sql_search .= ' )';
+        } else {
+            // Disregard repeated whitespaces when searching.
+            $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    $collapsed_spaces_search
+                );
+                $sql_search .= ' ';
+            }
+
+            $sql_search .= ' )';
         }
-
-        $sql_search .= ' )';
 
         $sql_filters[] = $sql_search;
     }
@@ -1235,6 +1253,8 @@ function events_get_all(
             io_safe_input($filter['user_comment']),
             $filter['user_comment']
         );
+
+        array_unshift($fields, 'DISTINCT te.id_evento AS distinct_event');
     }
 
     // Source.
@@ -1672,6 +1692,19 @@ function events_get_all(
         }
     }
 
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
+        $exists_id_grupo = false;
+        foreach ($fields as $field) {
+            if (str_contains($field, 'te.id_grupo') === true || str_contains($field, 'te.*') === true) {
+                $exists_id_grupo = true;
+            }
+        }
+
+        if ($exists_id_grupo === false) {
+            $fields[] = 'te.id_grupo';
+        }
+    }
+
     if (((int) $filter['group_rep'] === EVENT_GROUP_REP_EVENTS
         || (int) $filter['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) && $count === false
     ) {
@@ -1783,7 +1816,7 @@ function events_get_all(
         return $sql;
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $can_manage = '0 as user_can_manage';
         if (empty($EM_groups) === false) {
             $can_manage = sprintf(
@@ -1946,9 +1979,9 @@ function events_get_all(
                         case 'utimestamp':
                         case 'criticity':
                         case 'estado':
-                            if ($a[$sort_field] === $b[$sort_field]) {
+                            if ((isset($a[$sort_field]) === true && isset($b[$sort_field]) === true) && $a[$sort_field] === $b[$sort_field]) {
                                 $res = 0;
-                            } else if ($a[$sort_field] > $b[$sort_field]) {
+                            } else if ((isset($a[$sort_field]) === true && isset($b[$sort_field]) === true) && $a[$sort_field] > $b[$sort_field]) {
                                 $res = ($order === 'asc') ? 1 : (-1);
                             } else {
                                 $res = ($order === 'asc') ? (-1) : 1;
@@ -2713,6 +2746,7 @@ function events_print_type_img(
             $icon = 'images/module_warning.png';
         break;
 
+        case 'unknown':
         case 'going_unknown':
             $icon = 'images/module_unknown.png';
         break;
@@ -2741,7 +2775,6 @@ function events_print_type_img(
             $icon = 'images/configuration@svg.svg';
         break;
 
-        case 'unknown':
         default:
             $style .= ' invert_filter';
             $icon = 'images/event.svg';
@@ -2993,6 +3026,9 @@ function events_print_type_description($type, $return=false)
         break;
 
         case 'unknown':
+            $output .= __('Unknown');
+        break;
+
         default:
             $output .= __('Unknown type:').': '.$type;
         break;
@@ -5861,6 +5897,7 @@ function events_get_instructions($event, $max_text_length=300)
     }
 
     switch ($event['event_type']) {
+        case 'unknown':
         case 'going_unknown':
             if ($event['unknown_instructions'] != '') {
                 $value = str_replace(
@@ -5909,17 +5946,30 @@ function events_get_instructions($event, $max_text_length=300)
         return $value;
     }
 
+    $event_name = ui_print_truncate_text(
+        io_safe_output($event['evento']),
+        GENERIC_SIZE_TEXT,
+        false,
+        true,
+        false,
+        '...'
+    );
+
+    $over_event_name = base64_encode($event_name);
     $output  = '<div id="hidden_event_instructions_'.$event['id_evento'].'"';
     $output .= ' class="event_instruction">';
     $output .= $value;
     $output .= '</div>';
     $output .= '<span id="value_event_'.$event['id_evento'].'" class="nowrap">';
     $output .= '<span id="value_event_text_'.$event['id_evento'].'"></span>';
-    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].')">';
+    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].',\''.$over_event_name.'\')">';
     $output .= html_print_image(
         'images/default_list.png',
         true,
-        ['title' => $over_text]
+        [
+            'title' => $over_text,
+            'class' => 'invert_filter',
+        ]
     ).'</a></span>';
 
     return $output;
@@ -6538,4 +6588,166 @@ function event_print_graph(
     $graph .= '</div>';
 
     return $graph;
+}
+
+
+/**
+ * Get comments of array events.
+ *
+ * @param array $events Array of events.
+ * @param array $filter Filter of view events.
+ *
+ * @return array
+ */
+function reduce_events_comments($events, $filter=null)
+{
+    $group_by_server = [];
+    foreach ($events as $key => $event) {
+        if (isset($group_by_server[$event['server_id']]) === false) {
+            $group_by_server[$event['server_id']] = [];
+        }
+
+        $group_by_server[$event['server_id']][] = $event;
+    }
+
+    $comments = [];
+    foreach ($group_by_server as $server_id => $events) {
+        $events_comments = event_get_comments_with_all_events($events, $filter, $server_id);
+        foreach ($events_comments as $key => $comment) {
+            $comments[$server_id.'_'.$comment['id_event']] = $comment;
+        }
+    }
+
+    return $comments;
+}
+
+
+/**
+ * Ge all coments of events grouped by server.
+ *
+ * @param array   $events    Array of events.
+ * @param array   $filter    Filter of view events.
+ * @param integer $server_id Id of server.
+ *
+ * @return array
+ */
+function event_get_comments_with_all_events($events, $filter=null, $server_id=0)
+{
+    $whereGrouped = [];
+    if (empty($filter) === false) {
+        if (isset($filter['event_view_hr_cs']) === true && ($filter['event_view_hr_cs'] > 0)) {
+            $whereGrouped[] = sprintf(
+                ' AND tevent_comment.utimestamp > UNIX_TIMESTAMP(now() - INTERVAL %d SECOND) ',
+                $filter['event_view_hr_cs']
+            );
+        } else if (isset($filter['event_view_hr']) === true && ($filter['event_view_hr'] > 0)) {
+            $whereGrouped[] = sprintf(
+                ' AND tevent_comment.utimestamp > UNIX_TIMESTAMP(now() - INTERVAL %d SECOND) ',
+                ((int) $filter['event_view_hr'] * 3600)
+            );
+        }
+    }
+
+    $mode = (int) ($filter['group_rep'] ?? 0);
+
+    $eventsGrouped = [];
+    $idEvents = [];
+    $idExtras = [];
+    $idAgentsModules = [];
+    $idAgentes = [];
+    $eventos = [];
+    foreach ($events as $key => $event) {
+        // Consider if the event is grouped.
+        if ($mode === EVENT_GROUP_REP_EVENTS) {
+            // Default grouped message filtering (evento and estado).
+            $eventos[] = io_safe_input(io_safe_output($event['evento']));
+
+            // If id_agente is reported, filter the messages by them as well.
+            if ((int) $event['id_agente'] > 0) {
+                $idAgentes[] = (int) $event['id_agente'];
+            }
+
+            if ((int) $event['id_agentmodule'] > 0) {
+                $idAgentsModules[] = (int) $event['id_agentmodule'];
+            }
+        } else if ($mode === EVENT_GROUP_REP_EXTRAIDS) {
+            $idExtras[] = io_safe_input(io_safe_output($event['id_extra']));
+        } else {
+            $idEvents[] = $event['id_evento'];
+        }
+    }
+
+    if ($mode === EVENT_GROUP_REP_EVENTS) {
+        // Default grouped message filtering (evento and estado).
+        $whereGrouped[] = sprintf(
+            'AND `tevento`.`evento` IN ("%s")',
+            implode('","', $eventos)
+        );
+
+        // If id_agente is reported, filter the messages by them as well.
+        if ((int) $event['id_agente'] > 0) {
+            $whereGrouped[] = sprintf(
+                ' AND `tevento`.`id_agente` IN (%s)',
+                implode(',', $idAgentes)
+            );
+        }
+
+        if ((int) $event['id_agentmodule'] > 0) {
+            $whereGrouped[] = sprintf(
+                ' AND `tevento`.`id_agentmodule` IN (%s)',
+                implode(',', $idAgentsModules)
+            );
+        }
+    } else if ($mode === EVENT_GROUP_REP_EXTRAIDS) {
+        $whereGrouped[] = sprintf(
+            'AND `tevento`.`id_extra` IN ("%s")',
+            implode('","', $idExtras),
+        );
+    } else {
+        $whereGrouped[] = sprintf('AND `tevento`.`id_evento` IN (%s)', implode(',', $idEvents));
+    }
+
+    try {
+        if (is_metaconsole() === true
+            && $server_id > 0
+        ) {
+            $node = new Node($server_id);
+            $node->connect();
+        }
+
+        $sql = sprintf(
+            'SELECT tevent_comment.*
+            FROM tevento
+            INNER JOIN tevent_comment
+                ON tevento.id_evento = tevent_comment.id_event
+            JOIN(
+                SELECT id_event, max(utimestamp) as utimestamp
+                FROM tevent_comment a
+                GROUP BY a.id_event
+            ) max_ut ON max_ut.id_event = tevent_comment.id_event AND max_ut.utimestamp = tevent_comment.utimestamp
+            WHERE 1=1 %s
+            ORDER BY tevent_comment.utimestamp DESC',
+            implode(' ', $whereGrouped)
+        );
+
+        // Get grouped comments.
+        $eventsGrouped = db_get_all_rows_sql($sql);
+    } catch (\Exception $e) {
+        // Unexistent agent.
+        if (is_metaconsole() === true
+            && $server_id > 0
+        ) {
+            $node->disconnect();
+        }
+
+        $eventsGrouped = [];
+    } finally {
+        if (is_metaconsole() === true
+            && $server_id > 0
+        ) {
+            $node->disconnect();
+        }
+    }
+
+    return $eventsGrouped;
 }

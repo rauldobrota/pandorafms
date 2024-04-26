@@ -96,7 +96,7 @@ sub data_producer ($) {
 	my @tasks;
 	my @rows;
 
-	if (pandora_is_master($pa_config) == 0) {
+	if (pandora_is_master($pa_config, $dbh) == 0) {
 		@rows = get_db_rows ($dbh, 'SELECT tagente_modulo.id_agente_modulo, tagente_modulo.flag, tagente_estado.current_interval + tagente_estado.last_execution_try AS time_left, last_execution_try
 			FROM tagente, tagente_modulo, tagente_estado
 			WHERE server_name = ?

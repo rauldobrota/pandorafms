@@ -11,60 +11,79 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 abstract class Repository
 {
+
+
     abstract protected function dbGetRow(
         string $field,
         string $table,
         mixed $value
     ): array;
 
+
     abstract protected function dbGetValue(
         string $field,
         string $table,
         array $filters,
-        string $whereJoin = 'AND'
+        string $whereJoin='AND'
     ): mixed;
+
 
     abstract protected function dbGetValueSql(
         string $sql,
-        ?bool $cache = false
+        ?bool $cache=false
     ): string;
+
 
     abstract protected function dbGetRowSql(
         string $sql
     ): array;
 
+
     abstract protected function dbGetAllRowsSql(
         string $sql,
-        ?bool $cache = false
+        ?bool $cache=false
     ): array;
+
 
     abstract protected function dbInsert(string $table, array $values): mixed;
 
+
     abstract protected function dbUpdate(string $table, array $values, array $condition): mixed;
+
 
     abstract protected function dbDelete(string $table, array $where): mixed;
 
-    abstract protected function dbFormatWhereClauseSQL(array $values, $prefix = ''): string;
+
+    abstract protected function dbFormatWhereClauseSQL(array $values, $prefix=''): string;
+
 
     abstract public function buildQueryFilters(FilterAbstract $filter, DataMapperAbstract $mapper): string;
 
+
     abstract public function buildQueryPagination(FilterAbstract $filter): string;
+
 
     abstract public function buildQueryOrderBy(FilterAbstract $filter): string;
 
-    abstract public function checkAclGroupMysql(string $field, ?string $mode = ''): string;
+
+    abstract public function checkAclGroupMysql(string $field, ?string $mode=''): string;
+
 
     abstract public function buildQuery(
         FilterAbstract $filter,
         DataMapperAbstract $mapper,
-        bool $count = false
+        bool $count=false
     ): string;
+
 
     abstract public function maxFieldSql(string $field): string;
 
+
     abstract public function safeInput(?string $value): ?string;
 
+
     abstract public function safeOutput(?string $value): ?string;
+
 
     /**
      * @return object[],
@@ -94,6 +113,7 @@ abstract class Repository
         return $result;
     }
 
+
     public function __rows(FilterAbstract $filter, DataMapperAbstract $mapper): array
     {
         try {
@@ -110,6 +130,7 @@ abstract class Repository
         return $rows;
     }
 
+
     public function __count(FilterAbstract $filter, DataMapperAbstract $mapper): int
     {
         $sql = $this->buildQuery($filter, $mapper, true);
@@ -125,6 +146,7 @@ abstract class Repository
 
         return (int) $count;
     }
+
 
     public function __getOne(FilterAbstract $filter, DataMapperAbstract $mapper): object
     {
@@ -145,6 +167,7 @@ abstract class Repository
 
         return $mapper->fromDatabase($result);
     }
+
 
     public function __create(Entity $entity, DataMapperAbstract $mapper): int
     {
@@ -175,6 +198,7 @@ abstract class Repository
         return $id;
     }
 
+
     public function __update(Entity $entity, DataMapperAbstract $mapper, mixed $id): object
     {
         $values = $mapper->toDatabase($entity);
@@ -196,11 +220,12 @@ abstract class Repository
         return $entity;
     }
 
+
     public function __delete(
         mixed $id,
         DataMapperAbstract $mapper,
-        ?string $key = null,
-        ?array $where = null
+        ?string $key=null,
+        ?array $where=null
     ): void {
         try {
             if (empty($key) === true) {
@@ -233,6 +258,7 @@ abstract class Repository
         }
     }
 
+
     public function __getValue(FilterAbstract $filter, DataMapperAbstract $mapper): mixed
     {
         try {
@@ -249,8 +275,11 @@ abstract class Repository
         return $result;
     }
 
+
     public function __maxField(string $field): string
     {
         return $this->maxFieldSql($field);
     }
+
+
 }

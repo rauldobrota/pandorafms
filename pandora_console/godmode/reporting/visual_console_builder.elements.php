@@ -114,6 +114,7 @@ foreach ($all_images as $image_file) {
 $table = new stdClass();
 $table->width = '100%';
 $table->class = 'databox filter-table-adv';
+$table->styleTable = 'min-width: 900px; table-layout:fixed;';
 
 $table->head = [];
 $table->head['icon'] = '';
@@ -122,8 +123,7 @@ $table->head[1] = __('Image').'<br>'.__('Module').' / '.__('Custom graph');
 $table->head[2] = __('Width x Height<br>Max value');
 $table->head[3] = __('Position').'<br>'.__('Period');
 $table->head[4] = __('Parent').'<br>'.__('Map linked');
-$table->head[5] = '';
-$table->head[5] .= '&nbsp;&nbsp;&nbsp;'.html_print_checkbox(
+$table->head[5] = html_print_checkbox(
     'head_multiple_delete',
     '',
     false,
@@ -133,41 +133,66 @@ $table->head[5] .= '&nbsp;&nbsp;&nbsp;'.html_print_checkbox(
 );
 $table->head[5] .= '&nbsp;&nbsp;&nbsp;<span title="'.__('Action').'">'.__('A.').'</span>';
 
-$table->size = [];
-$table->size['icon'] = '1%';
-$table->size[0] = '28%';
-$table->size[1] = '';
-$table->size[2] = '25%';
-$table->size[3] = '27%';
-$table->size[4] = '7%';
-$table->size[5] = '15%';
-
+$table->headstyle = [];
+$table->headstyle['icon'] = 'text-align:left; width: 1%;';
+$table->headstyle[0] = 'text-align:left; width: 19%;';
+$table->headstyle[1] = 'text-align:left; width: 19%;';
+$table->headstyle[2] = 'text-align:left; width: 19%;';
+$table->headstyle[3] = 'text-align:left; width: 19%;';
+$table->headstyle[4] = 'text-align:left; width: 19%;';
+$table->headstyle[5] = 'text-align:right; width: 4%;';
 
 $table->align = [];
-
-if (!defined('METACONSOLE')) {
-    $table->headstyle[0] = 'text-align:left;';
-    $table->headstyle[1] = 'text-align:left';
-    $table->headstyle[2] = 'text-align:left';
-    $table->headstyle[3] = 'text-align:left';
-    $table->headstyle[4] = 'text-align:left';
-    $table->headstyle[5] = 'text-align:left';
-    $table->align[0] = 'left';
-    $table->align[1] = 'left';
-    $table->align[2] = 'left';
-    $table->align[3] = 'left';
-    $table->align[4] = 'left';
-    $table->align[5] = 'left';
-}
+$table->align[0] = 'left';
+$table->align[1] = 'left';
+$table->align[2] = 'left';
+$table->align[3] = 'left';
+$table->align[4] = 'left';
+$table->align[5] = 'right';
 
 $table->data = [];
 
-// Background
+// Background.
 $table->data[0]['icon'] = '';
-$table->data[0][0] = '<div sclass="invisible">'.__('Background').'</div>';
-$table->data[0][1] = '<div sclass="invisible">'.html_print_select($backgrounds_list, 'background', $visualConsole['background'], '', 'None', '', true, false, true, '', false, 'width: 120px;').'</div>';
-$table->data[0][2] = '<div sclass="invisible">'.html_print_input_text('width', $visualConsole['width'], '', 3, 5, true).' x '.html_print_input_text('height', $visualConsole['height'], '', 3, 5, true).'</div>';
-$table->data[0][3] = $table->data[0][4] = $table->data[0][5] = '';
+$table->data[0][0] = '<div>'.__('Background').'</div>';
+$table->data[0][1] = '<div>';
+$table->data[0][1] .= html_print_select(
+    $backgrounds_list,
+    'background',
+    $visualConsole['background'],
+    '',
+    'None',
+    '',
+    true,
+    false,
+    true,
+    '',
+    false,
+    'width: 100%;'
+);
+$table->data[0][1] .= '</div>';
+$table->data[0][2] = '<div class="row-flex">';
+$table->data[0][2] .= html_print_input_text(
+    'width',
+    $visualConsole['width'],
+    '',
+    3,
+    5,
+    true
+);
+$table->data[0][2] .= '<span class="mrgn_5px">x</span>';
+$table->data[0][2] .= html_print_input_text(
+    'height',
+    $visualConsole['height'],
+    '',
+    3,
+    5,
+    true
+);
+$table->data[0][2] .= '</div>';
+$table->data[0][3] = '';
+$table->data[0][4] = '';
+$table->data[0][5] = '';
 
 $i = 1;
 $layoutDatas = db_get_all_rows_field_filter(
@@ -186,7 +211,7 @@ $x = 0;
 foreach ($layoutDatas as $layoutData) {
     $idLayoutData = $layoutData['id'];
 
-    // line between rows
+    // Line between rows.
     $table->data[$i][0] = '<hr>';
     $table->colspan[$i][0] = '8';
 
@@ -208,7 +233,7 @@ foreach ($layoutDatas as $layoutData) {
                 true,
                 [
                     'title' => __('Percentile Bar'),
-                    'class' => 'invert_filter',
+                    'class' => 'main_menu_icon invert_filter',
                 ]
             );
         break;
@@ -219,7 +244,7 @@ foreach ($layoutDatas as $layoutData) {
                 true,
                 [
                     'title' => __('Percentile Bubble'),
-                    'class' => 'invert_filter',
+                    'class' => 'main_menu_icon invert_filter',
                 ]
             );
         break;
@@ -231,7 +256,7 @@ foreach ($layoutDatas as $layoutData) {
                 true,
                 [
                     'title' => __('Percentile'),
-                    'class' => 'invert_filter',
+                    'class' => 'main_menu_icon invert_filter',
                 ]
             );
         break;
@@ -413,7 +438,7 @@ foreach ($layoutDatas as $layoutData) {
         break;
 
         default:
-            if (enterprise_installed()) {
+            if (enterprise_installed() === true) {
                 $table->data[($i + 1)]['icon'] = enterprise_visual_map_print_list_element('icon', $layoutData);
             } else {
                 $table->data[($i + 1)]['icon'] = '';
@@ -421,26 +446,27 @@ foreach ($layoutDatas as $layoutData) {
         break;
     }
 
-
-
     // First row
-    // Label
+    // Label.
     switch ($layoutData['type']) {
         case ICON:
         case BOX_ITEM:
         case NETWORK_LINK:
         case LINE_ITEM:
-            // hasn't the label.
+            // Hasn't the label.
             $table->data[($i + 1)][0] = '';
         break;
 
         default:
-            $table->data[($i + 1)][0] = '<span class="w150px block">'.html_print_input_hidden('label_'.$idLayoutData, $layoutData['label'], true).'<a href="javascript: show_dialog_label_editor('.$idLayoutData.');">'.__('Edit label').'</a>'.'</span>';
+            $table->data[($i + 1)][0] = '<span class="w150px block">';
+            $table->data[($i + 1)][0] .= html_print_input_hidden('label_'.$idLayoutData, $layoutData['label'], true);
+            $table->data[($i + 1)][0] .= '<a href="javascript: show_dialog_label_editor('.$idLayoutData.');">';
+            $table->data[($i + 1)][0] .= __('Edit label');
+            $table->data[($i + 1)][0] .= '</a></span>';
         break;
     }
 
-
-    // Image
+    // Image.
     switch ($layoutData['type']) {
         case STATIC_GRAPH:
         case ICON:
@@ -458,7 +484,7 @@ foreach ($layoutDatas as $layoutData) {
                 true,
                 '',
                 false,
-                'width: 120px'
+                'width: 100%'
             );
         break;
 
@@ -467,47 +493,102 @@ foreach ($layoutDatas as $layoutData) {
         break;
     }
 
+    // Position.
+    $readonly = false;
+    if ($layoutData['type'] == NETWORK_LINK || $layoutData['type'] == LINE_ITEM) {
+        $readonly = true;
+    }
 
-
-    // Width and height
+    // Width and height.
     switch ($layoutData['type']) {
-        case NETWORK_LINK:
-        case LINE_ITEM:
-            // hasn't the width and height.
-            $table->data[($i + 1)][2] = '';
-        break;
-
         case COLOR_CLOUD:
-            $table->data[($i + 1)][2] = html_print_input_text('width_'.$idLayoutData, $layoutData['width'], '', 2, 5, true).' x '.html_print_input_text('height_'.$idLayoutData, $layoutData['width'], '', 2, 5, true);
+            $table->data[($i + 1)][2] = '<div class="row-flex">';
+            $table->data[($i + 1)][2] .= html_print_input_text(
+                'width_'.$idLayoutData,
+                $layoutData['width'],
+                '',
+                2,
+                5,
+                true
+            );
+            $table->data[($i + 1)][2] .= '<span class="mrgn_5px">x</span>';
+            $table->data[($i + 1)][2] .= html_print_input_text(
+                'height_'.$idLayoutData,
+                $layoutData['width'],
+                '',
+                2,
+                5,
+                true
+            );
+            $table->data[($i + 1)][2] .= '</div>';
         break;
 
         case CIRCULAR_PROGRESS_BAR:
         case CIRCULAR_INTERIOR_PROGRESS_BAR:
         case PERCENTILE_BUBBLE:
         case PERCENTILE_BAR:
-            $table->data[($i + 1)][2] = html_print_input_text('width_'.$idLayoutData, $layoutData['width'], '', 2, 5, true);
+            $table->data[($i + 1)][2] = '<div class="row-flex">';
+            $table->data[($i + 1)][2] .= html_print_input_text(
+                'width_'.$idLayoutData,
+                $layoutData['width'],
+                '',
+                2,
+                5,
+                true
+            );
+            $table->data[($i + 1)][2] .= '</div>';
         break;
 
         default:
-            $table->data[($i + 1)][2] = html_print_input_text('width_'.$idLayoutData, $layoutData['width'], '', 2, 5, true).' x '.html_print_input_text('height_'.$idLayoutData, $layoutData['height'], '', 2, 5, true);
+            $table->data[($i + 1)][2] = '<div class="row-flex">';
+            $table->data[($i + 1)][2] .= html_print_input_text(
+                'width_'.$idLayoutData,
+                $layoutData['width'],
+                '',
+                2,
+                5,
+                true,
+                $readonly
+            );
+            $table->data[($i + 1)][2] .= '<span class="mrgn_5px">x</span>';
+            $table->data[($i + 1)][2] .= html_print_input_text(
+                'height_'.$idLayoutData,
+                $layoutData['height'],
+                '',
+                2,
+                5,
+                true,
+                $readonly
+            );
+            $table->data[($i + 1)][2] .= '</div>';
         break;
     }
 
-    // Position
-    switch ($layoutData['type']) {
-        case NETWORK_LINK:
-        case LINE_ITEM:
-            // hasn't the width and height.
-            $table->data[($i + 1)][3] = '';
-        break;
+    $table->data[($i + 1)][3] = '<div class="row-flex">';
+    $table->data[($i + 1)][3] .= '<span class="mrgn_5px">(</span>';
+    $table->data[($i + 1)][3] .= html_print_input_text(
+        'left_'.$idLayoutData,
+        $layoutData['pos_x'],
+        '',
+        2,
+        5,
+        true,
+        $readonly
+    );
+    $table->data[($i + 1)][3] .= '<span class="mrgn_5px">,</span>';
+    $table->data[($i + 1)][3] .= html_print_input_text(
+        'top_'.$idLayoutData,
+        $layoutData['pos_y'],
+        '',
+        2,
+        5,
+        true,
+        $readonly
+    );
+    $table->data[($i + 1)][3] .= '<span class="mrgn_5px">)</span>';
+    $table->data[($i + 1)][3] .= '</div>';
 
-        default:
-            $table->data[($i + 1)][3] = '( '.html_print_input_text('left_'.$idLayoutData, $layoutData['pos_x'], '', 2, 5, true).' , '.html_print_input_text('top_'.$idLayoutData, $layoutData['pos_y'], '', 2, 5, true).' )';
-        break;
-    }
-
-
-    // Parent
+    // Parent.
     switch ($layoutData['type']) {
         case BOX_ITEM:
         case NETWORK_LINK:
@@ -517,39 +598,57 @@ foreach ($layoutDatas as $layoutData) {
         break;
 
         default:
-            $table->data[($i + 1)][4] = html_print_select(
+            $table->data[($i + 1)][4] = '<div>'.html_print_select(
                 $parents,
                 'parent_'.$idLayoutData,
                 $layoutData['parent_item'],
                 '',
                 __('None'),
                 0,
-                true
-            );
+                true,
+                false,
+                true,
+                '',
+                false,
+                'width: 100%;'
+            ).'</div>';
+        break;
     }
 
-    // Delete row button
-    if (!defined('METACONSOLE')) {
-        $url_delete = 'index.php?'.'sec=network&'.'sec2=godmode/reporting/visual_console_builder&'.'tab='.$activeTab.'&'.'action=delete&'.'id_visual_console='.$visualConsole['id'].'&'.'id_element='.$idLayoutData;
-    } else {
-        $url_delete = 'index.php?'.'operation=edit_visualmap&'.'sec=screen&'.'sec2=screens/screens&'.'action=visualmap&'.'pure='.(int) get_parameter('pure', 0).'&'.'tab=list_elements&'.'action2=delete&'.'id_visual_console='.$visualConsole['id'].'&'.'id_element='.$idLayoutData;
+    // Delete row button.
+    $url_delete = 'index.php?sec=network&sec2=godmode/reporting/visual_console_builder';
+    $url_delete .= '&tab='.$activeTab.'&action=delete';
+    $url_delete .= '&id_visual_console='.$visualConsole['id'].'&id_element='.$idLayoutData;
+    if (is_metaconsole() === true) {
+        $url_delete = 'index.php?operation=edit_visualmap&sec=screen&sec2=screens/screens&action=visualmap';
+        $url_delete .= '&pure='.(int) get_parameter('pure', 0);
+        $url_delete .= '&tab=list_elements&action2=delete';
+        $url_delete .= '&id_visual_console='.$visualConsole['id'].'&id_element='.$idLayoutData;
     }
 
-    $table->data[($i + 1)][5] = '';
+    $table->data[($i + 1)][5] = '<div class="row-flex flex-end">';
     $table->data[($i + 1)][5] .= html_print_checkbox('multiple_delete_items', $idLayoutData, false, true);
-    $table->data[($i + 1)][5] .= '<a href="'.$url_delete.'"onclick="javascript: if (!confirm(\''.__('Are you sure?').'\')) return false;">'.html_print_image('images/delete.svg', true, ['class' => 'main_menu_icon invert_filter']).'</a>';
+    $table->data[($i + 1)][5] .= '<a href="'.$url_delete.'"onclick="javascript: if (!confirm(\''.__('Are you sure?').'\')) return false;">';
+    $table->data[($i + 1)][5] .= html_print_image(
+        'images/delete.svg',
+        true,
+        ['class' => 'main_menu_icon invert_filter']
+    );
+    $table->data[($i + 1)][5] .= '</a>';
     $table->data[($i + 1)][5] .= html_print_input_hidden('updated_'.$idLayoutData, '0', true);
     $table->data[($i + 1)][5] .= html_print_input_hidden('rowtype_'.$idLayoutData, $layoutData['type'], true);
+    $table->data[($i + 1)][5] .= '</div>';
 
-    // Second row
+    // Second row.
     $table->data[($i + 2)]['icon'] = '';
 
-
-    // Agent
+    // Agent.
     switch ($layoutData['type']) {
         case GROUP_ITEM:
             $own_info = get_user_info($config['id_user']);
-            if (!$own_info['is_admin'] && !check_acl($config['id_user'], 0, 'PM')) {
+            if ((bool) $own_info['is_admin'] === false
+                && (bool) check_acl($config['id_user'], 0, 'PM') === false
+            ) {
                 $return_all_group = false;
             } else {
                 $return_all_group = true;
@@ -564,7 +663,12 @@ foreach ($layoutDatas as $layoutData) {
                 '',
                 '',
                 0,
-                true
+                true,
+                false,
+                false,
+                '',
+                false,
+                'width:100%'
             );
         break;
 
@@ -579,24 +683,25 @@ foreach ($layoutDatas as $layoutData) {
 
         default:
             $cell_content_enterprise = false;
-            if (enterprise_installed()) {
+            if (enterprise_installed() === true) {
                 $cell_content_enterprise = enterprise_visual_map_print_list_element('agent', $layoutData);
             }
 
             if ($cell_content_enterprise === false) {
                 $params = [];
                 $params['return'] = true;
-                $params['show_helptip'] = true;
+                $params['show_helptip'] = false;
                 $params['size'] = 20;
                 $params['input_name'] = 'agent_'.$idLayoutData;
                 $params['javascript_is_function_select'] = true;
                 $params['selectbox_id'] = 'module_'.$idLayoutData;
-                if (defined('METACONSOLE')) {
+                if (is_metaconsole() === true) {
                     $params['javascript_ajax_page'] = '../../ajax.php';
                     $params['disabled_javascript_on_blur_function'] = true;
 
                     $params['print_input_id_server'] = true;
-                    $params['input_id_server_id'] = $params['input_id_server_name'] = 'id_server_id_'.$idLayoutData;
+                    $params['input_id_server_id'] = 'id_server_id_'.$idLayoutData;
+                    $params['input_id_server_name'] = 'id_server_id_'.$idLayoutData;
                     $params['input_id_server_value'] = $layoutData['id_metaconsole'];
                     $params['metaconsole_enabled'] = true;
                     $params['print_hidden_input_idagent'] = true;
@@ -616,7 +721,7 @@ foreach ($layoutDatas as $layoutData) {
                     $params['value'] = db_get_value('alias', 'tagente', 'id_agente', $layoutData['id_agent']);
                 }
 
-                if ($layoutData['id_custom_graph'] != 0) {
+                if ((int) $layoutData['id_custom_graph'] !== 0) {
                     $table->data[($i + 2)][0] = __('Custom graph');
                 } else {
                     $table->data[($i + 2)][0] = ui_print_agent_autocomplete_input($params);
@@ -627,8 +732,7 @@ foreach ($layoutDatas as $layoutData) {
         break;
     }
 
-
-    // Module
+    // Module.
     switch ($layoutData['type']) {
         case ICON:
         case LABEL:
@@ -642,21 +746,21 @@ foreach ($layoutDatas as $layoutData) {
 
         default:
             if ($layoutData['id_layout_linked'] != 0) {
-                // It is a item that links with other visualmap
+                // It is a item that links with other visualmap.
                 $table->data[($i + 2)][1] = '';
                 break;
             }
 
             $cell_content_enterprise = false;
-            if (enterprise_installed()) {
+            if (enterprise_installed() === true) {
                 $cell_content_enterprise = enterprise_visual_map_print_list_element('module', $layoutData);
             }
 
             if ($cell_content_enterprise === false) {
-                if (!defined('METACONSOLE')) {
+                if (is_metaconsole() === false) {
                     $modules = agents_get_modules($layoutData['id_agent']);
                 } else {
-                    if ($layoutData['id_agent'] != 0) {
+                    if ((int) $layoutData['id_agent'] !== 0) {
                         $server = db_get_row('tmetaconsole_setup', 'id', $layoutData['id_metaconsole']);
                         if (metaconsole_connect($server) == NOERR) {
                             $modules = agents_get_modules($layoutData['id_agent']);
@@ -668,7 +772,7 @@ foreach ($layoutDatas as $layoutData) {
                 $modules = io_safe_output($modules);
 
                 if ($layoutData['id_custom_graph'] != 0) {
-                    if (is_metaconsole()) {
+                    if (is_metaconsole() === true) {
                         $graphs = [];
                         $graphs = metaconsole_get_custom_graphs(true);
                         $table->data[($i + 2)][1] = html_print_select(
@@ -678,7 +782,12 @@ foreach ($layoutDatas as $layoutData) {
                             '',
                             __('None'),
                             0,
-                            true
+                            true,
+                            false,
+                            true,
+                            '',
+                            false,
+                            'width:100%'
                         );
                     } else {
                         $table->data[($i + 2)][1] = html_print_select_from_sql(
@@ -688,7 +797,11 @@ foreach ($layoutDatas as $layoutData) {
                             '',
                             __('None'),
                             0,
-                            true
+                            true,
+                            false,
+                            true,
+                            false,
+                            'width:100%'
                         );
                     }
                 } else {
@@ -704,7 +817,7 @@ foreach ($layoutDatas as $layoutData) {
                         true,
                         '',
                         false,
-                        'width: 120px'
+                        'width: 100%'
                     );
                 }
             } else {
@@ -713,16 +826,17 @@ foreach ($layoutDatas as $layoutData) {
         break;
     }
 
-    // Empty
+    // Empty.
     $table->data[($i + 2)][2] = '';
 
-    // Period
+    // Period.
     switch ($layoutData['type']) {
         case MODULE_GRAPH:
         case SIMPLE_VALUE_MAX:
         case SIMPLE_VALUE_MIN:
         case SIMPLE_VALUE_AVG:
-            $table->data[($i + 2)][3] = html_print_extended_select_for_time(
+            $table->data[($i + 2)][3] .= '<div class="row-flex">';
+            $table->data[($i + 2)][3] .= html_print_extended_select_for_time(
                 'period_'.$idLayoutData,
                 $layoutData['period'],
                 '',
@@ -731,6 +845,7 @@ foreach ($layoutDatas as $layoutData) {
                 10,
                 true
             );
+            $table->data[($i + 2)][3] .= '</div>';
         break;
 
         default:
@@ -738,7 +853,7 @@ foreach ($layoutDatas as $layoutData) {
         break;
     }
 
-    // Map linked
+    // Map linked.
     switch ($layoutData['type']) {
         case NETWORK_LINK:
         case LINE_ITEM:
@@ -761,9 +876,8 @@ foreach ($layoutDatas as $layoutData) {
                 true,
                 false,
                 true,
-                '',
                 false,
-                'width: 120px'
+                'width:100%'
             );
         break;
     }

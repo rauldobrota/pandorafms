@@ -539,89 +539,6 @@ sub ha_restart_pandora($) {
     `$config->{'pandora_service_cmd'} $control_command 2>/dev/null`;
 }
 
-###############################################################################
-# Main (Pacemaker)
-###############################################################################
-sub ha_main_pacemaker($) {
-  my ($conf) = @_;
-
-  # Set the PID file.
-  $conf->{'PID'} = $PID_FILE;
-
-  # Log to a separate file if needed.
-  $conf->{'log_file'} = $conf->{'ha_log_file'} if defined ($conf->{'ha_log_file'});
-
-  $Running = 1;
-
-  ha_daemonize($conf) if ($DAEMON == 1);
-
-  while ($Running) {
-    eval {
-      eval { 
-        local $SIG{__DIE__};
-        # Load enterprise components.
-        enterprise_load($conf, 1);
-
-        # Register Enterprise logger
-        enterprise_hook('pandoraha_logger', [\&log_message]);
-        log_message($conf, 'LOG', 'Enterprise capabilities loaded');
-
-      };
-      if ($@) {
-        # No enterprise capabilities.
-        log_message($conf, 'LOG', 'No enterprise capabilities');
-      }
-
-      # Start the Pandora FMS server if needed.
-      log_message($conf, 'LOG', 'Checking the pandora_server service.');
-
-      # Connect to a DB.
-      my $dbh = ha_database_connect($conf);
-
-      if ($First_Cleanup == 1) {
-        log_message($conf, 'LOG', 'Cleaning previous unfinished actions');
-        enterprise_hook('pandoraha_cleanup_states', [$conf, $dbh]);
-        $First_Cleanup = 0;
-      }
-
-      # Check if there are updates pending.
-      ha_update_server($conf, $dbh);
-
-      # Keep pandora running
-      ha_keep_pandora_running($conf, $dbh);
-
-      # Keep Tentacle running
-      ha_keep_tentacle_running($conf, $dbh);
-    
-      # Keep MADE running
-      ha_keep_made_running($conf, $dbh);
-
-      # Are we the master?
-      pandora_set_master($conf, $dbh);
-      if (!pandora_is_master($conf)) {
-        log_message($conf, 'LOG', $conf->{'servername'} . ' is not the current master. Skipping DB-HA actions and monitoring.');
-        # Exit current eval.
-        return;
-      }
-
-      # Synchronize database.
-      enterprise_hook('pandoraha_sync_node', [$conf, $dbh]);
-
-      # Monitoring.
-      enterprise_hook('pandoraha_monitoring', [$conf, $dbh]);
-    
-      # Pending actions.
-      enterprise_hook('pandoraha_process_queue', [$conf, $dbh, $First_Cleanup]);
-    
-      # Cleanup and exit
-      db_disconnect ($dbh);
-    };
-    log_message($conf, 'WARNING', $@) if ($@);
-
-    log_message($conf, 'LOG', "Sleep.");
-    sleep($conf->{'ha_interval'});
-  }
-}
 
 ###############################################################################
 # Main (Pandora)
@@ -763,11 +680,6 @@ ha_init_pandora(\%Conf);
 # Read config file
 ha_load_pandora_conf (\%Conf);
 
-# Main
-if (defined($Conf{'ha_mode'}) && lc($Conf{'ha_mode'}) eq 'pandora') {
-	ha_main_pandora(\%Conf);
-} else {
-	ha_main_pacemaker(\%Conf);
-}
+ha_main_pandora(\%Conf);
 
 exit 0;

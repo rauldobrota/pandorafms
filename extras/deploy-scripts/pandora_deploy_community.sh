@@ -304,7 +304,6 @@ server_dependencies=" \
     perl(Sys::Syslog) \
     perl(DBI) \
     perl(XML::Simple) \
-    perl(Geo::IP) \
     perl(IO::Socket::INET6) \
     perl(XML::Twig) \
     expect \
@@ -344,7 +343,6 @@ ipam_dependencies=" \
     perl(Sys::Syslog) \
     perl(DBI) \
     perl(XML::Simple) \
-    perl(Geo::IP) \
     perl(IO::Socket::INET6) \
     perl(XML::Twig)"
 execute_cmd "yum install -y $ipam_dependencies" "Installing IPAM Instant client"
@@ -521,30 +519,14 @@ include (\$ownDir . "config_process.php");
 EO_CONFIG_F
 
 cat > /etc/httpd/conf.d/pandora.conf << EO_CONFIG_F
+ServerTokens Prod
 <Directory "/var/www/html">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride All
     Require all granted
 </Directory>
 
 EO_CONFIG_F
-
-# Add ws proxy options to apache.
-cat >> /etc/httpd/conf.modules.d/00-proxy.conf << 'EO_HTTPD_MOD'
-LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
-
-EO_HTTPD_MOD
-
-cat >> /etc/httpd/conf.d/wstunnel.conf << 'EO_HTTPD_WSTUNNEL'
-ProxyRequests Off
-<Proxy *>
-    Require all granted
-</Proxy>
-
-ProxyPass /ws ws://127.0.0.1:8080
-ProxyPassReverse /ws ws://127.0.0.1:8080
-
-EO_HTTPD_WSTUNNEL
 
 # Temporal quitar htaccess
 sed -i -e "s/php_flag engine off//g" $PANDORA_CONSOLE/images/.htaccess
@@ -691,16 +673,6 @@ EO_LRA
 
 chmod 0644 /etc/logrotate.d/pandora_server
 chmod 0644 /etc/logrotate.d/pandora_agent
-
-# Add websocket engine start script.
-mv /var/www/html/pandora_console/pandora_websocket_engine /etc/init.d/
-chmod +x /etc/init.d/pandora_websocket_engine
-
-# Start Websocket engine
-/etc/init.d/pandora_websocket_engine start &>> $LOGFILE
-
-# Configure websocket to be started at start.
-systemctl enable pandora_websocket_engine &>> $LOGFILE
 
 # Enable pandora ha service
 systemctl enable pandora_server --now &>> $LOGFILE

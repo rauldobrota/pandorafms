@@ -18,6 +18,7 @@ final class TagDataMapper extends DataMapperAbstract
     public const PHONE = 'phone';
     public const PREVIOUS_NAME = 'previous_name';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -28,27 +29,35 @@ final class TagDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return Tag::class;
     }
 
+
     public function fromDatabase(array $data): Tag
     {
-        return $this->builder->build(new Tag(), [
-            'idTag'        => $data[self::ID_TAG],
-            'name'         => $this->repository->safeOutput($data[self::NAME]),
-            'description'  => $this->repository->safeOutput($data[self::DESCRIPTION]),
-            'url'          => $this->repository->safeOutput($data[self::URL]),
-            'mail'         => $this->repository->safeOutput($data[self::MAIL]),
-            'phone'        => $this->repository->safeOutput($data[self::PHONE]),
-            'previousName' => $this->repository->safeOutput($data[self::PREVIOUS_NAME]),
-        ]);
+        return $this->builder->build(
+            new Tag(),
+            [
+                'idTag'        => $data[self::ID_TAG],
+                'name'         => $this->repository->safeOutput($data[self::NAME]),
+                'description'  => $this->repository->safeOutput($data[self::DESCRIPTION]),
+                'url'          => $this->repository->safeOutput($data[self::URL]),
+                'mail'         => $this->repository->safeOutput($data[self::MAIL]),
+                'phone'        => $this->repository->safeOutput($data[self::PHONE]),
+                'previousName' => $this->repository->safeOutput($data[self::PREVIOUS_NAME]),
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var Tag $data */
+        /*
+            @var Tag $data
+        */
         return [
             self::ID_TAG        => $data->getIdTag(),
             self::NAME          => $this->repository->safeInput($data->getName()),
@@ -59,4 +68,6 @@ final class TagDataMapper extends DataMapperAbstract
             self::PREVIOUS_NAME => $this->repository->safeInput($data->getPreviousName()),
         ];
     }
+
+
 }

@@ -6859,7 +6859,9 @@
                 null != e &&
                 !i(e)
               ) ||
-              a.test(e) || !o.test(e) || (null != t && e in Object(t))
+              a.test(e) ||
+              !o.test(e) ||
+              (null != t && e in Object(t))
             );
           };
         },

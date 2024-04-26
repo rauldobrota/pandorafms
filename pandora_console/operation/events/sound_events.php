@@ -437,7 +437,7 @@ function check_event_sound() {
         let element_time = $(this)
         .children(".li-hidden")
         .val();
-        let obj_time = new Date(element_time);
+        let obj_time = new Date(element_time * 1000);
         let current_dt = new Date();
         let timestamp = current_dt.getTime() - obj_time.getTime();
         timestamp = timestamp / 1000;
@@ -492,13 +492,13 @@ function check_event_sound() {
                 // Remove audio.
                 remove_audio();
                 var urlSound = '../../include/sounds/'+$('#sound_id :selected').val();
-                console.log(urlSound)
+
                 // Apend audio.
                 add_audio(urlSound);
 
                 // Add elements.
                 data.forEach(function(element) {
-                    console.log(element);
+
                 var li = document.createElement("li");
                 var b64 = btoa(JSON.stringify(element));
                 li.insertAdjacentHTML(
@@ -511,7 +511,7 @@ function check_event_sound() {
                 );
                 li.insertAdjacentHTML(
                     "beforeend",
-                    `<div class="li-title"><a href="javascript:" onclick="open_window_dialog('`+b64+`')">${element.message}</a></div>`
+                    `<div class="li-title"><a class="sound-events-li-link" href="javascript:" onclick="open_window_dialog('`+b64+`')">${element.message}</a></div>`
                 );
                 li.insertAdjacentHTML(
                     "beforeend",
@@ -519,7 +519,7 @@ function check_event_sound() {
                 );
                 li.insertAdjacentHTML(
                     "beforeend",
-                    '<input type="hidden" value="' + element.event_timestamp + '" class="li-hidden"/>'
+                    '<input type="hidden" value="' + element.utimestamp + '" class="li-hidden"/>'
                 );
                 $("#tabs-sound-modal .elements-discovered-alerts ul").prepend(li);
                 });

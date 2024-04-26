@@ -262,20 +262,24 @@ class AgentsAlerts extends HTML
             $data[0] = io_safe_output($agent_module['alias']);
             $data[1] = io_safe_output($agent_module['nombre']);
             $uniqid = $agent_module['id_agente_modulo'];
-            $data[2] = html_print_anchor(
-                [
-                    'href'    => sprintf(
-                        'javascript:show_add_alerts(\'%s\')',
-                        $uniqid
-                    ),
-                    'content' => html_print_image(
-                        'images/add_mc.png',
-                        true,
-                        ['class' => 'main_menu_icon invert_filter']
-                    ),
-                ],
-                true
-            );
+            if (check_acl($this->idUser, 0, 'LM')) {
+                $data[2] = html_print_anchor(
+                    [
+                        'href'    => sprintf(
+                            'javascript:show_add_alerts(\'%s\')',
+                            $uniqid
+                        ),
+                        'content' => html_print_image(
+                            'images/add_mc.png',
+                            true,
+                            ['class' => 'main_menu_icon invert_filter']
+                        ),
+                    ],
+                    true
+                );
+            } else {
+                $data[2] = '';
+            }
 
             array_push($table->data, $data);
 
@@ -681,7 +685,7 @@ class AgentsAlerts extends HTML
             $alias = db_get_row('tagente', 'id_agente', $agent['id_agente']);
             echo '<tr>';
             // Name of the agent.
-            echo '<td style="text-align: left;font-weight: bold;color: #3f3f3f;">'.$alias['alias'].'</td>';
+            echo '<td style="text-align: left;font-weight: bold;color: var(--text-color-4);">'.$alias['alias'].'</td>';
             // Alerts of the agent.
             foreach ($templates as $tid => $tname) {
                 $anyfired = 0;
@@ -780,7 +784,7 @@ class AgentsAlerts extends HTML
                 'nothing'     => false,
                 'selected'    => $this->groupId,
                 'return'      => true,
-                'script'      => 'this.form.submit()',
+                'script'      => '',
                 'size'        => '100%',
             ],
         ];

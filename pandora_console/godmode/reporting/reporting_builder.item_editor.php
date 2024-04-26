@@ -52,6 +52,11 @@ if (! check_acl($config['id_user'], 0, 'RW')
     exit;
 }
 
+// Get pandora black theme.
+if ($config['style'] === 'pandora_black') {
+    html_print_input_hidden('selected_style_theme', 'pandora_black');
+}
+
 $meta = false;
 if (($config['metaconsole'] == 1) && (defined('METACONSOLE'))) {
     $meta = true;
@@ -1454,7 +1459,7 @@ $class = 'databox filters';
             <td class="bolder">
                 <?php
                 echo __('Module').ui_print_help_tip(
-                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: .*usage.* will match: cpu_usage, vram usage in matchine 1.'),
+                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in matchine 1.', '.*usage.*'),
                     true
                 );
                 ?>
@@ -2338,7 +2343,7 @@ if (is_metaconsole() === true) {
                 if ($idAgent) {
                     $sql = 'SELECT id_agente_modulo, nombre
 						FROM tagente_modulo
-						WHERE id_agente =  '.$idAgent.' AND  delete_pending = 0';
+						WHERE id_agente = "'.$idAgent.'" AND  delete_pending = 0';
 
                     if ($meta) {
                         $connection = metaconsole_get_connection($server_name);
@@ -2860,20 +2865,32 @@ if (is_metaconsole() === true) {
 
                 if (!empty($style_button_create_custom_graph)) {
                     $style_create = [
-                        'mode'  => 'link',
+                        'mode'  => 'mini',
+                        'icon'  => 'next',
+                        'class' => 'mrgn_lft_10px',
                         'style' => 'display:none',
                     ];
                 } else {
-                    $style_create = [ 'mode' => 'link' ];
+                    $style_create = [
+                        'mode'  => 'mini',
+                        'icon'  => 'next',
+                        'class' => 'mrgn_lft_10px',
+                    ];
                 }
 
                 if (!empty($style_button_edit_custom_graph)) {
                     $style_edit = [
-                        'mode'  => 'link',
+                        'mode'  => 'mini',
+                        'icon'  => 'update',
+                        'class' => 'mrgn_lft_10px',
                         'style' => 'display:none',
                     ];
                 } else {
-                    $style_edit = [ 'mode' => 'link' ];
+                    $style_edit = [
+                        'mode'  => 'mini',
+                        'icon'  => 'update',
+                        'class' => 'mrgn_lft_10px',
+                    ];
                 }
 
                 html_print_button(
@@ -6178,7 +6195,12 @@ $(document).ready (function () {
         });
     });
 
-    defineTinyMCE('#textarea_render_definition');
+    var consoleStyle = $("#hidden-selected_style_theme").val();
+    if (consoleStyle == "pandora_black") {
+        defineTinyMCEDark('#textarea_render_definition');
+    } else {
+        defineTinyMCE('#textarea_render_definition');
+    }
 
     $("#checkbox-select_by_group").change(function () {
         var select_by_group  = $('#checkbox-select_by_group').prop('checked');

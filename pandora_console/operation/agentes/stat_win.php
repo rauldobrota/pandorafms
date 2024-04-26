@@ -434,6 +434,10 @@ ui_include_time_picker(true);
                     var browserZoomLevel = window.outerWidth / window.innerWidth;
                     let height = ($('#chart-modal').height() + margin) * browserZoomLevel;
                     let width = 800 * browserZoomLevel;
+                    if (width === 800) {
+                        width = 1000;
+                        height = 550;
+                    }
                     window.resizeTo(width, height);
                 }
 

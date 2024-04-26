@@ -13,6 +13,12 @@
 // GNU General Public License for more details.
 require_once '../../include/config.php';
 
+$id_layout = get_parameter('id_layout', null);
+if ($id_layout !== null) {
+    include '../../general/noaccess.php';
+    return;
+}
+
 use PandoraFMS\User;
 
 // Set root on homedir, as defined in setup.
@@ -64,7 +70,27 @@ $hash = (string) get_parameter('hash');
 
 // Check input hash.
 // DO NOT move it after of get parameter user id.
-if (User::validatePublicHash($hash) !== true) {
+$vcs = visual_map_get_user_layouts();
+foreach ($vcs as $key => $data) {
+    $hash_compare = User::generatePublicHash($key);
+    if (hash_equals($hash_compare, $hash)) {
+        $visualConsoleId = (int) $key;
+        break;
+    }
+}
+
+$id_user_url = get_parameter('id_user', $config['id_user']);
+if (empty($visualConsoleId) === true) {
+    foreach ($vcs as $key => $data) {
+        $hash_compare = User::generatePublicHashUser($key, $id_user_url);
+        if (hash_equals($hash_compare, $hash)) {
+            $visualConsoleId = (int) $key;
+            break;
+        }
+    }
+}
+
+if (empty($visualConsoleId) === true) {
     db_pandora_audit(
         AUDIT_LOG_VISUAL_CONSOLE_MANAGEMENT,
         'Trying to access public visual console'
@@ -73,7 +99,6 @@ if (User::validatePublicHash($hash) !== true) {
     exit;
 }
 
-$visualConsoleId = (int) get_parameter('id_layout');
 $userAccessMaintenance = null;
 if (empty($config['id_user']) === true) {
     $config['id_user'] = (string) get_parameter('id_user');

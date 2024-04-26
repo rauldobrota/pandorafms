@@ -484,10 +484,15 @@ if (is_ajax() === true) {
 
             if (empty($events) === false) {
                 $redirection_form_id = 0;
+                if ((int) $filter['group_rep'] > 0) {
+                    $events_comments = [];
+                } else {
+                    $events_comments = reduce_events_comments($events, $filter);
+                }
 
                 $data = array_reduce(
                     $events,
-                    function ($carry, $item) use ($table_id, &$redirection_form_id, $filter, $compact_date, $external_url, $compact_name_event, $regex) {
+                    function ($carry, $item) use ($table_id, &$redirection_form_id, $filter, $compact_date, $external_url, $compact_name_event, $regex, $events_comments) {
                         global $config;
 
                         $tmp = (object) $item;
@@ -675,12 +680,16 @@ if (is_ajax() === true) {
 
                         $tmp->instructions = events_get_instructions($item, 15);
 
-                        $tmp->user_comment = ui_print_comments(
-                            event_get_last_comment(
-                                $item,
-                                $filter
-                            )
-                        );
+                        if ((int) $filter['group_rep'] > 0) {
+                            $tmp->user_comment = ui_print_comments(
+                                event_get_last_comment(
+                                    $item,
+                                    $filter
+                                )
+                            );
+                        } else if (isset($events_comments[$tmp->server_id.'_'.$tmp->id_evento]) === true) {
+                            $tmp->user_comment = ui_print_comments($events_comments[$tmp->server_id.'_'.$tmp->id_evento]);
+                        }
 
                         // Grouped events.
                         if (isset($tmp->max_id_evento) === true
@@ -1240,27 +1249,7 @@ if (is_ajax() === true) {
                             }
                         }
 
-                        $regex_validation = false;
-                        if (empty($tmp) === false && $regex !== '') {
-                            foreach (json_decode(json_encode($tmp), true) as $key => $field) {
-                                if ($key === 'b64') {
-                                    continue;
-                                }
-
-                                $field = strip_tags($field);
-
-                                if (preg_match('/'.io_safe_output($regex).'/', $field)) {
-                                    $regex_validation = true;
-                                }
-                            }
-
-                            if ($regex_validation === true) {
-                                $carry[] = $tmp;
-                            }
-                        } else {
-                            $carry[] = $tmp;
-                        }
-
+                        $carry[] = $tmp;
                         return $carry;
                     }
                 );
@@ -1280,11 +1269,10 @@ if (is_ajax() === true) {
             // RecordsTotal && recordsfiltered resultados totales.
             echo json_encode(
                 [
-                    'data'                 => ($data ?? []),
-                    'buffers'              => $buffers,
-                    'recordsTotal'         => $count,
-                    'recordsFiltered'      => $count,
-                    'showAlwaysPagination' => (empty($regex) === false) ? true : false,
+                    'data'            => ($data ?? []),
+                    'buffers'         => $buffers,
+                    'recordsTotal'    => $count,
+                    'recordsFiltered' => $count,
                 ]
             );
         } catch (Exception $e) {
@@ -1664,13 +1652,10 @@ $url .= '';
 if ($pure) {
     // Fullscreen.
     // Floating menu - Start.
-    echo '<div id="vc-controls" class="zindex999"">';
+    echo '<div id="vc-controls" class="events-refresh-pure"">';
 
-    echo '<div id="menu_tab" class="menu_tab_pure">';
-    echo '<ul class="mn">';
-
+    echo '<div>';
     // Quit fullscreen.
-    echo '<li class="nomn">';
     echo '<a target="_top" href="'.$url.'&amp;pure=0">';
     echo html_print_image(
         'images/exit_fullscreen@svg.svg',
@@ -1681,12 +1666,10 @@ if ($pure) {
         ]
     );
     echo '</a>';
-    echo '</li>';
+    echo '</div>';
+
 
     // Countdown.
-    echo '<li class="nomn">';
-    echo '<div class="events-refr">';
-    echo '<div class="events-countdown"><span id="refrcounter"></span></div>';
     echo '<div id="events-refr-form">';
     echo __('Refresh').':';
     echo html_print_select(
@@ -1701,16 +1684,8 @@ if ($pure) {
         false
     );
     echo '</div>';
-    echo '</div>';
-    echo '</li>';
 
-    // Console name.
-    echo '<li class="nomn">';
-    echo '<div class="vc-title">'.__('Event viewer').'</div>';
-    echo '</li>';
-
-    echo '</ul>';
-    echo '</div>';
+    echo '<div class="events-countdown"><span id="refrcounter"></span></div>';
 
     echo '</div>';
     // Floating menu - End.
@@ -2097,12 +2072,13 @@ $data .= html_print_checkbox_switch(
     true
 );
 
+$data .= '<label class="vert-align-bottom pdd_r_15px">';
+$data .= __('Not');
 $data .= ui_print_help_tip(
     __('Search for elements NOT containing given text.'),
     true
 );
-
-$data .= '&nbsp&nbsp&nbsp';
+$data .= '</label>';
 
 $data .= html_print_checkbox_switch(
     'regex',
@@ -2113,10 +2089,14 @@ $data .= html_print_checkbox_switch(
     'checked_slide_events(this);',
     true
 );
+
+$data .= '<label class="vert-align-bottom pdd_r_15px">';
+$data .= __('Regexp');
 $data .= ui_print_help_tip(
     __('Search by regular expression.'),
     true
 );
+$data .= '</label>';
 
 $data .= '</div>';
 
@@ -2665,20 +2645,22 @@ try {
 
 
     // Always add options column.
-    $fields = array_merge(
-        $fields,
-        [
+    if ((bool) check_acl($config['id_user'], 0, 'EW') === true) {
+        $fields = array_merge(
+            $fields,
             [
-                'text'  => 'options',
-                'class' => 'table_action_buttons mw100px',
-            ],
-            [
-                'text'  => 'm',
-                'extra' => $checkbox_all,
-                'class' => 'w20px no-text-imp',
-            ],
-        ]
-    );
+                [
+                    'text'  => 'options',
+                    'class' => 'table_action_buttons mw100px',
+                ],
+                [
+                    'text'  => 'm',
+                    'extra' => $checkbox_all,
+                    'class' => 'w20px no-text-imp',
+                ],
+            ]
+        );
+    }
 
     // Get column names.
     $column_names = events_get_column_names($fields, true);
@@ -2889,8 +2871,8 @@ try {
                     'column_names'                   => $column_names,
                     'columns'                        => $fields,
                     'no_sortable_columns'            => [
-                        -1,
-                        -2,
+                        'options',
+                        'm',
                         'column-instructions',
                         'user_comment',
                     ],
@@ -3714,11 +3696,19 @@ function datetime_picker_callback() {
 
 datetime_picker_callback();
 
-function show_instructions(id){
+function show_instructions(id, title_event){
     title = "<?php echo __('Instructions'); ?>";
     $('#hidden_event_instructions_' + id).dialog({
-        title: title,
-        width: 600
+        title: `${title+' '+atob(title_event)}`,
+        width: 650,
+        draggable: true,
+        modal: true,
+        closeOnEscape: true,
+        open: function(){
+            $('.ui-widget-overlay').bind('click',function(){
+                $('#hidden_event_instructions_' + id).dialog('close');
+            })
+        }
     });
 }
 
@@ -3853,4 +3843,9 @@ function show_events_graph(){
         }
     });
 }
+
+$(document).ready(function () {
+    var controls = document.querySelector('.events-refresh-pure');
+    autoHideElement(controls, 1000);
+});
 </script>

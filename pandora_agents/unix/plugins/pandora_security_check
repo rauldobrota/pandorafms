@@ -297,6 +297,10 @@ sub parse_configuration {
         $line =~ s/^\s+//;
         $line =~ s/\s+$//;
 
+        if($line =~ /^$/) {
+            next;
+        }
+
         if ($line =~ /^\[($b_ports|$b_files|$b_passwords)\]$/) {
             $configuration_block = $1;
         }
@@ -537,7 +541,6 @@ if ($check_files) {
 
     if ($can_check_files) {
         # Check each file integrity
-        my @errored_files;
         my @no_integrity_files;
 
         # Create unique check files list
@@ -556,8 +559,6 @@ if ($check_files) {
                     push @no_integrity_files, $file;
                 }
                 $integrity{$file_key} = $file_md5;
-            } else {
-                push @errored_files, $file;
             }
         }
 
@@ -570,11 +571,6 @@ if ($check_files) {
         if (@no_integrity_files) {
             $value = 0;
             $desc = "Changed files found:\n" . join("\n", @no_integrity_files);
-        }
-
-        if (@errored_files) {
-            $value = 0;
-            $desc .= "\nUnable to check integrity of some files:\n" . join("\n", @errored_files);
         }
     }
 
@@ -596,10 +592,15 @@ if ($check_passwords) {
         open my $shadow_fh, '<', $shadow_file;
         while (my $line = <$shadow_fh>) {
             chomp $line;
+
+            if($line =~ /^$/) {
+                next;
+            }
+            
             my ($username, $password_hash, @rest) = split /:/, $line;
 
             # Skip users with no password hash
-            if ($password_hash ne "*" && $password_hash ne "!!" && $password_hash ne "!locked") {
+            if ($password_hash ne "*" && $password_hash ne "!!" && $password_hash ne "!locked" && $password_hash ne "!*") {
                 my $salt = substr($password_hash, 0, rindex($password_hash, '$') + 1);
                 my $user_hash = crypt($username, $salt);
                 if ($user_hash eq $password_hash) {

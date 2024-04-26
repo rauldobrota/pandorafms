@@ -470,7 +470,7 @@ function get_user_language($id_user=null)
 
     if ($id_user !== null) {
         $userinfo = get_user_info($id_user);
-        if ($userinfo['language'] != 'default') {
+        if (isset($userinfo['language']) === true && $userinfo['language'] != 'default') {
             return $userinfo['language'];
         }
     }
@@ -1009,10 +1009,11 @@ function get_parameter_date($name, $default='', $date_format='Y/m/d')
     $date_end = get_parameter('date_end', 0);
     $time_end = get_parameter('time_end');
     $datetime_end = strtotime($date_end.' '.$time_end);
+    $date_none = get_parameter($name, $default);
 
     $custom_date = get_parameter('custom_date', 0);
-    $range = get_parameter('range', SECONDS_1DAY);
-    $date_text = get_parameter('range_text', SECONDS_1DAY);
+    $range = get_parameter($name, SECONDS_1DAY);
+    $date_text = get_parameter($name.'_text', SECONDS_1DAY);
     $date_init_less = (strtotime(date('Y/m/d')) - SECONDS_1DAY);
     $date_init = get_parameter('date_init', date(DATE_FORMAT, $date_init_less));
     $time_init = get_parameter('time_init', date(TIME_FORMAT, $date_init_less));
@@ -1026,7 +1027,7 @@ function get_parameter_date($name, $default='', $date_format='Y/m/d')
         $date_end = date('Y/m/d H:i:s', $datetime_end);
         $period = ($datetime_end - $datetime_init);
     } else if ($custom_date === '2') {
-        $date_units = get_parameter('range_units');
+        $date_units = get_parameter($name.'_units');
         $date_end = date('Y/m/d H:i:s');
         $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - ((int) $date_text * (int) $date_units)));
         $period = (strtotime($date_end) - strtotime($date_init));
@@ -1054,6 +1055,9 @@ function get_parameter_date($name, $default='', $date_format='Y/m/d')
             $date_init = $first_of_week;
             $period = (strtotime($date_end) - strtotime($first_of_week));
         }
+    } else if ($date_none === 'none') {
+        // Prioritize the report item period based on the current local date/time.
+        $date_end = date('Y/m/d H:i:s');
     } else {
         $date_end = date('Y/m/d H:i:s');
         $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - $range));
@@ -2427,11 +2431,6 @@ function check_login($output=true)
         return false;
     }
 
-    db_pandora_audit(
-        AUDIT_LOG_HACK_ATTEMPT,
-        'Trying to access without a valid session',
-        'N/A'
-    );
     include $config['homedir'].'/general/noaccess.php';
     exit;
 }
@@ -4423,7 +4422,18 @@ function generator_chart_to_pdf(
         $browserFactory = new BrowserFactory($chromium_dir);
 
         // Starts headless chrome.
-        $browser = $browserFactory->createBrowser(['noSandbox' => true]);
+        $browser = $browserFactory->createBrowser(
+            [
+                'noSandbox'               => true,
+                'customFlags'             => [
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--disable-web-security',
+                    '--font-render-hinting=medium',
+                ],
+                'ignoreCertificateErrors' => true,
+            ]
+        );
 
         // Creates a new page.
         $page = $browser->createPage();
@@ -5620,6 +5630,13 @@ function get_help_info($section_name)
                 $result .= 'pandorafms/management_and_operation/12_console_setup#general_setup';
             }
         break;
+
+        case 'opensearch_installation':
+            if ($es) {
+                $result .= 'pandorafms/technical_annexes/38_opensearch_installation#instalacion';
+            } else {
+                $result .= 'pandorafms/technical_annexes/38_opensearch_installation#installation';
+            }
 
         case 'servers_ha_clusters_tab':
             if ($es) {
@@ -6944,6 +6961,48 @@ function get_defined_translation($string)
             return vsprintf($cache[$language][$string], $args);
         }
     }
+}
+
+
+/**
+ * General utility to check if at least one element in an array meets a certain criteria defined by passed function.
+ *
+ * @param array    $array Array to be checked.
+ * @param callable $fn    Checking function (must accept one argument => array item to be evaluated and returns
+ * true/false depending on whether or not the condition was fulfilled).
+ *
+ * @return boolean
+ */
+function array_some(array $array, callable $fn)
+{
+    foreach ($array as $value) {
+        if ($fn($value) === true) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+/**
+ * General utility to check if every element in an array meets a certain criteria defined by passed function.
+ *
+ * @param array    $array Array to be checked.
+ * @param callable $fn    Checking function (must accept one argument => array item to be evaluated and returns
+ * true/false depending on whether or not the condition was fulfilled).
+ *
+ * @return boolean
+ */
+function array_every(array $array, callable $fn)
+{
+    foreach ($array as $value) {
+        if ($fn($value) === false) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 

@@ -10,6 +10,8 @@ use PandoraFMS\Modules\Shared\Entities\PaginationData;
 
 final class ListEventCommentAction
 {
+
+
     public function __construct(
         private ListEventCommentService $listEventCommentService,
         private CountEventCommentService $countEventCommentService
@@ -26,4 +28,6 @@ final class ListEventCommentAction
             $this->listEventCommentService->__invoke($eventCommentFilter)
         ))->toArray();
     }
+
+
 }

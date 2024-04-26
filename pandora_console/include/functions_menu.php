@@ -64,8 +64,6 @@ function menu_print_menu(&$menu)
         $sec2 = 'godmode/alerts/alert_actions';
     } else if ($sec2 === 'godmode/alerts/configure_alert_command') {
         $sec2 = 'godmode/alerts/alert_commands';
-    } else if ($sec2 === 'enterprise/godmode/setup/edit_skin') {
-        $sec2 = 'enterprise/godmode/setup/setup_skins';
     } else if ($sec2 === 'operation/agentes/networkmap.dinamic') {
         $sec2 = 'operation/agentes/pandora_networkmap';
     } else if ($sec2 === 'godmode/gis_maps/configure_gis_map') {
@@ -169,6 +167,12 @@ function menu_print_menu(&$menu)
         $sec2 = 'godmode/groups/group_list';
     } else if ($sec2 === 'godmode/users/configure_profile') {
         $sec2 = 'godmode/users/profile_list';
+    } else if ($sec2 === 'godmode/users/configure_token') {
+        $sec2 = 'godmode/users/token_list';
+    } else if ($sec2 === 'godmode/servers/modificar_server' && check_acl($config['id_user'], 0, 'AW') && (bool) check_acl($config['id_user'], 0, 'PM') === false) {
+        $sec2 = 'enterprise/godmode/servers/list_satellite';
+    } else if ($sec2 === 'enterprise/godmode/snmpconsole/snmp_trap_editor_form') {
+        $sec2 = 'enterprise/godmode/snmpconsole/snmp_trap_editor';
     } else {
         $sec2 = (string) get_parameter('sec2');
     }

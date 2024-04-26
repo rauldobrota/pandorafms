@@ -19,6 +19,7 @@ final class UserProfileDataMapper extends DataMapperAbstract
     public const ID_POLICY = 'id_policy';
     public const TAGS = 'tags';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -29,10 +30,12 @@ final class UserProfileDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return UserProfile::class;
     }
+
 
     public function fromDatabase(array $data): UserProfile
     {
@@ -51,9 +54,12 @@ final class UserProfileDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var UserProfile $data */
+        /*
+            @var UserProfile $data
+        */
         return [
             self::ID_USER_PROFILE => $data->getIdUserProfile(),
             self::ID_USER         => $data->getIdUser(),
@@ -65,4 +71,6 @@ final class UserProfileDataMapper extends DataMapperAbstract
             self::TAGS            => (empty($data->getTags()) === false) ? implode(',', $data->getTags()) : null,
         ];
     }
+
+
 }

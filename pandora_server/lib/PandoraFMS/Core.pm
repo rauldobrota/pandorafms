@@ -2485,8 +2485,10 @@ sub pandora_process_module ($$$$$$$$$;$) {
 	}
 
 	# Generate alerts
+	my $inhibit_service_alerts = enterprise_hook('pandora_inhibit_service_alerts', [$pa_config, $module, $dbh, 0]);
+	$inhibit_service_alerts = 0 unless defined($inhibit_service_alerts);
 	if (pandora_inhibit_alerts ($pa_config, $agent, $dbh, 0) == 0 &&
-		(pandora_cps_enabled($agent, $module) == 0 || enterprise_hook('pandora_inhibit_service_alerts', [$pa_config, $module, $dbh, 0]) == 0))
+		(pandora_cps_enabled($agent, $module) == 0 || $inhibit_service_alerts == 0))
 	{		
 		pandora_generate_alerts ($pa_config, $processed_data, $status, $agent, $module, $utimestamp, $dbh, $timestamp, $extra_macros, $last_data_value);
 	}
@@ -3775,9 +3777,6 @@ sub pandora_delete_module {
 	# Delete templates asociated to the module
 	db_do ($dbh, 'DELETE FROM talert_template_modules WHERE id_agent_module = ?', $module_id);
 	
-	# Delete events asociated to the module
-	db_do ($dbh, 'DELETE FROM tevento WHERE id_agentmodule = ?', $module_id);
-	
 	# Delete tags asociated to the module
 	db_do ($dbh, 'DELETE FROM ttag_module WHERE id_agente_modulo = ?', $module_id);
 	
@@ -4067,8 +4066,16 @@ sub pandora_check_type_custom_field_for_itsm ($) {
 ##########################################################################
 sub pandora_update_agent_custom_field ($$$$) {
 	my ($dbh, $token, $field, $id_agent) = @_;
+	my $exist_field = get_db_value($dbh, 'SELECT count(*) FROM tagent_custom_data WHERE id_field = ? AND id_agent = ?', $field, $id_agent);
 	my $result = undef;
-	$result = db_update ($dbh, 'UPDATE tagent_custom_data SET description = ? WHERE id_field = ? AND id_agent = ?', safe_input($token), $field, $id_agent);
+	
+	$token = safe_input($token);
+
+	if (!$exist_field) {
+		$result = defined(db_insert ($dbh, 'id_field', 'INSERT INTO tagent_custom_data (`description`, `id_field`, `id_agent`) VALUES (?, ?, ?)', $token, $field, $id_agent)) ? 1 : 0;		
+	} else {
+		$result = db_update ($dbh, 'UPDATE tagent_custom_data SET description = ? WHERE id_field = ? AND id_agent = ?', $token, $field, $id_agent);
+	}
 
 	return $result;
 }
@@ -7003,8 +7010,21 @@ Returns 1 if this server is the current master, 0 otherwise.
 
 =cut
 ##########################################################################
-sub pandora_is_master ($) {
-	my ($pa_config) = @_;
+sub pandora_is_master ($;$) {
+	my ($pa_config, $dbh) = @_;
+
+	# When multiprocess is enabled the variable $Master is not shared between
+	# servers.
+	if (defined($dbh) && $pa_config->{'multiprocess'} == 1) {
+		my $current_master = get_db_value_limit ($dbh, 'SELECT name FROM tserver 
+	                                  WHERE master <> 0 AND status = 1
+									  ORDER BY master DESC', 1);
+		if (defined($current_master) && $current_master eq $pa_config->{'servername'}) {
+			return 1;
+		}
+
+		return 0;
+	}
 
 	if ($Master eq $pa_config->{'servername'}) {
 		return 1;

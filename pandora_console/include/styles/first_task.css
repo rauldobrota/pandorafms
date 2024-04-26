@@ -56,6 +56,15 @@
   color: #82b92e;
   border: none;
 }
+.button_task_mini {
+  height: 38px !important;
+  line-height: 0px;
+}
+
+.empty-view input.button_task {
+  width: unset;
+}
+
 #description_task {
   line-height: 1.8em;
 }
@@ -65,4 +74,8 @@
 
 .flex-row-baseline * {
   margin-right: 1em;
+}
+
+input.button_task:not([type="image"]):focus {
+  border: 0;
 }

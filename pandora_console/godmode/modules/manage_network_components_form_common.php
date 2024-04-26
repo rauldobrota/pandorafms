@@ -154,7 +154,7 @@ $table->data[2][0] = html_print_label_input_block(
 
 $table->data[2][1] = html_print_label_input_block(
     __('Interval'),
-    html_print_extended_select_for_time('module_interval', $module_interval, '', '', '0', false, true)
+    html_print_select_agentmodule_interval('module_interval', $module_interval, '', '', '0', false, true)
 );
 
 $dynamic_interval_img = '<a onclick="advanced_option_dynamic()" class="mrgn_lft_5px mrgn_top_6px">'.html_print_image(

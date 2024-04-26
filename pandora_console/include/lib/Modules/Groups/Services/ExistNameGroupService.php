@@ -9,15 +9,20 @@ use PandoraFMS\Modules\Shared\Exceptions\NotFoundException;
 
 final class ExistNameGroupService
 {
+
+
     public function __construct(
         private GroupRepository $GroupRepository,
     ) {
     }
 
+
     public function __invoke(string $name): bool
     {
         $GroupFilter = new GroupFilter();
-        /** @var Group $entityFilter */
+        /*
+            @var Group $entityFilter
+        */
         $entityFilter = $GroupFilter->getEntityFilter();
         $entityFilter->setName($name);
 
@@ -28,4 +33,6 @@ final class ExistNameGroupService
             return false;
         }
     }
+
+
 }

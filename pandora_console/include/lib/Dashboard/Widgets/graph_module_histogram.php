@@ -373,6 +373,7 @@ class GraphModuleHistogramWidget extends Widget
                 'style_icon'    => 'flex-grow: 0',
                 'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
                 'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
 
             ],
         ];
@@ -455,7 +456,7 @@ class GraphModuleHistogramWidget extends Widget
 
         $style = 'min-width:200px; min-height:100px;';
         $output .= '<div class="container-center" style="'.$style.'">';
-        $output .= '<div style="font-size:'.$size_label.'px;">';
+        $output .= '<div style="font-size:'.$size_label.'px; line-height:'.($size_label + 5).'px;">';
         $output .= $label;
         $output .= '</div>';
         $style = 'min-width:200px; width:'.($size['width'] + 15).'px;';
