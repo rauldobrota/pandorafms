@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "API Pandora FMS",
-    "description": "<p>This is the new API framework for Pandora FMS.</p>\n<p>The old API is deprecated but still functional, and not all old endpoints are supported in the new API, but new endpoints will be added in each release.</p>\n<p>Using this web interface, you can play around and see how it works each endpoint interactively.</p>\n\nMore useful links:\n\n* <a target='_blank' href='https://pandorafms.com/en/pandora-fms-license-2024_en/'>Pandora FMS Licence </a>\n* <a target='_blank' href='https://support.pandorafms.com'> Pandora FMS Official Support </a>\n* <a target='_blank' href='https://pandorafms.com/en/community/'> Pandora FMS Community </a>\n* <a target='_blank' href='https://pandorafms.com/en/security/vulnerability-disclosure-policy/'> Vulnerability Disclosure Policy </a>\n* <a target='_blank' href='https://pandorafms.com/en/faq/'> Pandora FMS FAQ </a>",
+    "description": "<p>This is the new API framework for Pandora FMS.</p>\n<p>The old API is deprecated but still functional, and not all old endpoints are supported in the new API, but new endpoints will be added in each release.</p>\n<p>Using this web interface, you can play around and see how it works each endpoint interactively.</p>\n\nMore useful links:\n\n * <a target='_blank' href='https://pandorafms.com/en/pandora-fms-license-2024_en/'>Pandora FMS Licence </a>\n * <a target='_blank' href='https://support.pandorafms.com'> Pandora FMS Official Support </a>\n * <a target='_blank' href='https://pandorafms.com/en/community/'> Pandora FMS Community </a>\n * <a target='_blank' href='https://pandorafms.com/en/security/vulnerability-disclosure-policy/'> Vulnerability Disclosure Policy </a>\n * <a target='_blank' href='https://pandorafms.com/en/faq/'> Pandora FMS FAQ </a>",
     "version": "0.0.1"
   },
   "servers": [
@@ -1767,6 +1767,46 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/successfullyDeleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/{idUser}/login": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "show user when login process",
+        "operationId": "1b50ee1984a43d87d69342174571775c",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/parameterIdUser"
+          },
+          {
+            "$ref": "#/components/parameters/parameterIdUserPass"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ResponseUser"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -4036,6 +4076,16 @@
         "schema": {
           "type": "integer",
           "default": 1
+        }
+      },
+      "parameterIdUserPass": {
+        "name": "password",
+        "in": "query",
+        "description": "User password",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "default": null
         }
       },
       "parameterIdUser": {

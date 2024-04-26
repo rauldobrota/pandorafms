@@ -364,6 +364,27 @@ class Manager implements PublicLogin
 
 
     /**
+     * Generates a hash to authenticate in public dashboards with user form url.
+     *
+     * @param string|null $other_secret To authenticate some parts
+     * of public dashboards (like visual consoles or wux widgets)
+     * another hash is needed. Other secret avoid
+     * to reuse the main hash to view other components.
+     *
+     * @return string Returns a hash with the authenticaction.
+     */
+    public static function generatePublicHashUser(?string $other_secret='', $id_user=''):string
+    {
+        global $config;
+
+        $str = $config['dbpass'];
+        $str .= ($id_user ?? $config['id_user']);
+        $str .= $other_secret;
+        return hash('sha256', $str);
+    }
+
+
+    /**
      * Validates a hash to authenticate in public dashboards.
      *
      * @param string $hash         Hash to be checked.
@@ -411,6 +432,33 @@ class Manager implements PublicLogin
             $config['public_dashboard'] = true;
             $config['force_instant_logout'] = true;
             return true;
+        } else {
+            $dashboards = self::getDashboards();
+            $dashboards = array_reduce(
+                $dashboards,
+                function ($carry, $item) {
+                    $carry[$item['id']] = $item['name'];
+                    return $carry;
+                },
+                []
+            );
+
+            foreach ($dashboards as $key => $layout) {
+                $hash_compare = self::generatePublicHash($key);
+                if (hash_equals($hash, $hash_compare)) {
+                    // "Log" user in.
+                    if (session_status() !== PHP_SESSION_ACTIVE) {
+                        session_start();
+                    }
+
+                    $_SESSION['id_usuario'] = get_parameter('id_user');
+                    session_write_close();
+
+                    $config['public_dashboard'] = true;
+                    $config['force_instant_logout'] = true;
+                    return true;
+                }
+            }
         }
 
         // Remove id user from config array if authentication has failed.
@@ -994,6 +1042,38 @@ class Manager implements PublicLogin
         ui_require_css_file('modal');
         ui_require_css_file('form');
 
+        $hash_aux = get_parameter('hash');
+        if (empty($dashboardId)) {
+            $dashboards = $this->getDashboards();
+            $dashboards = array_reduce(
+                $dashboards,
+                function ($carry, $item) {
+                    $carry[$item['id']] = $item['name'];
+                    return $carry;
+                },
+                []
+            );
+
+            foreach ($dashboards as $key => $layout) {
+                $hash_compare = self::generatePublicHash($key);
+                if (hash_equals($hash_aux, $hash_compare)) {
+                    $this->dashboardId = $key;
+                    break;
+                }
+            }
+
+            if (empty($this->dashboardId) === true) {
+                $id_user_url = get_parameter('id_user', $config['id_user']);
+                foreach ($dashboards as $key => $layout) {
+                    $hash_compare = self::generatePublicHashUser($key, $id_user_url);
+                    if (hash_equals($hash_aux, $hash_compare)) {
+                        $this->dashboardId = $key;
+                        break;
+                    }
+                }
+            }
+        }
+
         if ($this->dashboardId === 0
             || $this->deleteDashboard === true
             || $this->copyDashboard === true
@@ -1164,11 +1244,10 @@ class Manager implements PublicLogin
                 [
                     'dashboards'     => $dashboards,
                     'ajaxController' => $this->ajaxController,
-                    'dashboardId'    => $this->dashboardId,
                     'refr'           => $this->refr,
                     'url'            => $this->url,
                     'dashboardName'  => $this->dashboardFields['name'],
-                    'hash'           => self::generatePublicHash(),
+                    'hash'           => self::generatePublicHash($this->dashboardId),
                     'publicLink'     => $this->publicLink,
                     'dashboardGroup' => $this->dashboardFields['id_group'],
                     'dashboardUser'  => $this->dashboardFields['id_user'],
@@ -1210,7 +1289,7 @@ class Manager implements PublicLogin
                     'updateDashboard' => $this->updateDashboard,
                     'cellIdCreate'    => \get_parameter('cellIdCreate', 0),
                     'class'           => (($config['public_dashboard'] === true) ? quotemeta(__CLASS__) : ''),
-                    'hash'            => (($config['public_dashboard'] === true) ? self::generatePublicHash() : ''),
+                    'hash'            => (($config['public_dashboard'] === true) ? self::generatePublicHash($this->dashboardId) : ''),
                 ]
             );
         } else {

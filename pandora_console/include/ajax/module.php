@@ -1929,13 +1929,13 @@ if (check_login()) {
             );
         }
 
-
+        // Search module name.
         if (empty($search) === false) {
-            $where .= ' AND tagente_modulo.nombre LIKE "%%'.$search.'%%"';
+            $where .= ' AND tagente_modulo.nombre LIKE "%%'.io_safe_output($search).'%%"';
         }
 
         if (empty($search_agent) === false) {
-            $where .= ' AND tagente.alias LIKE "%%'.$search_agent.'%%"';
+            $where .= ' AND tagente.alias LIKE "%%'.io_safe_output($search_agent).'%%"';
         }
 
         if (str_contains($status, '6') === true) {

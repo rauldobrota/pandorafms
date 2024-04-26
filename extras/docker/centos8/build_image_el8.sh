@@ -64,7 +64,7 @@ wget $oconsoleurl
 wget $oserverurl
 
 if [ "$BASEBUILD" == 1 ] ; then
-	docker pull centos:8
+	docker pull rockylinux:8
 	# Open Base image
 	echo "building Base el8 image"
 	cd $DOCKER_PATH/base
@@ -77,11 +77,11 @@ else
 fi
 
 if [ "$DBBUILD" == 1 ] ; then
-	docker pull percona:5.7
+	docker pull percona:8.0
 	# Percona image
 	echo "building Percona image"
-	cd $OPEN/extras/docker/percona
-	docker build -t $PERCONA_IMAGE:latest -f $OPEN/extras/docker/percona/Dockerfile $OPEN/extras/docker/percona
+	cd $OPEN/extras/docker/percona/8.0
+	docker build -t $PERCONA_IMAGE:latest -f $OPEN/extras/docker/percona/8.0/Dockerfile $OPEN/extras/docker/percona/8.0/
 	echo -e ">>>> \n"
 fi
 

@@ -7273,6 +7273,10 @@ div.graph div.legend table {
   margin-left: 10px;
 }
 
+.mrgn_lft_10px_imp {
+  margin-left: 10px !important;
+}
+
 .mrgn_lft_15px {
   margin-left: 15px;
 }
@@ -10946,6 +10950,7 @@ button.submitButton.link {
   box-shadow: none;
   justify-content: flex-start;
   height: 24px;
+  padding: 1px;
 }
 
 button.buttonButton.link > div,
@@ -12818,7 +12823,7 @@ tr[id^="network_component-plugin-snmp-fields-dynamicMacroRow-"] input {
 }
 
 .group_view_table > tbody > tr > td {
-  width: 350px !important;
+  width: 50% !important;
 }
 
 form.cfv_status_agent {
@@ -14223,4 +14228,52 @@ button.ui-button-text-only.ui-widget.sub:hover,
 
 .invert_filter.black-and-white {
   filter: invert(1) saturate(0) !important;
+}
+
+div.tox .tox-editor-header {
+  z-index: 1;
+}
+
+.select2-multiselect-widget-width {
+  max-width: 230px !important;
+}
+
+.select2-container--default.select2-multiselect-text-wrap
+  .select2-selection--multiple
+  .select2-selection__rendered {
+  box-sizing: border-box !important;
+  padding-right: 0px !important;
+}
+
+.select2-multiselect-text-wrap .select2-selection__choice {
+  text-wrap: wrap;
+  line-break: anywhere;
+  line-height: normal;
+}
+
+.select2-multiselect-text-wrap .select2-selection__choice__remove {
+  flex-basis: 0% !important;
+}
+
+table.filter-table-adv td > div.row-flex {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+table.filter-table-adv td > div.row-flex.flex-end {
+  justify-content: flex-end;
+}
+
+table.filter-table-adv td > div.row-flex label.custom_checkbox {
+  margin: 0px;
+}
+
+table.filter-table-adv td > div.row-flex input {
+  width: 100%;
+}
+
+div.fixed-bottom-box.tree-view-bottom-modal {
+  z-index: 1;
+  border: 1px solid var(--border-color);
 }

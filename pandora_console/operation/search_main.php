@@ -133,16 +133,16 @@ $table->data[0][3] = "<a href='index.php?search_category=modules&keywords=".$con
 // ~ $table->data[0][5] = "<a href='index.php?search_category=alerts&keywords=" . $config['search_keywords'] . "&head_search_keywords=Search'>" .
     // ~ sprintf(__("%s Found"), $totalAlerts) . "</a>";
 // ---------------------------------------------------------------------
-$table->data[0][6] = html_print_image('images/input_user.png', true, ['title' => __('Users found'), 'class' => 'invert_filter']);
+$table->data[0][6] = html_print_image('images/input_user.png', true, ['title' => __('Users found')]);
 $table->data[0][7] = "<a href='index.php?search_category=users&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".sprintf(__('%s Found'), $totalUsers).'</a>';
 $table->data[0][8] = html_print_image('images/chart_curve.png', true, ['title' => __('Graphs found'), 'class' => 'invert_filter']);
 $table->data[0][9] = "<a href='index.php?search_category=graphs&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".sprintf(__('%s Found'), $totalGraphs).'</a>';
 $table->data[0][10] = html_print_image('images/reporting.png', true, ['title' => __('Reports found'), 'class' => 'invert_filter']);
 $table->data[0][11] = "<a href='index.php?search_category=reports&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".sprintf(__('%s Found'), $totalReports).'</a>';
-$table->data[0][12] = html_print_image('images/visual_console_green.png', true, ['title' => __('Visual consoles')]);
+$table->data[0][12] = html_print_image('images/visual_console_green.png', true, ['title' => __('Visual consoles'), 'class' => 'main_menu_icon invert_filter']);
 $table->data[0][13] = "<a href='index.php?search_category=maps&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".sprintf(__('%s Found'), $totalMaps).'</a>';
 if (enterprise_installed()) {
-    $table->data[0][14] = html_print_image('images/policy@svg.svg', true, ['title' => __('Policies'), 'class' => 'main_menu_icon']);
+    $table->data[0][14] = html_print_image('images/policy@svg.svg', true, ['title' => __('Policies'), 'class' => 'main_menu_icon invert_filter']);
     $table->data[0][15] = "<a href='index.php?search_category=policies&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".sprintf(__('%s Found'), $totalPolicies).'</a>';
 }
 

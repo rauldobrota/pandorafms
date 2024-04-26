@@ -27,12 +27,23 @@
  */
 
 // Button for display full screen mode.
+use PandoraFMS\Dashboard\Manager;
 global $config;
 
+if (empty($dashboardId)) {
+    foreach ($dashboards as $key => $layout) {
+        $hash_compare = Manager::generatePublicHash($key);
+        if (hash_equals($hash, $hash_compare)) {
+            $dashboardId = $key;
+            break;
+        }
+    }
+}
+
 $queryFull = [
-    'dashboardId' => $dashboardId,
-    'refr'        => $refr,
-    'pure'        => 1,
+    'refr' => $refr,
+    'pure' => 1,
+    'hash' => $hash,
 ];
 $urlFull = $url.'&'.http_build_query($queryFull);
 $fullscreen['text'] = '<a id="full_screen_link" href="'.$urlFull.'">';
@@ -124,10 +135,9 @@ $slides['text'] .= '</a>';
 
 // Public Url.
 $queryPublic = [
-    'dashboardId' => $dashboardId,
-    'hash'        => $hash,
-    'id_user'     => $config['id_user'],
-    'pure'        => 1,
+    'hash'    => $hash,
+    'id_user' => $config['id_user'],
+    'pure'    => 1,
 ];
 $publicUrl = ui_get_full_url(
     'operation/dashboard/public_dashboard.php?'.http_build_query($queryPublic)

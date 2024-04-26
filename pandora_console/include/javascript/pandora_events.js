@@ -1338,14 +1338,13 @@ function listen_event_sound(settings) {
   );
 }
 
-let sound_listener;
 function check_event_sound(settings) {
   // Update elements time.
   $(".elements-discovered-alerts ul li").each(function() {
     let element_time = $(this)
       .children(".li-hidden")
       .val();
-    let obj_time = new Date(element_time);
+    let obj_time = new Date(element_time * 1000);
     let current_dt = new Date();
     let timestamp = current_dt.getTime() - obj_time.getTime();
     timestamp = timestamp / 1000;
@@ -1382,7 +1381,7 @@ function check_event_sound(settings) {
     },
     function(data) {
       if (data != false) {
-        clearTimeout(sound_listener);
+        clearTimeout(window.sound_listener);
         // Hide empty.
         $("#tabs-sound-modal .empty-discovered-alerts").addClass(
           "invisible_important"
@@ -1427,14 +1426,14 @@ function check_event_sound(settings) {
           li.insertAdjacentHTML(
             "beforeend",
             '<input type="hidden" value="' +
-              element.event_timestamp +
+              element.utimestamp +
               '" class="li-hidden"/>'
           );
           $("#tabs-sound-modal .elements-discovered-alerts ul").prepend(li);
         });
 
         // -100 delay sound.
-        sound_listener = setTimeout(
+        window.sound_listener = setTimeout(
           remove_audio,
           parseInt($("#tabs-sound-modal #time_sound").val()) * 1000 - 100
         );

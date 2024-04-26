@@ -601,7 +601,7 @@ final class Percentile extends Item
         $values = parent::getDefaultGeneralValues($values);
 
         // Default values.
-        if (isset($values['width']) === false) {
+        if (isset($values['width']) === false || empty($values['width']) === true) {
             $values['width'] = 100;
         }
 

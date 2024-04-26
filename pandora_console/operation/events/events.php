@@ -1221,27 +1221,7 @@ if (is_ajax() === true) {
                             }
                         }
 
-                        $regex_validation = false;
-                        if (empty($tmp) === false && $regex !== '') {
-                            foreach (json_decode(json_encode($tmp), true) as $key => $field) {
-                                if ($key === 'b64') {
-                                    continue;
-                                }
-
-                                $field = strip_tags($field);
-
-                                if (preg_match('/'.io_safe_output($regex).'/', $field)) {
-                                    $regex_validation = true;
-                                }
-                            }
-
-                            if ($regex_validation === true) {
-                                $carry[] = $tmp;
-                            }
-                        } else {
-                            $carry[] = $tmp;
-                        }
-
+                        $carry[] = $tmp;
                         return $carry;
                     }
                 );
@@ -1261,11 +1241,10 @@ if (is_ajax() === true) {
             // RecordsTotal && recordsfiltered resultados totales.
             echo json_encode(
                 [
-                    'data'                 => ($data ?? []),
-                    'buffers'              => $buffers,
-                    'recordsTotal'         => $count,
-                    'recordsFiltered'      => $count,
-                    'showAlwaysPagination' => (empty($regex) === false) ? true : false,
+                    'data'            => ($data ?? []),
+                    'buffers'         => $buffers,
+                    'recordsTotal'    => $count,
+                    'recordsFiltered' => $count,
                 ]
             );
         } catch (Exception $e) {
@@ -2638,20 +2617,22 @@ try {
 
 
     // Always add options column.
-    $fields = array_merge(
-        $fields,
-        [
+    if ((bool) check_acl($config['id_user'], 0, 'EW') === true) {
+        $fields = array_merge(
+            $fields,
             [
-                'text'  => 'options',
-                'class' => 'table_action_buttons mw100px',
-            ],
-            [
-                'text'  => 'm',
-                'extra' => $checkbox_all,
-                'class' => 'w20px no-text-imp',
-            ],
-        ]
-    );
+                [
+                    'text'  => 'options',
+                    'class' => 'table_action_buttons mw100px',
+                ],
+                [
+                    'text'  => 'm',
+                    'extra' => $checkbox_all,
+                    'class' => 'w20px no-text-imp',
+                ],
+            ]
+        );
+    }
 
     // Get column names.
     $column_names = events_get_column_names($fields, true);
@@ -2862,8 +2843,8 @@ try {
                     'column_names'                   => $column_names,
                     'columns'                        => $fields,
                     'no_sortable_columns'            => [
-                        -1,
-                        -2,
+                        'options',
+                        'm',
                         'column-instructions',
                         'user_comment',
                     ],
@@ -3687,11 +3668,19 @@ function datetime_picker_callback() {
 
 datetime_picker_callback();
 
-function show_instructions(id){
+function show_instructions(id, title_event){
     title = "<?php echo __('Instructions'); ?>";
     $('#hidden_event_instructions_' + id).dialog({
-        title: title,
-        width: 600
+        title: `${title+' '+atob(title_event)}`,
+        width: 650,
+        draggable: true,
+        modal: true,
+        closeOnEscape: true,
+        open: function(){
+            $('.ui-widget-overlay').bind('click',function(){
+                $('#hidden_event_instructions_' + id).dialog('close');
+            })
+        }
     });
 }
 

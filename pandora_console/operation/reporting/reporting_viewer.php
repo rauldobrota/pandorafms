@@ -43,7 +43,7 @@ if (!reporting_user_can_see_report($id_report)) {
     exit;
 }
 
-$date_params = get_parameter_date('date', '', 'U');
+$date_params = get_parameter_date('date', 'none', 'U');
 $date_end = date('Y/m/d', $date_params['date_end']);
 $time_end = date('H:i:s', $date_params['date_end']);
 
@@ -52,6 +52,8 @@ $time_start = date('H:i:s', $date_params['date_init']);
 
 $date_init = date('Y/m/d', $date_params['date_init']);
 $time_init = date('H:i:s', $date_params['date_init']);
+
+$time = $time_end;
 
 $custom_date_end = date('Y/m/d H:i:s', $date_params['date_end']);
 
@@ -94,6 +96,9 @@ if (empty($schedule_report) === false) {
     echo '<br>';
 }
 
+if (empty($time) === true) {
+    $time = date(TIME_FORMAT);
+}
 
 // ------------------- INIT HEADER --------------------------------------
 $url = "index.php?sec=reporting&sec2=operation/reporting/reporting_viewer&id=$id_report&date=$date&time=$time&pure=$pure";

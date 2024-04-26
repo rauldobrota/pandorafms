@@ -93,7 +93,7 @@ sub data_producer ($) {
 	my @tasks;
 	my @rows;
 	
-	if (pandora_is_master($pa_config) == 0) {
+	if (pandora_is_master($pa_config, $dbh) == 0) {
 		@rows = get_db_rows ($dbh, 'SELECT tagente_modulo.id_agente_modulo,
 				tagente_modulo.flag, last_execution_try
 			FROM tagente, tagente_modulo, tagente_estado
@@ -194,13 +194,6 @@ sub exec_prediction_module ($$$$) {
 	if ($agent_module->{'prediction_module'} == 3) {
 		logger ($pa_config, "Executing synthetic module " . $agent_module->{'nombre'}, 10);
 		enterprise_hook ('exec_synthetic_module', [$pa_config, $agent_module, $server_id, $dbh]);
-		return;
-	}
-	
-	# Netflow modules
-	if ($agent_module->{'prediction_module'} == 4) {
-		logger ($pa_config, "Executing netflow module " . $agent_module->{'nombre'}, 10);
-		enterprise_hook ('exec_netflow_module', [$pa_config, $agent_module, $server_id, $dbh]);
 		return;
 	}
 	
