@@ -906,7 +906,8 @@ $table->data[0][] = html_print_label_input_block(
         false,
         true,
         '',
-        $disabled_in_execution
+        $disabled_in_execution,
+        'width: 100%;'
     )
 );
 
@@ -939,8 +940,9 @@ $table->data[1][] = html_print_label_input_block(
         true,
         false,
         true,
-        '',
-        $disabled_in_execution
+        'w100p',
+        $disabled_in_execution,
+        'width: 100%;'
     ).ui_print_input_placeholder(
         __('Quiet: Modules will not generate events or fire alerts.').'<br>'.__('Disable Agents: Disables the selected agents.').'<br>'.__('Disable Alerts: Disable alerts for the selected agents.'),
         true
@@ -964,7 +966,8 @@ $table->data[2][] = html_print_label_input_block(
         false,
         true,
         '',
-        $disabled_in_execution
+        $disabled_in_execution,
+        'width: 100%;'
     )
 );
 
