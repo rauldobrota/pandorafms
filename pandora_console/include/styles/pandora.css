@@ -14277,3 +14277,16 @@ div.fixed-bottom-box.tree-view-bottom-modal {
   z-index: 1;
   border: 1px solid var(--border-color);
 }
+
+.legend_servicemap_title {
+  cursor: pointer;
+}
+
+.legend_servicemap_title td,
+.legend_servicemap_title td img {
+  padding: 0;
+}
+
+#container_servicemap #service_map3 {
+  min-height: 174px;
+}
