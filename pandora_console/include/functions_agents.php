@@ -1721,7 +1721,7 @@ function agents_get_modules(
     );
 
     $limit = '';
-    if ($pagination === true) {
+    if ($pagination === true && isset($config['paginate_module']) === true) {
         if ($offset === 0) {
             $limit = ' LIMIT '.$config['block_size'].' OFFSET 0';
         } else {

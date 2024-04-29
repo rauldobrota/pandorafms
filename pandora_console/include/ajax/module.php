@@ -1543,7 +1543,12 @@ if (check_login()) {
         include_once $config['homedir'].'/include/functions_graph.php';
         $agent = get_parameter('agent');
         $id_agente = $agent;
-        $network_interfaces_by_agents = agents_get_network_interfaces([$agent], false, true, get_parameter('offset', 0));
+        $paginate_module = false;
+        if (isset($config['paginate_module']) === true) {
+            $paginate_module = (bool) $config['paginate_module'];
+        }
+
+        $network_interfaces_by_agents = agents_get_network_interfaces([$agent], false, $paginate_module, get_parameter('offset', 0));
         $count_network_incerfaces = agents_get_network_interfaces([$agent], false, false, 0, true);
         $network_interfaces = [];
         if (empty($network_interfaces_by_agents) === false && empty($network_interfaces_by_agents[$id_agente]) === false) {
@@ -1565,11 +1570,6 @@ if (check_login()) {
             ];
             $table_interface->data = [];
             $event_text_cont = 0;
-
-            $paginate_module = false;
-            if (isset($config['paginate_module']) === true) {
-                $paginate_module = (bool) $config['paginate_module'];
-            }
 
             foreach ($network_interfaces as $interface_name => $interface) {
                 if (empty($interface['traffic']) === false) {
