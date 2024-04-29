@@ -1148,11 +1148,13 @@ function get_inventory_basic_info_sql($params, $count=false)
     }
 
     if ($count !== true) {
-        $limit_condition = sprintf(
-            'LIMIT %d, %d',
-            $params['start'],
-            $params['length']
-        );
+        if ((int) $params['length'] > -1) {
+            $limit_condition = sprintf(
+                'LIMIT %d, %d',
+                $params['start'],
+                $params['length']
+            );
+        }
 
         $order_condition = sprintf('ORDER BY %s', $params['order']);
     } else {
