@@ -14307,3 +14307,7 @@ div.fixed-bottom-box.tree-view-bottom-modal {
 .custom-graph-editor-agents-module-filter > span.select2.select2-container {
   height: 189px;
 }
+
+.bg-image-none {
+  background-image: none !important;
+}

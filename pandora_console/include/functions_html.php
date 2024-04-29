@@ -3490,13 +3490,19 @@ function html_print_anchor(
  *
  * The element will have an id like: "password-$name"
  *
- * @param string  $name      Input name.
- * @param string  $value     Input value.
- * @param string  $alt       Alternative HTML string (optional).
- * @param integer $size      Size of the input (optional).
- * @param integer $maxlength Maximum length allowed (optional).
- * @param boolean $return    Whether to return an output string or echo now (optional, echo by default).
- * @param boolean $disabled  Disable the button (optional, button enabled by default).
+ * @param string  $name           Input name.
+ * @param string  $value          Input value.
+ * @param string  $alt            Alternative HTML string (optional).
+ * @param integer $size           Size of the input (optional).
+ * @param integer $maxlength      Maximum length allowed (optional).
+ * @param boolean $return         Whether to return an output string or echo now (optional, echo by default).
+ * @param boolean $disabled       Disable the button (optional, button enabled by default).
+ * @param boolean $required       Whether the input is required (optional, not required by default).
+ * @param string  $class          Additional CSS classes for the input (optional).
+ * @param string  $autocomplete   Autocomplete attribute value (optional, off by default).
+ * @param boolean $hide_div_eye   Whether to hide the div with the eye icon (optional, false by default).
+ * @param string  $div_class      Additional CSS classes for the div (optional).
+ * @param boolean $not_show_value Whether to not show the value in the input (optional, false by default), FOR USE THIS VALUE YOU NEED CONTROL THE INPUT 'password_changed'.
  *
  * @return string HTML code if return parameter is true.
  */
@@ -3512,7 +3518,8 @@ function html_print_input_password(
     $class='',
     $autocomplete='off',
     $hide_div_eye=false,
-    $div_class=''
+    $div_class='',
+    $not_show_value=false,
 ) {
     if ($maxlength == 0) {
         $maxlength = 255;
@@ -3543,7 +3550,40 @@ function html_print_input_password(
         }
     }
 
-    return '<div class="relative container-div-input-password '.$div_class.'">'.html_print_input_text_extended($name, $value, 'password-'.$name, $alt, $size, $maxlength, $disabled, '', $attr, $return, true, '', $autocomplete, false, $hide_div_eye).'</div>';
+    $extra_output = '';
+    if ($not_show_value === true) {
+        $unique_id = 'flag_password_'.uniqid();
+        $extra_output = html_print_input_hidden($name.'_password_changed', 0, true, false, false, $unique_id);
+        $attr['class'] .= ' bg-image-none';
+        $extra_output .= '<script>
+            $("#show-hide-password-'.$name.'").hide();
+            const exist_'.$unique_id.' = '.((empty($value) === false) ? 'true' : 'false').';
+            $("#password-'.$name.'").on("focus", function(e) {
+                if ($("#'.$unique_id.'").val() === "0") {
+                    $(this).val("");
+                }
+            });
+
+            $("#password-'.$name.'").on("focusout", function(e) {
+                if ($("#'.$unique_id.'").val() === "0" && $(this).val() === "" && exist_'.$unique_id.' === true) {
+                    $(this).val("*****");
+                }
+            });
+
+            $("#password-'.$name.'").on("keyup", function(e) {
+                $("#'.$unique_id.'").val(1);
+                if ($(this).val() === "") {
+                    $(this).addClass("bg-image-none");
+                    $("#show-hide-password-'.$name.'").hide();
+                } else {
+                    $(this).removeClass("bg-image-none");
+                    $("#show-hide-password-'.$name.'").show();
+                }
+            });
+        </script>';
+    }
+
+    return '<div class="relative container-div-input-password '.$div_class.'">'.html_print_input_text_extended($name, $value, 'password-'.$name, $alt, $size, $maxlength, $disabled, '', $attr, $return, true, '', $autocomplete, false, $hide_div_eye).'</div>'.$extra_output;
 }
 
 
