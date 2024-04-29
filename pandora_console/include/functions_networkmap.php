@@ -773,13 +773,11 @@ function networkmap_create_agent_node(
     if (empty($server_data) === true) {
         $server_name = '';
         $server_id = '';
-        $url_hash = '';
         $console_url = '';
     } else {
         $server_name = $server_data['server_name'];
         $server_id = $server_data['id'];
         $console_url = $server_data['server_url'].'/';
-        $url_hash = metaconsole_get_servers_url_hash($server_data);
     }
 
     // Set node status.
@@ -870,7 +868,7 @@ function networkmap_create_agent_node(
         }
 
         if (can_user_access_node()) {
-            $url_node_link = ', URL="'.$console_url.'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].$url_hash.'"';
+            $url_node_link = ', URL="'.$console_url.'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].'"';
         } else {
             $url_node_link = '';
         }

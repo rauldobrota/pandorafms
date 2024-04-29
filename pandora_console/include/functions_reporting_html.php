@@ -7886,6 +7886,12 @@ function reporting_html_ncm_list($table, $item, $pdf=0)
  */
 function reporting_html_ncm_backups($table, $item, $pdf=0)
 {
+    global $config;
+
+    if ($config['style'] === 'pandora_black') {
+        ui_require_css_file('pandora_black');
+    }
+
     ui_require_css_file('diff2html.min');
     ui_require_css_file('highlight.min');
     ui_require_css_file('highlight/vs.min');

@@ -1664,7 +1664,7 @@ function visual_map_print_item(
     echo '<div id="'.$id.'" class="'.$class.'" '.'style="z-index: '.$z_index.';'.'position: absolute; '.'top: '.$top.'px; '.'left: '.$left.'px;'.'display: inline-block; '.$sizeStyle.'">';
 
     if ($link) {
-        echo "<a href=\"$url\">";
+        echo '<a href="#" onClick="redirectNode(\''.$url.'\')">';
     }
 
     // for clean link text from bbdd only edit_visualmap
