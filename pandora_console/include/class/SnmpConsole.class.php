@@ -819,7 +819,13 @@ class SnmpConsole extends HTML
                         // User ID.
                         $tmp->user_id = '<div class="'.$severity_class.' snmp-div">';
                         if (empty($status) === false) {
-                            $tmp->user_id .= '<a href="index.php?sec=workspace&sec2=operation/users/user_edit&ver='.$tmp->id_usuario.'">'.substr($tmp->id_usuario, 0, 8).'</a>';
+                            if (users_is_admin($config['id_user']) === true || check_acl($config['id_user'], 0, 'UM') === true) {
+                                $url = ui_get_full_url('index.php?sec=gusuarios&sec2=godmode/users/configure_user&edit_user=1&pure=0&id_user='.$tmp->id_usuario);
+                                $tmp->user_id .= '<a href="'.$url.'">'.substr($tmp->id_usuario, 0, 8).'</a>';
+                            } else {
+                                $tmp->user_id .= substr($tmp->id_usuario, 0, 8);
+                            }
+
                             if (!empty($tmp->id_usuario)) {
                                 $tmp->user_id .= ui_print_help_tip(get_user_fullname($tmp->id_usuario), true);
                             }
