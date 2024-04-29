@@ -22,7 +22,7 @@ use DI\ContainerBuilder;
 /*
  * Pandora build version and version
  */
-$build_version = 'PC240423';
+$build_version = 'PC240429';
 $pandora_version = 'v7.0NG.776';
 
 // Do not overwrite default timezone set if defined.
@@ -185,6 +185,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 config_process_config();
 config_prepare_session();
+config_prepare_jwt_signature();
 
 if ((bool) $config['console_log_enabled'] === true) {
     error_reporting(E_ALL ^ E_NOTICE);

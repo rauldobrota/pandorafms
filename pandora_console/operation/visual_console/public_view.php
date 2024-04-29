@@ -13,6 +13,12 @@
 // GNU General Public License for more details.
 require_once '../../include/config.php';
 
+$id_layout = get_parameter('id_layout', null);
+if ($id_layout !== null) {
+    include '../../general/noaccess.php';
+    return;
+}
+
 use PandoraFMS\User;
 
 // Set root on homedir, as defined in setup.
@@ -70,6 +76,17 @@ foreach ($vcs as $key => $data) {
     if (hash_equals($hash_compare, $hash)) {
         $visualConsoleId = (int) $key;
         break;
+    }
+}
+
+$id_user_url = get_parameter('id_user', $config['id_user']);
+if (empty($visualConsoleId) === true) {
+    foreach ($vcs as $key => $data) {
+        $hash_compare = User::generatePublicHashUser($key, $id_user_url);
+        if (hash_equals($hash_compare, $hash)) {
+            $visualConsoleId = (int) $key;
+            break;
+        }
     }
 }
 

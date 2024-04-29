@@ -4107,7 +4107,7 @@ function reporting_html_historical_data($table, $item, $pdf=0)
 
         // Center every row
         foreach ($table1->data[0] as $k => $v) {
-            for ($i = 0; $i < count($table1->data); $i++){
+            for ($i = 0; $i < count($table1->data); $i++) {
                 $table1->cellstyle[$i][$k] = 'text-align: center;';
             }
         }
@@ -4190,7 +4190,7 @@ function reporting_html_database_serialized($table, $item, $pdf=0)
 
         // Center every row
         foreach ($table1->data[0] as $k => $v) {
-            for ($i = 0; $i < count($table1->data); $i++){
+            for ($i = 0; $i < count($table1->data); $i++) {
                 $table1->cellstyle[$i][$k] = 'text-align: center;';
             }
         }
@@ -6435,7 +6435,7 @@ function reporting_html_sql($table, $item, $pdf=0)
 
             // Center every row
             foreach ($table2->data[0] as $k => $v) {
-                for ($i = 0; $i < count($table2->data); $i++){
+                for ($i = 0; $i < count($table2->data); $i++) {
                     $table2->cellstyle[$i][$k] = 'text-align: center;';
                 }
             }
@@ -7886,6 +7886,12 @@ function reporting_html_ncm_list($table, $item, $pdf=0)
  */
 function reporting_html_ncm_backups($table, $item, $pdf=0)
 {
+    global $config;
+
+    if ($config['style'] === 'pandora_black') {
+        ui_require_css_file('pandora_black');
+    }
+
     ui_require_css_file('diff2html.min');
     ui_require_css_file('highlight.min');
     ui_require_css_file('highlight/vs.min');

@@ -207,6 +207,7 @@ class Netflow extends Widget
                 'style_icon'    => 'flex-grow: 0',
                 'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
                 'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
             ],
         ];
         $chart_types = netflow_get_chart_types();
@@ -366,8 +367,8 @@ class Netflow extends Widget
                         '',
                         'HTML',
                         0,
-                        ($size['width'] - 50),
-                        ($size['height'] - 20),
+                        ($size['width'] + 120),
+                        ($size['height'] + 120),
                     ),
                 ],
                 true
@@ -462,7 +463,7 @@ class Netflow extends Widget
     public function getSizeModalConfiguration(): array
     {
         $size = [
-            'width'  => 400,
+            'width'  => 600,
             'height' => 530,
         ];
 

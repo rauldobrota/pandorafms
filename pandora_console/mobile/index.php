@@ -31,6 +31,7 @@ require_once 'include/user.class.php';
  * serializing objects stored into the session.
  */
 require_once '../include/config.php';
+require_once '../include/class/JWTRepository.class.php';
 
 require_once 'operation/home.php';
 require_once 'operation/tactical.php';

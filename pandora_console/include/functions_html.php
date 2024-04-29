@@ -1686,34 +1686,56 @@ function html_print_select_multiple_modules_filtered(array $data):string
     );
     $output .= '</div>';
 
+    $agent_class = '';
     if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
-        $output .= '<div>';
+        $output .= '<div class="agents-modules-multiple-search-bar">';
 
-        $output .= '<div>';
-        $output .= html_print_input(
-            [
-                'type'        => 'text',
-                'name'        => 'agent-searchBar-'.$uniqId,
-                'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
-                'placeholder' => __('Type to search agents'),
-                'return'      => true,
-            ]
-        );
+        if (isset($data['searchBarAgents']) === false) {
+            $data['searchBarAgents'] = true;
+        }
 
-        $output .= '</div>';
+        if (isset($data['searchBarModules']) === false) {
+            $data['searchBarModules'] = true;
+        }
 
-        $output .= '<div>';
-        $output .= html_print_input(
-            [
-                'type'        => 'text',
-                'name'        => 'module-searchBar-'.$uniqId,
-                'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
-                'return'      => true,
-                'placeholder' => __('Type to search modules'),
-            ]
-        );
+        if ($data['searchBarAgents'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'label_class' => 'font-title-font',
+                    'label'       => __('Filter agent'),
+                    'name'        => 'agent-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
+                    'placeholder' => __('Type to search agents'),
+                    'return'      => true,
+                ]
+            );
 
-        $output .= '</div>';
+            $output .= '</div>';
+        } else {
+            $agent_class = 'custom-graph-editor-agents-module-filter';
+            $output .= '<div></div>';
+        }
+
+        if ($data['searchBarModules'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'label_class' => 'font-title-font',
+                    'label'       => __('Filter module'),
+                    'name'        => 'module-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
+                    'return'      => true,
+                    'placeholder' => __('Type to search modules'),
+                ]
+            );
+
+            $output .= '</div>';
+        } else {
+            $output .= '<div></div>';
+        }
 
         $output .= '</div>';
     }
@@ -1770,6 +1792,7 @@ function html_print_select_multiple_modules_filtered(array $data):string
                 'style'       => 'min-width: 200px;max-width:200px;',
                 'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
                 'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'input_class' => $agent_class,
             ]
         );
     } else {
@@ -1786,6 +1809,7 @@ function html_print_select_multiple_modules_filtered(array $data):string
                 'style'       => 'min-width: 200px;max-width:200px;',
                 'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
                 'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'input_class' => $agent_class,
             ]
         );
     }
@@ -1929,7 +1953,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             'return'        => true,
             'nothing'       => __('All'),
             'nothing_value' => 0,
-            'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+            'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
         ]
     );
     $output .= '</div>';
@@ -1965,7 +1989,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
             'name'        => 'filtered-module-show-common-modules-'.$uniqId,
             'id'          => 'filtered-module-show-common-modules-'.$uniqId,
             'return'      => true,
-            'onchange'    => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+            'onchange'    => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
         ]
     );
 
@@ -2053,7 +2077,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
                 'return'        => true,
                 'multiple'      => true,
                 'style'         => 'min-width: 200px;max-width:200px;',
-                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
                 'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
                 'truncate_size' => 300,
             ]
@@ -2070,7 +2094,7 @@ function html_print_select_multiple_modules_filtered_formated(array $data):strin
                 'return'        => true,
                 'multiple'      => true,
                 'style'         => 'min-width: 200px;max-width:200px;',
-                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
                 'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
                 'truncate_size' => 300,
             ]
@@ -2505,7 +2529,8 @@ function html_print_extended_select_for_time(
     $no_change=false,
     $allow_zero=0,
     $units=null,
-    $script_input=''
+    $script_input='',
+    $units_select2=false
 ) {
     global $config;
     $admin = is_user_admin($config['id_user']);
@@ -2595,7 +2620,19 @@ function html_print_extended_select_for_time(
     echo '</div>';
 
     echo '<div id="'.$uniq_name.'_manual" class="inline_flex">';
-        html_print_input_text($uniq_name.'_text', $selected, '', $size, 255, false, $readonly, false, '', $class, $script_input);
+        html_print_input_text(
+            $uniq_name.'_text',
+            $selected,
+            '',
+            $size,
+            255,
+            false,
+            $readonly,
+            false,
+            '',
+            $class.(($units_select2 === true) ? ' w100p' : ''),
+            $script_input
+        );
 
         html_print_input_hidden($name, $selected, false, $uniq_name);
         html_print_select(
@@ -2619,7 +2656,7 @@ function html_print_extended_select_for_time(
             false,
             false,
             false,
-            false
+            $units_select2
         );
         echo '&nbsp&nbsp<a href="javascript:">'.html_print_image(
             'images/logs@svg.svg',
@@ -2632,6 +2669,7 @@ function html_print_extended_select_for_time(
             ]
         ).'</a>';
     echo '</div>';
+
     echo "<script type='text/javascript'>
 		$(document).ready (function () {
 			period_select_init('".$uniq_name."', ".(($allow_zero) ? 1 : 0).");
@@ -2652,6 +2690,18 @@ function html_print_extended_select_for_time(
             }, 100);
         }
 	</script>";
+
+    if ($units_select2 === true) {
+        echo '
+        <script>
+            $(document).ready (function () {
+                $("#'.$uniq_name.'_units").select2();
+                $("#'.$uniq_name.'_units").data("select2").$container.addClass("mrgn_lft_10px_imp");
+            });
+        </script>
+        ';
+    }
+
     $returnString = ob_get_clean();
 
     if ($return) {
@@ -3440,13 +3490,19 @@ function html_print_anchor(
  *
  * The element will have an id like: "password-$name"
  *
- * @param string  $name      Input name.
- * @param string  $value     Input value.
- * @param string  $alt       Alternative HTML string (optional).
- * @param integer $size      Size of the input (optional).
- * @param integer $maxlength Maximum length allowed (optional).
- * @param boolean $return    Whether to return an output string or echo now (optional, echo by default).
- * @param boolean $disabled  Disable the button (optional, button enabled by default).
+ * @param string  $name           Input name.
+ * @param string  $value          Input value.
+ * @param string  $alt            Alternative HTML string (optional).
+ * @param integer $size           Size of the input (optional).
+ * @param integer $maxlength      Maximum length allowed (optional).
+ * @param boolean $return         Whether to return an output string or echo now (optional, echo by default).
+ * @param boolean $disabled       Disable the button (optional, button enabled by default).
+ * @param boolean $required       Whether the input is required (optional, not required by default).
+ * @param string  $class          Additional CSS classes for the input (optional).
+ * @param string  $autocomplete   Autocomplete attribute value (optional, off by default).
+ * @param boolean $hide_div_eye   Whether to hide the div with the eye icon (optional, false by default).
+ * @param string  $div_class      Additional CSS classes for the div (optional).
+ * @param boolean $not_show_value Whether to not show the value in the input (optional, false by default), FOR USE THIS VALUE YOU NEED CONTROL THE INPUT 'password_changed'.
  *
  * @return string HTML code if return parameter is true.
  */
@@ -3462,7 +3518,8 @@ function html_print_input_password(
     $class='',
     $autocomplete='off',
     $hide_div_eye=false,
-    $div_class=''
+    $div_class='',
+    $not_show_value=false,
 ) {
     if ($maxlength == 0) {
         $maxlength = 255;
@@ -3493,7 +3550,40 @@ function html_print_input_password(
         }
     }
 
-    return '<div class="relative container-div-input-password '.$div_class.'">'.html_print_input_text_extended($name, $value, 'password-'.$name, $alt, $size, $maxlength, $disabled, '', $attr, $return, true, '', $autocomplete, false, $hide_div_eye).'</div>';
+    $extra_output = '';
+    if ($not_show_value === true) {
+        $unique_id = 'flag_password_'.uniqid();
+        $extra_output = html_print_input_hidden($name.'_password_changed', 0, true, false, false, $unique_id);
+        $attr['class'] .= ' bg-image-none';
+        $extra_output .= '<script>
+            $("#show-hide-password-'.$name.'").hide();
+            const exist_'.$unique_id.' = '.((empty($value) === false) ? 'true' : 'false').';
+            $("#password-'.$name.'").on("focus", function(e) {
+                if ($("#'.$unique_id.'").val() === "0") {
+                    $(this).val("");
+                }
+            });
+
+            $("#password-'.$name.'").on("focusout", function(e) {
+                if ($("#'.$unique_id.'").val() === "0" && $(this).val() === "" && exist_'.$unique_id.' === true) {
+                    $(this).val("*****");
+                }
+            });
+
+            $("#password-'.$name.'").on("keyup", function(e) {
+                $("#'.$unique_id.'").val(1);
+                if ($(this).val() === "") {
+                    $(this).addClass("bg-image-none");
+                    $("#show-hide-password-'.$name.'").hide();
+                } else {
+                    $(this).removeClass("bg-image-none");
+                    $("#show-hide-password-'.$name.'").show();
+                }
+            });
+        </script>';
+    }
+
+    return '<div class="relative container-div-input-password '.$div_class.'">'.html_print_input_text_extended($name, $value, 'password-'.$name, $alt, $size, $maxlength, $disabled, '', $attr, $return, true, '', $autocomplete, false, $hide_div_eye).'</div>'.$extra_output;
 }
 
 
@@ -6335,7 +6425,8 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 ((isset($data['no_change']) === true) ? $data['no_change'] : ''),
                 ((isset($data['allow_zero']) === true) ? $data['allow_zero'] : ''),
                 ((isset($data['units']) === true) ? $data['units'] : null),
-                ((isset($data['script_input']) === true) ? $data['script_input'] : '')
+                ((isset($data['script_input']) === true) ? $data['script_input'] : ''),
+                ((isset($data['units_select2']) === true) ? $data['units_select2'] : '')
             );
         break;
 

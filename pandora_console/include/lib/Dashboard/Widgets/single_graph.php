@@ -449,6 +449,7 @@ class SingleGraphWidget extends Widget
                 'style_icon'    => 'flex-grow: 0',
                 'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
                 'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
             ],
         ];
 
@@ -527,99 +528,101 @@ class SingleGraphWidget extends Widget
             'id'        => 'div_projection_period',
             'style'     => $display_projection,
             'arguments' => [
-                'name'         => 'period_projection',
-                'type'         => 'interval',
-                'value'        => $values['period_projection'],
-                'script'       => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
-                'script_input' => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
-            ],
-        ];
-
-        $inputs['inputs']['row2'][] = [
-            'label'     => __('Maximum'),
-            'id'        => 'div_period_maximum',
-            'style'     => $display_periodicity_chart,
-            'arguments' => [
-                'name'  => 'period_maximum',
-                'id'    => 'period_maximum',
-                'type'  => 'switch',
-                'value' => $values['period_maximum'],
-            ],
-        ];
-
-        $inputs['inputs']['row2'][] = [
-            'label'     => __('Minimum'),
-            'id'        => 'div_period_minimum',
-            'style'     => $display_periodicity_chart,
-            'arguments' => [
-                'name'  => 'period_minimum',
-                'id'    => 'period_minimum',
-                'type'  => 'switch',
-                'value' => $values['period_minimum'],
-            ],
-        ];
-
-        $inputs['inputs']['row2'][] = [
-            'label'     => __('Average'),
-            'id'        => 'div_period_average',
-            'style'     => $display_periodicity_chart,
-            'arguments' => [
-                'name'  => 'period_average',
-                'id'    => 'period_average',
-                'type'  => 'switch',
-                'value' => $values['period_average'],
-            ],
-        ];
-
-        $inputs['inputs']['row2'][] = [
-            'label'     => __('Summatory'),
-            'id'        => 'div_period_summatory',
-            'style'     => $display_periodicity_chart,
-            'arguments' => [
-                'name'  => 'period_summatory',
-                'id'    => 'period_summatory',
-                'type'  => 'switch',
-                'value' => $values['period_summatory'],
-            ],
-        ];
-
-        $inputs['inputs']['row2'][] = [
-            'label'     => __('Slice period'),
-            'id'        => 'div_period_slice_chart',
-            'style'     => $display_periodicity_chart,
-            'arguments' => [
-                'name'          => 'period_slice_chart',
+                'name'          => 'period_projection',
                 'type'          => 'interval',
-                'value'         => (string) $values['period_slice_chart'],
-                'custom_fields' => [
-                    SECONDS_1HOUR  => __('1 hour'),
-                    SECONDS_1DAY   => __('1 day'),
-                    SECONDS_1WEEK  => __('1 week'),
-                    SECONDS_1MONTH => __('1 month'),
+                'value'         => $values['period_projection'],
+                'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
+            ],
+        ];
+
+            $inputs['inputs']['row2'][] = [
+                'label'     => __('Maximum'),
+                'id'        => 'div_period_maximum',
+                'style'     => $display_periodicity_chart,
+                'arguments' => [
+                    'name'  => 'period_maximum',
+                    'id'    => 'period_maximum',
+                    'type'  => 'switch',
+                    'value' => $values['period_maximum'],
                 ],
-            ],
-        ];
+            ];
 
-        $options_period_mode = [
-            CUSTOM_GRAPH_AREA  => __('Area'),
-            CUSTOM_GRAPH_LINE  => __('Line'),
-            CUSTOM_GRAPH_VBARS => __('Vertical bars'),
-        ];
+            $inputs['inputs']['row2'][] = [
+                'label'     => __('Minimum'),
+                'id'        => 'div_period_minimum',
+                'style'     => $display_periodicity_chart,
+                'arguments' => [
+                    'name'  => 'period_minimum',
+                    'id'    => 'period_minimum',
+                    'type'  => 'switch',
+                    'value' => $values['period_minimum'],
+                ],
+            ];
 
-        $inputs['inputs']['row2'][] = [
-            'label'     => __('Type chart'),
-            'id'        => 'div_period_mode',
-            'style'     => $display_periodicity_chart,
-            'arguments' => [
-                'type'     => 'select',
-                'fields'   => $options_period_mode,
-                'name'     => 'period_mode',
-                'selected' => $values['period_mode'],
-                'return'   => true,
-            ],
-        ];
+            $inputs['inputs']['row2'][] = [
+                'label'     => __('Average'),
+                'id'        => 'div_period_average',
+                'style'     => $display_periodicity_chart,
+                'arguments' => [
+                    'name'  => 'period_average',
+                    'id'    => 'period_average',
+                    'type'  => 'switch',
+                    'value' => $values['period_average'],
+                ],
+            ];
 
-        return $inputs;
+            $inputs['inputs']['row2'][] = [
+                'label'     => __('Summatory'),
+                'id'        => 'div_period_summatory',
+                'style'     => $display_periodicity_chart,
+                'arguments' => [
+                    'name'  => 'period_summatory',
+                    'id'    => 'period_summatory',
+                    'type'  => 'switch',
+                    'value' => $values['period_summatory'],
+                ],
+            ];
+
+            $inputs['inputs']['row2'][] = [
+                'label'     => __('Slice period'),
+                'id'        => 'div_period_slice_chart',
+                'style'     => $display_periodicity_chart,
+                'arguments' => [
+                    'name'          => 'period_slice_chart',
+                    'type'          => 'interval',
+                    'value'         => (string) $values['period_slice_chart'],
+                    'custom_fields' => [
+                        SECONDS_1HOUR  => __('1 hour'),
+                        SECONDS_1DAY   => __('1 day'),
+                        SECONDS_1WEEK  => __('1 week'),
+                        SECONDS_1MONTH => __('1 month'),
+                    ],
+                    'units_select2' => true,
+                ],
+            ];
+
+            $options_period_mode = [
+                CUSTOM_GRAPH_AREA  => __('Area'),
+                CUSTOM_GRAPH_LINE  => __('Line'),
+                CUSTOM_GRAPH_VBARS => __('Vertical bars'),
+            ];
+
+            $inputs['inputs']['row2'][] = [
+                'label'     => __('Type chart'),
+                'id'        => 'div_period_mode',
+                'style'     => $display_periodicity_chart,
+                'arguments' => [
+                    'type'     => 'select',
+                    'fields'   => $options_period_mode,
+                    'name'     => 'period_mode',
+                    'selected' => $values['period_mode'],
+                    'return'   => true,
+                ],
+            ];
+
+            return $inputs;
     }
 
 

@@ -1389,6 +1389,7 @@ function netflow_draw_item(
     $show_summary=true,
     $show_table=true
 ) {
+    global $config;
     $aggregate = $filter['aggregate'];
     $interval = ($end_date - $start_date);
     if (is_metaconsole() === true) {
@@ -1568,13 +1569,20 @@ function netflow_draw_item(
                         $data_top_n
                     );
 
+                    // Theme.
+                    $theme = $config['style'];
+                    $text_color = ($theme !== 'pandora_black') ? '#333' : '#fff';
+
                     $graph_output = pie_graph(
                         $pie_data,
                         [
                             'width'     => 200,
                             'height'    => 200,
                             'ttl'       => ($output === 'PDF') ? 2 : 1,
-                            'dataLabel' => ['display' => 'auto'],
+                            'dataLabel' => [
+                                'display' => 'auto',
+                                'color'   => $text_color,
+                            ],
                             'layout'    => [
                                 'padding' => [
                                     'top'    => 15,

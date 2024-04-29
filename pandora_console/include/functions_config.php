@@ -30,6 +30,7 @@
 // Config functions.
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/functions.php';
+require_once __DIR__.'/class/JWTRepository.class.php';
 enterprise_include_once('include/functions_config.php');
 
 use PandoraFMS\Core\DBMaintainer;
@@ -205,10 +206,6 @@ function config_update_config()
 
                     if (config_update_value('chromium_path', (string) get_parameter('chromium_path'), true) === false) {
                         $error_update[] = __('Chromium config directory');
-                    }
-
-                    if (config_update_value('loginhash_pwd', (string) get_parameter('loginhash_pwd'), true, true) === false) {
-                        $error_update[] = __('Auto login (hash) password');
                     }
 
                     if (config_update_value('timesource', (string) get_parameter('timesource'), true) === false) {
@@ -706,8 +703,10 @@ function config_update_config()
                         $error_update[] = __('Admin LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
-                        $error_update[] = __('Admin LDAP password');
+                    if ((bool) get_parameter('ldap_admin_pass_password_changed', false) === true) {
+                        if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
+                            $error_update[] = __('Admin LDAP password');
+                        }
                     }
 
                     if (config_update_value('ldap_search_timeout', (int) get_parameter('ldap_search_timeout', 5), true) === false) {
@@ -2224,10 +2223,6 @@ function config_process_config()
         config_update_value('events_per_query', 5000);
     }
 
-    if (!isset($config['loginhash_pwd'])) {
-        config_update_value('loginhash_pwd', (rand(0, 1000) * rand(0, 1000)).'pandorahash', false, true);
-    }
-
     if (!isset($config['trap2agent'])) {
         config_update_value('trap2agent', 0);
     }
@@ -2489,6 +2484,10 @@ function config_process_config()
 
     if (!isset($config['number_modules_queue'])) {
         config_update_value('number_modules_queue', 500);
+    }
+
+    if (!isset($config['JWT_signature'])) {
+        config_update_value('JWT_signature', 1);
     }
 
     if (!isset($config['eastern_eggs_disabled'])) {
@@ -4223,4 +4222,14 @@ function config_prepare_session()
 
     ini_set('post_max_size', $config['max_file_size']);
     ini_set('upload_max_filesize', $config['max_file_size']);
+}
+
+
+function config_prepare_jwt_signature()
+{
+    global $config;
+    if (is_metaconsole() === true && $config['JWT_signature'] == 1) {
+        $signature = JWTRepository::generateSignature();
+        JWTRepository::syncSignatureWithNodes($signature);
+    }
 }
