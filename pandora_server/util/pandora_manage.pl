@@ -6166,7 +6166,7 @@ sub cli_create_group() {
 	$icon = '' unless defined($icon);
 	$description = '' unless defined($description);
 
-	$group_id = pandora_create_group ($group_name, $icon, $parent_group_id, 0, 0, '', 0, $description, $dbh);
+	$group_id = pandora_create_group ($group_name, $icon, $parent_group_id, 0, 0, '', 0, safe_input($description), $dbh);
 	
 	if($group_id == -1) {
 		print_log "[ERROR] A problem has been ocurred creating group '$group_name'\n\n";
