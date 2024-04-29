@@ -581,7 +581,30 @@ class SnmpConsole extends HTML
             $prea = array_keys($user_groups);
             $ids = join(',', $prea);
 
-            $user_in_group_wo_agents = db_get_value_sql('select count(DISTINCT(id_usuario)) from tusuario_perfil where id_usuario ="'.$config['id_user'].'" and id_perfil = 1 and id_grupo in (select id_grupo from tgrupo where id_grupo in ('.$ids.') and id_grupo not in (select id_grupo from tagente))');
+            $sql_count = sprintf(
+                'SELECT
+                    count(DISTINCT(id_usuario))
+                FROM
+                    tusuario_perfil
+                WHERE
+                    id_usuario = "%s"
+                    AND id_grupo IN (
+                    SELECT
+                        id_grupo
+                    FROM
+                        tgrupo
+                    WHERE
+                        id_grupo IN (%s)
+                            AND id_grupo NOT IN (
+                            SELECT
+                                id_grupo
+                            FROM
+                                tagente))',
+                $config['id_user'],
+                $ids
+            );
+
+            $user_in_group_wo_agents = db_get_value_sql($sql_count);
             if ($user_in_group_wo_agents == 0) {
                 $rows = db_get_all_rows_filter(
                     'tagente',
@@ -778,7 +801,7 @@ class SnmpConsole extends HTML
                         // SNMP Agent.
                         $agent = agents_get_agent_with_ip($tmp->source);
                         if ($agent === false) {
-                            $tmp->snmp_agent .= '<a class="'.$severity_class.' href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
+                            $tmp->snmp_agent .= '<a class="'.$severity_class.'" href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
                         } else {
                             $tmp->snmp_agent .= '<div class="'.$severity_class.' snmp-div"><a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].'" title="'.__('View agent details').'">';
                             $tmp->snmp_agent .= '<strong>'.$agent['alias'].ui_print_help_tip($tmp->source, true);
