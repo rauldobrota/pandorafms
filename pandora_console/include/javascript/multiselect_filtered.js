@@ -211,7 +211,7 @@ function fmAgentChange(uniqId) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function fmModuleChange(uniqId, isMeta) {
+function fmModuleChange(uniqId, isMeta, valueID = false) {
   var idModuleGroup = $("#filtered-module-module-group-" + uniqId).val();
   var idAgents = $("#filtered-module-agents-" + uniqId).val();
   var commonSelectorType = $(
@@ -253,7 +253,7 @@ function fmModuleChange(uniqId, isMeta) {
               .html(value["nombre"]);
           } else {
             option
-              .attr("value", id)
+              .attr("value", valueID === false ? value : id)
               .attr("title", value)
               .html(value);
           }
