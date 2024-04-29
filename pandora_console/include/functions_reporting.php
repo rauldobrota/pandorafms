@@ -3177,7 +3177,7 @@ function reporting_modules_inventory($report, $content)
             $module_row_data[$i]['id_tag'][] = $row['tags'];
         }
 
-        if (array_key_exists('id_group', $row) === true) {
+        if (array_key_exists('group_id', $row) === true) {
             $module_row_data[$i]['group_id'][] = $row['group_id'];
         }
 
