@@ -220,7 +220,6 @@ if ($create_alert) {
     if (is_metaconsole()) {
         // Restore db connection.
         metaconsole_restore_db();
-        echo '<script>window.location.assign("index.php?sec=estado&sec2=operation/agentes/alerts_status")</script>';
     }
 }
 
