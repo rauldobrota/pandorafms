@@ -112,8 +112,8 @@ function reporting_html_header(
         }
 
         $data[] = $title.$sizhfin;
-        $data[] = $sizh.$subtitle.$sizhfin;
-        $data[] = "<div class='right'>".$sizh.$date_text.$sizhfin.'</div>';
+        $data[] = $sizh.__('Group').': '.$subtitle.$sizhfin;
+        $data[] = '<div class="flex-content-right flex-items-center">'.$sizh.__('Data time').': '.$sizhfin."<div class='right mrgn_lft_15px'>".$sizh.$date_text.$sizhfin.'</div></div>';
     }
 
     array_push($table->data, $data);
@@ -194,6 +194,9 @@ function reporting_html_print_report($report, $mini=false, $report_info=1, $cust
         $table->head = [];
         $table->colspan = [];
         $table->rowstyle = ['background-color: #686868'];
+        $table->size[0] = '33%';
+        $table->size[1] = '33%';
+        $table->size[2] = '33%';
 
         if (isset($item['label']) && $item['label'] != '') {
             $id_agent = $item['id_agent'];
@@ -3606,7 +3609,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
     }
 
     $graph_width = 280;
-    $graph_height = 250;
+    $graph_height = 300;
 
     $out = '<table width="100%" class="info_table">';
     $out .= '<tbody>';
@@ -3688,7 +3691,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
 
     $out .= '<div id="events_per_agent_pie" style="height: '.$graph_height.'px">';
     if ((int) $ttl === 2) {
-        $out .= '<img src="data:image/png;base64,';
+        $out .= '<img width="350" src="data:image/png;base64,';
     } else {
         $out .= '<div id="status_pie" style="margin: auto;">';
     }
@@ -3730,7 +3733,7 @@ function reporting_html_group_report($table, $item, $pdf=0)
 
     $out .= '<div id="group_os_pie" style="height: '.$graph_height.'px">';
     if ((int) $ttl === 2) {
-        $out .= '<img src="data:image/png;base64,';
+        $out .= '<img width="350" src="data:image/png;base64,';
     } else {
         $out .= '<div id="status_pie" style="margin: auto;">';
     }
@@ -4104,7 +4107,7 @@ function reporting_html_historical_data($table, $item, $pdf=0)
 
         // Center every row
         foreach ($table1->data[0] as $k => $v) {
-            for ($i = 0; $i < count($table1->data); $i++){
+            for ($i = 0; $i < count($table1->data); $i++) {
                 $table1->cellstyle[$i][$k] = 'text-align: center;';
             }
         }
@@ -4187,7 +4190,7 @@ function reporting_html_database_serialized($table, $item, $pdf=0)
 
         // Center every row
         foreach ($table1->data[0] as $k => $v) {
-            for ($i = 0; $i < count($table1->data); $i++){
+            for ($i = 0; $i < count($table1->data); $i++) {
                 $table1->cellstyle[$i][$k] = 'text-align: center;';
             }
         }
@@ -6432,7 +6435,7 @@ function reporting_html_sql($table, $item, $pdf=0)
 
             // Center every row
             foreach ($table2->data[0] as $k => $v) {
-                for ($i = 0; $i < count($table2->data); $i++){
+                for ($i = 0; $i < count($table2->data); $i++) {
                     $table2->cellstyle[$i][$k] = 'text-align: center;';
                 }
             }
@@ -7883,6 +7886,12 @@ function reporting_html_ncm_list($table, $item, $pdf=0)
  */
 function reporting_html_ncm_backups($table, $item, $pdf=0)
 {
+    global $config;
+
+    if ($config['style'] === 'pandora_black') {
+        ui_require_css_file('pandora_black');
+    }
+
     ui_require_css_file('diff2html.min');
     ui_require_css_file('highlight.min');
     ui_require_css_file('highlight/vs.min');

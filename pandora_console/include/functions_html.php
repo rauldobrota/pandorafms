@@ -2529,7 +2529,8 @@ function html_print_extended_select_for_time(
     $no_change=false,
     $allow_zero=0,
     $units=null,
-    $script_input=''
+    $script_input='',
+    $units_select2=false
 ) {
     global $config;
     $admin = is_user_admin($config['id_user']);
@@ -2619,7 +2620,19 @@ function html_print_extended_select_for_time(
     echo '</div>';
 
     echo '<div id="'.$uniq_name.'_manual" class="inline_flex">';
-        html_print_input_text($uniq_name.'_text', $selected, '', $size, 255, false, $readonly, false, '', $class, $script_input);
+        html_print_input_text(
+            $uniq_name.'_text',
+            $selected,
+            '',
+            $size,
+            255,
+            false,
+            $readonly,
+            false,
+            '',
+            $class.(($units_select2 === true) ? ' w100p' : ''),
+            $script_input
+        );
 
         html_print_input_hidden($name, $selected, false, $uniq_name);
         html_print_select(
@@ -2643,7 +2656,7 @@ function html_print_extended_select_for_time(
             false,
             false,
             false,
-            false
+            $units_select2
         );
         echo '&nbsp&nbsp<a href="javascript:">'.html_print_image(
             'images/logs@svg.svg',
@@ -2656,6 +2669,7 @@ function html_print_extended_select_for_time(
             ]
         ).'</a>';
     echo '</div>';
+
     echo "<script type='text/javascript'>
 		$(document).ready (function () {
 			period_select_init('".$uniq_name."', ".(($allow_zero) ? 1 : 0).");
@@ -2676,6 +2690,18 @@ function html_print_extended_select_for_time(
             }, 100);
         }
 	</script>";
+
+    if ($units_select2 === true) {
+        echo '
+        <script>
+            $(document).ready (function () {
+                $("#'.$uniq_name.'_units").select2();
+                $("#'.$uniq_name.'_units").data("select2").$container.addClass("mrgn_lft_10px_imp");
+            });
+        </script>
+        ';
+    }
+
     $returnString = ob_get_clean();
 
     if ($return) {
@@ -6359,7 +6385,8 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 ((isset($data['no_change']) === true) ? $data['no_change'] : ''),
                 ((isset($data['allow_zero']) === true) ? $data['allow_zero'] : ''),
                 ((isset($data['units']) === true) ? $data['units'] : null),
-                ((isset($data['script_input']) === true) ? $data['script_input'] : '')
+                ((isset($data['script_input']) === true) ? $data['script_input'] : ''),
+                ((isset($data['units_select2']) === true) ? $data['units_select2'] : '')
             );
         break;
 

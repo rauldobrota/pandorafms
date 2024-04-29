@@ -55,7 +55,7 @@ switch ($graph) {
         if ($os == 'windows') {
             $data = exec('(FOR /F "skip=2 tokens=2 delims=\," %P IN (\'typeperf "\\Process(httpd)\\% processor time" -sc 1\') DO @echo %P)|find /V /I "..."');
         } else {
-            $apache = exec("ps aux | grep apache2 | grep -v safe | grep -v grep && echo 1 || echo 0") == 1 ? "apache2" : "apache";
+            $apache = exec('ps aux | grep apache2 | grep -v safe | grep -v grep && echo 1 || echo 0') == 1 ? 'apache2' : 'apache';
             $data = exec("ps aux | grep $apache | grep -v safe | grep -v grep | awk '{ sum+=$3 } END { print sum }'");
         }
     break;

@@ -234,18 +234,18 @@ class ExtensionsDiscovery extends Wizard
                 url_str = `<a target="_blank" class="link-important" href="${url}">'.__('here').'</a>`;
             }
 
-            var markup = "<ul class=\'\'>";
+            var markup = "<ul class=\'\' style=\'padding: 15px 0px 0px 25px;\'>";
 
             if (msgs_json.includes('.NOT_FOUND_MSG.')) {
-                markup += "<li>&nbsp;&nbsp;&nbsp;'.__('The required files for the application were not found.').'</li>";
+                markup += \'<li class="lato font_10pt bolder">&nbsp;&nbsp;&nbsp;'.__('The required files for the application were not found.').'</li>\';
             }
 
             if (msgs_json.includes('.ENTERPRISE_MSG.')) {
-                markup += "<li>&nbsp;&nbsp;&nbsp;'.__('This discovery application is for Enterprise customers only.').'</li>";
+                markup += \'<li class="lato font_10pt bolder">&nbsp;&nbsp;&nbsp;'.__('This discovery application is for Enterprise customers only.').'</li>\';
             }
 
             if (msgs_json.includes('.URL_MSG.')) {
-                markup += \'<li>&nbsp;&nbsp;&nbsp;'.__('You can download this application from').' \'+url_str+\'.</li>\';
+                markup += \'<li class="lato font_10pt bolder">&nbsp;&nbsp;&nbsp;'.__('You can download this application from').' \'+url_str+\'.</li>\';
             }
 
             markup += "</ul>";

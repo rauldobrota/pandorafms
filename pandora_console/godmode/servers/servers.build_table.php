@@ -28,7 +28,9 @@
 
 // Begin.
 require_once 'include/functions_clippy.php';
-require_once 'pending_alerts_list.php';
+if ((bool) check_acl($config['id_user'], 0, 'LM') === true) {
+    include 'pending_alerts_list.php';
+}
 
 global $config;
 

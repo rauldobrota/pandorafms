@@ -3308,7 +3308,8 @@ function graph_custom_sql_graph(
     $only_image=false,
     $homeurl='',
     $ttl=1,
-    $max_num_elements=8
+    $max_num_elements=8,
+    $layout=false
 ) {
     global $config;
 
@@ -3509,6 +3510,10 @@ function graph_custom_sql_graph(
 
             if ((int) $ttl === 2) {
                 $options['dataLabel'] = ['display' => 'auto'];
+
+                if ($layout !== false && is_array($layout) === true) {
+                    $options['layout'] = $layout;
+                }
             }
 
             $output .= vbar_graph(

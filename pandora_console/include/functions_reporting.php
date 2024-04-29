@@ -2736,7 +2736,8 @@ function reporting_event_report_module(
         $ttl,
         $id_server,
         $metaconsole_dbtable,
-        $filter_event_filter_exclude
+        $filter_event_filter_exclude,
+        $content['id_agent_module']
     );
 
     if (empty($data)) {
@@ -6686,6 +6687,7 @@ function reporting_sql_graph(
     $type_sql_graph
 ) {
     global $config;
+    $layout = false;
 
     switch ($type_sql_graph) {
         case 'sql_graph_hbar':
@@ -6694,6 +6696,7 @@ function reporting_sql_graph(
         break;
 
         case 'sql_graph_vbar':
+            $layout = ['padding' => ['top' => '40']];
             $return['type'] = 'sql_graph_vbar';
         break;
 
@@ -6768,7 +6771,8 @@ function reporting_sql_graph(
                 $only_image,
                 ui_get_full_url(false, false, false, false),
                 $ttl,
-                $content['top_n_value']
+                $content['top_n_value'],
+                $layout
             );
         break;
 
@@ -11725,7 +11729,8 @@ function reporting_get_module_detailed_event(
     $ttl=1,
     $id_server=false,
     $metaconsole_dbtable=false,
-    $filter_event_filter_exclude=false
+    $filter_event_filter_exclude=false,
+    $id_agent=false
 ) {
     global $config;
 
@@ -11748,7 +11753,7 @@ function reporting_get_module_detailed_event(
 
     foreach ($id_modules as $id_module) {
         $event['data'] = events_get_agent(
-            false,
+            $id_agent,
             (int) $period,
             (int) $date,
             $history,

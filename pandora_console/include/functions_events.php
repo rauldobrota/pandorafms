@@ -1119,11 +1119,13 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
-        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $EM_groups = users_get_groups($config['id_user'], 'EM', true, true);
         $EW_groups = users_get_groups($config['id_user'], 'EW', true, true);
+    }
 
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
         // Get groups where user have ER grants.
         if ((bool) $filter['search_secondary_groups'] === true) {
             $sql_filters[] = sprintf(
@@ -1155,7 +1157,7 @@ function events_get_all(
     }
 
     // Free search.
-    if (empty($filter['search']) === false && (bool) $filter['regex'] === false) {
+    if (empty($filter['search']) === false) {
         if (isset($config['dbconnection']->server_version) === true
             && $config['dbconnection']->server_version > 50600
         ) {
@@ -1185,22 +1187,38 @@ function events_get_all(
             $array_search[] = 'lower(ta.alias)';
         }
 
-        // Disregard repeated whitespaces when searching.
-        $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+        if ((bool) $filter['regex'] === true) {
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s %s %s REGEXP "%s" ',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    preg_replace('/(?<!\\\\)"/', '', io_safe_output($filter['search'])),
+                );
+                $sql_search .= ' ';
+            }
 
-        $sql_search = ' AND (';
-        foreach ($array_search as $key => $field) {
-            $sql_search .= sprintf(
-                '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
-                ($key === 0) ? '' : $nexo,
-                $field,
-                $not_search,
-                $collapsed_spaces_search
-            );
-            $sql_search .= ' ';
+            $sql_search .= ' )';
+        } else {
+            // Disregard repeated whitespaces when searching.
+            $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    $collapsed_spaces_search
+                );
+                $sql_search .= ' ';
+            }
+
+            $sql_search .= ' )';
         }
-
-        $sql_search .= ' )';
 
         $sql_filters[] = $sql_search;
     }
@@ -1674,7 +1692,7 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $exists_id_grupo = false;
         foreach ($fields as $field) {
             if (str_contains($field, 'te.id_grupo') === true || str_contains($field, 'te.*') === true) {
@@ -1798,7 +1816,7 @@ function events_get_all(
         return $sql;
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $can_manage = '0 as user_can_manage';
         if (empty($EM_groups) === false) {
             $can_manage = sprintf(
@@ -5928,17 +5946,30 @@ function events_get_instructions($event, $max_text_length=300)
         return $value;
     }
 
+    $event_name = ui_print_truncate_text(
+        io_safe_output($event['evento']),
+        GENERIC_SIZE_TEXT,
+        false,
+        true,
+        false,
+        '...'
+    );
+
+    $over_event_name = base64_encode($event_name);
     $output  = '<div id="hidden_event_instructions_'.$event['id_evento'].'"';
     $output .= ' class="event_instruction">';
     $output .= $value;
     $output .= '</div>';
     $output .= '<span id="value_event_'.$event['id_evento'].'" class="nowrap">';
     $output .= '<span id="value_event_text_'.$event['id_evento'].'"></span>';
-    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].')">';
+    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].',\''.$over_event_name.'\')">';
     $output .= html_print_image(
         'images/default_list.png',
         true,
-        ['title' => $over_text]
+        [
+            'title' => $over_text,
+            'class' => 'invert_filter',
+        ]
     ).'</a></span>';
 
     return $output;

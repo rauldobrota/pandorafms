@@ -301,8 +301,7 @@ function ui_print_message($message, $class='', $attributes='', $return=false, $t
 
         if (empty($message['no_close']) === false) {
             // Workaround.
-            $no_close_bool = false;
-            // $no_close_bool = (bool) $message['no_close'];
+            $no_close_bool = (bool) $message['no_close'];
         }
 
         if (empty($message['force_style']) === false) {
