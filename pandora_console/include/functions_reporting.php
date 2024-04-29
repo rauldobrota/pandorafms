@@ -3856,16 +3856,25 @@ function reporting_end_of_life($report, $content)
         );
 
         $es_os_version = $external_source['os_version'];
+        $os_selector_name = db_get_value('name', 'tconfig_os', 'id_os', (int) $external_source['os_selector']);
 
         $es_limit_eol_datetime = DateTime::createFromFormat('Y/m/d', $external_source['end_of_life_date']);
 
         // Post-process returned agents to filter agents using correctly formatted fields.
         foreach ($agents as $idx => $agent) {
+            if (empty($agent['os_version']) === true) {
+                $agent['os_version'] = '.*';
+            }
+
             // Must perform this query and subsequent operations in each iteration (note this is costly) since OS version field may contain HTML entities in BD and decoding can't be fully handled with mysql methods when doing a REGEXP.
-            $result_end_of_life = db_get_value_sql('SELECT end_of_support FROM tconfig_os_version WHERE "'.io_safe_output($agent['os_version']).'" REGEXP version AND "'.io_safe_output($agent['name']).'" REGEXP product');
+            $result_end_of_life = db_get_value_sql('SELECT end_of_support FROM tconfig_os_version');
             $agent_eol_datetime = DateTime::createFromFormat('Y/m/d', $result_end_of_life);
 
-            if ((preg_match('/'.$es_os_version.'/i', $agent['os_version']) || $es_os_version === '') && $result_end_of_life !== false && ($es_limit_eol_datetime === false || $es_limit_eol_datetime >= $agent_eol_datetime)) {
+            if ((preg_match('/'.$es_os_version.'/i', $agent['os_version']) || $es_os_version === '')
+                && $os_selector_name === io_safe_output($agent['name'])
+                && $result_end_of_life !== false
+                && ($es_limit_eol_datetime === false || $es_limit_eol_datetime >= $agent_eol_datetime)
+            ) {
                 // Agent matches an existing OS version.
                 $agents[$idx]['end_of_life'] = $result_end_of_life;
             } else {
