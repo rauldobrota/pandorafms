@@ -1136,6 +1136,7 @@ select,
 .white_table_graph_header {
   color: var(--text-color) !important;
   border-radius: 0;
+  background-color: var(--secondary-color) !important;
 }
 
 .white_table_graph {
