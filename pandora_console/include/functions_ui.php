@@ -2948,14 +2948,14 @@ function ui_print_help_tip(
     $text_title = (strlen($text) >= 60) ? substr($text, 0, 60).'...' : $text;
 
     $id = random_int(1, 99999);
-    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" >';
+    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" onclick="open_tip('.$id.')">';
     $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.io_safe_output($text).'</span></div>';
     $output .= html_print_image(
         $img,
         true,
         [
-            'title' => $text_title,
-            'class' => $blink === true ? 'blink' : '',
+            'title' => io_safe_output($text_title),
+            'class' => ($blink === true) ? 'blink' : '',
             'style' => 'width: 16px; height: 16px;',
         ],
         false,
