@@ -418,12 +418,10 @@ function inventory_get_data(
 
             // Setting for link the agent with the proper server.
             if (is_metaconsole() === true && empty($node) === false) {
-                $loginHash = metaconsole_get_servers_url_hash($node);
                 $urlToAgent = sprintf(
-                    '%sindex.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=%s%s',
+                    '%sindex.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=%s',
                     $node['server_url'],
-                    $row['id_agente'],
-                    $loginHash
+                    $row['id_agente']
                 );
             } else {
                 $urlToAgent = sprintf(
@@ -440,8 +438,9 @@ function inventory_get_data(
 
             $table->data[$rowTable][0] = html_print_anchor(
                 [
-                    'href'    => $urlToAgent,
+                    'href'    => (is_metaconsole() === true) ? '#' : $urlToAgent,
                     'content' => '<strong>'.$agent_name.'</strong>',
+                    'onClick' => (is_metaconsole() === true) ? 'redirectNode(\''.$urlToAgent.'\')' : '',
                 ],
                 true
             );
@@ -1196,7 +1195,7 @@ function get_inventory_basic_info_sql($params, $count=false)
             $result = 0;
         }
     }
-    
+
     return $result;
 }
 

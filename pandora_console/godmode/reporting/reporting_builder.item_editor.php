@@ -6645,26 +6645,6 @@ function create_custom_graph() {
             $("#meta_target_servers").css('display', 'inline');
         }
         else {
-            var hash_data;
-            var params1 = [];
-            params1.push("get_metaconsole_hash_data=1");
-            params1.push("server_name=" + target_server);
-            params1.push("page=include/ajax/reporting.ajax");
-            jQuery.ajax ({
-                data: params1.join ("&"),
-                type: 'POST',
-                url: action=
-                <?php
-                echo '"'.ui_get_full_url(false, false, false, false).'"';
-                ?>
-                + "/ajax.php",
-                async: false,
-                timeout: 10000,
-                success: function (data) {
-                    hash_data = data;
-                }
-            });
-
             var server_url;
             var params1 = [];
             params1.push("get_metaconsole_server_url=1");
@@ -6690,7 +6670,7 @@ function create_custom_graph() {
                 }
             });
 
-            window.location.href = server_url + "/index.php?sec=reporting&sec2=godmode/reporting/graph_builder&create=Create graph" + hash_data;
+            redirectNode(server_url + "/index.php?sec=reporting&sec2=godmode/reporting/graph_builder&create=Create graph", "_self");
         }
         <?php
     } else {
@@ -6719,31 +6699,6 @@ function edit_custom_graph() {
             id_server = agent_server_temp[1];
         }
 
-        var hash_data;
-        var params1 = [];
-        params1.push("get_metaconsole_hash_data=1");
-        params1.push("server_name=" + id_server);
-        params1.push("page=include/ajax/reporting.ajax");
-        jQuery.ajax ({
-            data: params1.join ("&"),
-            type: 'POST',
-            url: action=
-            <?php
-            echo '"'.ui_get_full_url(
-                false,
-                false,
-                false,
-                false
-            ).'"';
-            ?>
-            + "/ajax.php",
-            async: false,
-            timeout: 10000,
-            success: function (data) {
-                hash_data = data;
-            }
-        });
-
         var server_url;
         var params1 = [];
         params1.push("get_metaconsole_server_url=1");
@@ -6769,7 +6724,7 @@ function edit_custom_graph() {
             }
         });
 
-        window.location.href = server_url + "index.php?sec=reporting&sec2=godmode/reporting/graph_builder&edit_graph=1&id=" + id_element_graph + hash_data;        
+        redirectNode(server_url + "index.php?sec=reporting&sec2=godmode/reporting/graph_builder&edit_graph=1&id=" + id_element_graph, "_self");
         <?php
     } else {
         ?>

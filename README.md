@@ -8,7 +8,7 @@ Pandora FMS gives you the agility to find and solve problems quickly, scaling th
 
 ### Support
 
-For community support you can visit our forums at https://pandorafms.com/community/ 
+For community support you can visit our forums at https://pandorafms.com/community/
 
 Pandora FMS has a "commercial" solution, with different features, oriented to companies that do not want to spend time using open source solutions, but closed packaged products, with periodic updates and professional support. Its name is Pandora FMS Enterprise, and you can find more information about it at https://pandorafms.com.
 
@@ -18,11 +18,11 @@ Installing Pandora FMS from sources is a complex task. Please visit our wiki and
 
 ### What is Pandora FMS?
 
-Pandora FMS is an open source monitoring application whose origin dates back to 2004. It integrates in the same application the monitoring of different infrastructure elements: networks, applications, servers, web, and other specific data sources such as logs, WMI, Netflow or SNMP traps. 
+Pandora FMS is an open source monitoring application whose origin dates back to 2004. It integrates in the same application the monitoring of different infrastructure elements: networks, applications, servers, web, and other specific data sources such as logs, WMI, Netflow or SNMP traps.
 
-It allows you to supervise systems and applications of all types, through remote monitoring or with software agents installed on the equipment to be monitored. 
+It allows you to supervise systems and applications of all types, through remote monitoring or with software agents installed on the equipment to be monitored.
 
-Pandora FMS monitors your hardware, software, your multilayer system and, of course, your operating system. Pandora FMS can detect if a network interface is down or the movement of the market value of any new NASDAQ technology. If desired, Pandora FMS can send an SMS message when your system or application fails or when the value of Tesla's stock drops below $180. Pandora FMS will adapt to your systems and requirements, because it has been designed to be open, modular, multiplatform and easy to customize.
+Pandora FMS monitors your hardware, software, your multilayer system and, of course, your operating system. Pandora FMS can detect if a network interface is down or the movement of the market value of any new NASDAQ technology. If desired, Pandora FMS can send an SMS message when your system or application fails or when the value of Tesla's stock drops below \$180. Pandora FMS will adapt to your systems and requirements, because it has been designed to be open, modular, multiplatform and easy to customize.
 
 Pandora FMS can be deployed over any OS, with specific agents for each platform. There are agents for Windows (2000, XP, 2003), GNU/Linux, Solaris, HP-UX, BSD, AIX, IPSO and OpenWRT. Pandora FMS not only gathers information through its agents, but it can also monitor any hardware system with TCP/IP connectivity, such as load balancing systems, routers, switches or printers, through SNMP and TCP/ICMP checks.
 
