@@ -362,14 +362,20 @@ if (is_ajax() === true) {
                 $row['name'] = __('Admin secondary LDAP password');
                 $row['control'] = html_print_input_password(
                     'ldap_admin_pass_secondary',
-                    io_output_password($config['ldap_admin_pass_secondary']),
+                    (empty(io_output_password($config['ldap_admin_pass_secondary'])) === false) ? '*****' : '',
                     $alt = '',
                     60,
                     100,
                     true,
                     false,
                     false,
-                    'w400px-important'
+                    'w400px-important',
+                    'on',
+                    false,
+                    '',
+                    true,
+                    false,
+                    true
                 );
                 $table->data['ldap_admin_pass_secondary'] = $row;
             break;
