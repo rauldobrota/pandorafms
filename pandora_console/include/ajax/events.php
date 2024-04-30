@@ -1561,19 +1561,11 @@ if ($change_status === true) {
             $node->connect();
         }
 
-        if ($group_rep !== 3) {
-            $return = events_change_status(
-                explode(',', $event_ids),
-                $new_status
-            );
-        } else {
-            // Update all elements with same extraid.
-            $return = events_update_status(
-                $event_ids,
-                (int) $new_status,
-                ['group_rep' => $group_rep]
-            );
-        }
+        $return = events_update_status(
+            $event_ids,
+            (int) $new_status,
+            ['group_rep' => $group_rep]
+        );
     } catch (\Exception $e) {
         // Unexistent agent.
         if (is_metaconsole() === true
