@@ -66,7 +66,10 @@ if ($searchMain) {
         'text'   => "<a href='index.php?search_category=main&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/zoom_mc.png',
             true,
-            ['title' => __('Global search')]
+            [
+                'title' => __('Global search'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'main',
     ];
@@ -79,7 +82,10 @@ if ($searchAgents) {
         'text'   => "<a href='index.php?search_category=agents&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/op_monitoring.png',
             true,
-            ['title' => __('Agents')]
+            [
+                'title' => __('Agents'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'agents',
     ];
@@ -92,7 +98,10 @@ if ($searchUsers) {
         'text'   => "<a href='index.php?search_category=users&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/op_workspace.png',
             true,
-            ['title' => __('Users')]
+            [
+                'title' => __('Users'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'users',
     ];
@@ -105,7 +114,10 @@ if ($searchAlerts) {
         'text'   => "<a href='index.php?search_category=alerts&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/op_alerts.png',
             true,
-            ['title' => __('Alerts')]
+            [
+                'title' => __('Alerts'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'alerts',
     ];
@@ -118,7 +130,10 @@ if ($searchGraphs) {
         'text'   => "<a href='index.php?search_category=graphs&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/chart.png',
             true,
-            ['title' => __('Graphs')]
+            [
+                'title' => __('Graphs'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'graphs',
     ];
@@ -131,7 +146,10 @@ if ($searchReports) {
         'text'   => "<a href='index.php?search_category=reports&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/op_reporting.png',
             true,
-            ['title' => __('Reports')]
+            [
+                'title' => __('Reports'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'reports',
     ];
@@ -144,7 +162,10 @@ if ($searchMaps) {
         'text'   => "<a href='index.php?search_category=maps&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/visual_console.png',
             true,
-            ['title' => __('Visual consoles')]
+            [
+                'title' => __('Visual consoles'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'maps',
     ];
@@ -157,7 +178,10 @@ if ($searchModules) {
         'text'   => "<a href='index.php?search_category=modules&keywords=".$config['search_keywords']."&head_search_keywords=Search'>".html_print_image(
             'images/brick.png',
             true,
-            ['title' => __('Modules')]
+            [
+                'title' => __('Modules'),
+                'class' => 'main_menu_icon invert_filter',
+            ]
         ).'</a>',
         'active' => $searchTab == 'modules',
     ];
@@ -172,7 +196,7 @@ if ($searchPolicies) {
             true,
             [
                 'title' => __('Policies'),
-                'class' => 'main_menu_icon',
+                'class' => 'main_menu_icon invert_filter',
             ]
         ).'</a>',
         'active' => $searchTab == 'policies',

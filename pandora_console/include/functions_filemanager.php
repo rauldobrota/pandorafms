@@ -1032,7 +1032,7 @@ function filemanager_file_explorer(
                     false,
                     'show_form_create_folder()',
                     [
-                        'class' => 'margin-right-2 invert_filter secondary',
+                        'class' => 'margin-right-2 primary buttonButton',
                         'icon'  => 'create_directory',
                     ],
                     true,
@@ -1047,7 +1047,7 @@ function filemanager_file_explorer(
                     false,
                     'show_create_text_file()',
                     [
-                        'class' => 'margin-right-2 invert_filter secondary',
+                        'class' => 'margin-right-2 primary buttonButton',
                         'icon'  => 'create_file',
                     ],
                     true,
@@ -1061,7 +1061,7 @@ function filemanager_file_explorer(
                 false,
                 'show_upload_file()',
                 [
-                    'class' => 'margin-right-2 invert_filter secondary',
+                    'class' => 'margin-right-2 primary buttonButton',
                     'icon'  => 'upload_file',
                 ],
                 true,

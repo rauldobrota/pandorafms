@@ -1026,11 +1026,18 @@ if (is_ajax() === true) {
             return;
         }
 
-        $data = networkmap_refresh_holding_area($networkmap_id, $x, $y);
+        $filter = db_get_value('filter', 'tmap', 'id', $networkmap_id);
+        $filter = json_decode($filter, true);
 
-        if (!empty($data)) {
-            $return['correct'] = true;
-            $return['holding_area'] = $data;
+        if (isset($filter['empty_map']) === false
+            || (isset($filter['empty_map']) === true && $filter['empty_map'] !== 1)
+        ) {
+            $data = networkmap_refresh_holding_area($networkmap_id, $x, $y);
+
+            if (!empty($data)) {
+                $return['correct'] = true;
+                $return['holding_area'] = $data;
+            }
         }
 
         ob_end_clean();

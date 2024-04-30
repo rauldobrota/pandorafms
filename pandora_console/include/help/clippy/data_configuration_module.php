@@ -12,12 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+
 /**
  * @package    Include
  * @subpackage Clippy
  */
-
-
 function clippy_data_configuration_module()
 {
     $return_tours = [];

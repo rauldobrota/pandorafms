@@ -294,10 +294,14 @@ $(document).ready (function () {
     // configure your validation
     $("form.add_alert_form").validate({
         rules: {
-            id_agent_module: { valueNotEquals: "0" }
+            id_agent_module: { valueNotEquals: "0" },
+            template: { valueNotEquals: "0" },
+            id_agent: { valueNotEquals: "" },
         },
         messages: {
-            id_agent_module: { valueNotEquals: "Please select an item!" }
+            id_agent_module: { valueNotEquals: "<?php echo __('Please select an item'); ?>!"},
+            template: { valueNotEquals: "<?php echo __('Please select a templete'); ?>!"},
+            id_agent: { valueNotEquals: "<?php echo __('Please select an agent'); ?>!"},
         }
     });
     $("select#template").change (function () {

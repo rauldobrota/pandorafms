@@ -376,111 +376,6 @@ for ($i = 0; $i < $custom_fields_count; $i++) {
  * END: TABLE DATA BUILD
  */
 
-/*
- * START: TABLE INTERFACES
- */
-
-$network_interfaces_by_agents = agents_get_network_interfaces([$agent]);
-
-$network_interfaces = [];
-if (empty($network_interfaces_by_agents) === false && empty($network_interfaces_by_agents[$id_agente]) === false) {
-    $network_interfaces = $network_interfaces_by_agents[$id_agente]['interfaces'];
-}
-
-if (empty($network_interfaces) === false) {
-    $table_interface = new stdClass();
-    $table_interface->id = 'agent_interface_info';
-    $table_interface->class = 'info_table';
-    $table_interface->width = '100%';
-    $table_interface->style = [];
-    $table_interface->style['interface_event_graph'] = 'width: 35%;';
-
-    $table_interface->head = [];
-    $options = [
-        'class' => 'closed',
-        'style' => 'cursor:pointer;',
-    ];
-    $table_interface->data = [];
-    $event_text_cont = 0;
-
-    foreach ($network_interfaces as $interface_name => $interface) {
-        if (empty($interface['traffic']) === false) {
-            $permission = check_acl_one_of_groups($config['id_user'], $all_groups, 'RR');
-
-            if ($permission) {
-                $params = [
-                    'interface_name'     => $interface_name,
-                    'agent_id'           => $id_agente,
-                    'traffic_module_in'  => $interface['traffic']['in'],
-                    'traffic_module_out' => $interface['traffic']['out'],
-                ];
-                $params_json = json_encode($params);
-                $params_encoded = base64_encode($params_json);
-                $win_handle = dechex(crc32($interface['status_module_id'].$interface_name));
-                $graph_link = "<a href=\"javascript:winopeng_var('operation/agentes/interface_traffic_graph_win.php?params=";
-                $graph_link .= $params_encoded."','";
-                $graph_link .= $win_handle."', 800, 480)\">";
-                $graph_link .= html_print_image(
-                    'images/chart.png',
-                    true,
-                    [
-                        'title' => __('Interface traffic'),
-                        'class' => 'invert_filter',
-                    ]
-                ).'</a>';
-            } else {
-                $graph_link = '';
-            }
-        } else {
-            $graph_link = '';
-        }
-
-        $content = [
-            'id_agent_module' => $interface['status_module_id'],
-            'id_group'        => $id_group,
-            'period'          => SECONDS_1DAY,
-            'time_from'       => '00:00:00',
-            'time_to'         => '00:00:00',
-            'sizeForTicks'    => 250,
-            'height_graph'    => 40,
-            [
-                ['id_agent_module' => $interface['status_module_id']],
-            ]
-        ];
-
-        $e_graph = \reporting_module_histogram_graph(
-            ['datetime' => time()],
-            $content
-        );
-
-        $sqlLast_contact = sprintf(
-            '
-			SELECT timestamp
-			FROM tagente_estado
-			WHERE id_agente_modulo = '.$interface['status_module_id']
-        );
-
-        $last_contact = db_get_all_rows_sql($sqlLast_contact);
-        $last_contact = array_shift($last_contact);
-        $last_contact = array_shift($last_contact);
-
-        $data = [];
-        $data['interface_name'] = '<strong>'.$interface_name.'</strong>';
-        $data['interface_status'] = $interface['status_image'];
-        $data['interface_graph'] = $graph_link;
-        $data['interface_ip'] = $interface['ip'];
-        $data['interface_mac'] = $interface['mac'];
-        $data['last_contact'] = __('Last contact: ').$last_contact;
-        $data['interface_event_graph'] = $e_graph['chart'];
-
-        $table_interface->data[] = $data;
-    }
-}
-
-/*
- * END: TABLE INTERFACES
- */
-
     // This javascript piece of code is used to make expandible
     // the body of the table.
 ?>
@@ -651,16 +546,23 @@ if (empty($agentIncidents) === false) {
     );
 }
 
-if (isset($table_interface) === true) {
+$count_network_incerfaces = agents_get_network_interfaces([$agent], false, false, 0, true);
+if ($count_network_incerfaces > 0) {
     ui_toggle(
-        html_print_table($table_interface, true),
+        html_print_div(
+            [
+                'id'      => 'agent_interface_info',
+                'content' => '',
+                'class'   => 'w100p',
+            ],
+            true
+        ),
         '<b>'.__('Interface information (SNMP)').'</b>',
         '',
         'interface-table-status-agent',
         true
     );
 }
-
 ?>
 
 <script type="text/javascript">
@@ -678,5 +580,45 @@ if (isset($table_interface) === true) {
             $('#deploy_sec_ips_down').css('display', 'none');
             $('#deploy_sec_ips_up').css('display', '');
         });
+        <?php if ($count_network_incerfaces > 0) { ?>
+        load_list_snmp();
+        <?php } ?>
     });
+
+    function load_list_snmp() {
+        var parameters = {};
+        parameters['list_snmp_modules'] = 1;
+        parameters['agent'] = <?php echo $id_agente; ?>;
+        parameters['page'] = 'include/ajax/module';
+        $('#agent_interface_info').empty();
+        jQuery.ajax ({
+            data: parameters,
+            type: 'POST',
+            url: "ajax.php",
+            dataType: 'html',
+            success: function (data) {
+                $('#agent_interface_info').empty();
+                $('#agent_interface_info').html(data);
+            }
+        });
+    }
+
+    function change_page_snmp(offset) {
+        var parameters = {};
+        parameters['list_snmp_modules'] = 1;
+        parameters["offset"] = offset;
+        parameters['agent'] = <?php echo $id_agente; ?>;
+        parameters['page'] = 'include/ajax/module';
+        $('#agent_interface_info').empty();
+        jQuery.ajax ({
+            data: parameters,
+            type: 'POST',
+            url: "ajax.php",
+            dataType: 'html',
+            success: function (data) {
+                $('#agent_interface_info').empty();
+                $('#agent_interface_info').html(data);
+            }
+        });
+    }
 </script>

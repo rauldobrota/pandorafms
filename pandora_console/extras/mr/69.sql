@@ -7754,4 +7754,14 @@ ALTER TABLE `tdeployment_hosts` DROP COLUMN `arch`;
 -- Update all deployment recon tasks port
 UPDATE `trecon_task` SET `field4` = 41121 WHERE `type` = 9;
 
+-- Update execution in proxmox discovery plugin
+SET @short_name = 'pandorafms.proxmox';
+SELECT @id_app := `id_app` FROM `tdiscovery_apps` WHERE `short_name` = @short_name;
+UPDATE `tdiscovery_apps_executions` SET `execution` = '&#039;_exec1_&#039;&#x20;--conf&#x20;&#039;_tempfileProxmox_&#039;' WHERE `id_app` = @id_app;
+
+INSERT INTO `tconfig` (`token`, `value`) VALUES ('JWT_signature', 1);
+DELETE FROM tconfig WHERE `token` = 'loginhash_pwd';
+
+UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.vmware';
+
 COMMIT;

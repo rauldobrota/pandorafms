@@ -870,7 +870,7 @@ switch ($action) {
             // ui_pagination($total_reports, $url, $offset, $pagination);
             $table = new stdClass();
             $table->id = 'report_list';
-            $table->styleTable = 'margin: 0 10px;';
+            $table->styleTable = '';
             $table->class = 'info_table';
             $table->cellpadding = 0;
             $table->cellspacing = 0;

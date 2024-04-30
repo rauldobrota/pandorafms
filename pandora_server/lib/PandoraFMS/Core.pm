@@ -3674,12 +3674,12 @@ Updates the keep_alive module for the given agent.
 sub pandora_module_keep_alive ($$$$$) {
 	my ($pa_config, $id_agent, $agent_name, $server_id, $dbh) = @_;
 	
-	logger($pa_config, "Updating keep_alive module for agent '" . safe_output($agent_name) . "'.", 10);
+	logger($pa_config, "Updating keep_alive modules for agent '" . safe_output($agent_name) . "'.", 10);
 	
-	# Update keepalive module 
-	my $module = get_db_single_row ($dbh, 'SELECT * FROM tagente_modulo WHERE id_agente = ? AND delete_pending = 0 AND id_tipo_modulo = 100', $id_agent);
-	if (defined ($module)) {
-		my %data = ('data' => 1);
+	# Update keepalive modules
+	my @modules = get_db_rows($dbh, 'SELECT * FROM tagente_modulo WHERE id_agente = ? AND delete_pending = 0 AND id_tipo_modulo = 100', $id_agent);
+	my %data = ('data' => 1);
+	foreach my $module (@modules) {
 		pandora_process_module ($pa_config, \%data, '', $module, 'keep_alive', '', time(), $server_id, $dbh);
 	}
 }
@@ -7010,8 +7010,21 @@ Returns 1 if this server is the current master, 0 otherwise.
 
 =cut
 ##########################################################################
-sub pandora_is_master ($) {
-	my ($pa_config) = @_;
+sub pandora_is_master ($;$) {
+	my ($pa_config, $dbh) = @_;
+
+	# When multiprocess is enabled the variable $Master is not shared between
+	# servers.
+	if (defined($dbh) && $pa_config->{'multiprocess'} == 1) {
+		my $current_master = get_db_value_limit ($dbh, 'SELECT name FROM tserver 
+	                                  WHERE master <> 0 AND status = 1
+									  ORDER BY master DESC', 1);
+		if (defined($current_master) && $current_master eq $pa_config->{'servername'}) {
+			return 1;
+		}
+
+		return 0;
+	}
 
 	if ($Master eq $pa_config->{'servername'}) {
 		return 1;

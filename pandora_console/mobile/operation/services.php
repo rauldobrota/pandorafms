@@ -338,7 +338,7 @@ class Services
                             $name .= '<strong class="no-data">'.__('Nonexistent. This element should be deleted').'</strong>';
                         } else {
                             $url = ui_get_full_url('mobile/index.php?page=agent&id='.$item->agent()->id_agente());
-                            $name = '<a href="'.$url.'">';
+                            $name = '<a href="#" onClick="redirectNode(\''.$url.'\')">';
 
                             if (((bool) $item->module()->disabled()) === true) {
                                 $disabled_element = true;

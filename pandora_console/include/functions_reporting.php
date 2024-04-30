@@ -2736,7 +2736,8 @@ function reporting_event_report_module(
         $ttl,
         $id_server,
         $metaconsole_dbtable,
-        $filter_event_filter_exclude
+        $filter_event_filter_exclude,
+        $content['id_agent_module']
     );
 
     if (empty($data)) {
@@ -11728,7 +11729,8 @@ function reporting_get_module_detailed_event(
     $ttl=1,
     $id_server=false,
     $metaconsole_dbtable=false,
-    $filter_event_filter_exclude=false
+    $filter_event_filter_exclude=false,
+    $id_agent=false
 ) {
     global $config;
 
@@ -11751,7 +11753,7 @@ function reporting_get_module_detailed_event(
 
     foreach ($id_modules as $id_module) {
         $event['data'] = events_get_agent(
-            false,
+            $id_agent,
             (int) $period,
             (int) $date,
             $history,

@@ -154,14 +154,16 @@ $table->data[0][1] = html_print_label_input_block(
 echo '<span id ="none_text" class="invisible">'.__('None').'</span>';
 echo "<form  id='agentmodules' method='post' action='index.php?sec=reporting&sec2=godmode/reporting/graph_builder&tab=graph_editor&add_module=1&edit_graph=1&id=".$id_graph."'>";
 
-echo "<table width='100%' cellpadding='4' cellpadding='4' class='databox filters max_floating_element_size'>";
+echo "<table width='100%' cellpadding='4' cellpadding='4' class='databox filters max_floating_element_size custom-graph-editor'>";
 echo '<tr>';
 echo '<td class="w50p pdd_50px" id="select_multiple_modules_filtered">'.html_print_input(
     [
         'type'              => 'select_multiple_modules_filtered',
         'uniqId'            => 'modules',
         'class'             => 'flex flex-row',
-        'searchBar'         => false,
+        'searchBar'         => true,
+        'searchBarAgents'   => false,
+        'searchBarModules'  => true,
         'placeholderAgents' => __('Search agent name'),
     ]
 ).'</td>';

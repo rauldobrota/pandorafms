@@ -447,25 +447,18 @@ class ModuleValueWidget extends Widget
         $sizeLabel = (isset($this->values['sizeLabel']) === true) ? $this->values['sizeLabel'] : 40;
         $sizeValue = (isset($this->values['sizeValue']) === true) ? $this->values['sizeValue'] : 40;
 
-        $sql = 'SELECT min_warning,
-        max_warning,
-        min_critical,
-        max_critical,
-        str_warning,
-        str_critical 
-        FROM tagente_modulo
-        WHERE id_agente_modulo = '.(int) $this->values['moduleId'];
-        $sql_data = db_get_row_sql($sql);
-
-        $last = modules_get_last_value($this->values['moduleId']);
-
-        if (($last >= $sql_data['min_warning']) && ($last < $sql_data['max_warning'])) {
-            $color = COL_WARNING;
-        }
-
-        if ($last >= $sql_data['max_warning']) {
-            $color = COL_CRITICAL;
-        }
+        $db_status = modules_get_agentmodule_status($this->values['moduleId']);
+        $module_value = modules_get_last_value($this->values['moduleId']);
+        $status = 0;
+        $title = '';
+        modules_get_status($this->values['moduleId'], $db_status, $module_value, $status, $title);
+        $color = match ($status) {
+            STATUS_MODULE_NO_DATA => COL_NOTINIT,
+            STATUS_MODULE_CRITICAL => COL_CRITICAL,
+            STATUS_MODULE_WARNING => COL_WARNING,
+            STATUS_MODULE_OK => COL_NORMAL,
+            STATUS_MODULE_UNKNOWN => COL_UNKNOWN,
+        };
 
         $uuid = uniqid();
         $output .= '<div class="container-center" id="container-'.$uuid.'">';

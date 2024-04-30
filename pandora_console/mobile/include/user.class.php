@@ -83,55 +83,37 @@ class User
     {
         $system = System::getInstance();
 
-        $loginhash = $system->getRequest('loginhash', null);
         $autologin = $system->getRequest('autologin', false);
+        $auth_token = $_POST['auth_token'];
         if ($autologin !== false) {
             $user = $system->getRequest('user', null);
             $password = $system->getRequest('password', null);
             $this->login($user, $password);
-        } else {
-            if (empty($loginhash) === false) {
-                // Hash login process.
-                $loginhash_data = $system->getRequest('loginhash_data', null);
-                $loginhash_user = str_rot13($system->getRequest('loginhash_user', null));
-                $this->login($loginhash_user, null, $loginhash_data);
-            }
+        } else if (empty($auth_token) === false) {
+            $this->login(null, null, $auth_token);
         }
 
         return $this->logged;
     }
 
 
-    public function login($user=null, $password=null, $loginhash_data='')
+    public function login($user=null, $password=null, $auth_token='')
     {
         global $config;
         $system = System::getInstance();
-
-        if (empty($loginhash_data) === false) {
-            if ($config['loginhash_pwd'] != ''
-                && $loginhash_data == md5(
-                    $user.io_output_password(
-                        $config['loginhash_pwd']
-                    )
-                )
+        if (empty($auth_token) === false && (bool) $config['JWT_signature'] !== false) {
+            $jwt = new JWTRepository($config['JWT_signature']);
+            if ($jwt->setToken($auth_token)
+                && $jwt->validate()
             ) {
                 $this->logged = true;
-                $this->user = $user;
+                $this->user = $jwt->payload()->get('id_user');
                 $this->loginTime = time();
                 $this->errorLogin = false;
                 $this->saveLogin();
             } else {
-                include_once 'general/login_page.php';
-                db_pandora_audit(
-                    AUDIT_LOG_USER_REGISTRATION,
-                    'Loginhash failed',
-                    'system'
-                );
-                while (ob_get_length() > 0) {
-                    ob_end_flush();
-                }
-
-                exit('</html>');
+                $this->logged = false;
+                $this->errorLogin = __('Token invalid');
             }
 
             return $this->logged;

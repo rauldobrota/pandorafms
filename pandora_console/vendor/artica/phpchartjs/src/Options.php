@@ -92,6 +92,11 @@ class Options implements ChartOwnedInterface, ArraySerializableInterface, JsonSe
      */
     protected $indexAxis;
 
+    /**
+     * @var string
+     */
+    protected $theme;
+
 
     /**
      * @return Layout
@@ -194,7 +199,7 @@ class Options implements ChartOwnedInterface, ArraySerializableInterface, JsonSe
 
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function disableAnimation()
     {
@@ -318,6 +323,32 @@ class Options implements ChartOwnedInterface, ArraySerializableInterface, JsonSe
     public function setIndexAxis($indexAxis)
     {
         $this->indexAxis = $indexAxis;
+
+        return $this;
+    }
+
+
+    /**
+     * Get font color.
+     *
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
+
+    /**
+     * Set font color.
+     *
+     * @param string $Theme Global font color.
+     *
+     * @return $this
+     */
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
 
         return $this;
     }
