@@ -567,9 +567,9 @@ if ($search != '') {
         $aux = $id[0]['id_agent'];
         $search_sql = sprintf(
             ' AND ( nombre LIKE "%%%s%%"
-             OR alias, "&#x20;", " ") LIKE "%%%s%%"
-             OR comentarios, "&#x20;", " ") LIKE "%%%s%%"
-			 OR EXISTS (SELECT * FROM tagent_custom_data WHERE id_agent = id_agente AND description, "&#x20;", " ") LIKE "%%%s%%")
+             OR alias LIKE "%%%s%%"
+             OR comentarios LIKE "%%%s%%"
+			 OR EXISTS (SELECT * FROM tagent_custom_data WHERE id_agent = id_agente AND description LIKE "%%%s%%")
              OR tagente.id_agente = %d',
             $search,
             $search,
