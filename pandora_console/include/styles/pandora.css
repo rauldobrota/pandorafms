@@ -3653,6 +3653,10 @@ div.tip > img {
   margin-left: 10px;
 }
 
+div.tip > div.invisible {
+  display: none !important;
+}
+
 /*
  * ---------------------------------------------------------------------
  * - SEARCH BOX in header											-

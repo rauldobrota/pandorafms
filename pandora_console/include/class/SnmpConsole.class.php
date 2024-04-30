@@ -521,7 +521,7 @@ class SnmpConsole extends HTML
         $legend .= '<div style=" display : flex;align-items : center;">';
         $legend .= html_print_image('images/delete.svg', true, ['class' => 'main_menu_icon invert_filter']).' - '.__('Delete');
         $legend .= '</div>';
-        $legend .= '</div></div></td>';
+        $legend .= '</div></div></td></table>';
 
         echo '<br>';
 
@@ -778,11 +778,11 @@ class SnmpConsole extends HTML
                         // SNMP Agent.
                         $agent = agents_get_agent_with_ip($tmp->source);
                         if ($agent === false) {
-                            $tmp->snmp_agent .= '<a class="'.$severity_class.' href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
+                            $tmp->snmp_agent .= '<a class="'.$severity_class.'" href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
                         } else {
                             $tmp->snmp_agent .= '<div class="'.$severity_class.' snmp-div"><a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].'" title="'.__('View agent details').'">';
-                            $tmp->snmp_agent .= '<strong>'.$agent['alias'].ui_print_help_tip($tmp->source, true);
-                            '</strong></a></div>';
+                            $tmp->snmp_agent .= '<strong>'.$agent['alias'].'</strong></a>'.ui_print_help_tip($tmp->source, true);
+                            '</div>';
                         }
 
                         // Enterprise string.

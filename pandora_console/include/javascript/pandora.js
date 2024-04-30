@@ -2364,6 +2364,29 @@ var formatterDataVerticalBar = function(value, ctx) {
   }
 };
 
+function open_tip(id) {
+  $("#tip_dialog_" + id).dialog({
+    title: $("#tip_dialog_" + id).data("title"),
+    modal: true,
+    maxWidth: 600,
+    minWidth: 400,
+    show: {
+      effect: "fade",
+      duration: 200
+    },
+    hide: {
+      effect: "fade",
+      duration: 200
+    },
+    closeOnEscape: true,
+    buttons: {
+      Close: function() {
+        $(this).dialog("close");
+      }
+    }
+  });
+}
+
 // Show about section
 $(document).ready(function() {
   $("[id^='icon_about']").click(function() {
@@ -2457,33 +2480,6 @@ $(document).ready(function() {
       });
     }
   }
-
-  $("[id^='div_tip_']").click(function() {
-    var id = $(this)
-      .attr("id")
-      .split("_")[2];
-
-    $("#tip_dialog_" + id).dialog({
-      title: $("#tip_dialog_" + id).data("title"),
-      modal: true,
-      maxWidth: 600,
-      minWidth: 400,
-      show: {
-        effect: "fade",
-        duration: 200
-      },
-      hide: {
-        effect: "fade",
-        duration: 200
-      },
-      closeOnEscape: true,
-      buttons: {
-        Close: function() {
-          $(this).dialog("close");
-        }
-      }
-    });
-  });
 });
 
 function close_info_box(id) {
