@@ -128,6 +128,13 @@ class JavaScript extends Renderer
                 }
               }
             };';
+
+            if ($this->chart->options()->getTheme() !== null) {
+                if ((int) $this->chart->options()->getTheme() === 2) {
+                    $script[] = 'Chart.defaults.color = "#ffffff";';
+                }
+            }
+
             $script[] = 'Chart.register(chart_watermark_'.$this->chart->getId().');';
         }
 
@@ -162,6 +169,10 @@ class JavaScript extends Renderer
 
                 if (chart.config.options.title !== undefined ) {
                   chart.config.options.title.fontColor = "#ffffff";
+                }
+
+                if (chart.config.options.plugins.legend.labels.font !== undefined ) {
+                  chart.config.options.plugins.legend.labels.font.color = "#ffffff";
                 }
                 ';
             }

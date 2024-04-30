@@ -483,6 +483,9 @@ $table->data = [];
 $chart_data = [];
 $labels = [];
 $hide_filter = !empty($main_value) && ($action === 'udp' || $action === 'tcp');
+$row_icon_color_filters = ($config['style'] === 'pandora') ? '' : 'filter: invert(100%) !important;';
+$row_icon_color_eye = ($config['style'] === 'pandora') ? '' : 'filter: invert(100%) !important; background-color: transparent !important;';
+
 foreach ($data as $item) {
     $row = [];
     $row['main'] = '<div class="flex_center">';
@@ -491,9 +494,17 @@ foreach ($data as $item) {
         $row['main'] .= html_print_link_with_params(
             'images/filters@svg.svg',
             array_merge($hidden_main_link, ['main_value' => $item['host']]),
-            'image'
+            'image',
+            $row_icon_color_filters,
         );
-        $row['main'] .= html_print_input_image('whois', 'images/eye.png', 'whois', '', true, ['onclick' => 'whois(\''.$item['host'].'\')']);
+        $row['main'] .= html_print_input_image(
+            'whois',
+            'images/eye.png',
+            'whois',
+            $row_icon_color_eye,
+            true,
+            ['onclick' => 'whois(\''.$item['host'].'\')'],
+        );
     }
 
     $row['main'] .= '</div>';

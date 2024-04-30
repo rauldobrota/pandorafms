@@ -1570,8 +1570,12 @@ function netflow_draw_item(
                     );
 
                     // Theme.
-                    $theme = $config['style'];
-                    $text_color = ($theme !== 'pandora_black') ? '#333' : '#fff';
+                    $user_info = get_user_info($config['id_user']);
+                    if (isset($user_info['id_skin']) === true && (int) $user_info['id_skin'] === 2) {
+                        $text_color = '#ffffff';
+                    } else {
+                        $text_color = '#333333';
+                    }
 
                     $graph_output = pie_graph(
                         $pie_data,
