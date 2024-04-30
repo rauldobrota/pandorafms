@@ -1712,7 +1712,7 @@ function reporting_html_event_report_group($table, $item, $pdf=0)
             $table1->head[3] = __('Name');
             $table1->head[4] = __('Agent');
             $table1->head[5] = __('Severity');
-            $table1->head[6] = __('Val. by');
+            $table1->head[6] = __('Validated by');
             $table1->head[7] = __('Timestamp');
         } else {
             $table1->head[0] = __('Status');
@@ -1720,7 +1720,7 @@ function reporting_html_event_report_group($table, $item, $pdf=0)
             $table1->head[2] = __('Name');
             $table1->head[3] = __('Agent');
             $table1->head[4] = __('Severity');
-            $table1->head[5] = __('Val. by');
+            $table1->head[5] = __('Validated by');
             $table1->head[6] = __('Timestamp');
         }
 
@@ -3845,7 +3845,7 @@ function reporting_html_event_report_agent($table, $item, $pdf=0)
 
         $table1->head[2] = __('Name');
         $table1->head[4] = __('Severity');
-        $table1->head[5] = __('Val. by');
+        $table1->head[5] = __('Validated by');
         $table1->head[6] = __('Timestamp');
         if ((bool) $item['show_custom_data'] === true) {
             $table1->head[7] = __('Custom data');
