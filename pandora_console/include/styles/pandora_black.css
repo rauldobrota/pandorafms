@@ -2127,3 +2127,8 @@ select option:checked {
 .invert_filter.black-and-white {
   filter: invert(1) saturate(0) !important;
 }
+
+.content-widget .legend_background,
+.content-widget .flot-base {
+  background-color: unset;
+}
