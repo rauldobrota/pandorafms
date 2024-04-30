@@ -121,6 +121,11 @@ foreach ($rows as $row) {
     $settings->{$row['key']} = $row['value'];
 }
 
+if ($settings->customer_key === 'PANDORA-FREE') {
+    $license['limit'] = 50;
+    $license['license_mode'] = 'FREE';
+}
+
 ?>
 <script type="text/javascript">
 var texts = {

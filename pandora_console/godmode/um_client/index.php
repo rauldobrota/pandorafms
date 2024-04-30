@@ -81,7 +81,7 @@ if ($mode === Manager::MODE_ONLINE) {
 
 enterprise_include_once('/include/functions_license.php');
 $license_data = enterprise_hook('license_get_info');
-if ($license_data !== ENTERPRISE_NOT_HOOK) {
+if ($license_data !== ENTERPRISE_NOT_HOOK && $license !== 'PANDORA-FREE') {
     $days_to_expiry = ((strtotime($license_data['expiry_date']) - time()) / (60 * 60 * 24));
 
     if ((int) $license_data['limit_mode'] === 0) {

@@ -1175,6 +1175,10 @@ class HostDevices extends Wizard
 
             // License precheck.
             $license = enterprise_hook('license_get_info');
+            if (empty($license) === false && license_free() === true) {
+                $license['limit'] = 50;
+            }
+
             $n_agents = 0;
             foreach (explode(',', $this->task['subnet']) as $net) {
                 $mask = explode('/', $net, 2)[1];

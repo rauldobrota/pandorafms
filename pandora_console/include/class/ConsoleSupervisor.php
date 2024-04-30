@@ -1081,6 +1081,10 @@ class ConsoleSupervisor
     {
         global $config;
 
+        if (license_free() === true) {
+            return true;
+        }
+
         $license = enterprise_hook('license_get_info');
         if ($license === ENTERPRISE_NOT_HOOK) {
             return false;
