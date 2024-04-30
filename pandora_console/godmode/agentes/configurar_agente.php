@@ -1065,6 +1065,7 @@ if ($update_agent) {
     }
 
     $field_values = [];
+    $update_custom_result = false;
 
     foreach ($fields as $field) {
         $field_value = get_parameter_post('customvalue_'.$field['id_field'], '');
@@ -1115,7 +1116,7 @@ if ($update_agent) {
             );
 
             if ($update_custom == 1) {
-                    $update_custom_result = 1;
+                    $update_custom_result = true;
             }
         }
     }
@@ -1157,6 +1158,7 @@ if ($update_agent) {
             }
         }
 
+        $agent_data = agents_get_agent($id_agente);
         $values = [
             'disabled'                  => $disabled,
             'id_parent'                 => $id_parent,
@@ -1184,6 +1186,14 @@ if ($update_agent) {
             'vul_scan_enabled'          => $vul_scan_enabled,
             'ignore_unknown'            => $ignore_unknown,
         ];
+        // Update change fix on ticket 13501 to no show errors when press button update with out change anything.
+        $update_change = false;
+        foreach ($values as $key => $value) {
+            if (isset($agent_data[$key]) === true && $agent_data[$key] !== $value) {
+                $update_agent = true;
+                break;
+            }
+        }
 
         if (empty($repeated_name) === true) {
             $values['nombre'] = $nombre_agente;
@@ -1195,7 +1205,7 @@ if ($update_agent) {
         }
 
         $result = (bool) db_process_sql_update('tagente', $values, ['id_agente' => $id_agente]);
-        if ($result === false && $update_custom_result == false) {
+        if ($result === false && $update_custom_result === false && $update_change === true) {
             ui_print_error_message(
                 __('There was a problem updating the agent')
             );
