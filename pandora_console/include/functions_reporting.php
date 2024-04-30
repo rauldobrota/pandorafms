@@ -6128,7 +6128,7 @@ function reporting_alert_get_fired($id_agent_module, $id_alert_template_module, 
 
         $datelimit = ($datetime - $period);
 
-    $empty = '----------------------------';
+    $empty = '';
     if (empty($firedTimes)) {
         $firedTimes = [];
         $firedTimes[0]['timestamp'] = $empty;
@@ -6429,7 +6429,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6441,7 +6441,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6453,7 +6453,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6604,7 +6604,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6616,7 +6616,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6628,7 +6628,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
