@@ -60,7 +60,12 @@ if ($method === 'deleteOS') {
     ) {
         echo json_encode(['deleted' => false]);
     } else {
-        echo json_encode(['deleted' => true]);
+        echo json_encode(
+            [
+                'deleted'     => true,
+                'url_message' => 6,
+            ]
+        );
     }
 }
 
