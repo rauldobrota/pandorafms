@@ -2318,7 +2318,9 @@ if (is_metaconsole() === true) {
                 $params['add_none_module'] = true;
                 $params['use_hidden_input_idagent'] = true;
                 $params['hidden_input_idagent_id'] = 'hidden-id_agent';
+                $params['size'] = 40;
                 if ($meta) {
+                    $params['size'] = 44;
                     $params['use_input_id_server'] = true;
                     $params['input_id_server_id'] = 'hidden-server_id';
                     $params['metaconsole_enabled'] = true;
