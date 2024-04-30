@@ -48,24 +48,28 @@ $sources = notifications_get_all_sources();
 $disabled_flag = false;
 
 foreach ($sources as $source) {
-    echo '<div class="table_tbody">';
-    $table_content = [
-        $source['description'],
-        notifications_print_user_switch($source, $id, 'enabled'),
-        notifications_print_user_switch($source, $id, 'also_mail'),
-    ];
+    // Enabled notification user.
+    $users = notifications_get_user_sources_for_select($source['id']);
+    if ((boolean) $source['enabled'] === true && $users[$id] !== null) {
+        echo '<div class="table_tbody">';
+        $table_content = [
+            notifications_print_user_switch($source, $id, 'enabled'),
+            notifications_print_user_switch($source, $id, 'also_mail'),
+        ];
+        $notifications_enabled = notifications_print_user_switch($source, $id, 'enabled');
+        $notifications_also_mail = notifications_print_user_switch($source, $id, 'also_mail');
 
-    $notifications_enabled = notifications_print_user_switch($source, $id, 'enabled');
-    $notifications_also_mail = notifications_print_user_switch($source, $id, 'also_mail');
+        if ($notifications_enabled['disabled'] == 1 || $notifications_also_mail['disabled'] == 1) {
+            $disabled_flag = true;
+        }
 
-    if ($notifications_enabled['disabled'] == 1 || $notifications_also_mail['disabled'] == 1) {
+        echo '<div class="table_td">'.$source['description'].'</div>';
+        echo '<div class="table_td">'.$notifications_enabled['switch'].'</div>';
+        echo '<div class="table_td">'.$notifications_also_mail['switch'].'</div>';
+        echo '</div>';
+    } else {
         $disabled_flag = true;
     }
-
-    echo '<div class="table_td">'.$source['description'].'</div>';
-    echo '<div class="table_td">'.$notifications_enabled['switch'].'</div>';
-    echo '<div class="table_td">'.$notifications_also_mail['switch'].'</div>';
-    echo '</div>';
 }
 
 if ((bool) $disabled_flag === true) {

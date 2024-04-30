@@ -37,7 +37,7 @@ if ($change_label === '1') {
     $label = get_parameter('label', '');
     $source = get_parameter('source', 0);
     $user = get_parameter('user', '');
-    $value = get_parameter('value', 0) ? 1 : 0;
+    $value = get_parameter('value', 0);
     $user_info = get_user_info($config['id_user']);
     if ((bool) $user_info['is_admin'] === false && $config['id_user'] !== $user) {
         return false;
