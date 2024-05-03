@@ -7,6 +7,7 @@ prepare stmt from @sqlstmt;
 execute stmt;
 
 DROP TABLE IF EXISTS tskin;
+DROP TABLE IF EXISTS tnetwork_matrix;
 
 ALTER TABLE tfavmenu_user CONVERT TO CHARACTER SET UTF8MB4;
 ALTER TABLE tfiles_repo CONVERT TO CHARACTER SET UTF8MB4;
