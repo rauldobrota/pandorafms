@@ -1614,7 +1614,7 @@ if ($create_alert || $update_alert) {
     echo '</td>';
     echo '<td class="w50p">';
     echo html_print_label_input_block(
-        __('Priority'),
+        __('Severity'),
         html_print_select(
             get_priorities(),
             'priority',
@@ -1776,7 +1776,7 @@ if ($create_alert || $update_alert) {
     );
 
     $table_filter->data[0][2] = html_print_label_input_block(
-        __('Priority'),
+        __('Severity'),
         html_print_select(
             get_priorities(),
             'priority_filter',
