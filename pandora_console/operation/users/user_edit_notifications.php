@@ -45,12 +45,20 @@ echo '<div id="user-notifications-wrapper" class="white_box table_div table_thre
 
 $sources = notifications_get_all_sources();
 
-$disabled_flag = false;
+$disabled_flag = [];
+$user_login = $config['id_user'];
 
 foreach ($sources as $source) {
     // Enabled notification user.
-    $users = notifications_get_user_sources_for_select($source['id']);
-    if ((boolean) $source['enabled'] === true && $users[$id] !== null) {
+    $users_notification = notifications_get_user_sources(
+        [
+            'id_source' => $source['id'],
+            'id_user'   => $user_login,
+        ],
+        ['id_user']
+    );
+
+    if ((boolean) $source['enabled'] === true && $users_notification[0]['id_user'] === $user_login) {
         echo '<div class="table_tbody">';
         $table_content = [
             notifications_print_user_switch($source, $id, 'enabled'),
@@ -59,20 +67,16 @@ foreach ($sources as $source) {
         $notifications_enabled = notifications_print_user_switch($source, $id, 'enabled');
         $notifications_also_mail = notifications_print_user_switch($source, $id, 'also_mail');
 
-        if ($notifications_enabled['disabled'] == 1 || $notifications_also_mail['disabled'] == 1) {
-            $disabled_flag = true;
-        }
+        $disabled_flag[] = true;
 
         echo '<div class="table_td">'.$source['description'].'</div>';
         echo '<div class="table_td">'.$notifications_enabled['switch'].'</div>';
         echo '<div class="table_td">'.$notifications_also_mail['switch'].'</div>';
         echo '</div>';
-    } else {
-        $disabled_flag = true;
     }
 }
 
-if ((bool) $disabled_flag === true) {
+if (count($disabled_flag) === 0) {
     ui_print_warning_message(
         __('Controls have been disabled by the system administrator')
     );
