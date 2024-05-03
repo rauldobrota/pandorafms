@@ -1801,7 +1801,11 @@ function reporting_html_event_report_group($table, $item, $pdf=0)
                     'id_user',
                     $event['id_usuario']
                 );
-                $data[] = io_safe_output($user_name);
+                if (isset($event['id_usuario']) === true && empty($event['id_usuario']) === false) {
+                    $data[] = io_safe_output($user_name).' ('.$event['id_usuario'].')';
+                } else {
+                    $data[] = '';
+                }
             }
 
             if ($item['show_summary_group']) {
