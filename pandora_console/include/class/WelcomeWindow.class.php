@@ -610,12 +610,20 @@ class WelcomeWindow extends Wizard
             ],
         ];
 
-        $fields['load_demo_data'] = __('Load demo data');
-        $fields['wizard_agent'] = __('Agent installation wizard');
-        $fields['check_web'] = __('Create WEB monitoring');
-        $fields['check_connectivity'] = __('Create network monitoring');
-        $fields['check_net'] = __('Discover my network');
-        $fields['check_mail_alert'] = __('Create email alert');
+        if (users_is_admin() === true) {
+            $fields['load_demo_data'] = __('Load demo data');
+        }
+
+        if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
+            $fields['wizard_agent'] = __('Agent installation wizard');
+            $fields['check_web'] = __('Create WEB monitoring');
+            $fields['check_connectivity'] = __('Create network monitoring');
+            $fields['check_net'] = __('Discover my network');
+        }
+
+        if ((bool) check_acl($config['id_user'], 0, 'LM') === true) {
+            $fields['check_mail_alert'] = __('Create email alert');
+        }
 
         $inputs[] = [
             'wrapper'       => 'div',
