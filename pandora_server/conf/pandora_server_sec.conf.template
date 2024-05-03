@@ -302,10 +302,8 @@ dataserver_threads 1
 # Set 0 if want eMail deliver shared mail by all destination.
 mail_in_separate 1
 
-# nmap: If provided, is used to detect OS type with recon server using 
-# advanded OS fingerprint technique. Xprobe2 gives more accurate results
-# Nmap is also used to do TCP port scanning in detected host.
-
+# nmap: used to detect OS type with recon server using advanced OS fingerprint technique.
+# Nmap is also used to do TCP port scanning for host detection.
 nmap /usr/bin/nmap
 
 # Default path is /usr/sbin/fping for installation default in distro Centos , if you are installing in other distribution, 

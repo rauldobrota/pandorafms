@@ -556,6 +556,11 @@ table#diagnostic_info tbody td div {
   color: var(--text-color) !important;
 }
 
+.ui-widget-dialog-border,
+.ui-dialog {
+  border: 1px solid #333 !important;
+}
+
 #cancel_btn_dialog {
   background-color: red;
 }
@@ -1465,7 +1470,7 @@ button.submitButton {
 button.buttonButton.secondary,
 button.submitButton.secondary {
   background-color: #999;
-  color: var(--text-color);
+  color: var(--text-color) !important;
   border-color: #fff;
 }
 
@@ -2119,6 +2124,12 @@ select option:checked {
   filter: invert(1);
 }
 
+.d2h-file-list-header,
+.d2h-file-name-wrapper,
+.d2h-file-collapse {
+  color: #333 !important;
+}
+
 .grid-stack-item-content {
   background-color: var(--secondary-color);
 }
@@ -2129,4 +2140,17 @@ select option:checked {
 
 .color_666 {
   color: var(--text-color);
+}
+
+.black-and-white {
+  filter: saturate(0);
+}
+
+.invert_filter.black-and-white {
+  filter: invert(1) saturate(0) !important;
+}
+
+.content-widget .legend_background,
+.content-widget .flot-base {
+  background-color: unset;
 }

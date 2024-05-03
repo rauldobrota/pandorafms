@@ -763,7 +763,7 @@ if ($agents !== false) {
                 $agent['id_agente']
             );
             $agentViewUrl = sprintf(
-                'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=%s',
+                'index.php?sec=estado&sec2=godmode/agentes/configurar_agente&id_agente=%s',
                 $agent['id_agente']
             );
             $agentAlertUrl = sprintf(

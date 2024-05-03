@@ -216,7 +216,7 @@ $(document).ready(function() {
       });
 
       $("#ok_buttom").click(function() {
-        $("#license_error_msg_dialog").dialog("close");
+        $(".ui-dialog-content").dialog("close");
       });
     }
   }

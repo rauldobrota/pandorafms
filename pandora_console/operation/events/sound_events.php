@@ -96,7 +96,7 @@ if ($config['style'] === 'pandora_black' && !is_metaconsole()) {
 
 echo '</head>';
 echo '<body style="overflow: hidden;">';
-$output = '<div id="tabs-sound-modal">';
+$output = '<div id="tabs-sound-modal" class="ui-widget-dialog-border">';
     // Header tabs.
     $output .= '<ul class="tabs-sound-modal-options">';
         $output .= '<li>';
@@ -264,7 +264,7 @@ $output = '<div id="tabs-sound-modal">';
             true,
             [
                 'title' => __('No alerts discovered'),
-                'class' => 'invert_filter',
+                'class' => '',
             ]
         );
         $output .= '<span class="text-discovered-alerts">';

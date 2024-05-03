@@ -961,7 +961,7 @@ function planned_downtimes_items($filter)
 
 function delete_planned_downtimes($filter)
 {
-    $downtime_execute = db_get_row_filter('tplanned_downtime', ['id' => $filter['id_downtime']], 'execute');
+    $downtime_execute = db_get_row_filter('tplanned_downtime', ['id' => $filter['id_downtime']], 'executed');
 
     if ($downtime_execute) {
         $return = __("This scheduled downtime are executed now. Can't delete in this moment.");
