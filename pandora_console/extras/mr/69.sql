@@ -7764,4 +7764,7 @@ DELETE FROM tconfig WHERE `token` = 'loginhash_pwd';
 
 UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.vmware';
 
+-- Delete Create incident from event, from tevent_response
+DELETE FROM tevent_response	WHERE name = 'Create&#x20;incident&#x20;from&#x20;event';
+
 COMMIT;
