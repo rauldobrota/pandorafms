@@ -1616,7 +1616,7 @@ if ($create_alert || $update_alert) {
     echo html_print_label_input_block(
         __('Severity'),
         html_print_select(
-            get_priorities(),
+            get_priorities(false, true),
             'priority',
             $priority,
             '',
