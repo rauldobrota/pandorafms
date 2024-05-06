@@ -6690,6 +6690,7 @@ function reporting_sql_graph(
     switch ($type_sql_graph) {
         case 'sql_graph_hbar':
         default:
+            $layout = ['padding' => ['right' => '40']];
             $return['type'] = 'sql_graph_hbar';
         break;
 

@@ -3508,7 +3508,11 @@ function graph_custom_sql_graph(
             }
 
             if ((int) $ttl === 2) {
-                $options['dataLabel'] = ['display' => 'auto'];
+                $options['dataLabel'] = ['display' => true];
+
+                if ($layout !== false && is_array($layout) === true) {
+                    $options['layout'] = $layout;
+                }
             }
 
             $output .= vbar_graph(
