@@ -34,8 +34,6 @@ rm -f $LOGFILE &> /dev/null # remove last log before start
 [ "$SKIP_DATABASE_INSTALL" ] || SKIP_DATABASE_INSTALL=0
 [ "$SKIP_KERNEL_OPTIMIZATIONS" ] || SKIP_KERNEL_OPTIMIZATIONS=0
 [ "$POOL_SIZE" ] || POOL_SIZE=$(grep -i total /proc/meminfo | head -1 | awk '{printf "%.2f \n", $(NF-1)*0.4/1024}' | sed "s/\\..*$/M/g")
-[ "$PANDORA_BETA" ] || PANDORA_BETA=0
-[ "$PANDORA_LTS" ]  || PANDORA_LTS=1
 
 #Check if possible to get os version
 if [ ! -e /etc/os-release ]; then
@@ -100,8 +98,7 @@ check_pre_pandora () {
 }
 
 check_repo_connection () {
-    execute_cmd "ping -c 2 firefly.pandorafms.com" "Checking Community repo"
-    execute_cmd "ping -c 2 support.pandorafms.com" "Checking Enterprise repo"
+    execute_cmd "ping -c 2 github.com" "Checking Community repo"
 }
 
 check_root_permissions () {
@@ -215,9 +212,7 @@ check_root_permissions
 [ "$SKIP_PRECHECK" == 1 ] || check_pre_pandora
 
 #advicing BETA PROGRAM
-INSTALLING_VER="${green}RRR version enable using RRR PandoraFMS packages${reset}"
-[ "$PANDORA_LTS" -ne '0' ] && INSTALLING_VER="${green}LTS version enable using LTS PandoraFMS packages${reset}"
-[ "$PANDORA_BETA" -ne '0' ] && INSTALLING_VER="${red}BETA version enable using nightly PandoraFMS packages${reset}"
+INSTALLING_VER="${green}LTS version enable ${reset}"
 echo -e $INSTALLING_VER
 
 # Connectivity
@@ -343,27 +338,12 @@ server_dependencies=" \
     snmp-mibs-downloader \
     snmptrapd \
     libnsl2 \
+    make \
 	openjdk-8-jdk "
 execute_cmd "apt install -y $server_dependencies" "Installing Pandora FMS Server dependencies"
 
 execute_cmd "installing_docker" "Installing Docker for debug"
 
-# Installing pandora_gotty
-execute_cmd "curl --output pandora_gotty.deb https://firefly.pandorafms.com/ubuntu/pandora_gotty_1.0.0.deb" "Downloading pandora_gotty"
-execute_cmd "apt install -y ./pandora_gotty.deb" "Intalling pandora_gotty"
-
-# Installing MADE
-execute_cmd "curl --output pandora_made.deb https://firefly.pandorafms.com/ubuntu/pandorafms-made_0.1.0-2_amd64.deb" "Downloading pandora MADE"
-execute_cmd "apt install -y ./pandora_made.deb" "Intalling pandora MADE"
-
-# wmic and pandorawmic
-execute_cmd "curl -O https://firefly.pandorafms.com/pandorafms/utils/bin/wmic" "Downloading wmic"
-execute_cmd "curl -O https://firefly.pandorafms.com/pandorafms/utils/bin/pandorawmic" "Downloading pandorawmic"
-echo -en "${cyan}Installing wmic and pandorawmic...${reset}"
-    chmod +x pandorawmic wmic &>> "$LOGFILE" && \
-    cp -a wmic /usr/bin/ &>> "$LOGFILE" && \
-    cp -a pandorawmic /usr/bin/ &>> "$LOGFILE"
-check_cmd_status "Error Installing pandorawmic/wmic"
 
 # create symlink for fping
 rm -f /usr/sbin/fping &>> "$LOGFILE"
@@ -376,40 +356,6 @@ execute_cmd "wget https://dl.google.com/linux/deb/pool/main/g/google-chrome-stab
 execute_cmd "apt install -y ./${CHROME_VERSION}" "Intalling google chrome"
 execute_cmd "ln -s /usr/bin/google-chrome /usr/bin/chromium-browser" "Creating /usr/bin/chromium-browser Symlink"
 
-# SDK VMware perl dependencies
-vmware_dependencies="\
-    lib32z1  \
-    lib32z1 \
-    build-essential \
-    uuid uuid-dev \
-    libssl-dev \
-    perl-doc \
-    libxml-libxml-perl \
-    libcrypt-ssleay-perl \
-    libsoap-lite-perl \
-    libmodule-build-perl"
-execute_cmd "apt install -y $vmware_dependencies" "Installing VMware SDK dependencies"
-execute_cmd "wget https://firefly.pandorafms.com/pandorafms/utils/VMware-vSphere-Perl-SDK-7.0.0-16453907.x86_64.tar.gz" "Downloading VMware SDK"
-echo -en "${cyan}Installing VMware SDK...${reset}"
-    tar xvzf VMware-vSphere-Perl-SDK-7.0.0-16453907.x86_64.tar.gz &>> "$LOGFILE"
-    cd vmware-vsphere-cli-distrib/ &>> "$LOGFILE"
-    sed --follow-symlinks -i -e "s/[^#].*show_EULA().*/  #show_EULA();/g" vmware-install.pl &>> "$LOGFILE"
-    ./vmware-install.pl --default &>> "$LOGFILE"
-check_cmd_status "Error Installing VMware SDK"
-execute_cmd "cpan Crypt::OpenSSL::AES" "Installing extra vmware dependencie" 
-cd $WORKDIR &>> "$LOGFILE"
-
-
-
-# Instant client Oracle
-execute_cmd "mkdir -p /opt/oracle" "Creating Oracle instant client directory /opt/oracle"
-execute_cmd "wget https://download.oracle.com/otn_software/linux/instantclient/19800/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip" "Downloading Oracle instant client"
-execute_cmd "wget https://download.oracle.com/otn_software/linux/instantclient/19800/instantclient-sqlplus-linux.x64-19.8.0.0.0dbru.zip" "Downloading Oracle sqlplus"
-echo -en "${cyan}Installing Oracle instant client...${reset}"
-    rm -fr /opt/oracle/* &>> "$LOGFILE"
-    unzip instantclient-basic-linux.x64-19.8.0.0.0dbru.zip -d /opt/oracle/ &>> "$LOGFILE"
-    unzip instantclient-sqlplus-linux.x64-19.8.0.0.0dbru.zip -d /opt/oracle/ &>> "$LOGFILE"
-check_cmd_status "Error Installing Oracle instant client"
 
 #Configuring env variables
 cat >> /root/.profile << 'EOF_ENV'
@@ -433,13 +379,6 @@ ipam_dependencies=" \
     libxml-twig-perl \
     libnetaddr-ip-perl"
 execute_cmd "apt install -y $ipam_dependencies" "Installing IPAM Dependencies"
-
-# MSSQL dependencies el8
-curl -sSL https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc &>> "$LOGFILE"
-curl -sSL https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/microsoft-prod.list &>> "$LOGFILE"
-apt update &>> "$LOGFILE"
-execute_cmd "env ACCEPT_EULA=Y apt install -y msodbcsql17" "Installing ODBC Driver for Microsoft(R) SQL Server(R)"
-MS_ID=$(head -1 /etc/odbcinst.ini | tr -d '[]') &>> "$LOGFILE"
 
 # Disabling apparmor and ufw
 systemctl stop ufw.service &>> "$LOGFILE"
@@ -523,21 +462,11 @@ execute_cmd "systemctl restart mysql" "Configuring and restarting database engin
 
 
 #Define packages
-if [ "$PANDORA_LTS" -eq '1' ] ; then
-    [ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/LTS/pandorafms_server-7.0NG.tar.gz"
-    [ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/LTS/pandorafms_console-7.0NG.tar.gz"
-    [ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_agent_linux-7.0NG.x86_64.tar.gz"
-elif [ "$PANDORA_LTS" -ne '1' ] ; then
-    [ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_server-7.0NG.tar.gz"
-    [ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_console-7.0NG.tar.gz"
-    [ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_agent_linux-7.0NG.x86_64.tar.gz"
-fi
 
-if [ "$PANDORA_BETA" -eq '1' ] ; then
-    PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandora_enterprise_nightlies/pandorafms_server-latest.tar.gz"
-    PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandora_enterprise_nightlies/pandorafms_console-latest.tar.gz"
-    PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/Tarball/pandorafms_agent_linux-7.0NG.x86_64.tar.gz"
-fi
+PANDORA_SERVER_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_server-7.0NG.772_x86_64.tar.gz"
+PANDORA_CONSOLE_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_console-7.0NG.772.tar.gz"
+PANDORA_AGENT_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_agent_linux-7.0NG.772.tar.gz"
+
 
 # Downloading Pandora Packages
 cd $WORKDIR &>> "$LOGFILE"
