@@ -7762,4 +7762,6 @@ UPDATE `tdiscovery_apps_executions` SET `execution` = '&#039;_exec1_&#039;&#x20;
 INSERT INTO `tconfig` (`token`, `value`) VALUES ('JWT_signature', 1);
 DELETE FROM tconfig WHERE `token` = 'loginhash_pwd';
 
+UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.vmware';
+
 COMMIT;

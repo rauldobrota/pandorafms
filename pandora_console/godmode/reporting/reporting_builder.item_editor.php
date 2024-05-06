@@ -1459,7 +1459,7 @@ $class = 'databox filters';
             <td class="bolder">
                 <?php
                 echo __('Module').ui_print_help_tip(
-                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in matchine 1.', '.*usage.*'),
+                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in machine 1.', '.*usage.*'),
                     true
                 );
                 ?>
@@ -2318,7 +2318,9 @@ if (is_metaconsole() === true) {
                 $params['add_none_module'] = true;
                 $params['use_hidden_input_idagent'] = true;
                 $params['hidden_input_idagent_id'] = 'hidden-id_agent';
+                $params['size'] = 40;
                 if ($meta) {
+                    $params['size'] = 44;
                     $params['use_input_id_server'] = true;
                     $params['input_id_server_id'] = 'hidden-server_id';
                     $params['metaconsole_enabled'] = true;

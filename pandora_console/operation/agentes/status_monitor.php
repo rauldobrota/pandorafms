@@ -1389,7 +1389,15 @@ if ($autosearch) {
         if ($result === false) {
             $result = [];
         } else {
-            $tablePagination = ui_pagination($count, false, $offset, 0, true, 'offset', false);
+            $tablePagination = ui_pagination(
+                $count,
+                'index.php?sec='.$section.'&sec2=operation/agentes/status_monitor&refr='.$refr.'&ag_group='.$ag_group.'&ag_freestring='.$ag_freestring.'&module_option='.$module_option.'&ag_modulename='.$ag_modulename.'&moduletype='.$moduletype.'&datatype='.$datatype.'&status='.$status.'&sort_field='.$sortField.'&sort='.$sort.'&pure='.$config['pure'].$ag_custom_fields_params,
+                $offset,
+                0,
+                true,
+                'offset',
+                false
+            );
         }
     } else {
         // For each server defined and not disabled.
@@ -1460,7 +1468,15 @@ if ($autosearch) {
                 $show_count = true;
             }
 
-            $tablePagination = ui_pagination($count_modules, false, $offset, 0, true, 'offset', $show_count);
+            $tablePagination = ui_pagination(
+                $count_modules,
+                'index.php?sec='.$section.'&sec2=operation/agentes/status_monitor&refr='.$refr.'&ag_group='.$ag_group.'&ag_freestring='.$ag_freestring.'&module_option='.$module_option.'&ag_modulename='.$ag_modulename.'&moduletype='.$moduletype.'&datatype='.$datatype.'&status='.$status.'&sort_field='.$sortField.'&sort='.$sort.'&pure='.$config['pure'].$ag_custom_fields_params,
+                $offset,
+                0,
+                true,
+                'offset',
+                $show_count
+            );
         }
 
         // Get number of elements of the pagination.
@@ -2337,7 +2353,15 @@ if (empty($result) === false) {
             $show_count = true;
         }
 
-        $tablePagination = ui_pagination($count_modules, false, $offset, 0, true, 'offset', $show_count);
+        $tablePagination = ui_pagination(
+            $count_modules,
+            'index.php?sec='.$section.'&sec2=operation/agentes/status_monitor&refr='.$refr.'&ag_group='.$ag_group.'&ag_freestring='.$ag_freestring.'&module_option='.$module_option.'&ag_modulename='.$ag_modulename.'&moduletype='.$moduletype.'&datatype='.$datatype.'&status='.$status.'&sort_field='.$sortField.'&sort='.$sort.'&pure='.$config['pure'].$ag_custom_fields_params,
+            $offset,
+            0,
+            true,
+            'offset',
+            $show_count
+        );
     }
 } else {
     if (get_parameter('ag_group', false) !== false) {

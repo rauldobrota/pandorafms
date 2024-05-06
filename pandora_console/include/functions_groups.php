@@ -2662,7 +2662,20 @@ function tactical_groups_get_agents_and_monitoring($id_groups, $data='')
     $tdata[1] = '<a class="big_data" href="'.$urls['total_agents'].'">'.$tdata[1].'</a>';
 
     if ($data['total_agents'] > 500 && !enterprise_installed()) {
-        $tdata[2] = "<div id='agentsmodal' class='publienterprise' title='".__('Enterprise version not installed')."'><img data-title='Enterprise version' class='img_help forced_title' data-use_title_for_force_title='1' src='images/alert_enterprise.png'></div>";
+        $tdata[2] = "<div id='agentsmodal' class='publienterprise' title='Community version' >";
+        $tdata[2] .= html_print_image(
+            'images/alert_enterprise.png',
+            true,
+            [
+                'title' => __('Enterprise version not installed'),
+                'class' => 'img_help'
+            ],
+            false,
+            false,
+            false,
+            true
+        );
+        $tdata[2] .= '</div>';
     }
 
     $tdata[3] = html_print_image('images/module.png', true, ['title' => __('Monitor checks'), 'class' => 'invert_filter'], false, false, false, true);
@@ -2676,7 +2689,20 @@ function tactical_groups_get_agents_and_monitoring($id_groups, $data='')
     */
     if ($data['total_agents']) {
         if (($data['monitor_total'] / $data['total_agents'] > 100) && !enterprise_installed()) {
-            $tdata[5] = "<div id='monitorcheckmodal' class='publienterprise' title='Community version' ><img data-title='".__('Enterprise version not installed')."' class='img_help forced_title' data-use_title_for_force_title='1' src='images/alert_enterprise.png'></div>";
+            $tdata[5] = "<div id='monitorcheckmodal' class='publienterprise' title='Community version' >";
+            $tdata[5] .= html_print_image(
+                'images/alert_enterprise.png',
+                true,
+                [
+                    'title' => __('Enterprise version not installed'),
+                    'class' => 'img_help'
+                ],
+                false,
+                false,
+                false,
+                true
+            );
+            $tdata[5] .= '</div>';
         }
     }
 
@@ -2728,7 +2754,20 @@ function tactical_groups_get_stats_alerts($id_groups, $data='')
     */
 
     if ($data['monitor_alerts'] > $data['total_agents'] && !enterprise_installed()) {
-        $tdata[2] = "<div id='alertagentmodal' class='publienterprise' title='Community version' ><img data-title='".__('Enterprise version not installed')."' class='img_help forced_title' data-use_title_for_force_title='1' src='images/alert_enterprise.png'></div>";
+        $tdata[2] = "<div id='alertagentmodal' class='publienterprise' title='Community version' >";
+        $tdata[2] .= html_print_image(
+            'images/alert_enterprise.png',
+            true,
+            [
+                'title' => __('Enterprise version not installed'),
+                'class' => 'img_help'
+            ],
+            false,
+            false,
+            false,
+            true
+        );
+        $tdata[2] .= '</div>';
     }
 
     $tdata[3] = html_print_image(

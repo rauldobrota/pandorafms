@@ -134,11 +134,14 @@ function forecast_projection_graph(
     // 3.1  Standard deviation for X: sqrt((Sum(Xi²)/Obs) - (avg X)²)
     // 3.2 Standard deviation for Y: sqrt((Sum(Yi²)/Obs) - (avg Y)²)
     // Linear correlation coefficient:
-    // Agent interval could be zero, 300 is the predefined
+    // Agent interval could be zero, 300 is the predefined.
     if ($sum_obs == 0) {
         $agent_interval = SECONDS_5MINUTES;
     } else {
         $agent_interval = ($sum_diff_dates / $sum_obs);
+        if ($agent_interval < 60) {
+            $agent_interval = SECONDS_1MINUTE;
+        }
     }
 
     // Could be a inverse correlation coefficient
@@ -170,7 +173,7 @@ function forecast_projection_graph(
         $a = 0;
     }
 
-    // Data inicialization
+    // Data inicialization.
     $output_data = [];
     if ($prediction_period != false) {
         $limit_timestamp = ($last_timestamp + $prediction_period);
@@ -199,50 +202,54 @@ function forecast_projection_graph(
         $time_format = 'M d';
     }
 
-    // Aplying linear regression to module data in order to do the prediction
-    $idx = 0;
-    // Create data in graph format like
-    while ($in_range) {
-        $now = time();
+    try {
+        // Aplying linear regression to module data in order to do the prediction.
+        $idx = 0;
+        // Create data in graph format like.
+        while ($in_range) {
+            $now = time();
 
-        // Check that exec time is not greater than half max exec server time
-        if ($max_exec_time != false) {
-            if (($begin_time + ($max_exec_time / 2)) < $now) {
-                return false;
-            }
-        }
-
-        $timestamp_f = ($current_ts * 1000);
-
-        if ($csv) {
-            $output_data[$idx]['date'] = $current_ts;
-            $output_data[$idx]['data'] = ($a + ($b * $current_ts));
-        } else {
-            $output_data[$idx][0] = $timestamp_f;
-            $output_data[$idx][1] = ($a + ($b * $current_ts));
-        }
-
-        // Using this function for prediction_date
-        if ($prediction_period == false) {
-            // These statements stop the prediction when interval is greater than 2 years
-            if (($current_ts - $last_timestamp) >= 94608000
-                || $max_value == $min_value
-            ) {
-                return false;
+            // Check that exec time is not greater than half max exec server time.
+            if ($max_exec_time != false) {
+                if (($begin_time + ($max_exec_time / 2)) < $now) {
+                    return false;
+                }
             }
 
-            // Found it
-            if (($max_value >= $output_data[$idx][1])
-                && ($min_value <= $output_data[$idx][0])
-            ) {
-                return ($current_ts + ($sum_diff_dates * $agent_interval));
-            }
-        } else if ($current_ts > $limit_timestamp) {
-            $in_range = false;
-        }
+            $timestamp_f = ($current_ts * 1000);
 
-        $current_ts = ($current_ts + $agent_interval);
-        $idx++;
+            if ($csv) {
+                $output_data[$idx]['date'] = $current_ts;
+                $output_data[$idx]['data'] = ($a + ($b * $current_ts));
+            } else {
+                $output_data[$idx][0] = $timestamp_f;
+                $output_data[$idx][1] = ($a + ($b * $current_ts));
+            }
+
+            // Using this function for prediction_date.
+            if ($prediction_period == false) {
+                // These statements stop the prediction when interval is greater than 2 years.
+                if (($current_ts - $last_timestamp) >= 94608000
+                    || $max_value == $min_value
+                ) {
+                    return false;
+                }
+
+                // Found it.
+                if (($max_value >= $output_data[$idx][1])
+                    && ($min_value <= $output_data[$idx][0])
+                ) {
+                    return ($current_ts + ($sum_diff_dates * $agent_interval));
+                }
+            } else if ($current_ts > $limit_timestamp) {
+                $in_range = false;
+            }
+
+            $current_ts = ($current_ts + $agent_interval);
+            $idx++;
+        }
+    } catch (\Exception $e) {
+        return false;
     }
 
     return $output_data;

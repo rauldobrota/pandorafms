@@ -2948,14 +2948,14 @@ function ui_print_help_tip(
     $text_title = (strlen($text) >= 60) ? substr($text, 0, 60).'...' : $text;
 
     $id = random_int(1, 99999);
-    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" >';
+    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" onclick="open_tip('.$id.')">';
     $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.io_safe_output($text).'</span></div>';
     $output .= html_print_image(
         $img,
         true,
         [
-            'title' => $text_title,
-            'class' => $blink === true ? 'blink' : '',
+            'title' => io_safe_output($text_title),
+            'class' => ($blink === true) ? 'blink' : '',
             'style' => 'width: 16px; height: 16px;',
         ],
         false,
@@ -5867,7 +5867,7 @@ function ui_print_agent_autocomplete_input($parameters)
         $hidden_input_idagent_value = $parameters['hidden_input_idagent_value'];
     }
 
-    $size = 30;
+    $size = 100;
     // Default value.
     if (isset($parameters['size'])) {
         $size = $parameters['size'];
@@ -6293,14 +6293,14 @@ function ui_print_agent_autocomplete_input($parameters)
     $javascript_function_change .= '
         function setInputBackground(inputId, image) {
             $("#"+inputId)
-            .attr("style", "background-image: url(\'"+image+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+            .attr("style", "background-image: url(\'"+image+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
         }
 
         $(document).ready(function () {
             $("#'.$input_id.'").focusout(function (e) {
                 setTimeout(() => {
                     let iconImage = "'.$icon_image.'";
-                    $("#'.$input_id.'").attr("style", "background-image: url(\'"+iconImage+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+                    $("#'.$input_id.'").attr("style", "background-image: url(\'"+iconImage+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
                 }, 100);
             });
         });
@@ -6574,7 +6574,7 @@ function ui_print_agent_autocomplete_input($parameters)
 			if (select_item_click) {
                 select_item_click = 0;
                 $("#'.$input_id.'")
-                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
 				return;
 			} else {
                 // Clear selectbox if item is not selected.
@@ -6589,7 +6589,7 @@ function ui_print_agent_autocomplete_input($parameters)
 
 			//Set loading
 			$("#'.$input_id.'")
-                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
 			var term = input_value; //Word to search
 			
 			'.$javascript_change_ajax_params_text.'
@@ -6606,7 +6606,7 @@ function ui_print_agent_autocomplete_input($parameters)
 				success: function (data) {
 						if (data.length < 2) {
 							//Set icon
-							$("#'.$input_id.'").attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+							$("#'.$input_id.'").attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
 							return;
 						}
 
@@ -6656,7 +6656,7 @@ function ui_print_agent_autocomplete_input($parameters)
 
 						//Set icon
 						$("#'.$input_id.'")
-                            .attr("style", "background: url(\"'.$icon_image.'\") 97% center no-repeat; background-size: 20px; width:100%; '.$inputStyles.'")
+                            .attr("style", "background: url(\"'.$icon_image.'\") 97% center no-repeat; background-size: 20px; width:'.$size.'%; '.$inputStyles.'")
 						return;
 					}
 				});
@@ -6675,7 +6675,7 @@ function ui_print_agent_autocomplete_input($parameters)
     }
 
     $attrs = [];
-    $attrs['style'] = 'background-image: url('.$icon_image.'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$text_color.' '.$inputStyles.'';
+    $attrs['style'] = 'background-image: url('.$icon_image.'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$text_color.' '.$inputStyles.'';
 
     if (!$disabled_javascript_on_blur_function) {
         $attrs['onblur'] = $javascript_on_blur_function_name.'()';
