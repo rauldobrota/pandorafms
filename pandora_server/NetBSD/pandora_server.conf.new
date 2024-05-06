@@ -238,10 +238,8 @@ mta_address localhost
 # Set 0 if want eMail deliver shared mail by all destination.
 mail_in_separate 1
 
-# nmap: If provided, is used to detect OS type with recon server using 
-# advanded OS fingerprint technique. Xprobe2 gives more accurate results
-# Nmap is also used to do TCP port scanning in detected host.
-
+# nmap: used to detect OS type with recon server using advanced OS fingerprint technique.
+# Nmap is also used to do TCP port scanning for host detection.
 nmap /usr/pkg/bin/nmap
 
 # Path to the fping binary. Used by the Enterprise ICMP Server.

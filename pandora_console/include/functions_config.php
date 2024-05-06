@@ -741,8 +741,10 @@ function config_update_config()
                         $error_update[] = __('Admin secondary LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass_secondary', get_parameter('ldap_admin_pass_secondary'), true, true) === false) {
-                        $error_update[] = __('Admin secondary LDAP password');
+                    if ((bool) get_parameter('ldap_admin_pass_secondary_password_changed', false) === true) {
+                        if (config_update_value('ldap_admin_pass_secondary', get_parameter('ldap_admin_pass_secondary'), true, true) === false) {
+                            $error_update[] = __('Admin LDAP password secondary');
+                        }
                     }
 
                     if (config_update_value('fallback_local_auth', get_parameter('fallback_local_auth'), true) === false) {
