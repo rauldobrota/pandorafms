@@ -870,7 +870,7 @@ switch ($action) {
             // ui_pagination($total_reports, $url, $offset, $pagination);
             $table = new stdClass();
             $table->id = 'report_list';
-            $table->styleTable = 'margin: 0 10px;';
+            $table->styleTable = '';
             $table->class = 'info_table';
             $table->cellpadding = 0;
             $table->cellspacing = 0;
@@ -1322,6 +1322,25 @@ switch ($action) {
 
             echo html_print_action_buttons(
                 implode('', $buttonsOutput),
+                [
+                    'type'          => 'form_action',
+                    'right_content' => $tablePagination,
+                ],
+                true
+            );
+        } else if (check_acl($config['id_user'], 0, 'RR')) {
+            $tablePagination = ui_pagination(
+                $total_reports,
+                $url,
+                $offset,
+                $pagination,
+                true,
+                'offset',
+                $show_count
+            );
+
+            echo html_print_action_buttons(
+                '',
                 [
                     'type'          => 'form_action',
                     'right_content' => $tablePagination,
@@ -2407,7 +2426,7 @@ switch ($action) {
                             $values['top_n_value'] = get_parameter('max_items');
                             $values['server_name'] = get_parameter('combo_server_sql');
 
-                            if ($sql !== '') {
+                            if ($sql !== '' && $sql !== null) {
                                 // Replaces possible macros to check the validity of the query
                                 $macros_sql = $sql;
                                 $macros_sql = str_replace('_start_date_', '0', $macros_sql);
@@ -3357,7 +3376,7 @@ switch ($action) {
                             $values['server_name'] = get_parameter('combo_server_sql');
 
 
-                            if ($sql !== '') {
+                            if ($sql !== '' && $sql !== null) {
                                 // Replaces possible macros to check the validity of the query
                                 $macros_sql = $sql;
                                 $macros_sql = str_replace('_start_date_', '0', $macros_sql);

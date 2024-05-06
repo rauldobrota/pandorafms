@@ -2541,7 +2541,7 @@ if ($drawConsoleSound === true) {
                 true,
                 [
                     'title' => __('No alerts discovered'),
-                    'class' => 'invert_filter',
+                    'class' => '',
                 ]
             );
             $output .= '<span class="text-discovered-alerts">';

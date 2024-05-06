@@ -143,7 +143,7 @@ sub data_producer ($) {
   # By default, after create a tasks it takes the utimestamp to 0
   # Status -1 means "done".
   my @rows;
-  if (pandora_is_master($pa_config) == 0) {
+  if (pandora_is_master($pa_config, $dbh) == 0) {
     @rows = get_db_rows ($dbh, 'SELECT * FROM trecon_task 
       WHERE id_recon_server = ?
       AND disabled = 0

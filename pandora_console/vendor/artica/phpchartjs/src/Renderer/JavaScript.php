@@ -30,7 +30,7 @@ class JavaScript extends Renderer
 
         // Watermark.
         if (empty($this->chart->defaults()->getWatermark()) === false) {
-          $script[] = 'const chart_watermark_'.$this->chart->getId().' = {
+            $script[] = 'const chart_watermark_'.$this->chart->getId().' = {
             id: "chart_watermark_'.$this->chart->getId().'",
             beforeDraw: (chart) => {
               if (Object.prototype.hasOwnProperty.call(chart, "config") &&
@@ -128,10 +128,15 @@ class JavaScript extends Renderer
                 }
               }
             };';
-          $script[] = 'Chart.register(chart_watermark_'.$this->chart->getId().');';
-        }
 
-        
+            if ($this->chart->options()->getTheme() !== null) {
+                if ((int) $this->chart->options()->getTheme() === 2) {
+                    $script[] = 'Chart.defaults.color = "#ffffff";';
+                }
+            }
+
+            $script[] = 'Chart.register(chart_watermark_'.$this->chart->getId().');';
+        }
 
         // Create chart.
         $script[] = 'try {';
@@ -142,6 +147,36 @@ class JavaScript extends Renderer
         $script[] = '  Chart.defaults.font.family = "'.($this->chart->defaults()->getFonts()->getFamily() ?? 'Lato, sans-serif').'";';
         $script[] = '  Chart.defaults.font.style = "'.($this->chart->defaults()->getFonts()->getStyle() ?? 'normal').'";';
         $script[] = '  Chart.defaults.font.weight = "'.($this->chart->defaults()->getFonts()->getWeight() ?? '').'";';
+
+        if ($this->chart->options()->getTheme() !== null) {
+            if ((int) $this->chart->options()->getTheme() === 2) {
+                $script[] = '  Chart.defaults.color = "#ffffff";';
+
+                $script[] = '
+                if (chart.config.options.scales !== undefined
+                  && chart.config.options.scales.x !== undefined
+                  && chart.config.options.scales.x.ticks !== undefined
+                ) {
+                  chart.config.options.scales.x.ticks.color = "#ffffff";
+                }
+
+                if (chart.config.options.scales !== undefined &&
+                  chart.config.options.scales.y !== undefined &&
+                  chart.config.options.scales.y.ticks !== undefined
+                ) {
+                  chart.config.options.scales.y.ticks.color = "#ffffff";
+                }
+
+                if (chart.config.options.title !== undefined ) {
+                  chart.config.options.title.fontColor = "#ffffff";
+                }
+
+                if (chart.config.options.plugins.legend.labels.font !== undefined ) {
+                  chart.config.options.plugins.legend.labels.font.color = "#ffffff";
+                }
+                ';
+            }
+        }
 
         $script[] = '} catch (error) {';
         $script[] = '  console.error(error);';

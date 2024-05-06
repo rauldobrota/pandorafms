@@ -260,9 +260,8 @@ $layoutSizeElements[] = html_print_button(
     false,
     '',
     [
-        'icon'  => 'cog',
-        'mode'  => 'link',
         'value' => 'modsize',
+        'class' => 'buttonButton mini',
     ],
     true
 );
@@ -275,9 +274,8 @@ $layoutSizeElements[] = html_print_button(
     false,
     '',
     [
-        'icon'  => 'cog',
-        'mode'  => 'link',
         'value' => 'modsize',
+        'class' => 'buttonButton mini',
     ],
     true
 );
@@ -287,7 +285,7 @@ $table->data[4][] = html_print_label_input_block(
     __('Layout size'),
     html_print_div(
         [
-            'class'   => 'flex flex-items-center',
+            'class'   => 'flex flex-space-around w600px',
             'content' => implode('', $layoutSizeElements),
         ],
         true

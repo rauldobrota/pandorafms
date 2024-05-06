@@ -38,6 +38,13 @@ ob_start();
 // Fullscreen by default.
 $config['pure'] = get_parameter('pure', 1);
 
+$dashboardId = get_parameter('dashboardId', null);
+if ($dashboardId !== null) {
+    include 'general/noaccess.php';
+    return;
+}
+
+
 require_once 'dashboard.php';
 
 // Clean session to avoid direct access.

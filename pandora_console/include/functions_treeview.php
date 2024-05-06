@@ -18,13 +18,11 @@ function treeview_printModuleTable($id_module, $server_data=false, $no_head=fals
     if (empty($server_data)) {
         $server_name = '';
         $server_id = '';
-        $url_hash = '';
         $console_url = ui_get_full_url('/');
     } else {
         $server_name = $server_data['server_name'];
         $server_id = $server_data['id'];
         $console_url = $server_data['server_url'].'/';
-        $url_hash = metaconsole_get_servers_url_hash($server_data);
     }
 
     include_once $config['homedir'].'/include/functions_agents.php';
@@ -69,10 +67,11 @@ function treeview_printModuleTable($id_module, $server_data=false, $no_head=fals
     $row['title'] = __('Name');
     $row['data'] = html_print_anchor(
         [
-            'href'    => $console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$module['id_agente'].'&tab=module&edit_module=1&id_agent_module='.$module['id_agente_modulo'].$url_hash,
+            'href'    => '#',
             'title'   => __('Click here for view this module'),
             'class'   => 'font_11',
             'content' => $cellName,
+            'onClick' => 'redirectNode(\''.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$module['id_agente'].'&tab=module&edit_module=1&id_agent_module='.$module['id_agente_modulo'].'\');',
         ],
         true
     );
@@ -325,45 +324,9 @@ function treeview_printModuleTable($id_module, $server_data=false, $no_head=fals
         echo '<div class="actions_treeview flex flex-evenly">';
 
         if (is_metaconsole() === true) {
-            echo "<form id='module-table-redirection' method='POST' action='".$console_url."index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=module'>";
-
-            parse_str($url_hash, $url_hash_array);
-
-            html_print_input_hidden(
-                'id_agente',
-                $module['id_agente'],
-                false
-            );
-            html_print_input_hidden(
-                'edit_module',
-                1,
-                false
-            );
-            html_print_input_hidden(
-                'id_agent_module',
-                $module['id_agente_modulo'],
-                false
-            );
-            html_print_input_hidden(
-                'loginhash',
-                $url_hash_array['loginhash'],
-                false
-            );
-            html_print_input_hidden(
-                'loginhash_data',
-                $url_hash_array['loginhash_data'],
-                false
-            );
-            html_print_input_hidden(
-                'loginhash_user',
-                $url_hash_array['loginhash_user'],
-                false
-            );
-
-            echo '</form>';
-            echo "<a target=_blank onclick='event.preventDefault(); document.getElementById(\"module-table-redirection\").submit();' href='#'>";
+            echo '<a target=_blank onclick="redirectNode(\''.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=module&edit_module=1&id_agente='.$module['id_agente'].'&id_agent_module='.$module['id_agente_modulo'].'\')" href="#">';
         } else {
-            echo '<a target=_blank href="'.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$module['id_agente'].'&tab=module&edit_module=1&id_agent_module='.$module['id_agente_modulo'].$url_hash.'">';
+            echo '<a target=_blank href="'.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$module['id_agente'].'&tab=module&edit_module=1&id_agent_module='.$module['id_agente_modulo'].'">';
         }
 
         html_print_submit_button(
@@ -399,13 +362,11 @@ function treeview_printAlertsTable($id_module, $server_data=[], $no_head=false)
     if (empty($server_data)) {
         $server_name = '';
         $server_id = '';
-        $url_hash = '';
         $console_url = '';
     } else {
         $server_name = $server_data['server_name'];
         $server_id = $server_data['id'];
         $console_url = $server_data['server_url'].'/';
-        $url_hash = metaconsole_get_servers_url_hash($server_data);
     }
 
     $user_access_node = can_user_access_node();
@@ -512,7 +473,7 @@ function treeview_printAlertsTable($id_module, $server_data=[], $no_head=false)
                     __('Go to alerts edition'),
                     'upd_button',
                     false,
-                    'window.location.assign("'.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=alert&search=1&module_name='.$module_name.'&id_agente='.$agent_id.$url_hash.'")',
+                    'redirectNode("'.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=alert&search=1&module_name='.$module_name.'&id_agente='.$agent_id.'")',
                     ['icon' => 'alert'],
                     true
                 ),
@@ -533,15 +494,11 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
     global $config;
 
     if (empty($server_data)) {
-        $server_name = '';
         $server_id = '';
-        $url_hash = '';
         $console_url = ui_get_full_url('/');
     } else {
-        $server_name = $server_data['server_name'];
         $server_id = $server_data['id'];
         $console_url = $server_data['server_url'].'/';
-        $url_hash = metaconsole_get_servers_url_hash($server_data);
     }
 
     include_once $config['homedir'].'/include/functions_agents.php';
@@ -623,15 +580,6 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
     $cellName = ((bool) $agent['disabled'] === true) ? '<em>' : '';
 
     if (is_metaconsole() === true) {
-        $pwd = $server_data['auth_token'];
-        // Create HASH login info.
-        $user = $config['id_user'];
-
-        // Extract auth token from serialized field.
-        $pwd_deserialiced = json_decode($pwd, true);
-        $hashdata = $user.$pwd_deserialiced['auth_token'];
-
-        $hashdata = md5($hashdata);
         if ((bool) $grants_on_node === true && (bool) $user_access_node !== false) {
             $urlAgent = $server_data['server_url'].'/index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'];
         } else {
@@ -657,7 +605,7 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
                 'title'   => __('Click here for view this agent'),
                 'class'   => 'font_11',
                 'content' => $cellName,
-                'onClick' => "sendHash('".$urlAgent."')",
+                'onClick' => "redirectNode('".$urlAgent."')",
             ],
             true
         );
@@ -998,7 +946,7 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
             $cluster = PandoraFMS\Cluster::loadFromAgentId(
                 $agent['id_agente']
             );
-            $buttons_act .= '<a target=_blank href="'.$console_url.'index.php?sec=reporting&sec2=operation/cluster/cluster&op=update&id='.$cluster->id().'">';
+            $buttons_act .= '<a target=_blank href="#" onclick="redirectNode(\''.$console_url.'index.php?sec=reporting&sec2=operation/cluster/cluster&op=update&id='.$cluster->id().'\')">';
             $buttons_act .= html_print_submit_button(
                 __('Go to cluster edition'),
                 'upd_button',
@@ -1007,7 +955,7 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
                 true
             );
         } else {
-            $buttons_act .= '<a target=_blank href="'.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$id_agente.$ent.'&tab=module&show_dialog_create=1">';
+            $buttons_act .= '<a target=_blank href="#" onclick="redirectNode(\''.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$id_agente.'&tab=module&show_dialog_create=1\')">';
             $buttons_act .= html_print_submit_button(
                 __('Go to module creation'),
                 'upd_button',
@@ -1016,7 +964,7 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
                 true
             );
 
-            $buttons_act .= '<a target=_blank href="'.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$id_agente.$ent.'">';
+            $buttons_act .= '<a target=_blank href="#" onclick="redirectNode(\''.$console_url.'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$id_agente.'\')">';
             $buttons_act .= html_print_submit_button(
                 __('Go to agent edition'),
                 'upd_button',
@@ -1038,11 +986,6 @@ function treeview_printTable($id_agente, $server_data=[], $no_head=false)
 
     echo "
         <script>
-            function sendHash(url) {
-                window.open(url+'&loginhash=auto&loginhash_data=".$hashdata.'&loginhash_user='.str_rot13(($user ?? ''))."', '_blank');
- 
-            }
-
             $('.max-graph-tree-view').ready(function() {
                 widthGraph();
             });

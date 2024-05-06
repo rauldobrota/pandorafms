@@ -2364,6 +2364,29 @@ var formatterDataVerticalBar = function(value, ctx) {
   }
 };
 
+function open_tip(id) {
+  $("#tip_dialog_" + id).dialog({
+    title: $("#tip_dialog_" + id).data("title"),
+    modal: true,
+    maxWidth: 600,
+    minWidth: 400,
+    show: {
+      effect: "fade",
+      duration: 200
+    },
+    hide: {
+      effect: "fade",
+      duration: 200
+    },
+    closeOnEscape: true,
+    buttons: {
+      Close: function() {
+        $(this).dialog("close");
+      }
+    }
+  });
+}
+
 // Show about section
 $(document).ready(function() {
   $("[id^='icon_about']").click(function() {
@@ -2457,33 +2480,6 @@ $(document).ready(function() {
       });
     }
   }
-
-  $("[id^='div_tip_']").click(function() {
-    var id = $(this)
-      .attr("id")
-      .split("_")[2];
-
-    $("#tip_dialog_" + id).dialog({
-      title: $("#tip_dialog_" + id).data("title"),
-      modal: true,
-      maxWidth: 600,
-      minWidth: 400,
-      show: {
-        effect: "fade",
-        duration: 200
-      },
-      hide: {
-        effect: "fade",
-        duration: 200
-      },
-      closeOnEscape: true,
-      buttons: {
-        Close: function() {
-          $(this).dialog("close");
-        }
-      }
-    });
-  });
 });
 
 function close_info_box(id) {
@@ -2566,19 +2562,13 @@ function menuActionButtonResizing() {
 
 function check_period_warning(time, title, message) {
   var period = time.value;
-  var times = 0;
+
   if (period >= 2592000 && period < 7776000) {
     WarningPeriodicityModal(title, message);
   } else if (period >= 7776000 && period < 15552000) {
-    do {
-      WarningPeriodicityModal(title, message);
-      times = times + 1;
-    } while (times < 2);
+    WarningPeriodicityModal(title, message);
   } else if (period >= 15552000) {
-    do {
-      WarningPeriodicityModal(title, message);
-      times = times + 1;
-    } while (times < 3);
+    WarningPeriodicityModal(title, message);
   }
 }
 
@@ -2685,7 +2675,6 @@ function perform_email_test() {
         $("#email_test_sent_message").show();
         $("#email_test_failure_message").hide();
       } else {
-        console.log($("#email_test_failure_message"));
         $("#email_test_failure_message").show();
         $("#email_test_sent_message").hide();
       }
@@ -2758,4 +2747,54 @@ function closeAboutModal() {
   $("#icon_about_operation").removeClass("selected");
   $("#icon_about").removeClass("selected");
   $("#icon_about_div").removeClass("selected");
+}
+
+function redirectNode(url, target = "_blank") {
+  if (
+    typeof event !== "undefined" &&
+    typeof event.preventDefault === "function"
+  ) {
+    event.preventDefault();
+  }
+
+  let pathAjax = "";
+
+  // Detect if view is phone.
+  if (window.configHomeUrl && window.settings && !window.settings.mobile) {
+    pathAjax += window.configHomeUrl;
+  } else if (window.settings && window.settings.mobile) {
+    pathAjax += "../";
+  } else {
+    pathAjax += "../../";
+  }
+
+  pathAjax += "ajax.php";
+  $.ajax({
+    method: "POST",
+    url: pathAjax,
+    dataType: "json",
+    data: {
+      page: "include/ajax/token",
+      get_jwt_for_login: 1
+    },
+    success: function(data) {
+      const unique_id = "token_form_" + uniqId();
+      var $form = $(
+        `<form class="invisible" id="${unique_id}" target="${target}"></form>`
+      );
+      $form.attr("method", "post");
+      $form.attr("action", url);
+      if (data.success) {
+        var $input = $("<input>")
+          .attr("type", "hidden")
+          .attr("name", "auth_token")
+          .val(data.data);
+        $form.append($input);
+      }
+
+      $("body").append($form);
+      $form.submit();
+      $("#" + unique_id).remove();
+    }
+  });
 }

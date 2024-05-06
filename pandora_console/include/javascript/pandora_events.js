@@ -1066,7 +1066,7 @@ function openSoundEventsDialog(settings, dialog_parameters) {
       resizable: false,
       modal: false,
       width: 600,
-      height: 600,
+      height: 700,
       dialogClass: "modal-sound",
       open: function() {
         $.ajax({
@@ -1102,24 +1102,8 @@ function openSoundEventsDialog(settings, dialog_parameters) {
               if (mode == 0) {
                 action = true;
               }
-              if ($("#button-start-search").hasClass("play")) {
-                $("#modal-sound").css({
-                  height: "500px"
-                });
-                $("#modal-sound")
-                  .parent()
-                  .css({
-                    height: "550px"
-                  });
-              } else {
-                $("#modal-sound").css({
-                  height: "450px"
-                });
-                $("#modal-sound")
-                  .parent()
-                  .css({
-                    height: "500px"
-                  });
+              if (!$("#button-start-search").hasClass("play")) {
+                $("#progressbar_time").empty();
               }
 
               action_events_sound(action, settings);
@@ -1338,7 +1322,6 @@ function listen_event_sound(settings) {
   );
 }
 
-let sound_listener;
 function check_event_sound(settings) {
   // Update elements time.
   $(".elements-discovered-alerts ul li").each(function() {
@@ -1382,7 +1365,7 @@ function check_event_sound(settings) {
     },
     function(data) {
       if (data != false) {
-        clearTimeout(sound_listener);
+        clearTimeout(window.sound_listener);
         // Hide empty.
         $("#tabs-sound-modal .empty-discovered-alerts").addClass(
           "invisible_important"
@@ -1434,7 +1417,7 @@ function check_event_sound(settings) {
         });
 
         // -100 delay sound.
-        sound_listener = setTimeout(
+        window.sound_listener = setTimeout(
           remove_audio,
           parseInt($("#tabs-sound-modal #time_sound").val()) * 1000 - 100
         );

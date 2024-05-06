@@ -24,12 +24,6 @@ function show_option_dialog(settings) {
       method: "updateDashboard",
       dataType: "json"
     },
-    oncancel: {
-      reload: true
-    },
-    onclose: {
-      reload: true
-    },
     ajax_callback: update_dashboard
   });
 }
@@ -238,6 +232,9 @@ function initialiceLayout(data) {
             });
 
             if (!$("#checkbox-edit-mode").is(":checked")) {
+              $("#add-widget")
+                .parent()
+                .addClass("invisible_important");
               $(".add-widget").hide();
             } else {
               $(".new-widget-message").hide();
@@ -483,10 +480,6 @@ function initialiceLayout(data) {
   function configurationWidget(cellId, widgetId, size) {
     var reload = 0;
     var overlay = false;
-    if (widgetId == 46) {
-      reload = 1;
-      overlay = true;
-    }
     title = $("#hidden-widget_name_" + cellId).val();
     load_modal({
       target: $("#modal-config-widget"),
@@ -559,6 +552,9 @@ function initialiceLayout(data) {
       grid.resizable(".grid-stack-item", true);
       grid.float(false);
       $(".header-options").show();
+      $("#add-widget")
+        .parent()
+        .removeClass("invisible_important");
       $(".add-widget").show();
       $(".new-widget-message").hide();
       $("#container-layout").addClass("container-layout");
@@ -568,6 +564,9 @@ function initialiceLayout(data) {
       grid.resizable(".grid-stack-item", false);
       grid.float(true);
       $(".header-options").hide();
+      $("#add-widget")
+        .parent()
+        .addClass("invisible_important");
       $(".add-widget").hide();
       $(".new-widget-message").show();
       $("#container-layout").removeClass("container-layout");
@@ -786,6 +785,9 @@ function initialiceLayout(data) {
             });
 
             if (!$("#checkbox-edit-mode").is(":checked")) {
+              $("#add-widget")
+                .parent()
+                .addClass("invisible_important");
               $(".add-widget").hide();
             } else {
               $(".new-widget-message").hide();

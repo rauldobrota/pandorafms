@@ -3308,7 +3308,8 @@ function graph_custom_sql_graph(
     $only_image=false,
     $homeurl='',
     $ttl=1,
-    $max_num_elements=8
+    $max_num_elements=8,
+    $layout=false
 ) {
     global $config;
 

@@ -283,9 +283,12 @@ sub pandora_start_netflow_daemon () {
 	# Start nfcapd	
 	my $command = $Config{'netflow_daemon'} . ' -D -T all -w -t ' . $Config{'netflow_interval'} . ' -P ' . $pid_file . ' -l ' . $Config{'netflow_path'};
 	if (system ("$command >/dev/null 2>&1") != 0) {
-		logger (\%Config, " [E] Could not start nfcapd: $command", 1);
-		print_message (\%Config, " [E] Could not start nfcapd: $command", 1);
-		return;
+		$command = $Config{'netflow_daemon'} . ' -D -t ' . $Config{'netflow_interval'} . ' -P ' . $pid_file . ' -w ' . $Config{'netflow_path'};
+		if (system ("$command >/dev/null 2>&1") != 0) {
+			logger (\%Config, " [E] Could not start nfcapd: $command", 1);
+			print_message (\%Config, " [E] Could not start nfcapd: $command", 1);
+			return;
+		}
 	}
 	
 	logger (\%Config, "[*] NetFlow daemon started.", 1);

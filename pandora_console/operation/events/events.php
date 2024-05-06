@@ -483,7 +483,6 @@ if (is_ajax() === true) {
             }
 
             if (empty($events) === false) {
-                $redirection_form_id = 0;
                 if ((int) $filter['group_rep'] > 0) {
                     $events_comments = [];
                 } else {
@@ -492,7 +491,7 @@ if (is_ajax() === true) {
 
                 $data = array_reduce(
                     $events,
-                    function ($carry, $item) use ($table_id, &$redirection_form_id, $filter, $compact_date, $external_url, $compact_name_event, $regex, $events_comments) {
+                    function ($carry, $item) use ($table_id, $filter, $compact_date, $external_url, $compact_name_event, $regex, $events_comments) {
                         global $config;
 
                         $tmp = (object) $item;
@@ -500,7 +499,6 @@ if (is_ajax() === true) {
 
                         // phpcs:disable Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                         $server_url = '';
-                        $hashdata = '';
                         if ($tmp->meta === true) {
                             if ($tmp->server_name !== null) {
                                 $data_server = metaconsole_get_servers(
@@ -512,9 +510,6 @@ if (is_ajax() === true) {
                                     && $data_server !== false
                                 ) {
                                     $server_url = $data_server['server_url'];
-                                    $hashdata = metaconsole_get_servers_url_hash(
-                                        $data_server
-                                    );
                                 }
                             }
                         }
@@ -1166,40 +1161,18 @@ if (is_ajax() === true) {
                         $url_link = ui_get_full_url(
                             'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='
                         );
-                        $url_link_hash = '';
+
                         if ($tmp->meta === true) {
                             $url_link = $server_url;
                             $url_link .= '/index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=';
-                            $url_link_hash = $hashdata;
-
-                            parse_str($url_link_hash, $url_hash_array);
-
-                            $redirection_form = "<form id='agent-table-redirection-".$redirection_form_id."' class='invisible' method='POST' action='".$url_link.$tmp->id_agente."'>";
-                            $redirection_form .= html_print_input_hidden(
-                                'loginhash',
-                                $url_hash_array['loginhash'],
-                                true
-                            );
-                            $redirection_form .= html_print_input_hidden(
-                                'loginhash_data',
-                                $url_hash_array['loginhash_data'],
-                                true
-                            );
-                            $redirection_form .= html_print_input_hidden(
-                                'loginhash_user',
-                                $url_hash_array['loginhash_user'],
-                                true
-                            );
-                            $redirection_form .= '</form>';
                         }
 
                         // Agent name link.
                         if ($tmp->id_agente > 0) {
                             if ($tmp->meta === true) {
-                                $draw_agent_name = $redirection_form;
-                                $draw_agent_name .= "<a target=_blank onclick='event.preventDefault(); document.getElementById(\"agent-table-redirection-".$redirection_form_id."\").submit();' href='#'>";
+                                $draw_agent_name = '<a target=_blank onclick="redirectNode(\''.$url_link.$tmp->id_agente.'\')" href="#">';
                             } else {
-                                $draw_agent_name = '<a href="'.$url_link.$tmp->id_agente.$url_link_hash.'">';
+                                $draw_agent_name = '<a href="'.$url_link.$tmp->id_agente.'">';
                             }
 
                             $draw_agent_name .= $tmp->agent_name;
@@ -1212,10 +1185,9 @@ if (is_ajax() === true) {
                         // Agent ID link.
                         if ($tmp->id_agente > 0) {
                             if ($tmp->meta === true) {
-                                $draw_agent_id = "<a target=_blank onclick='event.preventDefault(); document.getElementById(\"agent-table-redirection-".$redirection_form_id."\").submit();' href='#'>";
-                                $redirection_form_id++;
+                                $draw_agent_id = '<a target=_blank onclick="redirectNode(\''.$url_link.$tmp->id_agente.'\')" href="#">';
                             } else {
-                                $draw_agent_id = '<a href="'.$url_link.$tmp->id_agente.$url_link_hash.'">';
+                                $draw_agent_id = '<a href="'.$url_link.$tmp->id_agente.'">';
                             }
 
                             $draw_agent_id .= $tmp->id_agente;
@@ -1249,27 +1221,7 @@ if (is_ajax() === true) {
                             }
                         }
 
-                        $regex_validation = false;
-                        if (empty($tmp) === false && $regex !== '') {
-                            foreach (json_decode(json_encode($tmp), true) as $key => $field) {
-                                if ($key === 'b64') {
-                                    continue;
-                                }
-
-                                $field = strip_tags($field);
-
-                                if (preg_match('/'.io_safe_output($regex).'/', $field)) {
-                                    $regex_validation = true;
-                                }
-                            }
-
-                            if ($regex_validation === true) {
-                                $carry[] = $tmp;
-                            }
-                        } else {
-                            $carry[] = $tmp;
-                        }
-
+                        $carry[] = $tmp;
                         return $carry;
                     }
                 );
@@ -1289,11 +1241,10 @@ if (is_ajax() === true) {
             // RecordsTotal && recordsfiltered resultados totales.
             echo json_encode(
                 [
-                    'data'                 => ($data ?? []),
-                    'buffers'              => $buffers,
-                    'recordsTotal'         => $count,
-                    'recordsFiltered'      => $count,
-                    'showAlwaysPagination' => (empty($regex) === false) ? true : false,
+                    'data'            => ($data ?? []),
+                    'buffers'         => $buffers,
+                    'recordsTotal'    => $count,
+                    'recordsFiltered' => $count,
                 ]
             );
         } catch (Exception $e) {
@@ -2666,20 +2617,22 @@ try {
 
 
     // Always add options column.
-    $fields = array_merge(
-        $fields,
-        [
+    if ((bool) check_acl($config['id_user'], 0, 'EW') === true) {
+        $fields = array_merge(
+            $fields,
             [
-                'text'  => 'options',
-                'class' => 'table_action_buttons mw100px',
-            ],
-            [
-                'text'  => 'm',
-                'extra' => $checkbox_all,
-                'class' => 'w20px no-text-imp',
-            ],
-        ]
-    );
+                [
+                    'text'  => 'options',
+                    'class' => 'table_action_buttons mw100px',
+                ],
+                [
+                    'text'  => 'm',
+                    'extra' => $checkbox_all,
+                    'class' => 'w20px no-text-imp',
+                ],
+            ]
+        );
+    }
 
     // Get column names.
     $column_names = events_get_column_names($fields, true);
@@ -2890,8 +2843,8 @@ try {
                     'column_names'                   => $column_names,
                     'columns'                        => $fields,
                     'no_sortable_columns'            => [
-                        -1,
-                        -2,
+                        'options',
+                        'm',
                         'column-instructions',
                         'user_comment',
                     ],
@@ -3715,11 +3668,19 @@ function datetime_picker_callback() {
 
 datetime_picker_callback();
 
-function show_instructions(id){
+function show_instructions(id, title_event){
     title = "<?php echo __('Instructions'); ?>";
     $('#hidden_event_instructions_' + id).dialog({
-        title: title,
-        width: 600
+        title: `${title+' '+atob(title_event)}`,
+        width: 650,
+        draggable: true,
+        modal: true,
+        closeOnEscape: true,
+        open: function(){
+            $('.ui-widget-overlay').bind('click',function(){
+                $('#hidden_event_instructions_' + id).dialog('close');
+            })
+        }
     });
 }
 

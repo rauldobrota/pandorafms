@@ -52,7 +52,7 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         }
 
         // ======= Servers List ===============================================
-        if ((bool) check_acl($config['id_user'], 0, 'AW') !== false) {
+        if ((bool) check_acl($config['id_user'], 0, 'PM') !== false) {
             $servers = [];
             $servers_info = servers_get_info();
 
@@ -363,20 +363,6 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
                 $display_counter = 'display:none';
             }
 
-            if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
-                $header_setup .= '<div id="header_logout"><a class="white" href="'.ui_get_full_url('index.php?sec=general&sec2=godmode/setup/setup&section=general').'">';
-                $header_setup .= html_print_image(
-                    'images/configuration@svg.svg',
-                    true,
-                    [
-                        'alt'   => __('Setup'),
-                        'class' => 'bot invert_filter main_menu_icon',
-                        'title' => __('Setup'),
-                    ]
-                );
-                $header_setup .= '</a></div>';
-            }
-
             $header_autorefresh = '<div id="header_autorefresh">';
             $header_autorefresh .= $autorefresh_link_open_img;
             $header_autorefresh .= $autorefresh_img;
@@ -389,6 +375,20 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
             $header_autorefresh_counter .= $autorefresh_link_close;
             $header_autorefresh_counter .= $autorefresh_additional;
             $header_autorefresh_counter .= '</div>';
+        }
+
+        if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
+            $header_setup .= '<div id="header_logout"><a class="white" href="'.ui_get_full_url('index.php?sec=general&sec2=godmode/setup/setup&section=general').'">';
+            $header_setup .= html_print_image(
+                'images/configuration@svg.svg',
+                true,
+                [
+                    'alt'   => __('Setup'),
+                    'class' => 'bot invert_filter main_menu_icon',
+                    'title' => __('Setup'),
+                ]
+            );
+            $header_setup .= '</a></div>';
         }
 
         $modal_box = '<div id="modal_help" class="invisible">

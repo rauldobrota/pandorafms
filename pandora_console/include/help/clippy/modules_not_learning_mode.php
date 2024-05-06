@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * Extension to manage a list of gateways and the node address where they should
  * point to.
@@ -26,8 +28,6 @@
  * GNU General Public License for more details.
  * ============================================================================
  */
-
-
 function clippy_modules_not_learning_mode()
 {
     $return_tours = [];

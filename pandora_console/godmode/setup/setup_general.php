@@ -267,18 +267,6 @@ $table->data[$i][] = html_print_label_input_block(
 );
 
 $table->data[$i++][] = html_print_label_input_block(
-    __('Auto login (hash) password'),
-    html_print_input_password(
-        'loginhash_pwd',
-        io_output_password($config['loginhash_pwd']),
-        '',
-        15,
-        15,
-        true
-    )
-);
-
-$table->data[$i][] = html_print_label_input_block(
     __('Time source'),
     html_print_select(
         $sources,

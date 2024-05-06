@@ -1459,7 +1459,7 @@ $class = 'databox filters';
             <td class="bolder">
                 <?php
                 echo __('Module').ui_print_help_tip(
-                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in matchine 1.', '.*usage.*'),
+                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in machine 1.', '.*usage.*'),
                     true
                 );
                 ?>
@@ -2318,7 +2318,9 @@ if (is_metaconsole() === true) {
                 $params['add_none_module'] = true;
                 $params['use_hidden_input_idagent'] = true;
                 $params['hidden_input_idagent_id'] = 'hidden-id_agent';
+                $params['size'] = 40;
                 if ($meta) {
+                    $params['size'] = 44;
                     $params['use_input_id_server'] = true;
                     $params['input_id_server_id'] = 'hidden-server_id';
                     $params['metaconsole_enabled'] = true;
@@ -2343,7 +2345,7 @@ if (is_metaconsole() === true) {
                 if ($idAgent) {
                     $sql = 'SELECT id_agente_modulo, nombre
 						FROM tagente_modulo
-						WHERE id_agente = "'.$idAgent["id_agent"].'" AND  delete_pending = 0';
+						WHERE id_agente = "'.$idAgent.'" AND  delete_pending = 0';
 
                     if ($meta) {
                         $connection = metaconsole_get_connection($server_name);
@@ -6645,26 +6647,6 @@ function create_custom_graph() {
             $("#meta_target_servers").css('display', 'inline');
         }
         else {
-            var hash_data;
-            var params1 = [];
-            params1.push("get_metaconsole_hash_data=1");
-            params1.push("server_name=" + target_server);
-            params1.push("page=include/ajax/reporting.ajax");
-            jQuery.ajax ({
-                data: params1.join ("&"),
-                type: 'POST',
-                url: action=
-                <?php
-                echo '"'.ui_get_full_url(false, false, false, false).'"';
-                ?>
-                + "/ajax.php",
-                async: false,
-                timeout: 10000,
-                success: function (data) {
-                    hash_data = data;
-                }
-            });
-
             var server_url;
             var params1 = [];
             params1.push("get_metaconsole_server_url=1");
@@ -6690,7 +6672,7 @@ function create_custom_graph() {
                 }
             });
 
-            window.location.href = server_url + "/index.php?sec=reporting&sec2=godmode/reporting/graph_builder&create=Create graph" + hash_data;
+            redirectNode(server_url + "/index.php?sec=reporting&sec2=godmode/reporting/graph_builder&create=Create graph", "_self");
         }
         <?php
     } else {
@@ -6719,31 +6701,6 @@ function edit_custom_graph() {
             id_server = agent_server_temp[1];
         }
 
-        var hash_data;
-        var params1 = [];
-        params1.push("get_metaconsole_hash_data=1");
-        params1.push("server_name=" + id_server);
-        params1.push("page=include/ajax/reporting.ajax");
-        jQuery.ajax ({
-            data: params1.join ("&"),
-            type: 'POST',
-            url: action=
-            <?php
-            echo '"'.ui_get_full_url(
-                false,
-                false,
-                false,
-                false
-            ).'"';
-            ?>
-            + "/ajax.php",
-            async: false,
-            timeout: 10000,
-            success: function (data) {
-                hash_data = data;
-            }
-        });
-
         var server_url;
         var params1 = [];
         params1.push("get_metaconsole_server_url=1");
@@ -6769,7 +6726,7 @@ function edit_custom_graph() {
             }
         });
 
-        window.location.href = server_url + "index.php?sec=reporting&sec2=godmode/reporting/graph_builder&edit_graph=1&id=" + id_element_graph + hash_data;        
+        redirectNode(server_url + "index.php?sec=reporting&sec2=godmode/reporting/graph_builder&edit_graph=1&id=" + id_element_graph, "_self");
         <?php
     } else {
         ?>

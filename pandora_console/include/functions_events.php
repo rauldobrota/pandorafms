@@ -1119,11 +1119,13 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
-        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $EM_groups = users_get_groups($config['id_user'], 'EM', true, true);
         $EW_groups = users_get_groups($config['id_user'], 'EW', true, true);
+    }
 
+    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+        $ER_groups = users_get_groups($config['id_user'], 'ER', true);
         // Get groups where user have ER grants.
         if ((bool) $filter['search_secondary_groups'] === true) {
             $sql_filters[] = sprintf(
@@ -1155,7 +1157,7 @@ function events_get_all(
     }
 
     // Free search.
-    if (empty($filter['search']) === false && (bool) $filter['regex'] === false) {
+    if (empty($filter['search']) === false) {
         if (isset($config['dbconnection']->server_version) === true
             && $config['dbconnection']->server_version > 50600
         ) {
@@ -1185,22 +1187,38 @@ function events_get_all(
             $array_search[] = 'lower(ta.alias)';
         }
 
-        // Disregard repeated whitespaces when searching.
-        $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+        if ((bool) $filter['regex'] === true) {
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s %s %s REGEXP "%s" ',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    preg_replace('/(?<!\\\\)"/', '', io_safe_output($filter['search'])),
+                );
+                $sql_search .= ' ';
+            }
 
-        $sql_search = ' AND (';
-        foreach ($array_search as $key => $field) {
-            $sql_search .= sprintf(
-                '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
-                ($key === 0) ? '' : $nexo,
-                $field,
-                $not_search,
-                $collapsed_spaces_search
-            );
-            $sql_search .= ' ';
+            $sql_search .= ' )';
+        } else {
+            // Disregard repeated whitespaces when searching.
+            $collapsed_spaces_search = preg_replace('/(&#x20;)+/', '&#x20;', $filter['search']);
+
+            $sql_search = ' AND (';
+            foreach ($array_search as $key => $field) {
+                $sql_search .= sprintf(
+                    '%s LOWER(REGEXP_REPLACE(%s, "(&#x20;)+", "&#x20;")) %s like LOWER("%%%s%%")',
+                    ($key === 0) ? '' : $nexo,
+                    $field,
+                    $not_search,
+                    $collapsed_spaces_search
+                );
+                $sql_search .= ' ';
+            }
+
+            $sql_search .= ' )';
         }
-
-        $sql_search .= ' )';
 
         $sql_filters[] = $sql_search;
     }
@@ -1674,7 +1692,7 @@ function events_get_all(
         }
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $exists_id_grupo = false;
         foreach ($fields as $field) {
             if (str_contains($field, 'te.id_grupo') === true || str_contains($field, 'te.*') === true) {
@@ -1798,7 +1816,7 @@ function events_get_all(
         return $sql;
     }
 
-    if (!$user_is_admin && users_can_manage_group_all('ER') === false) {
+    if (!$user_is_admin && users_can_manage_group_all('EM') === false) {
         $can_manage = '0 as user_can_manage';
         if (empty($EM_groups) === false) {
             $can_manage = sprintf(
@@ -4375,12 +4393,9 @@ function events_page_details($event, $server_id=0)
     global $config;
 
     // If metaconsole switch to node to get details and custom fields.
-    $hashstring = '';
     $serverstring = '';
     if (is_metaconsole() === true && empty($server_id) === false) {
         $server = metaconsole_get_connection_by_id($server_id);
-        $hashdata = metaconsole_get_server_hashdata($server);
-        $hashstring = '&amp;loginhash=auto&loginhash_data='.$hashdata.'&loginhash_user='.str_rot13($config['id_user']);
         $serverstring = $server['server_url'].'/';
 
         if (metaconsole_connect($server) !== NOERR) {
@@ -4421,28 +4436,7 @@ function events_page_details($event, $server_id=0)
                 true
             ).ui_print_help_tip(__('This agent belongs to metaconsole, is not possible display it'), true);
         } else if (can_user_access_node() && is_metaconsole()) {
-            // Workaround to pass login hash data in POST body instead of directly in the URL.
-            parse_str($hashstring, $url_hash_array);
-            $redirection_form = "<form id='agent-redirection' method='POST' action='".$serverstring.'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$event['id_agente']."'>";
-            $redirection_form .= html_print_input_hidden(
-                'loginhash',
-                $url_hash_array['loginhash'],
-                true
-            );
-            $redirection_form .= html_print_input_hidden(
-                'loginhash_data',
-                $url_hash_array['loginhash_data'],
-                true
-            );
-            $redirection_form .= html_print_input_hidden(
-                'loginhash_user',
-                $url_hash_array['loginhash_user'],
-                true
-            );
-            $redirection_form .= '</form>';
-
-            $data[1] = $redirection_form;
-            $data[1] .= "<a target=_blank onclick='event.preventDefault(); document.getElementById(\"agent-redirection\").submit();' href='#'>";
+            $data[1] = '<a target=_blank onclick="redirectNode(\''.$serverstring.'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$event['id_agente'].'\')" href="#">';
             $data[1] .= '<b>'.$agent['alias'].'</b>';
             $data[1] .= '</a>';
         } else if (can_user_access_node()) {
@@ -4453,7 +4447,7 @@ function events_page_details($event, $server_id=0)
                 '',
                 false,
                 $serverstring,
-                $hashstring,
+                '',
                 $agent['alias']
             );
         } else {
@@ -4586,7 +4580,7 @@ function events_page_details($event, $server_id=0)
                 'id_mg',
                 $id_module_group
             );
-            $data[1] = '<a href="'.$serverstring.'index.php?sec=view&amp;sec2=operation/agentes/status_monitor&amp;status=-1&amp;modulegroup='.$id_module_group.$hashstring.'">';
+            $data[1] = '<a href="#" onclick="redirectNode(\''.$serverstring.'index.php?sec=view&amp;sec2=operation/agentes/status_monitor&amp;status=-1&amp;modulegroup='.$id_module_group.'\')">';
             $data[1] .= $module_group;
             $data[1] .= '</a>';
         }
@@ -4652,7 +4646,7 @@ function events_page_details($event, $server_id=0)
     if ($event['id_alert_am'] != 0) {
         $data = [];
         $data[0] = '<div class="normal_weight mrgn_lft_20px">'.__('Source').'</div>';
-        $data[1] = '<a href="'.$serverstring.'index.php?sec=estado&amp;sec2=operation/agentes/ver_agente&amp;id_agente='.$event['id_agente'].'&amp;tab=alert'.$hashstring.'">';
+        $data[1] = '<a href="#" onclick="redirectNode(\''.$serverstring.'index.php?sec=estado&amp;sec2=operation/agentes/ver_agente&amp;id_agente='.$event['id_agente'].'&amp;tab=alert\')">';
         $standby = db_get_value('standby', 'talert_template_modules', 'id', $event['id_alert_am']);
         if (!$standby) {
             $data[1] .= html_print_image(
@@ -5928,17 +5922,30 @@ function events_get_instructions($event, $max_text_length=300)
         return $value;
     }
 
+    $event_name = ui_print_truncate_text(
+        io_safe_output($event['evento']),
+        GENERIC_SIZE_TEXT,
+        false,
+        true,
+        false,
+        '...'
+    );
+
+    $over_event_name = base64_encode($event_name);
     $output  = '<div id="hidden_event_instructions_'.$event['id_evento'].'"';
     $output .= ' class="event_instruction">';
     $output .= $value;
     $output .= '</div>';
     $output .= '<span id="value_event_'.$event['id_evento'].'" class="nowrap">';
     $output .= '<span id="value_event_text_'.$event['id_evento'].'"></span>';
-    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].')">';
+    $output .= '<a href="javascript:show_instructions('.$event['id_evento'].',\''.$over_event_name.'\')">';
     $output .= html_print_image(
         'images/default_list.png',
         true,
-        ['title' => $over_text]
+        [
+            'title' => $over_text,
+            'class' => 'invert_filter',
+        ]
     ).'</a></span>';
 
     return $output;
