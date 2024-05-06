@@ -3908,7 +3908,11 @@ function reporting_html_event_report_agent($table, $item, $pdf=0)
                 $data[] = '<i>'.__('System').'</i>';
             } else {
                 $user_name = db_get_value('fullname', 'tusuario', 'id_user', $event['validated_by']);
-                $data[] = io_safe_output($user_name);
+                if (isset($event['id_usuario']) === true && empty($event['id_usuario']) === false) {
+                    $data[] = io_safe_output($user_name).' ('.$event['id_usuario'].')';
+                } else {
+                    $data[] = '';
+                }
             }
 
             if ($item['show_summary_group']) {
