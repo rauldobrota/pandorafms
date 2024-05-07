@@ -3886,10 +3886,27 @@ function visual_map_translate_module_status($module_status)
  *
  * @return integer The status of the given layout.
  */
-function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
-{
+function visual_map_get_layout_status(
+    $layout_id,
+    $status_data=[],
+    $depth=0,
+    $exclude_recursive=[],
+    &$num_elements_by_status=[
+        VISUAL_MAP_STATUS_CRITICAL_BAD   => 0,
+        VISUAL_MAP_STATUS_CRITICAL_ALERT => 0,
+        VISUAL_MAP_STATUS_NORMAL         => 0,
+        VISUAL_MAP_STATUS_WARNING        => 0,
+        VISUAL_MAP_STATUS_UNKNOWN        => 0,
+        VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
+    ]
+) {
     global $config;
 
+    if (in_array($layout_id, $exclude_recursive) === true) {
+        return VISUAL_MAP_STATUS_UNKNOWN;
+    }
+
+    $exclude_recursive[] = $layout_id;
     // TODO: Implement this limit into the setup.
     if ($depth > 10) {
         return VISUAL_MAP_STATUS_UNKNOWN;
@@ -3951,15 +3968,6 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
         sort_by_column($valid_layout_items, 'id_metaconsole');
     }
 
-    $num_elements_by_status = [
-        VISUAL_MAP_STATUS_CRITICAL_BAD   => 0,
-        VISUAL_MAP_STATUS_CRITICAL_ALERT => 0,
-        VISUAL_MAP_STATUS_NORMAL         => 0,
-        VISUAL_MAP_STATUS_WARNING        => 0,
-        VISUAL_MAP_STATUS_UNKNOWN        => 0,
-        VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
-    ];
-
     $meta_connected_to = null;
 
     foreach ($valid_layout_items as $layout_item_data) {
@@ -4018,7 +4026,9 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
                         $status = visual_map_get_layout_status(
                             $layout_item_data['id_layout_linked'],
                             $layout_item_data,
-                            ($depth + 1)
+                            ($depth + 1),
+                            $exclude_recursive,
+                            $num_elements_by_status
                         );
                     } else if (!empty($layout_item_data['id_agente_modulo'])) {
                         // Module.
