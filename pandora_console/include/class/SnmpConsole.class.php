@@ -86,6 +86,13 @@ class SnmpConsole extends HTML
     private $filter_free_search;
 
     /**
+     * Filter alias.
+     *
+     * @var string
+     */
+    private $filter_alias_search;
+
+    /**
      * Filter status.
      *
      * @var integer
@@ -135,7 +142,8 @@ class SnmpConsole extends HTML
         int $filter_group_by,
         int $filter_hours_ago,
         int $filter_trap_type,
-        int $refr
+        int $refr,
+        string $filter_alias_search
     ) {
         global $config;
 
@@ -157,6 +165,7 @@ class SnmpConsole extends HTML
         $this->filter_alert = $filter_alert;
         $this->filter_severity = $filter_severity;
         $this->filter_free_search = $filter_free_search;
+        $this->filter_alias_search = $filter_alias_search;
         $this->filter_status = $filter_status;
         $this->filter_group_by = $filter_group_by;
         $this->filter_hours_ago = $filter_hours_ago;
@@ -375,12 +384,20 @@ class SnmpConsole extends HTML
                                 'style'       => 'widht:100%',
                             ],
                             [
-                                'label'       => __('Free search'),
+                                'label'       => __('Search').ui_print_help_tip(__('It will search through the contents of the raw trap, which does not include the agent name. You can search by the next values: IP, OID, Value, Text, Description, User ID and Source.'), true),
                                 'type'        => 'text',
                                 'id'          => 'filter_free_search',
                                 'input_class' => 'filter_input_datatable',
                                 'name'        => 'filter_free_search',
                                 'value'       => $this->filter_free_search,
+                            ],
+                            [
+                                'label'       => __('Search Alias').ui_print_help_tip(__('It will search by the agent alias. This option could make the system slower.'), true),
+                                'type'        => 'text',
+                                'id'          => 'filter_alias_search',
+                                'input_class' => 'filter_input_datatable',
+                                'name'        => 'filter_alias_search',
+                                'value'       => $this->filter_alias_search,
                             ],
                             [
                                 'label'       => __('Status'),
@@ -449,7 +466,7 @@ class SnmpConsole extends HTML
                             1000,
                         ],
                     ],
-                    'filter_main_class'   => 'box-flat white_table_graph fixed_filter_bar',
+                    'filter_main_class'   => 'box-flat white_table_graph fixed_filter_bar snmp-console-filter',
                 ]
             );
         } catch (Exception $e) {
@@ -554,10 +571,6 @@ class SnmpConsole extends HTML
         $filters = get_parameter('filter', []);
 
         // Build ranges.
-        if (empty($filters['filter_hours_ago']) === true) {
-            $filters['filter_hours_ago'] = 8;
-        }
-
         $now_timestamp = time();
         $interval_seconds = ($filters['filter_hours_ago'] * 3600);
         $ago_timestamp = ($now_timestamp - $interval_seconds);
@@ -577,118 +590,148 @@ class SnmpConsole extends HTML
             ob_start();
             $data = [];
 
-            $user_groups = users_get_groups($config['id_user'], 'AR', false);
-            $prea = array_keys($user_groups);
-            $ids = join(',', $prea);
+            $whereSubquery = '';
+            $sql = 'SELECT
+                    *
+                FROM
+                    ttrap
+                %s
+                WHERE 1=1
+                    %s
+                ORDER BY
+                    timestamp DESC
+                LIMIT %d, %d';
 
-            $user_in_group_wo_agents = db_get_value_sql('select count(DISTINCT(id_usuario)) from tusuario_perfil where id_usuario ="'.$config['id_user'].'" and id_perfil = 1 and id_grupo in (select id_grupo from tgrupo where id_grupo in ('.$ids.') and id_grupo not in (select id_grupo from tagente))');
-            if ($user_in_group_wo_agents == 0) {
+            $sql_count = 'SELECT 
+                    COUNT(`ttrap`.`id_trap`) 
+                FROM
+                    ttrap
+                %s
+                WHERE 1=1
+                    %s';
+
+            if (users_is_admin() === false || users_can_manage_group_all('AR') === false) {
+                $user_groups = users_get_groups($config['id_user'], 'AR', false);
                 $rows = db_get_all_rows_filter(
                     'tagente',
                     ['id_grupo' => array_keys($user_groups)],
                     ['id_agente']
                 );
+
                 $id_agents = [];
                 foreach ($rows as $row) {
                     $id_agents[] = $row['id_agente'];
                 }
 
-                if (!empty($id_agents)) {
+                if (empty($id_agents) === false) {
                     $address_by_user_groups = agents_get_addresses($id_agents);
                     foreach ($address_by_user_groups as $i => $a) {
                         $address_by_user_groups[$i] = '"'.$a.'"';
                     }
                 }
-            } else {
-                $rows = db_get_all_rows_filter(
-                    'tagente',
-                    [],
-                    ['id_agente']
+
+                if (empty($address_by_user_groups) === true) {
+                    $address_by_user_groups = [];
+                    array_unshift($address_by_user_groups, '""');
+                }
+
+                $whereSubquery .= sprintf(
+                    'AND (
+                    `ttrap`.`source` IN (%s) OR
+                    `ttrap`.`source`=""
+                )',
+                    implode(',', $address_by_user_groups)
                 );
-                $id_agents = [];
-                foreach ($rows as $row) {
-                    $id_agents[] = $row['id_agente'];
-                }
-
-                $all_address_agents = agents_get_addresses($id_agents);
-                foreach ($all_address_agents as $i => $a) {
-                    $all_address_agents[$i] = '"'.$a.'"';
-                }
             }
 
-            if (empty($address_by_user_groups)) {
-                $address_by_user_groups = [];
-                array_unshift($address_by_user_groups, '""');
+            if ($filters['filter_alias_search'] !== '') {
+                $sql_join = '
+                    LEFT JOIN `tagente`
+                        ON `tagente`.`direccion` = `ttrap`.`source`
+                    LEFT JOIN `taddress_agent`
+                        ON `tagente`.`id_agente` = `taddress_agent`.`id_agent`
+                    LEFT JOIN `taddress`
+                        ON `taddress_agent`.`id_a` = `taddress`.`id_a`
+                ';
+            } else {
+                $sql_join = '';
             }
 
-            if (empty($all_address_agents)) {
-                $all_address_agents = [];
-                array_unshift($all_address_agents, '""');
-            }
-
-            $sql = 'SELECT * FROM ttrap
-                WHERE (
-                    `source` IN ('.implode(',', $address_by_user_groups).") OR
-                    `source`='' OR
-                    `source` NOT IN (".implode(',', $all_address_agents).')
-                    )
-                    %s
-                ORDER BY timestamp DESC
-                LIMIT %d,%d';
-
-            $whereSubquery = '';
             if ($filters['filter_alert']  != -1) {
-                $whereSubquery .= ' AND alerted = '.$filters['filter_alert'];
+                $whereSubquery .= ' AND `ttrap`.`alerted` = '.$filters['filter_alert'];
             }
 
-            $filters['filter_severity'] = (int) $filters['filter_severity'];
             if ($filters['filter_severity'] != -1) {
                 // There are two special severity values aimed to match two different trap standard severities
                 // in database: warning/critical and critical/normal.
-                if ($filters['filter_severity'] !== EVENT_CRIT_OR_NORMAL
-                    && $filters['filter_severity'] !== EVENT_CRIT_WARNING_OR_CRITICAL
-                    && $filters['filter_severity'] !== EVENT_CRIT_NOT_NORMAL
+                if ($filters['filter_severity'] != EVENT_CRIT_OR_NORMAL
+                    && $filters['filter_severity'] != EVENT_CRIT_WARNING_OR_CRITICAL
                 ) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND severity = '.$filters['filter_severity'];
+                    if ($config['enterprise_installed']) {
+                        $whereSubquery .= ' AND (
+                            (`ttrap`.`alerted` = 0 AND `ttrap`.`severity` = '.$filters['filter_severity'].') OR
+                            (`ttrap`.`alerted` = 1 AND `ttrap`.`priority` = '.$filters['filter_severity'].'))';
+                    } else {
+                        $whereSubquery .= ' AND (
+                            (`ttrap`.`alerted` = 0 AND 1 = '.$filters['filter_severity'].') OR
+                            (`ttrap`.`alerted` = 1 AND `ttrap`.`priority` = '.$filters['filter_severity'].'))';
+                    }
                 } else if ($filters['filter_severity'] === EVENT_CRIT_WARNING_OR_CRITICAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_WARNING_OR_CRITICAL.')';
+                    if ($config['enterprise_installed']) {
+                        $whereSubquery .= ' AND (
+                        (`ttrap`.`alerted` = 0 AND (`ttrap`.`severity` = '.EVENT_CRIT_WARNING.' OR `ttrap`.`severity` = '.EVENT_CRIT_CRITICAL.')) OR
+                        (`ttrap`.`alerted` = 1 AND (`ttrap`.`priority` = '.EVENT_CRIT_WARNING.' OR `ttrap`.`priority` = '.EVENT_CRIT_CRITICAL.')))';
+                    } else {
+                        $whereSubquery .= ' AND (
+                        (`ttrap`.`alerted` = 1 AND (`ttrap`.`priority` = '.EVENT_CRIT_WARNING.' OR `ttrap`.`priority` = '.EVENT_CRIT_CRITICAL.')))';
+                    }
                 } else if ($filters['filter_severity'] === EVENT_CRIT_OR_NORMAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_OR_NORMAL.')';
-                } else if ($filters['filter_severity'] === EVENT_CRIT_NOT_NORMAL) {
-                    // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_NOT_NORMAL.')';
+                    if ($config['enterprise_installed']) {
+                        $whereSubquery .= ' AND (
+                        (`ttrap`.`alerted` = 0 AND (`ttrap`.`severity` = '.EVENT_CRIT_NORMAL.' OR `ttrap`.`severity` = '.EVENT_CRIT_CRITICAL.')) OR
+                        (`ttrap`.`alerted` = 1 AND (`ttrap`.`priority` = '.EVENT_CRIT_NORMAL.' OR `ttrap`.`priority` = '.EVENT_CRIT_CRITICAL.')))';
+                    } else {
+                        $whereSubquery .= ' AND (
+                        (`ttrap`.`alerted` = 1 AND (`ttrap`.`priority` = '.EVENT_CRIT_NORMAL.' OR `ttrap`.`priority` = '.EVENT_CRIT_CRITICAL.')))';
+                    }
                 }
             }
 
             if ($filters['filter_free_search'] !== '') {
                 $free_search_str = io_safe_output($filters['filter_free_search']);
                 $whereSubquery .= '
-                    AND (source LIKE "%'.$free_search_str.'%" OR
-                    oid LIKE "%'.$free_search_str.'%" OR
-                    oid_custom LIKE "%'.$free_search_str.'%" OR
-                    type_custom LIKE "%'.$free_search_str.'%" OR
-                    value LIKE "%'.$free_search_str.'%" OR
-                    value_custom LIKE "%'.$free_search_str.'%" OR
-                    id_usuario LIKE "%'.$free_search_str.'%" OR
-                    text LIKE "%'.$free_search_str.'%" OR
-                    description LIKE "%'.$free_search_str.'%")';
+                    AND (`ttrap`.`source` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`oid` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`oid_custom` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`type_custom` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`value` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`value_custom` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`id_usuario` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`text` LIKE "%'.$free_search_str.'%" OR
+                    `ttrap`.`description` LIKE "%'.$free_search_str.'%")';
+            }
+
+            if ($filters['filter_alias_search'] !== '') {
+                $alias_search = io_safe_output($filters['filter_alias_search']);
+                $whereSubquery .= '
+                    AND `tagente`.`alias` LIKE "%'.$alias_search.'%"';
             }
 
             if ($filters['filter_status'] != -1) {
-                $whereSubquery .= ' AND status = '.$filters['filter_status'];
+                $whereSubquery .= ' AND `ttrap`.`status` = '.$filters['filter_status'];
             }
 
             if ($date_from_trap != '') {
                 if ($time_from_trap != '') {
                     $whereSubquery .= '
-                        AND (utimestamp > '.$ago_timestamp.')
+                        AND (`ttrap`.`utimestamp` > '.$ago_timestamp.')
                     ';
                 } else {
                     $whereSubquery .= '
-                        AND (UNIX_TIMESTAMP(timestamp) > UNIX_TIMESTAMP("'.$date_from_trap.' 23:59:59"))
+                        AND (UNIX_TIMESTAMP(`ttrap`.`timestamp`) > UNIX_TIMESTAMP("'.$date_from_trap.' 23:59:59"))
                     ';
                 }
             }
@@ -696,37 +739,31 @@ class SnmpConsole extends HTML
             if ($date_to_trap != '') {
                 if ($time_to_trap) {
                     $whereSubquery .= '
-                        AND (utimestamp < '.$now_timestamp.')
+                        AND (`ttrap`.`utimestamp` < '.$now_timestamp.')
                     ';
                 } else {
                     $whereSubquery .= '
-                        AND (UNIX_TIMESTAMP(timestamp) < UNIX_TIMESTAMP("'.$date_to_trap.' 23:59:59"))
+                        AND (UNIX_TIMESTAMP(`ttrap`.`timestamp`) < UNIX_TIMESTAMP("'.$date_to_trap.' 23:59:59"))
                     ';
                 }
             }
 
             if ($filters['filter_trap_type'] == 5) {
-                $whereSubquery .= ' AND type NOT IN (0, 1, 2, 3, 4)';
+                $whereSubquery .= ' AND `ttrap`.`type` NOT IN (0, 1, 2, 3, 4)';
             } else if ($filters['filter_trap_type'] != -1) {
-                $whereSubquery .= ' AND type = '.$filters['filter_trap_type'];
+                $whereSubquery .= ' AND `ttrap`.`type` = '.$filters['filter_trap_type'];
             }
 
+            $where_without_group = '';
             if ($filters['filter_group_by']) {
                 $where_without_group = $whereSubquery;
-                $whereSubquery .= ' GROUP BY source,oid';
+                $whereSubquery .= ' GROUP BY `ttrap`.`source`,`ttrap`.`oid`,`ttrap`.`id_trap`';
+            } else if ($filters['filter_alias_search'] !== '') {
+                $whereSubquery .= ' GROUP BY `ttrap`.`id_trap`';
             }
 
-            $sql = sprintf($sql, $whereSubquery, $start, $length);
-
-            $sql_count = 'SELECT COUNT(id_trap) FROM ttrap
-			WHERE (
-				source IN ('.implode(',', $address_by_user_groups).") OR
-				source='' OR
-				source NOT IN (".implode(',', $all_address_agents).')
-				)
-				%s';
-
-            $sql_count = sprintf($sql_count, $whereSubquery);
+            $sql = sprintf($sql, $sql_join, $whereSubquery, $start, $length);
+            $sql_count = sprintf($sql_count, $sql_join, $whereSubquery);
 
             $traps = db_get_all_rows_sql($sql, true);
             $total = (int) db_get_value_sql($sql_count, false, false);
@@ -781,8 +818,8 @@ class SnmpConsole extends HTML
                             $tmp->snmp_agent .= '<a class="'.$severity_class.'" href="index.php?sec=estado&sec2=godmode/agentes/configurar_agente&new_agent=1&direccion='.$tmp->source.'" title="'.__('Create agent').'">'.$tmp->source.'</a>';
                         } else {
                             $tmp->snmp_agent .= '<div class="'.$severity_class.' snmp-div"><a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$agent['id_agente'].'" title="'.__('View agent details').'">';
-                            $tmp->snmp_agent .= '<strong>'.$agent['alias'].'</strong></a>'.ui_print_help_tip($tmp->source, true);
-                            '</div>';
+                            $tmp->snmp_agent .= '<strong>'.$agent['alias'].ui_print_help_tip($tmp->source, true);
+                            '</strong></a></div>';
                         }
 
                         // Enterprise string.
@@ -1135,25 +1172,42 @@ class SnmpConsole extends HTML
                 $whereSubquery .= ' AND alerted = '.$$alert;
             }
 
-            $severity = (int) $severity;
-            if ($severity !== -1) {
+            if ($severity != -1) {
                 // There are two special severity values aimed to match two different trap standard severities
                 // in database: warning/critical and critical/normal.
-                if ($severity !== EVENT_CRIT_OR_NORMAL
-                    && $severity !== EVENT_CRIT_WARNING_OR_CRITICAL
-                    && $severity !== EVENT_CRIT_NOT_NORMAL
+                if ($severity != EVENT_CRIT_OR_NORMAL
+                    && $severity != EVENT_CRIT_WARNING_OR_CRITICAL
                 ) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND severity = '.$severity;
+                    if ($config['enterprise_installed']) {
+                        $whereSubquery .= ' AND (
+                            (alerted = 0 AND severity = '.$severity.') OR
+                            (alerted = 1 AND priority = '.$severity.'))';
+                    } else {
+                        $whereSubquery .= ' AND (
+                            (alerted = 0 AND 1 = '.$severity.') OR
+                            (alerted = 1 AND priority = '.$severity.'))';
+                    }
                 } else if ($severity === EVENT_CRIT_WARNING_OR_CRITICAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_WARNING_OR_CRITICAL.')';
+                    if ($config['enterprise_installed']) {
+                        $whereSubquery .= ' AND (
+                        (alerted = 0 AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.')) OR
+                        (alerted = 1 AND (priority = '.EVENT_CRIT_WARNING.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
+                    } else {
+                        $whereSubquery .= ' AND (
+                        (alerted = 1 AND (priority = '.EVENT_CRIT_WARNING.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
+                    }
                 } else if ($severity === EVENT_CRIT_OR_NORMAL) {
                     // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_OR_NORMAL.')';
-                } else if ($severity === EVENT_CRIT_NOT_NORMAL) {
-                    // Test if enterprise is installed to search oid in text or oid field in ttrap.
-                    $whereSubquery .= ' AND (severity = '.EVENT_CRIT_WARNING.' OR severity = '.EVENT_CRIT_CRITICAL.' OR severity = '.EVENT_CRIT_NOT_NORMAL.')';
+                    if ($config['enterprise_installed']) {
+                        $whereSubquery .= ' AND (
+                        (alerted = 0 AND (severity = '.EVENT_CRIT_NORMAL.' OR severity = '.EVENT_CRIT_CRITICAL.')) OR
+                        (alerted = 1 AND (priority = '.EVENT_CRIT_NORMAL.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
+                    } else {
+                        $whereSubquery .= ' AND (
+                        (alerted = 1 AND (priority = '.EVENT_CRIT_NORMAL.' OR priority = '.EVENT_CRIT_CRITICAL.')))';
+                    }
                 }
             }
 
