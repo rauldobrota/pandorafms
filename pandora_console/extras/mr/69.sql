@@ -15,6 +15,8 @@ ALTER TABLE tfiles_repo_group CONVERT TO CHARACTER SET UTF8MB4;
 ALTER TABLE `tusuario`
 ADD COLUMN `stop_lts_modal` TINYINT NOT NULL DEFAULT 0 AFTER `session_max_time_expire`;
 
+ALTER TABLE `tlayout_template` ADD COLUMN `create_from` INT UNSIGNED NOT NULL DEFAULT 0;
+
 -- START MIGRATION MSSQL --
 SET @current_app_type = 12;
 SET @short_name = 'pandorafms.mssql';
