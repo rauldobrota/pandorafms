@@ -7942,6 +7942,7 @@ function html_print_select_date_range(
     $date_format_js='yy/mm/dd',
     $time_format_js='HH:mm:ss',
     $id='',
+    $units_selected='1',
 ) {
     global $config;
 
@@ -8136,7 +8137,7 @@ function html_print_select_date_range(
         $output .= html_print_select(
             $units,
             $name.'_units',
-            '1',
+            $units_selected,
             '',
             '',
             0,

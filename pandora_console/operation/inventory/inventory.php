@@ -46,6 +46,7 @@ $date_init_less = (strtotime(date('Y/m/d')) - SECONDS_1DAY);
 $date_init = get_parameter('date_init', date(DATE_FORMAT, $date_init_less));
 $time_init = get_parameter('time_init', date(TIME_FORMAT, $date_init_less));
 $datetime_init = strtotime($date_init.' '.$time_init);
+$date_units = get_parameter('utimestamp_units');
 if ($custom_date === '1') {
     if ($datetime_init >= $datetime_end) {
         $datetime_init = $date_init_less;
@@ -55,7 +56,6 @@ if ($custom_date === '1') {
     $date_end = date('Y/m/d H:i:s', $datetime_end);
     $period = ($datetime_end - $datetime_init);
 } else if ($custom_date === '2') {
-    $date_units = get_parameter('utimestamp_units');
     $date_end = date('Y/m/d H:i:s');
     $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - ((int) $date_text * (int) $date_units)));
     $period = (strtotime($date_end) - strtotime($date_init));
@@ -768,7 +768,14 @@ if (is_metaconsole() === false) {
             date('H:i:s', $date_init),
             date('Y/m/d', $utimestamp),
             date('H:i:s', $utimestamp),
-            $date_text
+            $date_text,
+            'w100p',
+            'Y/m/d',
+            'H:i:s',
+            'yy/mm/dd',
+            'HH:mm:ss',
+            '',
+            $date_units
         )
     );
 }
