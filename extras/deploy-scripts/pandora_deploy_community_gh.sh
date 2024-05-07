@@ -3,7 +3,7 @@
 # PandoraFMS Community  online installation script 
 #######################################################
 ## Tested versions ##
-# Centos 7.9
+# CentOS 7.9
 
 #Constants
 PANDORA_CONSOLE=/var/www/html/pandora_console

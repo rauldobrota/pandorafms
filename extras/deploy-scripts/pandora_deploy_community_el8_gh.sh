@@ -3,8 +3,8 @@
 # PandoraFMS Community  online installation script 
 #######################################################
 ## Tested versions ##
-# Centos 8.4, 8.5
-# Rocky 8.4, 8.5, 8.6, 8.7
+# CentOS 8.4, 8.5
+# Rockylinux 8.4, 8.5, 8.6, 8.7
 # Almalinux 8.4, 8.5
 # RedHat 8.5
 
