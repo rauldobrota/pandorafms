@@ -4122,6 +4122,13 @@ function reporting_exception(
                         );
                     break;
 
+                    case 'sum':
+                        $min = reporting_get_agentmodule_data_sum(
+                            $exceptions[$i]['id_agent_module'],
+                            $content['period']
+                        );
+                    break;
+
                     default:
                         // Default.
                     break;
@@ -4172,6 +4179,10 @@ function reporting_exception(
 
                     case 'min':
                         $value = reporting_get_agentmodule_data_min($exc['id_agent_module'], $content['period']);
+                    break;
+
+                    case 'sum':
+                        $value = reporting_get_agentmodule_data_sum($exc['id_agent_module'], $content['period']);
                     break;
                 }
             }
