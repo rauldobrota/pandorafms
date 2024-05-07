@@ -150,7 +150,7 @@ final class StaticGraph extends Item
         // Due to this DB call, this function cannot be unit tested without
         // a proper mock.
         $data = parent::fetchDataFromDB($filter, $ratio, $widthRatio);
-
+        $tooltip_infinite_loop = null;
         /*
          * Retrieve extra data.
          */
@@ -189,41 +189,30 @@ final class StaticGraph extends Item
             // There's no need to connect to the metaconsole before searching
             // for the image status cause the function itself does that for us.
             $imagePath = \visual_map_get_image_status_element($data);
+            if (str_contains($imagePath, '_bad.png') === true) {
+                // Critical or critical alert (BAD).
+                $data['colorStatus'] = COL_CRITICAL;
+            } else if (str_contains($imagePath, '_ok.png') === true) {
+                // Normal (OK).
+                $data['colorStatus'] = COL_NORMAL;
+            } else if (str_contains($imagePath, '_warning.png') === true) {
+                // Warning or warning alert.
+                $data['colorStatus'] = COL_WARNING;
+            } else if (str_contains($imagePath, 'alert-yellow@svg.svg') === true) {
+                // Default is Grey (Other).
+                $data['colorStatus'] = COL_UNKNOWN;
+                $tooltip_infinite_loop = __('Infinite link loop found. Can not determine status.');
+            } else {
+                // Default is Grey (Other).
+                $data['colorStatus'] = COL_UNKNOWN;
+            }
+
             $data['statusImageSrc'] = \ui_get_full_url(
                 $imagePath,
                 false,
                 false,
                 false
             );
-
-            $status = \visual_map_get_status_element($data);
-
-            // Magic numbers from the hell.
-            switch ($status) {
-                case 1:
-                case 4:
-                    // Critical or critical alert (BAD).
-                    $data['colorStatus'] = COL_CRITICAL;
-                break;
-
-                case 0:
-                    // Normal (OK).
-                    $data['colorStatus'] = COL_NORMAL;
-                break;
-
-                case 2:
-                case 10:
-                    // Warning or warning alert.
-                    $data['colorStatus'] = COL_WARNING;
-                break;
-
-                case 3:
-                    // Unknown.
-                default:
-                    // Default is Grey (Other).
-                    $data['colorStatus'] = COL_UNKNOWN;
-                break;
-            }
         } else {
             $data['colorStatus'] = COL_UNKNOWN;
             $imagePath = 'images/console/icons/'.$data['image'].'.png';
@@ -293,6 +282,11 @@ final class StaticGraph extends Item
             if ($nodeConnected === true) {
                 \metaconsole_restore_db();
             }
+        }
+
+        if (empty($tooltip_infinite_loop) === false) {
+            $data['lastValue'] = $tooltip_infinite_loop;
+            $data['showLastValueTooltip'] = 'enabled';
         }
 
         return $data;

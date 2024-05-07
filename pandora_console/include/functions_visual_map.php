@@ -3221,6 +3221,10 @@ function visual_map_get_image_status_element($layoutData, $status=false)
                 $img .= '_warning.png';
             break;
 
+            case 33:
+                $img = 'images/alert-yellow@svg.svg';
+            break;
+
             case 3:
                 // Unknown.
             default:
@@ -3898,12 +3902,13 @@ function visual_map_get_layout_status(
         VISUAL_MAP_STATUS_WARNING        => 0,
         VISUAL_MAP_STATUS_UNKNOWN        => 0,
         VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
+        VISUAL_MAP_STATUS_LOOPING        => 0,
     ]
 ) {
     global $config;
 
     if (in_array($layout_id, $exclude_recursive) === true) {
-        return VISUAL_MAP_STATUS_UNKNOWN;
+        return VISUAL_MAP_STATUS_LOOPING;
     }
 
     $exclude_recursive[] = $layout_id;
@@ -4095,6 +4100,10 @@ function visual_map_get_layout_status(
 
     if (isset($status_data['linked_layout_status_type']) === true) {
         // Status calculation.
+        if (isset($num_elements_by_status[VISUAL_MAP_STATUS_LOOPING]) === true && empty($num_elements_by_status[VISUAL_MAP_STATUS_LOOPING]) === false) {
+            return VISUAL_MAP_STATUS_LOOPING;
+        }
+
         switch ($status_data['linked_layout_status_type']) {
             default:
             case 'default':
