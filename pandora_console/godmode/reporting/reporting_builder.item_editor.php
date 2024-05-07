@@ -2757,14 +2757,16 @@ if (is_metaconsole() === true) {
             <td class="bolder"><?php echo __('Date'); ?></td>
             <td class="mx180px">
                 <?php
-                $dates = enterprise_hook(
-                    'inventory_get_dates',
-                    [
-                        $idAgentModule,
-                        $idAgent,
-                        $group,
-                    ]
-                );
+                if (isset($idAgent) === true) {
+                    $dates = enterprise_hook(
+                        'inventory_get_dates',
+                        [
+                            $idAgentModule,
+                            $idAgent,
+                            $group,
+                        ]
+                    );
+                }
 
                 if ($dates === ENTERPRISE_NOT_HOOK) {
                     $dates = [];
