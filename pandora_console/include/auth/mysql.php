@@ -72,6 +72,7 @@ if (isset($config) === false) {
 }
 
 require_once $config['homedir'].'/include/functions_profile.php';
+require_once $config['homedir'].'/include/functions_token.php';
 enterprise_include('include/auth/mysql.php');
 
 $config['user_can_update_info'] = true;
@@ -220,14 +221,31 @@ function process_user_login_remote($login, $pass, $api=false)
 {
     global $config, $mysql_cache;
 
+    $create_by_remote_api = false;
+    if (is_metaconsole() === false && is_management_allowed() === false) {
+        $create_by_remote_api = true;
+    }
+
     // Remote authentication.
     switch ($config['auth']) {
         // LDAP.
         case 'ldap':
-            $sr = ldap_process_user_login($login, $pass);
-            // Try with secondary server if not login.
-            if ($sr === false && (bool) $config['secondary_ldap_enabled'] === true) {
-                $sr = ldap_process_user_login($login, $pass, true);
+            if ($create_by_remote_api === true) {
+                $sr = ldap_process_user_login_by_api($login, $pass);
+                if ($sr !== false && isset($sr['uid']) === true && is_array($sr['uid']) === true) {
+                    $already_user = db_get_value('id_user', 'tusuario', 'id_user', $sr['uid'][0]);
+                    // If the node is centralized, LDAP login is delegated to the metaconsole via the API.
+                    // Since the user is not yet on the nodes, they are asked to try again in a few minutes.
+                    if ($already_user === false && is_metaconsole() === false) {
+                        $config['pending_sync_process_message'] = __('Successful login, please wait a few minutes for the metaconsole to synchronize with the nodes and then log in again with the same credentials.');
+                    }
+                }
+            } else {
+                $sr = ldap_process_user_login($login, $pass);
+                // Try with secondary server if not login.
+                if ($sr === false && (bool) $config['secondary_ldap_enabled'] === true) {
+                    $sr = ldap_process_user_login($login, $pass, true);
+                }
             }
 
             if (!$sr) {
@@ -305,7 +323,7 @@ function process_user_login_remote($login, $pass, $api=false)
             }
         } else if ($config['auth'] === 'ldap') {
             // Check if autocreate  remote users is active.
-            if ($config['autocreate_remote_users'] == 1) {
+            if ($create_by_remote_api === false && $config['autocreate_remote_users'] == 1) {
                 if ($config['ldap_save_password']) {
                     $update_credentials = change_local_user_pass_ldap($login, $pass);
                 } else {
@@ -381,11 +399,6 @@ function process_user_login_remote($login, $pass, $api=false)
             return false;
         }
     } else if ($config['auth'] === 'ldap') {
-        if (is_management_allowed() === false) {
-            $config['auth_error'] = __('Please, login into metaconsole first');
-            return false;
-        }
-
         if (is_metaconsole() === true) {
             $user_info['metaconsole_access_node'] = $config['ldap_adv_user_node'];
         }
@@ -401,15 +414,16 @@ function process_user_login_remote($login, $pass, $api=false)
         } else {
             $user_info['fullname'] = db_escape_string_sql(io_safe_input($sr['cn'][0]));
             $user_info['email'] = io_safe_input($sr['mail'][0]);
-
-            // Create the user.
-            $create_user = create_user_and_permisions_ldap(
-                $login,
-                $pass,
-                $user_info,
-                $permissions,
-                is_metaconsole() && is_centralized() === false
-            );
+            if ($create_by_remote_api === false) {
+                // Create the user.
+                $create_user = create_user_and_permisions_ldap(
+                    $login,
+                    $pass,
+                    $user_info,
+                    $permissions,
+                    is_metaconsole() && is_centralized() === false
+                );
+            }
         }
     } else {
         $user_info = [
@@ -988,6 +1002,7 @@ function ldap_process_user_login($login, $password, $secondary_server=false)
 
         if ($memberof['count'] == 0 && !isset($memberof[0]['memberof'])) {
             @ldap_close($ds);
+            $config['auth_error'] = 'User not found in database or incorrect password';
             return false;
         } else {
             $memberof = $memberof[0];
@@ -1641,6 +1656,78 @@ function local_ldap_search(
 
     return $user_attr;
 
+}
+
+
+/**
+ * Performs the LDAP login process by delegating it to the metaconsole via the API.
+ * It will return the user's ID and email if successful in LDAP format. USE ONLY ON NODE.
+ *
+ * @param string $user User to login.
+ * @param string $pass Password of user.
+ *
+ * @return false|array
+ */
+function ldap_process_user_login_by_api($user, $pass)
+{
+    global $config;
+    if (is_metaconsole() === true) {
+        return false;
+    }
+
+    metaconsole_load_external_db(
+        [
+            'dbhost' => $config['replication_dbhost'],
+            'dbuser' => $config['replication_dbuser'],
+            'dbpass' => io_output_password($config['replication_dbpass']),
+            'dbname' => $config['replication_dbname'],
+        ]
+    );
+    $serverUniqueIdentifier = db_get_value('value', 'tconfig', 'token', 'server_unique_identifier');
+    $apiPassword = db_get_value('value', 'tconfig', 'token', 'api_password');
+    $token = generate_token_for_system($serverUniqueIdentifier, $apiPassword);
+    metaconsole_restore_db();
+
+    $curl = curl_init();
+    curl_setopt_array(
+        $curl,
+        [
+            CURLOPT_URL            => $config['metaconsole_base_url'].'api/v2/user/'.$user.'/login?password='.$pass,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST  => 'GET',
+            CURLOPT_HTTPHEADER     => [
+                'Accept: application/json',
+                'Authorization: Bearer '.$token,
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+        ]
+    );
+
+    $response = json_decode(curl_exec($curl), true);
+    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    curl_close($curl);
+    if ($code === 200) {
+        if (isset($response['email']) === true
+            && isset($response['idUser']) === true
+        ) {
+            $ldap_format = [
+                'mail' => [$response['email']],
+                'uid'  => [$response['idUser']],
+            ];
+
+            return $ldap_format;
+        } else {
+            return false;
+        }
+    } else {
+        if (isset($response['error']) === true) {
+            $config['auth_error'] = $response['error'];
+        }
+
+        return false;
+    }
 }
 
 

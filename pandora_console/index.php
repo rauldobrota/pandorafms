@@ -578,6 +578,15 @@ if (isset($config['id_user']) === false) {
                 exit('</html>');
             }
 
+            if (isset($config['pending_sync_process_message']) === true) {
+                include_once 'general/login_page.php';
+                while (ob_get_length() > 0) {
+                    ob_end_flush();
+                }
+
+                exit('</html>');
+            }
+
             // Login ok and password has not expired.
             $process_login = true;
 
