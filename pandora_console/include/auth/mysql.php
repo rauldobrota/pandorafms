@@ -255,10 +255,22 @@ function process_user_login_remote($login, $pass, $api=false)
 
         // Active Directory.
         case 'ad':
-            $sr = enterprise_hook('ad_process_user_login', [$login, $pass]);
-            // Try with secondary server.
-            if ($sr === false && (bool) $config['secondary_active_directory'] === true) {
-                $sr = enterprise_hook('ad_process_user_login', [$login, $pass, true]);
+            if ($create_by_remote_api === true) {
+                $sr = ldap_process_user_login_by_api($login, $pass);
+                if ($sr !== false && isset($sr['uid']) === true && is_array($sr['uid']) === true) {
+                    $already_user = db_get_value('id_user', 'tusuario', 'id_user', $sr['uid'][0]);
+                    // If the node is centralized, AD login is delegated to the metaconsole via the API.
+                    // Since the user is not yet on the nodes, they are asked to try again in a few minutes.
+                    if ($already_user === false && is_metaconsole() === false) {
+                        $config['pending_sync_process_message'] = __('Successful login, please wait a few minutes for the metaconsole to synchronize with the nodes and then log in again with the same credentials.');
+                    }
+                }
+            } else {
+                $sr = enterprise_hook('ad_process_user_login', [$login, $pass]);
+                // Try with secondary server.
+                if ($sr === false && (bool) $config['secondary_active_directory'] === true) {
+                    $sr = enterprise_hook('ad_process_user_login', [$login, $pass, true]);
+                }
             }
 
             if ($sr === false) {
@@ -296,7 +308,7 @@ function process_user_login_remote($login, $pass, $api=false)
 
         if (($config['auth'] === 'ad')) {
             // Check if autocreate  remote users is active.
-            if ($config['autocreate_remote_users'] == 1) {
+            if ($create_by_remote_api === false && $config['autocreate_remote_users'] == 1) {
                 if ($config['ad_save_password']) {
                     $update_credentials = change_local_user_pass_ldap($login, $pass);
                 } else {
@@ -304,7 +316,7 @@ function process_user_login_remote($login, $pass, $api=false)
                 }
             }
 
-            if (isset($config['ad_advanced_config']) && $config['ad_advanced_config']) {
+            if ($create_by_remote_api === false && isset($config['ad_advanced_config']) && $config['ad_advanced_config']) {
                 $return = enterprise_hook(
                     'prepare_permissions_groups_of_user_ad',
                     [
@@ -369,11 +381,6 @@ function process_user_login_remote($login, $pass, $api=false)
         && (isset($config['ad_advanced_config'])
         && $config['ad_advanced_config'])
     ) {
-        if (is_management_allowed() === false) {
-            $config['auth_error'] = __('Please, login into metaconsole first');
-            return false;
-        }
-
         $user_info = [
             'fullname' => db_escape_string_sql($login),
             'comments' => 'Imported from '.$config['auth'],
@@ -383,20 +390,22 @@ function process_user_login_remote($login, $pass, $api=false)
             $user_info['metaconsole_access_node'] = $config['ad_adv_user_node'];
         }
 
-        // Create the user.
-        if (enterprise_hook(
-            'prepare_permissions_groups_of_user_ad',
-            [
-                $login,
-                $pass,
-                $user_info,
-                false,
-                defined('METACONSOLE') && is_centralized() === false,
-            ]
-        ) === false
-        ) {
-            $config['auth_error'] = __('User not found in database or incorrect password');
-            return false;
+        if ($create_by_remote_api === false) {
+            // Create the user.
+            if (enterprise_hook(
+                'prepare_permissions_groups_of_user_ad',
+                [
+                    $login,
+                    $pass,
+                    $user_info,
+                    false,
+                    defined('METACONSOLE') && is_centralized() === false,
+                ]
+            ) === false
+            ) {
+                $config['auth_error'] = __('User not found in database or incorrect password');
+                return false;
+            }
         }
     } else if ($config['auth'] === 'ldap') {
         if (is_metaconsole() === true) {
@@ -434,24 +443,26 @@ function process_user_login_remote($login, $pass, $api=false)
             $user_info['metaconsole_access_node'] = $config['ad_adv_user_node'];
         }
 
-        if (is_management_allowed() === false) {
+        if ($create_by_remote_api === false && is_management_allowed() === false) {
             $config['auth_error'] = __('Please, login into metaconsole first');
             return false;
         }
 
         // Create the user in the local database.
-        if (create_user($login, $pass, $user_info) === false) {
+        if ($create_by_remote_api === false && create_user($login, $pass, $user_info) === false) {
             $config['auth_error'] = __('User not found in database or incorrect password');
             return false;
         }
 
-        profile_create_user_profile(
-            $login,
-            $config['default_remote_profile'],
-            $config['default_remote_group'],
-            false,
-            $config['default_assign_tags']
-        );
+        if ($create_by_remote_api === false) {
+            profile_create_user_profile(
+                $login,
+                $config['default_remote_profile'],
+                $config['default_remote_group'],
+                false,
+                $config['default_assign_tags']
+            );
+        }
     }
 
     return $login;
@@ -1688,11 +1699,13 @@ function ldap_process_user_login_by_api($user, $pass)
     $token = generate_token_for_system($serverUniqueIdentifier, $apiPassword);
     metaconsole_restore_db();
 
+    $url = $config['metaconsole_base_url'];
+    $url .= (substr($config['metaconsole_base_url'], -1) === '/') ? '' : '/';
     $curl = curl_init();
     curl_setopt_array(
         $curl,
         [
-            CURLOPT_URL            => $config['metaconsole_base_url'].'api/v2/user/'.$user.'/login?password='.$pass,
+            CURLOPT_URL            => $url.'api/v2/user/'.urlencode($user).'/login?password='.urlencode($pass),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
@@ -1709,9 +1722,7 @@ function ldap_process_user_login_by_api($user, $pass)
     $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
     if ($code === 200) {
-        if (isset($response['email']) === true
-            && isset($response['idUser']) === true
-        ) {
+        if (isset($response['idUser']) === true) {
             $ldap_format = [
                 'mail' => [$response['email']],
                 'uid'  => [$response['idUser']],
@@ -1724,6 +1735,8 @@ function ldap_process_user_login_by_api($user, $pass)
     } else {
         if (isset($response['error']) === true) {
             $config['auth_error'] = $response['error'];
+        } else {
+            $config['auth_error'] = __('Unexpected error');
         }
 
         return false;
