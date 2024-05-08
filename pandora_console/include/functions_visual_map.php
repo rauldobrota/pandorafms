@@ -3222,7 +3222,7 @@ function visual_map_get_image_status_element($layoutData, $status=false)
             break;
 
             case 33:
-                $img = 'images/alert-yellow@svg.svg';
+                $img = 'images/broken_loop.svg';
             break;
 
             case 3:

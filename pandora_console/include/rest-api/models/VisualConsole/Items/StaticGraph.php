@@ -198,7 +198,7 @@ final class StaticGraph extends Item
             } else if (str_contains($imagePath, '_warning.png') === true) {
                 // Warning or warning alert.
                 $data['colorStatus'] = COL_WARNING;
-            } else if (str_contains($imagePath, 'alert-yellow@svg.svg') === true) {
+            } else if (str_contains($imagePath, 'broken_loop.svg') === true) {
                 // Default is Grey (Other).
                 $data['colorStatus'] = COL_UNKNOWN;
                 $tooltip_infinite_loop = __('Infinite link loop found. Can not determine status.');
