@@ -14315,6 +14315,11 @@ div.fixed-bottom-box.tree-view-bottom-modal {
 .bg-image-none {
   background-image: none !important;
 }
+
+.discovery-list-extensions tbody tr td {
+  height: 30px;
+}
+
 .welcome-message-no-pm h2 {
   font-size: 20px !important;
   margin: 0px;
