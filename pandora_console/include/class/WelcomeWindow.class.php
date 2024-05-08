@@ -600,7 +600,7 @@ class WelcomeWindow extends Wizard
                     <h2>'.__('Hi!').'</h2>
                     <p class="mrgn_btn_5px">'.__('It seems you are new to Pandora FMS.').'<br />
                     '.__('If you want to watch videos on how to use Pandora FMS, you can visit our ').'<a href="https://www.youtube.com/@PandoraFMS" target="_blank"><b>'.__('YouTube channel.').'</b></a></p>
-                    <p class="mrgn_top_5px">'.__('Are you familiar with ').'<a href="https://pandorafms.com/es/producto/elearning/" target="_blank"><b>'.__('our eLearning system?').'</b></a>'._(' It\'s completely free for PAO (Operation) and PAT (Administration) courses. Learn how to use Pandora FMS at your own pace.').'</p>',
+                    <p class="mrgn_top_5px">'.__('Are you familiar with ').'<a href="https://pandorafms.com/es/producto/elearning/" target="_blank"><b>'.__('our eLearning system?').'</b></a>'.__(' It\'s completely free for PAO (Operation) and PAT (Administration) courses. Learn how to use Pandora FMS at your own pace.').'</p>',
                 ],
                 true
             );
