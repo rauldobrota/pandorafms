@@ -120,6 +120,19 @@ function upload_file($upload_file_or_zip, $default_real_directory, $destination_
         $upload_zip  = (bool) get_parameter('upload_zip');
     }
 
+    // Validate file size vs collection_max_size token.
+    if ($_FILES['file']['size']  > (int) $config['collection_max_size']) {
+        $upload_file = false;
+        $config['filemanager']['message'] = ui_print_error_message(
+            __(
+                'File of collection is bigger than the limit (%s bytes)',
+                $config['collection_max_size'],
+                '',
+                true
+            )
+        );
+    }
+
     // Upload file.
     if ($upload_file === true) {
         if (isset($_FILES['file']) === true && empty($_FILES['file']['name']) === false) {
