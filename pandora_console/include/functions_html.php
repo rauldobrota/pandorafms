@@ -2235,7 +2235,7 @@ function html_print_select_from_sql(
     foreach ($result as $row) {
         $id = array_shift($row);
         $value = array_shift($row);
-        $fields[$id] = $value;
+        $fields[$id] = io_safe_output($value);
     }
 
     return html_print_select(
