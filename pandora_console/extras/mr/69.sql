@@ -7769,4 +7769,6 @@ UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.
 -- Delete Create incident from event, from tevent_response
 DELETE FROM tevent_response	WHERE name = 'Create&#x20;incident&#x20;from&#x20;event';
 
+UPDATE tconfig_os SET `name` = 'Web&#x20;Server' WHERE `id_os` = 12;
+
 COMMIT;
