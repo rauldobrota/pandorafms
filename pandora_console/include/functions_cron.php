@@ -1010,7 +1010,7 @@ function GetNextExecutionCron($cron)
     if ($cronsplit[2] !== '*') {
         $next_execution->setDate($current_day->format('Y'), $current_day->format('m'), $cronsplit[2]);
         $next_execution->setTime($cronsplit[1], $cronsplit[0]);
-        if ($next_execution->format('Y-m-d H:m') <= $current_day->format('Y-m-d H:m')) {
+        if ($next_execution->format('Y-m-d H:i') <= $current_day->format('Y-m-d H:i')) {
             $next_execution->setDate($current_day->format('Y'), ($current_day->format('m') + 1), $cronsplit[2]);
         }
 
@@ -1021,7 +1021,7 @@ function GetNextExecutionCron($cron)
     if ($cronsplit[4] !== '*') {
         $next_execution->setISODate($current_day->format('Y'), $current_day->format('W'), $cronsplit[4]);
         $next_execution->setTime($cronsplit[1], $cronsplit[0]);
-        if ($next_execution->format('Y-m-d H:m') <= $current_day->format('Y-m-d H:m')) {
+        if ($next_execution->format('Y-m-d H:i') <= $current_day->format('Y-m-d H:i')) {
             $next_execution->setISODate($current_day->format('Y'), ($current_day->format('W') + 1), $cronsplit[4]);
         }
 
@@ -1031,7 +1031,7 @@ function GetNextExecutionCron($cron)
     // Daily schedule.
     if ($cronsplit[2] === '*' && $cronsplit[3] === '*' && $cronsplit[4] === '*') {
         $next_execution->setTime($cronsplit[1], $cronsplit[0]);
-        if ($next_execution->format('Y-m-d H:m') <= $current_day->format('Y-m-d H:m')) {
+        if ($next_execution->format('Y-m-d H:i') <= $current_day->format('Y-m-d H:i')) {
             $next_execution->setDate($current_day->format('Y'), $current_day->format('m'), ($current_day->format('d') + 1));
         }
 
