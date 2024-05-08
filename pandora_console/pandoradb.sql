@@ -3777,6 +3777,7 @@ CREATE TABLE IF NOT EXISTS `tlayout_template` (
   `maintenance_mode` TEXT,
   `grid_color` VARCHAR(45) NOT NULL DEFAULT '#cccccc',
   `grid_size` VARCHAR(45) NOT NULL DEFAULT '10',
+  `create_from` INT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
