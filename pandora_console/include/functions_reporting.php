@@ -6192,7 +6192,7 @@ function reporting_alert_report_group($report, $content)
 
     $agent_modules = alerts_get_agent_modules(
         $content['id_group'],
-        (((string) $content['id_group'] === '0') ? true : $content['recursion'])
+        (((string) $content['id_group'] === '0') ? true : (bool) $content['recursion'])
     );
 
     if (empty($alerts)) {
