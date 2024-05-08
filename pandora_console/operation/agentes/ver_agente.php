@@ -1812,6 +1812,17 @@ if (enterprise_installed() === true && (bool) $config['log_collector'] === true)
 }
 
 // EHorus tab.
+$tab_url = 'index.php?sec=estado&sec2=operation/agentes/ver_agente&tab=ehorus&id_agente='.$id_agente;
+$ehorus_tab['text'] = '<a href="'.$tab_url.'" class="ehorus_tab">'.html_print_image(
+    'images/RC.png',
+    true,
+    [
+        'title' => __('Pandora RC'),
+        'class' => 'invert_filter',
+    ]
+).'</a>';
+$ehorus_tab['active'] = $tab == 'ehorus';
+
 if ((bool) $config['ehorus_enabled'] === true && empty($config['ehorus_custom_field'] === false)
     && (check_acl_one_of_groups(
         $config['id_user'],
@@ -1824,16 +1835,8 @@ if ((bool) $config['ehorus_enabled'] === true && empty($config['ehorus_custom_fi
         // If ehorus user configuration is enabled, and userr acces level is disabled do not show eHorus tab.
     } else {
         $ehorus_agent_id = agents_get_agent_custom_field($id_agente, $config['ehorus_custom_field']);
+
         if (empty($ehorus_agent_id) === false) {
-            $tab_url = 'index.php?sec=estado&sec2=operation/agentes/ver_agente&tab=ehorus&id_agente='.$id_agente;
-            $ehorus_tab['text'] = '<a href="'.$tab_url.'" class="ehorus_tab">'.html_print_image(
-                'images/RC.png',
-                true,
-                [
-                    'title' => __('Pandora RC'),
-                    'class' => 'invert_filter',
-                ]
-            ).'</a>';
             $menu_tab_url = '<a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&tab=ehorus&id_agente='.$id_agente.'">'.__('Pandora RC').'</a>';
             array_push($menu_tabs, $menu_tab_url);
 
@@ -1895,8 +1898,6 @@ if ((bool) $config['ehorus_enabled'] === true && empty($config['ehorus_custom_fi
             $ehorus_tab['sub_menu'] .= '</li>';
             $ehorus_tab['sub_menu'] .= '</a>';
             $ehorus_tab['sub_menu'] .= '</ul>';
-
-            $ehorus_tab['active'] = $tab == 'ehorus';
         }
     }
 }
