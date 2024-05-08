@@ -38,9 +38,11 @@ mkdir -p %{buildroot}/usr/share/man/man1/
 install -m 0755 pandora_agent %{buildroot}%{_bindir}/pandora_agent
 install -m 0755 pandora_agent_exec %{buildroot}%{_bindir}/pandora_agent_exec
 install -m 0755 tentacle_client %{buildroot}%{_bindir}/tentacle_client
+install -m 0755 tentacle_server %{buildroot}%{_bindir}/tentacle_server
 install -m 0755 pandora_agent_daemon %{buildroot}/etc/init.d/pandora_agent_daemon
 install -m 0644 man/man1/pandora_agent.1.gz %{buildroot}/usr/share/man/man1/pandora_agent.1.gz
 install -m 0644 man/man1/tentacle_client.1.gz %{buildroot}/usr/share/man/man1/tentacle_client.1.gz
+install -m 0644 man/man1/tentacle_server.1.gz %{buildroot}/usr/share/man/man1/tentacle_server.1.gz
 install -m 0600 Linux/pandora_agent.conf %{buildroot}/etc/pandora/pandora_agent.conf
 install -d -m 0755 %{buildroot}/etc/pandora/plugins
 install -d -m 0755 %{buildroot}/etc/pandora/collections
@@ -81,6 +83,7 @@ fi
 /usr/bin/pandora_agent
 /usr/bin/pandora_agent_exec
 /usr/bin/tentacle_client
+/usr/bin/tentacle_server
 /etc/init.d/pandora_agent_daemon
 
 %defattr(-,pandora,root,770)
@@ -96,6 +99,7 @@ fi
 %doc
 /usr/share/man/man1/pandora_agent.1.gz
 /usr/share/man/man1/tentacle_client.1.gz
+/usr/share/man/man1/tentacle_server.1.gz
 
 %changelog
 * Sun Feb 23 2014 Sancho Lerena <slerena at gmail.com> - 5.0
