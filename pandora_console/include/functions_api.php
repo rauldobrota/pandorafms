@@ -435,7 +435,11 @@ function api_get_license($trash1, $trash2, $trash3, $returnType='json')
     if ($license === ENTERPRISE_NOT_HOOK) {
         // Not an enterprise environment?
         if (license_free()) {
-            $license = 'PANDORA_FREE';
+            $license = 'PANDORA-FREE';
+        }
+
+        if (license_enterprise_free() === true) {
+            $license = 'PANDORA-ENTERPRISE-FREE';
         }
 
         returnData(
@@ -479,11 +483,22 @@ function api_get_license_remaining(
     enterprise_include_once('include/functions_license.php');
     $license = enterprise_hook('license_get_info');
     if ($license === ENTERPRISE_NOT_HOOK) {
-        returnError('get-license', 'Failed to verify license.');
+        if (license_free()) {
+            returnData(
+                $returnType,
+                [
+                    'type' => 'integer',
+                    'data' => PHP_INT_MAX,
+                ]
+            );
+        } else {
+            returnError('get-license', 'Failed to verify license.');
+        }
+
         return;
     }
 
-    if (license_free() === true) {
+    if (license_enterprise_free() === true) {
         $license['limit'] = 50;
     }
 
@@ -2308,7 +2323,10 @@ function api_set_delete_agent($id, $thrash1, $other, $returnType)
             exit;
         }
 
-        define('PANDORA_ENTERPRISE', true);
+        // Support for Pandora Enterprise.
+        if (license_free() === false) {
+            define('PANDORA_ENTERPRISE', true);
+        }
 
         if ($agent_by_alias) {
             $idsAgents = agents_get_agent_id_by_alias(io_safe_input($id));

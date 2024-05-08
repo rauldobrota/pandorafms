@@ -1081,7 +1081,7 @@ class ConsoleSupervisor
     {
         global $config;
 
-        if (license_free() === true) {
+        if (license_enterprise_free() === true) {
             return true;
         }
 

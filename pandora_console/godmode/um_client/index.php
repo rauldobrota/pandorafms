@@ -65,7 +65,7 @@ if (isset($config['lts_updates']) === false) {
 }
 
 if (empty($license) === true) {
-    $license = 'PANDORA-FREE';
+    $license = 'PANDORA-ENTERPRISE-FREE';
 }
 
 $mode_str = '';
@@ -81,7 +81,7 @@ if ($mode === Manager::MODE_ONLINE) {
 
 enterprise_include_once('/include/functions_license.php');
 $license_data = enterprise_hook('license_get_info');
-if ($license_data !== ENTERPRISE_NOT_HOOK && $license !== 'PANDORA-FREE') {
+if ($license_data !== ENTERPRISE_NOT_HOOK && $license !== 'PANDORA-ENTERPRISE-FREE') {
     $days_to_expiry = ((strtotime($license_data['expiry_date']) - time()) / (60 * 60 * 24));
 
     if ((int) $license_data['limit_mode'] === 0) {
@@ -108,20 +108,6 @@ if ($license_data !== ENTERPRISE_NOT_HOOK && $license !== 'PANDORA-FREE') {
                 'You cannot use update manager %s. This license has expired %d days ago. Please update your license or disable enterprise section by moving enterprise directory to another location and try again.',
                 $mode_str,
                 abs($days_to_expiry)
-            )
-        );
-        return;
-    }
-
-    if (rtrim($license_data['licensed_to']) === Manager::PANDORA_TRIAL_ISSUER) {
-        $product_name = get_product_name();
-
-        ui_print_info_message(
-            __(
-                'You cannot use update manager %s. This license is a trial license to test all %s features. Please update your license to unlock all %s features.',
-                $mode_str,
-                $product_name,
-                $product_name
             )
         );
         return;
