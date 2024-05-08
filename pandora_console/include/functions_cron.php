@@ -1000,112 +1000,43 @@ function cron_list_table()
  */
 function GetNextExecutionCron($cron)
 {
-    // Parseamos el formato cron.
+    // Split cron.
     $cronsplit = preg_split('/\s+/', $cron);
-    $current_date = new DateTime();
-    // Extract the current hour and minute.
-    $current_hour = (int) $current_date->format('H');
-    $current_minute = (int) $current_date->format('i');
+    // Set dates to use.
+    $current_day = new DateTime();
+    $next_execution = new DateTime();
 
-    // If the current time has already passed, we increment the date to the next day.
-    if ($current_hour > $cronsplit[1] || ($current_hour == $cronsplit[1] && $current_minute >= $cronsplit[0])) {
-        $current_date->add(new DateInterval('P1D'));
+    // Monthly schedule.
+    if ($cronsplit[2] !== '*') {
+        $next_execution->setDate($current_day->format('Y'), $current_day->format('m'), $cronsplit[2]);
+        $next_execution->setTime($cronsplit[1], $cronsplit[0]);
+        if ($next_execution->format('Y-m-d H:m') <= $current_day->format('Y-m-d H:m')) {
+            $next_execution->setDate($current_day->format('Y'), ($current_day->format('m') + 1), $cronsplit[2]);
+        }
+
+        return $next_execution;
     }
 
-    // Calculamos la próxima ejecución basada en el formato cron.
-    $next_minute = $current_date->format('i');
-    $next_hour = $current_date->format('H');
-    $next_day = $current_date->format('d');
-    $next_month = $current_date->format('m');
-    $next_day_week = $current_date->format('w');
+    // Weekly schedule.
+    if ($cronsplit[4] !== '*') {
+        $next_execution->setISODate($current_day->format('Y'), $current_day->format('W'), $cronsplit[4]);
+        $next_execution->setTime($cronsplit[1], $cronsplit[0]);
+        if ($next_execution->format('Y-m-d H:m') <= $current_day->format('Y-m-d H:m')) {
+            $next_execution->setISODate($current_day->format('Y'), ($current_day->format('W') + 1), $cronsplit[4]);
+        }
 
-    // Minutes.
-    $minutes = cronToArray($cronsplit[0], 0, 59);
-    $next_minute = check_next_value($minutes, $next_minute);
+        return $next_execution;
+    }
 
-    // Hours.
-    $hours = cronToArray($cronsplit[1], 0, 23);
-    $next_hour = check_next_value($hours, $next_hour);
+    // Daily schedule.
+    if ($cronsplit[2] === '*' && $cronsplit[3] === '*' && $cronsplit[4] === '*') {
+        $next_execution->setTime($cronsplit[1], $cronsplit[0]);
+        if ($next_execution->format('Y-m-d H:m') <= $current_day->format('Y-m-d H:m')) {
+            $next_execution->setDate($current_day->format('Y'), $current_day->format('m'), ($current_day->format('d') + 1));
+        }
 
-    // Day of month.
-    $day_month = cronToArray($cronsplit[2], 1, 31);
-    $next_day = check_next_value($day_month, $next_day);
-
-    // Month.
-    $month = cronToArray($cronsplit[3], 1, 12);
-    $next_month = check_next_value($month, $next_month);
-
-    // Day of week.
-    $week_day = cronToArray($cronsplit[4], 0, 6);
-    $next_day_week = check_next_value($week_day, $next_day_week);
-
-    // Next execution.
-    $next_execution = new DateTime();
-    $next_execution->setTime($next_hour, $next_minute);
-    $next_execution->setDate($current_date->format('Y'), $next_month, $next_day);
-
-    // If the next execution falls on a day of the week other than the current one, we adjust the date.
-    while ($next_execution->format('w') != $next_day_week) {
-        $next_execution->add(new DateInterval('P1D'));
+        return $next_execution;
     }
 
     return $next_execution;
-}
-
-
-/**
- * Split cron into array for checks.
- *
- * @param  integer $cron
- * @param  mixed   $min
- * @param  mixed   $max
- * @return void
- */
-function cronToArray($cron, $min, $max)
-{
-    $values = [];
-    if ($cron == '*') {
-        for ($i = $min; $i <= $max; $i++) {
-            $values[] = $i;
-        }
-    } else {
-        $$elements = explode(',', $cron);
-        foreach ($$elements as $$element) {
-            if (strpos($$element, '/') !== false) {
-                $division = explode('/', $$element);
-                $start = $division[0];
-                $count = $division[1];
-                for ($i = $start; $i <= $max; $i += $count) {
-                    if ($i >= $min && $i <= $max) {
-                        $values[] = $i;
-                    }
-                }
-            } else {
-                $values[] = $$element;
-            }
-        }
-    }
-
-    sort($values);
-    return $values;
-}
-
-
-/**
- * Check if the next value is valid.
- *
- * @param array    $valores Values.
- * @param interger $actual  Value.
- *
- * @return integer Return the value.
- */
-function check_next_value($valores, $actual)
-{
-    foreach ($valores as $valor) {
-        if ($valor >= $actual) {
-            return $valor;
-        }
-    }
-
-    return $valores[0];
 }
