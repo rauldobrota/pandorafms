@@ -14319,3 +14319,15 @@ div.fixed-bottom-box.tree-view-bottom-modal {
 .discovery-list-extensions tbody tr td {
   height: 30px;
 }
+
+.welcome-message-no-pm h2 {
+  font-size: 20px !important;
+  margin: 0px;
+}
+.welcome-message-no-pm p,
+.welcome-message-no-pm b {
+  font-size: 15px !important;
+}
+.welcome-message-no-pm {
+  margin-bottom: 30px;
+}
