@@ -4985,7 +4985,7 @@ function events_display_instructions($event_type='', $inst=[], $italic=true, $ev
  *
  * @return string HTML.
  */
-function events_page_general($event)
+function events_page_general($event, $filter=[])
 {
     global $img_sev;
     global $config;
@@ -5091,7 +5091,7 @@ function events_page_general($event)
 
     // Ticket 13013 This was done on purpose.
     if ((int) $event['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
-        $counter_extra_id = event_get_counter_extraId($event, []);
+        $counter_extra_id = event_get_counter_extraId($event, $filter);
         if (empty($counter_extra_id) === false && $counter_extra_id > 1) {
             $data[1] = sprintf('%d Times', $counter_extra_id);
         }
