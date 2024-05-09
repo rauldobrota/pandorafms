@@ -5088,14 +5088,23 @@ function events_page_general($event)
 
     $data = [];
     $data[0] = __('Repeated');
-    if ($group_rep != 0) {
-        if ($event['event_rep'] <= 1) {
-            $data[1] = '<i>'.__('No').'</i>';
-        } else {
-            $data[1] = sprintf('%d Times', $event['event_rep']);
+
+    // Ticket 13013 This was done on purpose.
+    if ((int) $event['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
+        $counter_extra_id = event_get_counter_extraId($event, []);
+        if (empty($counter_extra_id) === false && $counter_extra_id > 1) {
+            $data[1] = sprintf('%d Times', $counter_extra_id);
         }
     } else {
-        $data[1] = '<i>'.__('No').'</i>';
+        if ($group_rep != 0) {
+            if ($event['event_rep'] <= 1) {
+                $data[1] = '<i>'.__('No').'</i>';
+            } else {
+                $data[1] = sprintf('%d Times', $event['event_rep']);
+            }
+        } else {
+            $data[1] = '<i>'.__('No').'</i>';
+        }
     }
 
     $table_general->data[] = $data;
