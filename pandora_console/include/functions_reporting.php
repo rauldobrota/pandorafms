@@ -3817,10 +3817,18 @@ function reporting_end_of_life($report, $content)
 
     $return['data'] = [];
 
-    $external_source = json_decode(
-        $content['external_source'],
-        true
-    );
+    if (isset($content['external_source']) === true && $content['external_source'] !== 'null') {
+        $external_source = json_decode(
+            $content['external_source'],
+            true
+        );
+    } else {
+        $external_source = [
+            'end_of_life_date' => $content['end_of_life_date'],
+            'os_selector'      => $content['os_selector'],
+            'os_version'       => $content['os_version'],
+        ];
+    }
 
     $servers_ids = [0];
 
@@ -3861,6 +3869,7 @@ function reporting_end_of_life($report, $content)
         $es_limit_eol_datetime = DateTime::createFromFormat('Y/m/d', $external_source['end_of_life_date']);
 
         // Post-process returned agents to filter agents using correctly formatted fields.
+        $agents_tmp = [];
         foreach ($agents as $idx => $agent) {
             if (empty($agent['os_version']) === true) {
                 $agent['os_version'] = '.*';
@@ -3877,14 +3886,16 @@ function reporting_end_of_life($report, $content)
             ) {
                 // Agent matches an existing OS version.
                 $agents[$idx]['end_of_life'] = $result_end_of_life;
+                $agents_tmp[] = $agents[$idx];
             } else {
                 // Set agent to be filtered out.
                 $agents[$idx] = null;
             }
         }
 
-        if ($agents !== false) {
-            $agents = array_filter($agents);
+        // TODO:
+        if ($agents_tmp !== false) {
+            $agents = $agents_tmp;
         }
 
         if (is_metaconsole() === true) {
