@@ -278,10 +278,28 @@ $(document).ready(function() {
             email: $("#text-license_email").val()
           },
           success: function(data) {
-            console.log(data);
+            if (data.error != null) {
+              $("#register_dialog_result").addClass("error");
+              $("#register_dialog_result_content").html("Unsuccessful register. "+ data.error);
+            } else {
+              $("#register_dialog_result_content").html("Successfully registered with UID: " + data.result);
+            }
+
+            $("#register_dialog_result").dialog({
+              buttons: [
+                {
+                  text: "OK",
+                  class: "submit-next",
+                  click: function() {
+                    $(this).dialog("close");
+                    $("#register_dialog_message").dialog("close");
+                    location.reload();
+                  }
+                }
+              ]
+            });
           }
         });
-        $("#register_dialog_message").dialog("close");
       } else {
         $("#text-license_email").css("border", "1px solid red");
       }
