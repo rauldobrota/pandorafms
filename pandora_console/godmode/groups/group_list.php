@@ -437,7 +437,7 @@ if ($is_management_allowed === true
     $icon = (string) get_parameter('icon');
     $id_parent = (int) get_parameter('id_parent');
     $group_pass = (string) get_parameter('group_pass');
-    $alerts_disabled = (bool) get_parameter('alerts_disabled');
+    $alerts_disabled = (bool) get_parameter_switch('alerts_enabled', 0);
     $custom_id = (string) get_parameter('custom_id');
     $description = (string) get_parameter('description');
     $contact = (string) get_parameter('contact');
@@ -459,7 +459,7 @@ if ($is_management_allowed === true
                     'nombre'      => $name,
                     'icon'        => $icon,
                     'parent'      => $id_parent,
-                    'disabled'    => $alerts_disabled,
+                    'disabled'    => !$alerts_disabled,
                     'custom_id'   => $custom_id,
                     'description' => $description,
                     'contact'     => $contact,
@@ -493,7 +493,7 @@ if ($is_management_allowed === true && $update_group === true) {
     $id_parent = (int) get_parameter('id_parent');
     $description = (string) get_parameter('description');
     $group_pass = (string) get_parameter('group_pass');
-    $alerts_enabled = (bool) get_parameter('alerts_enabled');
+    $alerts_enabled = (bool) get_parameter_switch('alerts_enabled', 0);
     $custom_id = (string) get_parameter('custom_id');
     $propagate = (bool) get_parameter('propagate');
     $description = (string) get_parameter('description');
@@ -1108,7 +1108,7 @@ if ($tab == 'tree') {
 
 
             // Reporting_get_group_stats.
-            $table->data[$key][3] = ($group['disabled']) ? __('Disabled') : __('Enabled');
+            $table->data[$key][3] = ($group['disabled'] === '1') ? __('Disabled') : __('Enabled');
             $table->data[$key][4] = $group['parent_name'];
             $table->data[$key][5] = $group['description'];
             if ($is_management_allowed === true) {

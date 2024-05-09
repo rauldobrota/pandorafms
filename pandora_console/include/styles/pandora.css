@@ -14316,6 +14316,10 @@ div.fixed-bottom-box.tree-view-bottom-modal {
   background-image: none !important;
 }
 
+.discovery-list-extensions tbody tr td {
+  height: 30px;
+}
+
 .legend_servicemap_title {
   cursor: pointer;
 }

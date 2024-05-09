@@ -4,7 +4,7 @@
 %global __os_install_post %{nil}
 %define name        pandorafms_agent_linux
 %define version     7.0NG.776
-%define release     240503
+%define release     240509
 
 Summary:            Pandora FMS Linux agent, PERL version
 Name:               %{name}
@@ -46,12 +46,14 @@ mkdir -p $RPM_BUILD_ROOT/var/log/pandora/
 mkdir -p $RPM_BUILD_ROOT/usr/share/man/man1/
 cp -aRf * $RPM_BUILD_ROOT%{prefix}/pandora_agent/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/tentacle_client $RPM_BUILD_ROOT/usr/bin/
+cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/tentacle_server $RPM_BUILD_ROOT/usr/bin/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent $RPM_BUILD_ROOT/usr/bin/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent_exec $RPM_BUILD_ROOT/usr/bin/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent_daemon $RPM_BUILD_ROOT/etc/init.d/pandora_agent_daemon
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent_daemon $RPM_BUILD_ROOT/etc/init.d/pandora_agent_daemon
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/man/man1/pandora_agent.1.gz $RPM_BUILD_ROOT/usr/share/man/man1/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/man/man1/tentacle_client.1.gz $RPM_BUILD_ROOT/usr/share/man/man1/
+cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/man/man1/tentacle_server.1.gz $RPM_BUILD_ROOT/usr/share/man/man1/
 
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/Linux/pandora_agent.conf $RPM_BUILD_ROOT/usr/share/pandora_agent/pandora_agent.conf.rpmnew
 
@@ -147,6 +149,7 @@ rm -Rf /var/log/pandora/pandora_agent* 2> /dev/null
 rm -Rf /usr/share/pandora_agent
 rm -Rf /usr/share/man/man1/pandora_agent.1.gz
 rm -Rf /usr/share/man/man1/tentacle_client.1.gz
+rm -Rf /usr/share/man/man1/tentacle_server.1.gz
 exit 0
 
 %postun
@@ -165,6 +168,7 @@ rm -Rf /etc/logrotate.d/pandora_agent
 
 %defattr(755,pandora,root)
 /usr/bin/tentacle_client
+/usr/bin/tentacle_server
 /etc/init.d/pandora_agent_daemon
 %docdir %{prefix}/pandora_agents/docs
 %{prefix}/pandora_agent
@@ -172,4 +176,5 @@ rm -Rf /etc/logrotate.d/pandora_agent
 %defattr(644,pandora,root)
 /usr/share/man/man1/pandora_agent.1.gz
 /usr/share/man/man1/tentacle_client.1.gz
+/usr/share/man/man1/tentacle_server.1.gz
 

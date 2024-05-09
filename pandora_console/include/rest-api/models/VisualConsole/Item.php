@@ -2654,6 +2654,18 @@ class Item extends CachedModel
      */
     public static function checkLayoutAlertsRecursive(array $item, array $visitedLayouts=[])
     {
+        static $cache = [];
+
+        if (isset($cache[$item['id_layout_linked']]) === true && empty($item['id_layout_linked']) === false) {
+            return $cache[$item['id_layout_linked']];
+        }
+
+        if (in_array($item['id_layout'], $visitedLayouts) === true) {
+            // Item has no linked layout or it has already been visited (avoid infinite loop caused by circular references).
+            $cache[$item['id_layout']] = false;
+            return false;
+        }
+
         if (isset($item['type']) === true) {
             $excludedItemTypes = [
                 22,
@@ -2668,6 +2680,7 @@ class Item extends CachedModel
             ];
 
             if (in_array($item['type'], $excludedItemTypes) === true) {
+                $cache[$item['id_layout']] = false;
                 return false;
             }
         }
@@ -2712,13 +2725,9 @@ class Item extends CachedModel
 
             // Item has a triggered alert.
             if ($firedAlert !== false) {
+                $cache[$item['id_layout']] = true;
                 return true;
             }
-        }
-
-        if ($linkedLayoutID === 0 || in_array($linkedLayoutID, $visitedLayouts) === true) {
-            // Item has no linked layout or it has already been visited (avoid infinite loop caused by circular references).
-            return false;
         }
 
         $filter = ['id_layout' => $linkedLayoutID];
@@ -2737,15 +2746,18 @@ class Item extends CachedModel
 
         if ($linkedLayoutItems === false) {
             // There are no items in the linked visual console. Nothing to check.
+            $cache[$item['id_layout']] = false;
             return false;
         }
 
         foreach ($linkedLayoutItems as $linkedLayoutItem) {
             if (self::checkLayoutAlertsRecursive($linkedLayoutItem, $visitedLayouts)) {
+                $cache[$item['id_layout']] = true;
                 return true;
             }
         }
 
+        $cache[$item['id_layout']] = false;
         return false;
     }
 
