@@ -1362,12 +1362,12 @@ $class = 'databox filters';
 
                 $result_select = [];
 
-                foreach ($os as $item) {
+                foreach ($os_list as $item) {
                     $result_select[$item['id_os']] = $item['name'];
                 }
 
                 html_print_select(
-                    $os_list,
+                    $result_select,
                     'os_selector',
                     $os_selector,
                     ''
