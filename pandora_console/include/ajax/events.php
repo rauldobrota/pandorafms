@@ -1548,7 +1548,6 @@ if ($change_status === true) {
     $event_ids = get_parameter('event_ids');
     $new_status = get_parameter('new_status');
     $filter = get_parameter('filter', []);
-    hd($filter, true);
     $server_id = 0;
     if (is_metaconsole() === true) {
         $server_id = (int) get_parameter('server_id');
