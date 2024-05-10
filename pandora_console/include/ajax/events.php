@@ -1547,7 +1547,8 @@ if ($add_comment === true) {
 if ($change_status === true) {
     $event_ids = get_parameter('event_ids');
     $new_status = get_parameter('new_status');
-    $group_rep = (int) get_parameter('group_rep', 0);
+    $filter = get_parameter('filter', []);
+    hd($filter, true);
     $server_id = 0;
     if (is_metaconsole() === true) {
         $server_id = (int) get_parameter('server_id');
@@ -1564,7 +1565,7 @@ if ($change_status === true) {
         $return = events_update_status(
             $event_ids,
             (int) $new_status,
-            ['group_rep' => $group_rep]
+            $filter
         );
     } catch (\Exception $e) {
         // Unexistent agent.
