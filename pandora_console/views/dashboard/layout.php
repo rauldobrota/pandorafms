@@ -94,5 +94,8 @@ echo $output;
                 $("#button-add-widget-"+cellId).trigger("click");
             }, 500);
         }
+
+        // Paused and resume if edit mode is checked.
+        paused_resume_dashboard_countdown();
     });
 </script>

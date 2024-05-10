@@ -1588,7 +1588,12 @@ function snmp_browser_create_modules_snmp(
 
                 enterprise_include_once('include/functions_policies.php');
                 foreach ($id_target as $policy) {
-                    $ids[] = policies_create_module($oid['oid'], $policy, 2, $values);
+                    $exist = db_get_row_filter('tpolicy_modules', ['name' => $oid['oid'], 'id_policy' => $policy], '*');
+                    if ($exist !== false) {
+                        $ids[] = false;
+                    } else {
+                        $ids[] = policies_create_module($oid['oid'], $policy, 2, $values);
+                    }
                 }
             }
         }

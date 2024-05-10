@@ -232,6 +232,9 @@ function initialiceLayout(data) {
             });
 
             if (!$("#checkbox-edit-mode").is(":checked")) {
+              $("#add-widget")
+                .parent()
+                .addClass("invisible_important");
               $(".add-widget").hide();
             } else {
               $(".new-widget-message").hide();
@@ -549,6 +552,9 @@ function initialiceLayout(data) {
       grid.resizable(".grid-stack-item", true);
       grid.float(false);
       $(".header-options").show();
+      $("#add-widget")
+        .parent()
+        .removeClass("invisible_important");
       $(".add-widget").show();
       $(".new-widget-message").hide();
       $("#container-layout").addClass("container-layout");
@@ -558,6 +564,9 @@ function initialiceLayout(data) {
       grid.resizable(".grid-stack-item", false);
       grid.float(true);
       $(".header-options").hide();
+      $("#add-widget")
+        .parent()
+        .addClass("invisible_important");
       $(".add-widget").hide();
       $(".new-widget-message").show();
       $("#container-layout").removeClass("container-layout");
@@ -776,6 +785,9 @@ function initialiceLayout(data) {
             });
 
             if (!$("#checkbox-edit-mode").is(":checked")) {
+              $("#add-widget")
+                .parent()
+                .addClass("invisible_important");
               $(".add-widget").hide();
             } else {
               $(".new-widget-message").hide();
@@ -1709,4 +1721,17 @@ function show_projection_period() {
   } else {
     $("#div_projection_period").hide();
   }
+}
+
+// Paused and resume if edit mode is checked.
+// eslint-disable-next-line no-unused-vars
+function paused_resume_dashboard_countdown() {
+  $("#checkbox-edit-mode").on("click", function() {
+    let isChecked = $("#checkbox-edit-mode").is(":checked");
+    if (isChecked) {
+      $("#refrcounter").countdown("pause");
+    } else {
+      $("#refrcounter").countdown("resume");
+    }
+  });
 }

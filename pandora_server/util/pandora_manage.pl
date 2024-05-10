@@ -36,7 +36,7 @@ use Encode::Locale;
 Encode::Locale::decode_argv;
 
 # version: define current version
-my $version = "7.0NG.776 Build 240430";
+my $version = "7.0NG.776 Build 240509";
 
 # save program name for logging
 my $progname = basename($0);
@@ -5772,8 +5772,8 @@ sub cli_get_agents() {
 	}
 	
 	if($os_name ne '') {
-		$id_os = get_os_id($dbh, $os_name);
-		exist_check($id_os,'operative system',$os_name);
+		$id_os = get_os_id($dbh, safe_input($os_name));
+		exist_check($id_os,'operative system', $os_name);
 		
 		$condition .= " AND id_os = $id_os ";
 	}
