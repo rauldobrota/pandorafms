@@ -965,88 +965,88 @@ function reports_get_report_types($template=false, $not_editor=false)
             'optgroup' => __('Permissions report'),
             'name'     => __('Permissions report'),
         ];
-    }
 
-    $types['ncm_backups'] = [
-        'optgroup' => __('NCM'),
-        'name'     => __('NCM configuration changes'),
-    ];
-
-    $types['ncm'] = [
-        'optgroup' => __('NCM'),
-        'name'     => __('NCM devices list'),
-    ];
-
-    if (enterprise_installed() === true) {
-        $types['top_n_agents_sh'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('Top-N agents with the worst score'),
+        $types['ncm_backups'] = [
+            'optgroup' => __('NCM'),
+            'name'     => __('NCM configuration changes'),
         ];
 
-        $types['top_n_checks_failed'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('Top-N most frequent failed checks'),
+        $types['ncm'] = [
+            'optgroup' => __('NCM'),
+            'name'     => __('NCM devices list'),
         ];
 
-        $types['top_n_categories_checks'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('Top-N checks failed by category'),
-        ];
+        if (enterprise_installed() === true) {
+            $types['top_n_agents_sh'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('Top-N agents with the worst score'),
+            ];
 
-        $types['vul_by_cat'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('Vulnerabilities by category'),
-        ];
+            $types['top_n_checks_failed'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('Top-N most frequent failed checks'),
+            ];
 
-        $types['list_checks'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('List of checks'),
-        ];
+            $types['top_n_categories_checks'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('Top-N checks failed by category'),
+            ];
 
-        $types['scoring'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('Scoring by date'),
-        ];
+            $types['vul_by_cat'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('Vulnerabilities by category'),
+            ];
 
-        $types['evolution'] = [
-            'optgroup' => __('Security hardening'),
-            'name'     => __('Evolution'),
-        ];
+            $types['list_checks'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('List of checks'),
+            ];
 
-        $types['vuls_severity_graph'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('Severity graph bar'),
-        ];
+            $types['scoring'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('Scoring by date'),
+            ];
 
-        $types['vuls_attack_complexity'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('Attack complexity doughnut chart'),
-        ];
+            $types['evolution'] = [
+                'optgroup' => __('Security hardening'),
+                'name'     => __('Evolution'),
+            ];
 
-        $types['vuls_by_packages'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('By packages in pie chart'),
-        ];
+            $types['vuls_severity_graph'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('Severity graph bar'),
+            ];
 
-        $types['vuls_by_agent'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('Detailed security report'),
-        ];
+            $types['vuls_attack_complexity'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('Attack complexity doughnut chart'),
+            ];
 
-        $types['vuls_info_agent'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('Vulnerabilities of agent'),
-        ];
+            $types['vuls_by_packages'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('By packages in pie chart'),
+            ];
 
-        $types['top_n_agents_vuls'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('Top-N agents with more risk'),
-        ];
+            $types['vuls_by_agent'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('Detailed security report'),
+            ];
 
-        $types['top_n_vuls_count'] = [
-            'optgroup' => __('Vulnerabilities'),
-            'name'     => __('Top-N common vulnerabilities'),
-        ];
+            $types['vuls_info_agent'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('Vulnerabilities of agent'),
+            ];
+
+            $types['top_n_agents_vuls'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('Top-N agents with more risk'),
+            ];
+
+            $types['top_n_vuls_count'] = [
+                'optgroup' => __('Vulnerabilities'),
+                'name'     => __('Top-N common vulnerabilities'),
+            ];
+        }
     }
 
     return $types;
