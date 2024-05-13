@@ -381,6 +381,7 @@ console_dependencies=" \
     mod_ssl \
     libzstd \
     openldap-clients \
+    https://github.com/pandorafms/pandorafms/releases/download/tools/pandora_gotty-1.1-1.el8.x86_64.rpm \
     chromium "
 execute_cmd "dnf install -y $console_dependencies" "Installing Pandora FMS Console dependencies"
 
