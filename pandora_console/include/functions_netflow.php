@@ -804,8 +804,9 @@ function netflow_get_stats(
         return json_decode($data, true);
     }
 
+    $aggregate = escapeshellarg($aggregate.'/bytes');
     // Get the command to call nfdump.
-    $options = "-o csv -q -n $max -s $aggregate/bytes -t ".date($nfdump_date_format, $start_date).'-'.date($nfdump_date_format, $end_date);
+    $options = "-o csv -q -n $max -s $aggregate -t ".date($nfdump_date_format, $start_date).'-'.date($nfdump_date_format, $end_date);
     $command = netflow_get_command($options, $filter, $start_date_fixed, $end_date_fixed);
     // Execute nfdump.
     exec($command, $string);
@@ -1147,6 +1148,7 @@ function netflow_get_command($options, $filter, $date_init=0, $date_end=0)
 
     // Filter options.
     $command .= ' '.netflow_get_filter_arguments($filter);
+
     return $command;
 }
 
@@ -2186,9 +2188,9 @@ function netflow_get_top_data(
 
     // Get the command to call nfdump.
     $options = sprintf(
-        '-q -o csv -n %s -s %s/bytes -t %s-%s',
+        '-q -o csv -n %s -s %s -t %s-%s',
         $max,
-        $aggregate,
+        escapeshellarg($aggregate.'/bytes'),
         date($nfdump_date_format, $start_date),
         date($nfdump_date_format, $end_date)
     );
