@@ -1158,17 +1158,6 @@ function events_get_all(
 
     // Free search.
     if (empty($filter['search']) === false) {
-        if (isset($config['dbconnection']->server_version) === true
-            && $config['dbconnection']->server_version > 50600
-        ) {
-            // Use "from_base64" requires mysql 5.6 or greater.
-            $custom_data_search = 'from_base64(te.custom_data)';
-        } else {
-            // Custom data is JSON encoded base64, if 5.6 or lower,
-            // user is condemned to use plain search.
-            $custom_data_search = 'te.custom_data';
-        }
-
         $not_search = '';
         $nexo = 'OR';
         $array_search = [
@@ -1176,7 +1165,7 @@ function events_get_all(
             'lower(te.evento)',
             'lower(te.id_extra)',
             'lower(te.source)',
-            'lower('.$custom_data_search.')',
+            'lower(te.custom_data)',
         ];
         if (isset($filter['not_search']) === true
             && empty($filter['not_search']) === false
