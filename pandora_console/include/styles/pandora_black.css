@@ -923,6 +923,15 @@ text {
   color: #82b92e;
 }
 
+div#container_servicemap_legend,
+#service_map3 {
+  border-color: var(--border-color);
+}
+
+#container_servicemap > div {
+  background-color: transparent;
+}
+
 #container_servicemap_legend {
   position: absolute;
   background: #222;
@@ -933,6 +942,19 @@ text {
   padding: 10px;
   opacity: 0.9;
   color: var(--text-color);
+}
+
+#container_servicemap > #sunburst svg g path {
+  stroke-width: 0.7 !important;
+}
+
+#container_servicemap > #service_map3 svg g text {
+  fill: var(--text-color);
+  stroke: transparent;
+}
+
+#container_servicemap > #service_map3 svg g[fill="none"] {
+  stroke: var(--background-2);
 }
 
 .notification-subtitle_black {

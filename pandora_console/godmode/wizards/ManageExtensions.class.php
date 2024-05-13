@@ -160,6 +160,16 @@ class ManageExtensions extends HTML
     public function run()
     {
         global $config;
+
+        if (! check_acl($config['id_user'], 0, 'AR')) {
+            db_pandora_audit(
+                AUDIT_LOG_ACL_VIOLATION,
+                'Trying to access Manage disco packages'
+            );
+            include 'general/noaccess.php';
+            return;
+        }
+
         // Load styles.
         parent::run();
 
@@ -278,52 +288,54 @@ class ManageExtensions extends HTML
             $this->printHeader(true)
         );
 
-        $table = new stdClass();
-        $table->width = '100%';
-        $table->class = 'databox filters';
-        $table->size = [];
-        $table->size[0] = '80%';
-        $table->align[3] = 'right';
-        $table->data = [];
-        $table->data[0][0] = html_print_label_input_block(
-            __('Load DISCO'),
-            html_print_div(
+        if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
+            $table = new stdClass();
+            $table->width = '100%';
+            $table->class = 'databox filters';
+            $table->size = [];
+            $table->size[0] = '80%';
+            $table->align[3] = 'right';
+            $table->data = [];
+            $table->data[0][0] = html_print_label_input_block(
+                __('Load DISCO'),
+                html_print_div(
+                    [
+                        'id'      => 'upload_file',
+                        'content' => html_print_input_file(
+                            'file',
+                            true,
+                            ['style' => 'width:100%']
+                        ),
+                        'class'   => 'mrgn_top_15px',
+                    ],
+                    true
+                )
+            );
+            $table->data[0][3] = html_print_submit_button(
+                __('Upload DISCO'),
+                'upload_button',
+                false,
                 [
-                    'id'      => 'upload_file',
-                    'content' => html_print_input_file(
-                        'file',
-                        true,
-                        ['style' => 'width:100%']
-                    ),
-                    'class'   => 'mrgn_top_15px',
+                    'class' => 'sub ok float-right',
+                    'icon'  => 'next',
                 ],
                 true
-            )
-        );
-        $table->data[0][3] = html_print_submit_button(
-            __('Upload DISCO'),
-            'upload_button',
-            false,
-            [
-                'class' => 'sub ok float-right',
-                'icon'  => 'next',
-            ],
-            true
-        );
+            );
 
-        echo '<form id="uploadExtension" enctype="multipart/form-data" action="index.php?sec=gservers&sec2=godmode/servers/discovery&wiz=magextensions" method="POST">';
-        html_print_input_hidden('upload_disco', 1);
-        html_print_table($table);
-         // Auxiliar div ant string for migrate modal.
-        $modal = '<div id="migrate_modal" class="invisible"></div>';
-        $modal .= '<div class="invisible" id="msg"></div>';
+            echo '<form id="uploadExtension" enctype="multipart/form-data" action="index.php?sec=gservers&sec2=godmode/servers/discovery&wiz=magextensions" method="POST">';
+            html_print_input_hidden('upload_disco', 1);
+            html_print_table($table);
+            // Auxiliar div ant string for migrate modal.
+            $modal = '<div id="migrate_modal" class="invisible"></div>';
+            $modal .= '<div class="invisible" id="msg"></div>';
 
-        echo $modal;
+            echo $modal;
 
-        echo '<div class="action-buttons w700px">';
+            echo '<div class="action-buttons w700px">';
 
-        echo '</div>';
-        echo '</form>';
+            echo '</div>';
+            echo '</form>';
+        }
 
         echo '<script type="text/javascript">
                 var page = "'.$this->ajaxController.'";
@@ -366,7 +378,7 @@ class ManageExtensions extends HTML
             ui_print_datatable(
                 [
                     'id'                  => 'list_extensions',
-                    'class'               => 'info_table',
+                    'class'               => 'info_table discovery-list-extensions',
                     'style'               => 'width: 99%',
                     'dom_elements'        => 'plfti',
                     'filter_main_class'   => 'box-flat white_table_graph fixed_filter_bar',
@@ -723,39 +735,45 @@ class ManageExtensions extends HTML
                 $data[$key]['short_name'] = $row['short_name'];
                 $data[$key]['description'] = io_safe_output($row['description']);
                 $data[$key]['version'] = $row['version'];
-                $data[$key]['actions'] = '<form name="grupo" method="post" class="rowPair table_action_buttons" action="'.$this->url.'&action=delete">';
-                $data[$key]['actions'] .= html_print_input_image(
-                    'button_delete',
-                    'images/delete.svg',
-                    '',
-                    '',
-                    true,
-                    [
-                        'onclick' => 'if (!confirm(\''.__('Deleting this application will also delete all the discovery tasks using it. Do you want to delete it?').'\')) return false;',
-                        'class'   => 'main_menu_icon invert_filter action_button_hidden',
-                        'title'   => 'Delete',
-                    ]
-                );
-                $data[$key]['actions'] .= html_print_input_hidden('short_name', $row['short_name'], true);
-                $data[$key]['actions'] .= '</form>';
 
-                if ($this->checkFolderConsole($row['short_name']) === true) {
-                    $data[$key]['actions'] .= '<form name="grupo" method="post" class="rowPair table_action_buttons" action="'.$this->url.'&action=sync_server">';
+                $data[$key]['actions'] = '';
+                if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
+                    $data[$key]['actions'] .= '<form name="grupo" method="post" class="rowPair table_action_buttons" action="'.$this->url.'&action=delete">';
                     $data[$key]['actions'] .= html_print_input_image(
-                        'button_refresh',
-                        'images/refresh@svg.svg',
+                        'button_delete',
+                        'images/delete.svg',
                         '',
                         '',
                         true,
                         [
-                            'onclick' => 'if (!confirm(\''.__('Are you sure you want to reapply?').'\')) return false;',
+                            'onclick' => 'if (!confirm(\''.__('Deleting this application will also delete all the discovery tasks using it. Do you want to delete it?').'\')) return false;',
                             'class'   => 'main_menu_icon invert_filter action_button_hidden',
-                            'title'   => 'Refresh',
+                            'title'   => 'Delete',
                         ]
                     );
-                    $data[$key]['actions'] .= html_print_input_hidden('sync_action', 'refresh', true);
                     $data[$key]['actions'] .= html_print_input_hidden('short_name', $row['short_name'], true);
                     $data[$key]['actions'] .= '</form>';
+                }
+
+                if ($this->checkFolderConsole($row['short_name']) === true) {
+                    if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
+                        $data[$key]['actions'] .= '<form name="grupo" method="post" class="rowPair table_action_buttons" action="'.$this->url.'&action=sync_server">';
+                        $data[$key]['actions'] .= html_print_input_image(
+                            'button_refresh',
+                            'images/refresh@svg.svg',
+                            '',
+                            '',
+                            true,
+                            [
+                                'onclick' => 'if (!confirm(\''.__('Are you sure you want to reapply?').'\')) return false;',
+                                'class'   => 'main_menu_icon invert_filter action_button_hidden',
+                                'title'   => 'Refresh',
+                            ]
+                        );
+                        $data[$key]['actions'] .= html_print_input_hidden('sync_action', 'refresh', true);
+                        $data[$key]['actions'] .= html_print_input_hidden('short_name', $row['short_name'], true);
+                        $data[$key]['actions'] .= '</form>';
+                    }
                 } else {
                     $data[$key]['actions'] .= html_print_image(
                         'images/error_red.png',

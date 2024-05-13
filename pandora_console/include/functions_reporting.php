@@ -3817,10 +3817,18 @@ function reporting_end_of_life($report, $content)
 
     $return['data'] = [];
 
-    $external_source = json_decode(
-        $content['external_source'],
-        true
-    );
+    if (isset($content['external_source']) === true && $content['external_source'] !== 'null') {
+        $external_source = json_decode(
+            $content['external_source'],
+            true
+        );
+    } else {
+        $external_source = [
+            'end_of_life_date' => $content['end_of_life_date'],
+            'os_selector'      => $content['os_selector'],
+            'os_version'       => $content['os_version'],
+        ];
+    }
 
     $servers_ids = [0];
 
@@ -3856,26 +3864,38 @@ function reporting_end_of_life($report, $content)
         );
 
         $es_os_version = $external_source['os_version'];
+        $os_selector_name = db_get_value('name', 'tconfig_os', 'id_os', (int) $external_source['os_selector']);
 
         $es_limit_eol_datetime = DateTime::createFromFormat('Y/m/d', $external_source['end_of_life_date']);
 
         // Post-process returned agents to filter agents using correctly formatted fields.
+        $agents_tmp = [];
         foreach ($agents as $idx => $agent) {
+            if (empty($agent['os_version']) === true) {
+                $agent['os_version'] = '.*';
+            }
+
             // Must perform this query and subsequent operations in each iteration (note this is costly) since OS version field may contain HTML entities in BD and decoding can't be fully handled with mysql methods when doing a REGEXP.
-            $result_end_of_life = db_get_value_sql('SELECT end_of_support FROM tconfig_os_version WHERE "'.io_safe_output($agent['os_version']).'" REGEXP version AND "'.io_safe_output($agent['name']).'" REGEXP product');
+            $result_end_of_life = db_get_value_sql('SELECT end_of_support FROM tconfig_os_version');
             $agent_eol_datetime = DateTime::createFromFormat('Y/m/d', $result_end_of_life);
 
-            if ((preg_match('/'.$es_os_version.'/i', $agent['os_version']) || $es_os_version === '') && $result_end_of_life !== false && ($es_limit_eol_datetime === false || $es_limit_eol_datetime >= $agent_eol_datetime)) {
+            if ((preg_match('/'.$es_os_version.'/i', $agent['os_version']) || $es_os_version === '')
+                && $os_selector_name === io_safe_output($agent['name'])
+                && $result_end_of_life !== false
+                && ($es_limit_eol_datetime === false || $es_limit_eol_datetime >= $agent_eol_datetime)
+            ) {
                 // Agent matches an existing OS version.
                 $agents[$idx]['end_of_life'] = $result_end_of_life;
+                $agents_tmp[] = $agents[$idx];
             } else {
                 // Set agent to be filtered out.
                 $agents[$idx] = null;
             }
         }
 
-        if ($agents !== false) {
-            $agents = array_filter($agents);
+        // TODO:
+        if ($agents_tmp !== false) {
+            $agents = $agents_tmp;
         }
 
         if (is_metaconsole() === true) {
@@ -6128,7 +6148,7 @@ function reporting_alert_get_fired($id_agent_module, $id_alert_template_module, 
 
         $datelimit = ($datetime - $period);
 
-    $empty = '----------------------------';
+    $empty = '';
     if (empty($firedTimes)) {
         $firedTimes = [];
         $firedTimes[0]['timestamp'] = $empty;
@@ -6192,7 +6212,7 @@ function reporting_alert_report_group($report, $content)
 
     $agent_modules = alerts_get_agent_modules(
         $content['id_group'],
-        (((string) $content['id_group'] === '0') ? true : $content['recursion'])
+        (((string) $content['id_group'] === '0') ? true : (bool) $content['recursion'])
     );
 
     if (empty($alerts)) {
@@ -6429,7 +6449,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6441,7 +6461,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6453,7 +6473,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6604,7 +6624,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6616,7 +6636,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6628,7 +6648,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6692,6 +6712,7 @@ function reporting_sql_graph(
     switch ($type_sql_graph) {
         case 'sql_graph_hbar':
         default:
+            $layout = ['padding' => ['right' => '40']];
             $return['type'] = 'sql_graph_hbar';
         break;
 

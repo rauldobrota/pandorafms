@@ -1722,3 +1722,16 @@ function show_projection_period() {
     $("#div_projection_period").hide();
   }
 }
+
+// Paused and resume if edit mode is checked.
+// eslint-disable-next-line no-unused-vars
+function paused_resume_dashboard_countdown() {
+  $("#checkbox-edit-mode").on("click", function() {
+    let isChecked = $("#checkbox-edit-mode").is(":checked");
+    if (isChecked) {
+      $("#refrcounter").countdown("pause");
+    } else {
+      $("#refrcounter").countdown("resume");
+    }
+  });
+}

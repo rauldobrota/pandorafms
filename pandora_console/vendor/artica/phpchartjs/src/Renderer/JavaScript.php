@@ -170,10 +170,6 @@ class JavaScript extends Renderer
                 if (chart.config.options.title !== undefined ) {
                   chart.config.options.title.fontColor = "#ffffff";
                 }
-
-                if (chart.config.options.plugins.legend.labels.font !== undefined ) {
-                  chart.config.options.plugins.legend.labels.font.color = "#ffffff";
-                }
                 ';
             }
         }

@@ -145,6 +145,11 @@ if ($create_net_scan) {
 }
 
 if ($create_mail_alert) {
+    if ((bool) check_acl($config['id_user'], 0, 'LM') === false) {
+        ui_print_error_message(__('Unauthorized'));
+        return;
+    }
+
     include_once '../functions_alerts.php';
     $id_action = db_get_row_filter('talert_actions', ['name' => 'Email to '.$config['id_user']], 'id')['id'];
     if (!$id_action) {

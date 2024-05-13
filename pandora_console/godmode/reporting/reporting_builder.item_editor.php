@@ -1362,12 +1362,12 @@ $class = 'databox filters';
 
                 $result_select = [];
 
-                foreach ($os as $item) {
+                foreach ($os_list as $item) {
                     $result_select[$item['id_os']] = $item['name'];
                 }
 
                 html_print_select(
-                    $os_list,
+                    $result_select,
                     'os_selector',
                     $os_selector,
                     ''
@@ -2757,14 +2757,16 @@ if (is_metaconsole() === true) {
             <td class="bolder"><?php echo __('Date'); ?></td>
             <td class="mx180px">
                 <?php
-                $dates = enterprise_hook(
-                    'inventory_get_dates',
-                    [
-                        $idAgentModule,
-                        $idAgent,
-                        $group,
-                    ]
-                );
+                if (isset($idAgent) === true) {
+                    $dates = enterprise_hook(
+                        'inventory_get_dates',
+                        [
+                            $idAgentModule,
+                            $idAgent,
+                            $group,
+                        ]
+                    );
+                }
 
                 if ($dates === ENTERPRISE_NOT_HOOK) {
                     $dates = [];

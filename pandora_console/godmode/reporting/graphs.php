@@ -481,7 +481,7 @@ if (!empty($graphs)) {
             $ActionButtons[] = '</form>';
         }
 
-        if (!empty($result_graphs)) {
+        if (!empty($result_graphs) && ($report_w || $report_m)) {
             $ActionButtons[] = "<form method='post' id='form_delete' action='index.php?sec=reporting&sec2=godmode/reporting/graphs'>";
             $ActionButtons[] = html_print_input_hidden('multiple_delete', 1, true);
             $ActionButtons[] = html_print_submit_button(

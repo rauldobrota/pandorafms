@@ -7,6 +7,7 @@ prepare stmt from @sqlstmt;
 execute stmt;
 
 DROP TABLE IF EXISTS tskin;
+DROP TABLE IF EXISTS tnetwork_matrix;
 
 ALTER TABLE tfavmenu_user CONVERT TO CHARACTER SET UTF8MB4;
 ALTER TABLE tfiles_repo CONVERT TO CHARACTER SET UTF8MB4;
@@ -14,6 +15,8 @@ ALTER TABLE tfiles_repo_group CONVERT TO CHARACTER SET UTF8MB4;
 
 ALTER TABLE `tusuario`
 ADD COLUMN `stop_lts_modal` TINYINT NOT NULL DEFAULT 0 AFTER `session_max_time_expire`;
+
+ALTER TABLE `tlayout_template` ADD COLUMN `create_from` INT UNSIGNED NOT NULL DEFAULT 0;
 
 -- START MIGRATION MSSQL --
 SET @current_app_type = 12;
@@ -7763,5 +7766,10 @@ INSERT INTO `tconfig` (`token`, `value`) VALUES ('JWT_signature', 1);
 DELETE FROM tconfig WHERE `token` = 'loginhash_pwd';
 
 UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.vmware';
+
+-- Delete Create incident from event, from tevent_response
+DELETE FROM tevent_response	WHERE name = 'Create&#x20;incident&#x20;from&#x20;event';
+
+UPDATE tconfig_os SET `name` = 'Web&#x20;Server' WHERE `id_os` = 12;
 
 COMMIT;
