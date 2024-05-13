@@ -1205,9 +1205,11 @@ if ($get_response === true) {
 
     if (empty($event_id) === false) {
         try {
+            $target_metaconsole = '';
             if (is_metaconsole() === true
                 && $server_id > 0
             ) {
+                $target_metaconsole = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
                 $node = new Node($server_id);
                 $node->connect();
             }
@@ -1217,7 +1219,8 @@ if ($get_response === true) {
                 $event_response,
                 $response_parameters,
                 $server_id,
-                ($server_id !== 0) ? $node->server_name() : 'Metaconsole'
+                ($server_id !== 0) ? $node->server_name() : 'Metaconsole',
+                $target_metaconsole
             );
         } catch (\Exception $e) {
             // Unexistent agent.

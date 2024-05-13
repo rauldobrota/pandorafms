@@ -3838,7 +3838,8 @@ function events_get_response_target(
     array $event_response,
     ?array $response_parameters=null,
     ?int $server_id=0,
-    ?string $server_name=''
+    ?string $server_name='',
+    ?string $target_metaconsole=''
 ) {
     global $config;
 
@@ -3852,6 +3853,9 @@ function events_get_response_target(
 
     $event = db_get_row('tevento', 'id_evento', $event_id);
     $target = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
+    if (empty($target) === true && $target_metaconsole !== '') {
+        $target = io_safe_output($target_metaconsole);
+    }
 
     // Replace parameters response.
     if (isset($response_parameters) === true
@@ -6070,9 +6074,11 @@ function get_events_get_response_target(
     $response_parameters=[]
 ) {
     try {
+        $target_metaconsole = '';
         if (is_metaconsole() === true
             && $server_id > 0
         ) {
+            $target_metaconsole = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
             $node = new Node($server_id);
             $node->connect();
         }
@@ -6082,7 +6088,8 @@ function get_events_get_response_target(
             $event_response,
             $response_parameters,
             $server_id,
-            ($server_id !== 0) ? $node->server_name() : 'Metaconsole'
+            ($server_id !== 0) ? $node->server_name() : 'Metaconsole',
+            $target_metaconsole
         );
     } catch (\Exception $e) {
         // Unexistent agent.
