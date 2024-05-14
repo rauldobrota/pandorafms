@@ -22,14 +22,18 @@ $msg = __(
 
 $msg .= '<br><br>'.__("There are two types of graphs: The agent's automated graphs and the graphs the user customizes by using one or more modules to do so.");
 
-        $url_new = 'index.php?sec=reporting&sec2=godmode/reporting/graph_builder';
-        $button = '<form action="'.$url_new.'" method="post">
-                <input type="submit" class="button_task button_task_mini mrgn_0px_imp" value="'.__('Create custom graph').'" />
-            </form>';
+$button = '';
 
-        echo ui_print_empty_view(
-            __('Create custom graph'),
-            $msg,
-            'custom-graph.svg',
-            $button
-        );
+if (check_acl($config['id_user'], 0, 'RW') || check_acl($config['id_user'], 0, 'RM')) {
+    $url_new = 'index.php?sec=reporting&sec2=godmode/reporting/graph_builder';
+    $button = '<form action="'.$url_new.'" method="post">
+            <input type="submit" class="button_task button_task_mini mrgn_0px_imp" value="'.__('Create custom graph').'" />
+        </form>';
+}
+
+echo ui_print_empty_view(
+    __('Create custom graph'),
+    $msg,
+    'custom-graph.svg',
+    $button
+);

@@ -3838,7 +3838,8 @@ function events_get_response_target(
     array $event_response,
     ?array $response_parameters=null,
     ?int $server_id=0,
-    ?string $server_name=''
+    ?string $server_name='',
+    ?string $target_metaconsole=''
 ) {
     global $config;
 
@@ -3852,6 +3853,9 @@ function events_get_response_target(
 
     $event = db_get_row('tevento', 'id_evento', $event_id);
     $target = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
+    if (empty($target) === true && $target_metaconsole !== '') {
+        $target = io_safe_output($target_metaconsole);
+    }
 
     // Replace parameters response.
     if (isset($response_parameters) === true
@@ -4393,12 +4397,9 @@ function events_page_details($event, $server_id=0)
     global $config;
 
     // If metaconsole switch to node to get details and custom fields.
-    $hashstring = '';
     $serverstring = '';
     if (is_metaconsole() === true && empty($server_id) === false) {
         $server = metaconsole_get_connection_by_id($server_id);
-        $hashdata = metaconsole_get_server_hashdata($server);
-        $hashstring = '&amp;loginhash=auto&loginhash_data='.$hashdata.'&loginhash_user='.str_rot13($config['id_user']);
         $serverstring = $server['server_url'].'/';
 
         if (metaconsole_connect($server) !== NOERR) {
@@ -4439,28 +4440,7 @@ function events_page_details($event, $server_id=0)
                 true
             ).ui_print_help_tip(__('This agent belongs to metaconsole, is not possible display it'), true);
         } else if (can_user_access_node() && is_metaconsole()) {
-            // Workaround to pass login hash data in POST body instead of directly in the URL.
-            parse_str($hashstring, $url_hash_array);
-            $redirection_form = "<form id='agent-redirection' method='POST' action='".$serverstring.'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$event['id_agente']."'>";
-            $redirection_form .= html_print_input_hidden(
-                'loginhash',
-                $url_hash_array['loginhash'],
-                true
-            );
-            $redirection_form .= html_print_input_hidden(
-                'loginhash_data',
-                $url_hash_array['loginhash_data'],
-                true
-            );
-            $redirection_form .= html_print_input_hidden(
-                'loginhash_user',
-                $url_hash_array['loginhash_user'],
-                true
-            );
-            $redirection_form .= '</form>';
-
-            $data[1] = $redirection_form;
-            $data[1] .= "<a target=_blank onclick='event.preventDefault(); document.getElementById(\"agent-redirection\").submit();' href='#'>";
+            $data[1] = '<a target=_blank onclick="redirectNode(\''.$serverstring.'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$event['id_agente'].'\')" href="#">';
             $data[1] .= '<b>'.$agent['alias'].'</b>';
             $data[1] .= '</a>';
         } else if (can_user_access_node()) {
@@ -4471,7 +4451,7 @@ function events_page_details($event, $server_id=0)
                 '',
                 false,
                 $serverstring,
-                $hashstring,
+                '',
                 $agent['alias']
             );
         } else {
@@ -4604,7 +4584,7 @@ function events_page_details($event, $server_id=0)
                 'id_mg',
                 $id_module_group
             );
-            $data[1] = '<a href="'.$serverstring.'index.php?sec=view&amp;sec2=operation/agentes/status_monitor&amp;status=-1&amp;modulegroup='.$id_module_group.$hashstring.'">';
+            $data[1] = '<a href="#" onclick="redirectNode(\''.$serverstring.'index.php?sec=view&amp;sec2=operation/agentes/status_monitor&amp;status=-1&amp;modulegroup='.$id_module_group.'\')">';
             $data[1] .= $module_group;
             $data[1] .= '</a>';
         }
@@ -4670,7 +4650,7 @@ function events_page_details($event, $server_id=0)
     if ($event['id_alert_am'] != 0) {
         $data = [];
         $data[0] = '<div class="normal_weight mrgn_lft_20px">'.__('Source').'</div>';
-        $data[1] = '<a href="'.$serverstring.'index.php?sec=estado&amp;sec2=operation/agentes/ver_agente&amp;id_agente='.$event['id_agente'].'&amp;tab=alert'.$hashstring.'">';
+        $data[1] = '<a href="#" onclick="redirectNode(\''.$serverstring.'index.php?sec=estado&amp;sec2=operation/agentes/ver_agente&amp;id_agente='.$event['id_agente'].'&amp;tab=alert\')">';
         $standby = db_get_value('standby', 'talert_template_modules', 'id', $event['id_alert_am']);
         if (!$standby) {
             $data[1] .= html_print_image(
@@ -6094,9 +6074,11 @@ function get_events_get_response_target(
     $response_parameters=[]
 ) {
     try {
+        $target_metaconsole = '';
         if (is_metaconsole() === true
             && $server_id > 0
         ) {
+            $target_metaconsole = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
             $node = new Node($server_id);
             $node->connect();
         }
@@ -6106,7 +6088,8 @@ function get_events_get_response_target(
             $event_response,
             $response_parameters,
             $server_id,
-            ($server_id !== 0) ? $node->server_name() : 'Metaconsole'
+            ($server_id !== 0) ? $node->server_name() : 'Metaconsole',
+            $target_metaconsole
         );
     } catch (\Exception $e) {
         // Unexistent agent.

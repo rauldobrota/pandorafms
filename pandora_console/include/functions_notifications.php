@@ -680,7 +680,7 @@ function notifications_set_user_label_status($source, $user, $label, $value)
     }
 
     $exists = db_process_sql(sprintf('SELECT * FROM tnotification_source_user WHERE id_user = "%s" AND id_source = "%s"', $user, $source));
-    if (empty($exists['enabled']) && empty($exists['also_mail'])) {
+    if (empty($exists[0]['enabled']) && empty($exists[0]['also_mail'])) {
         $sql = sprintf('DELETE FROM tnotification_source_user WHERE id_user = "%s" AND id_source = "%s"', $user, $source);
         db_process_sql($sql);
         $exists = false;

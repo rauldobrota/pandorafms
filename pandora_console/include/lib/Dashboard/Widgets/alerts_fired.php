@@ -319,7 +319,7 @@ class AlertsFiredWidget extends Widget
 
             $url = $config['homeurl'];
             $url .= 'index.php?sec=estado&sec2=operation/agentes/alerts_status';
-            $url .= '&refr=60&filter=fired&filter_standby=all';
+            $url .= '&refr=60&filter=fired&filter_standby=all&&tab=alert';
 
             $flag = false;
 

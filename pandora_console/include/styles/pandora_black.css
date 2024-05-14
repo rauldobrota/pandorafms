@@ -556,6 +556,11 @@ table#diagnostic_info tbody td div {
   color: var(--text-color) !important;
 }
 
+.ui-widget-dialog-border,
+.ui-dialog {
+  border: 1px solid #333 !important;
+}
+
 #cancel_btn_dialog {
   background-color: red;
 }
@@ -918,6 +923,15 @@ text {
   color: #82b92e;
 }
 
+div#container_servicemap_legend,
+#service_map3 {
+  border-color: var(--border-color);
+}
+
+#container_servicemap > div {
+  background-color: transparent;
+}
+
 #container_servicemap_legend {
   position: absolute;
   background: #222;
@@ -928,6 +942,19 @@ text {
   padding: 10px;
   opacity: 0.9;
   color: var(--text-color);
+}
+
+#container_servicemap > #sunburst svg g path {
+  stroke-width: 0.7 !important;
+}
+
+#container_servicemap > #service_map3 svg g text {
+  fill: var(--text-color);
+  stroke: transparent;
+}
+
+#container_servicemap > #service_map3 svg g[fill="none"] {
+  stroke: var(--background-2);
 }
 
 .notification-subtitle_black {
@@ -1136,6 +1163,7 @@ select,
 .white_table_graph_header {
   color: var(--text-color) !important;
   border-radius: 0;
+  background-color: var(--secondary-color) !important;
 }
 
 .white_table_graph {
@@ -1442,7 +1470,7 @@ button.submitButton {
 button.buttonButton.secondary,
 button.submitButton.secondary {
   background-color: #999;
-  color: var(--text-color);
+  color: var(--text-color) !important;
   border-color: #fff;
 }
 
@@ -1477,6 +1505,7 @@ select[multiple] option:checked,
 select[multiple] option:active,
 select[multiple] option:hover {
   background: #008d86 !important;
+  color: var(--text-color);
 }
 
 .select2-search.select2-search--dropdown,
@@ -2095,6 +2124,12 @@ select option:checked {
   filter: invert(1);
 }
 
+.d2h-file-list-header,
+.d2h-file-name-wrapper,
+.d2h-file-collapse {
+  color: #333 !important;
+}
+
 .grid-stack-item-content {
   background-color: var(--secondary-color);
 }
@@ -2105,4 +2140,17 @@ select option:checked {
 
 .color_666 {
   color: var(--text-color);
+}
+
+.black-and-white {
+  filter: saturate(0);
+}
+
+.invert_filter.black-and-white {
+  filter: invert(1) saturate(0) !important;
+}
+
+.content-widget .legend_background,
+.content-widget .flot-base {
+  background-color: unset;
 }

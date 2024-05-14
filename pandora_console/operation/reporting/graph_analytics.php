@@ -55,11 +55,12 @@ if (is_ajax()) {
         $search = io_safe_input($search_left);
 
         // Agents.
-        // Concatenate AW and AD permisions to get all the possible groups where the user can manage.
+        // Concatenate AR, AW and AD permisions to get all the possible groups where the user can manage.
         $user_groupsAW = users_get_groups($config['id_user'], 'AW');
         $user_groupsAD = users_get_groups($config['id_user'], 'AD');
+        $user_groupsAR = users_get_groups($config['id_user'], 'AR');
 
-        $user_groups = ($user_groupsAW + $user_groupsAD);
+        $user_groups = ($user_groupsAW + $user_groupsAD + $user_groupsAR);
         $user_groups_to_sql = implode(',', array_keys($user_groups));
 
         $search_sql = ' AND (nombre LIKE "%%'.$search.'%%" OR alias LIKE "%%'.$search.'%%")';
@@ -196,6 +197,9 @@ if (is_ajax()) {
             'return'          => 1,
             'graph_analytics' => true,
         ];
+
+        // Included dependencies when is an ajax request.
+        include_javascript_dependencies_flot_graph(false);
 
         $graph_return = graphic_combined_module(
             $modules,

@@ -3653,6 +3653,10 @@ div.tip > img {
   margin-left: 10px;
 }
 
+div.tip > div.invisible {
+  display: none !important;
+}
+
 /*
  * ---------------------------------------------------------------------
  * - SEARCH BOX in header											-
@@ -14228,14 +14232,6 @@ button.ui-button-text-only.ui-widget.sub:hover,
   box-shadow: none;
 }
 
-.black-and-white {
-  filter: saturate(0);
-}
-
-.invert_filter.black-and-white {
-  filter: invert(1) saturate(0) !important;
-}
-
 div.tox .tox-editor-header {
   z-index: 1;
 }
@@ -14282,4 +14278,75 @@ table.filter-table-adv td > div.row-flex input {
 div.fixed-bottom-box.tree-view-bottom-modal {
   z-index: 1;
   border: 1px solid var(--border-color);
+}
+
+.custom-graph-editor
+  #select_multiple_modules_filtered
+  > div.agents-modules-multiple-search-bar
+  > div {
+  width: 37%;
+}
+
+.custom-graph-editor
+  #select_multiple_modules_filtered
+  > div.agents-modules-multiple-search-bar
+  > div
+  > div
+  > input {
+  width: 100%;
+  max-width: 100%;
+}
+
+.custom-graph-editor
+  #select_multiple_modules_filtered
+  > div.agents-modules-multiple-search-bar
+  > div
+  > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.custom-graph-editor-agents-module-filter {
+  margin-top: -69px;
+}
+
+.custom-graph-editor-agents-module-filter > span.select2.select2-container {
+  height: 189px;
+}
+
+.bg-image-none {
+  background-image: none !important;
+}
+
+.discovery-list-extensions tbody tr td {
+  height: 30px;
+}
+
+.welcome-message-no-pm h2 {
+  font-size: 20px !important;
+  margin: 0px;
+}
+.welcome-message-no-pm p,
+.welcome-message-no-pm b {
+  font-size: 15px !important;
+}
+.welcome-message-no-pm {
+  margin-bottom: 30px;
+}
+
+.legend_servicemap_title {
+  cursor: pointer;
+}
+
+.legend_servicemap_title td,
+.legend_servicemap_title td img {
+  padding: 0;
+}
+
+#container_servicemap #service_map3 {
+  min-height: 174px;
 }

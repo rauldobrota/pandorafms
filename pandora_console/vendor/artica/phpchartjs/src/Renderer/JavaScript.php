@@ -128,6 +128,13 @@ class JavaScript extends Renderer
                 }
               }
             };';
+
+            if ($this->chart->options()->getTheme() !== null) {
+                if ((int) $this->chart->options()->getTheme() === 2) {
+                    $script[] = 'Chart.defaults.color = "#ffffff";';
+                }
+            }
+
             $script[] = 'Chart.register(chart_watermark_'.$this->chart->getId().');';
         }
 

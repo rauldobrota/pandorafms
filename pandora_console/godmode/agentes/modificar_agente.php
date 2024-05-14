@@ -566,10 +566,10 @@ if ($search != '') {
     if ($id != '') {
         $aux = $id[0]['id_agent'];
         $search_sql = sprintf(
-            ' AND ( REPLACE(nombre, "&#x20;", " ") LIKE "%%%s%%"
-             OR REPLACE(alias, "&#x20;", " ") LIKE "%%%s%%"
-             OR REPLACE(comentarios, "&#x20;", " ") LIKE "%%%s%%"
-			 OR EXISTS (SELECT * FROM tagent_custom_data WHERE id_agent = id_agente AND REPLACE(description, "&#x20;", " ") LIKE "%%%s%%")
+            ' AND ( nombre LIKE "%%%s%%"
+             OR alias LIKE "%%%s%%"
+             OR comentarios LIKE "%%%s%%"
+			 OR EXISTS (SELECT * FROM tagent_custom_data WHERE id_agent = id_agente AND description LIKE "%%%s%%")
              OR tagente.id_agente = %d',
             $search,
             $search,
@@ -591,10 +591,10 @@ if ($search != '') {
         $search_sql .= ')';
     } else {
         $search_sql = sprintf(
-            ' AND ( REPLACE(nombre, "&#x20;", " ")
-			 LIKE "%%%s%%" OR REPLACE(alias, "&#x20;", " ")
-			 LIKE "%%%s%%" OR REPLACE(comentarios, "&#x20;", " ") LIKE "%%%s%%"
-			 OR EXISTS (SELECT * FROM tagent_custom_data WHERE id_agent = id_agente AND REPLACE(description, "&#x20;", " ") LIKE "%%%s%%"))',
+            ' AND ( nombre
+			 LIKE "%%%s%%" OR alias
+			 LIKE "%%%s%%" OR comentarios LIKE "%%%s%%"
+			 OR EXISTS (SELECT * FROM tagent_custom_data WHERE id_agent = id_agente AND description LIKE "%%%s%%"))',
             $search,
             $search,
             $search,
@@ -763,7 +763,7 @@ if ($agents !== false) {
                 $agent['id_agente']
             );
             $agentViewUrl = sprintf(
-                'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=%s',
+                'index.php?sec=estado&sec2=godmode/agentes/configurar_agente&id_agente=%s',
                 $agent['id_agente']
             );
             $agentAlertUrl = sprintf(

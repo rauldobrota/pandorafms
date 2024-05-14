@@ -3,7 +3,7 @@
 # PandoraFMS Community  online installation script 
 #######################################################
 ## Tested versions ##
-# Centos 7.9
+# CentOS 7.9
 
 #Constants
 PANDORA_CONSOLE=/var/www/html/pandora_console
@@ -28,8 +28,6 @@ LOGFILE="/tmp/pandora-deploy-community-$(date +%F).log"
 [ "$SKIP_DATABASE_INSTALL" ] || SKIP_DATABASE_INSTALL=0
 [ "$SKIP_KERNEL_OPTIMIZATIONS" ] || SKIP_KERNEL_OPTIMIZATIONS=0
 [ "$POOL_SIZE" ] || POOL_SIZE=$(grep -i total /proc/meminfo | head -1 | awk '{printf "%.2f \n", $(NF-1)*0.4/1024}' | sed "s/\\..*$/M/g")
-[ "$PANDORA_BETA" ] || PANDORA_BETA=0
-[ "$PANDORA_LTS" ]  || PANDORA_LTS=1
 
 #Check if possible to get os version
 if [ ! -e /etc/os-release ]; then
@@ -92,8 +90,7 @@ check_pre_pandora () {
 }
 
 check_repo_connection () {
-    execute_cmd "ping -c 2 firefly.pandorafms.com" "Checking Community repo"
-    execute_cmd "ping -c 2 support.pandorafms.com" "Checking Enterprise repo"
+    execute_cmd "ping -c 2 github.com" "Checking Community repo"
 }
 
 check_root_permissions () {
@@ -146,9 +143,7 @@ check_root_permissions
 [ "$SKIP_PRECHECK" == 1 ] || check_pre_pandora
 
 #advicing BETA PROGRAM
-INSTALLING_VER="${green}RRR version enable using RRR PandoraFMS packages${reset}"
-[ "$PANDORA_LTS" -ne '0' ] && INSTALLING_VER="${green}LTS version enable using LTS PandoraFMS packages${reset}"
-[ "$PANDORA_BETA" -ne '0' ] && INSTALLING_VER="${red}BETA version enable using nightly PandoraFMS packages${reset}"
+INSTALLING_VER="${green}LTS version enable ${reset}"
 echo -e $INSTALLING_VER
 
 # Connectivity
@@ -285,7 +280,7 @@ console_dependencies=" \
     mod_ssl \
     libzstd \
     openldap-clients \
-    https://firefly.pandorafms.com/centos8/pandora_gotty-1.0-1.el8.x86_64.rpm \
+    https://github.com/pandorafms/pandorafms/releases/download/tools/pandora_gotty-1.1-1.el8.x86_64.rpm \
     chromium"
 execute_cmd "yum install -y $console_dependencies" "Installing Pandora FMS Console dependencies"
 
@@ -311,33 +306,12 @@ server_dependencies=" \
     java \
     bind-utils \
     whois \
-    cpanminus \
-    https://firefly.pandorafms.com/centos7/wmic-1.4-1.el7.x86_64.rpm \
-    https://firefly.pandorafms.com/centos7/pandorawmic-1.0.0-1.x86_64.rpm"
+    cpanminus"
 execute_cmd "yum install -y $server_dependencies" "Installing Pandora FMS Server dependencies"
 
 # install cpan dependencies
 execute_cmd "cpanm -i Thread::Semaphore"  "Installing Thread::Semaphore"
 
-
-# SDK VMware perl dependencies
-vmware_dependencies=" \
-    https://firefly.pandorafms.com/centos8/VMware-vSphere-Perl-SDK-6.5.0-4566394.x86_64.rpm \
-    perl-JSON \
-    perl-Archive-Zip \
-    openssl-devel \
-    perl-Crypt-CBC \
-    perl-Digest-SHA \
-    https://firefly.pandorafms.com/centos7/perl-Crypt-OpenSSL-AES-0.02-1.el7.x86_64.rpm"
-execute_cmd "yum install -y $vmware_dependencies" "Installing SDK VMware perl dependencies"
-
-# Instant client Oracle
-oracle_dependencies=" \
-    https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-basic-19.8.0.0.0-1.x86_64.rpm \
-    https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-sqlplus-19.8.0.0.0-1.x86_64.rpm"
-execute_cmd "yum install -y $oracle_dependencies || yum reinstall -y $oracle_dependencies" "Installing Oracle Instant client"
-
-#ipam dependencies
 ipam_dependencies=" \
     perl(NetAddr::IP) \
     perl(Sys::Syslog) \
@@ -347,12 +321,6 @@ ipam_dependencies=" \
     perl(XML::Twig)"
 execute_cmd "yum install -y $ipam_dependencies" "Installing IPAM Instant client"
 
-# MSSQL dependencies el7
-execute_cmd "curl https://packages.microsoft.com/config/rhel/7/prod.repo -o /etc/yum.repos.d/mssql-release.repo" "Configuring Microsoft repositories" 
-execute_cmd "yum remove unixODBC-utf16 unixODBC-utf16-devel" "Removing default unixODBC packages"
-execute_cmd "env ACCEPT_EULA=Y yum install -y msodbcsql17" "Installing ODBC Driver for Microsoft(R) SQL Server(R)"
-MS_ID=$(head -1 /etc/odbcinst.ini | tr -d '[]') &>> "$LOGFILE"
-#yum config-manager --set-disable packages-microsoft-com-prod
 
 # Disabling SELINUX and firewalld
 setenforce 0
@@ -458,23 +426,10 @@ fi
 export MYSQL_PWD=$DBPASS
 
 #Define packages
-#Define packages
-if [ "$PANDORA_LTS" -eq '1' ] ; then
-    [ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/LTS/pandorafms_server-7.0NG.noarch.rpm"
-    [ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/LTS/pandorafms_console-7.0NG.noarch.rpm"
-    [ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/LTS/pandorafms_agent_linux-7.0NG.noarch.rpm"
-elif [ "$PANDORA_LTS" -ne '1' ] ; then
-    [ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/pandorafms_server-7.0NG.x86_64.rpm"
-    [ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/pandorafms_console-7.0NG.x86_64.rpm"
-    [ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/pandorafms_agent_linux-7.0NG.noarch.rpm"
-fi
+[ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_server-7.0NG.772.x86_64.rpm"
+[ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_console-7.0NG.772.noarch.rpm"
+[ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_agent_linux-7.0NG.772.noarch.rpm"
 
-# if beta is enable
-if [ "$PANDORA_BETA" -eq '1' ] ; then
-    PANDORA_SERVER_PACKAGE="https://firefly.pandorafms.com/pandora_enterprise_nightlies/pandorafms_server-latest.x86_64.rpm"
-    PANDORA_CONSOLE_PACKAGE="https://firefly.pandorafms.com/pandora_enterprise_nightlies/pandorafms_console-latest.x86_64.rpm"
-    PANDORA_AGENT_PACKAGE="https://firefly.pandorafms.com/pandorafms/latest/RHEL_CentOS/pandorafms_agent_linux-7.0NG.noarch.rpm"
-fi
 
 # Downloading Pandora Packages
 execute_cmd "curl -LSs --output pandorafms_server-7.0NG.noarch.rpm ${PANDORA_SERVER_PACKAGE}" "Downloading Pandora FMS Server community"
@@ -483,11 +438,6 @@ execute_cmd "curl -LSs --output pandorafms_agent_linux-7.0NG.noarch.rpm ${PANDOR
 
 # Install Pandora
 execute_cmd "yum install -y $HOME/pandora_deploy_tmp/pandorafms*.rpm" "installing PandoraFMS packages"
-
-# Copy gotty utility
-execute_cmd "wget https://firefly.pandorafms.com/pandorafms/utils/gotty_linux_amd64.tar.gz" 'Dowloading gotty util'
-tar xvzf gotty_linux_amd64.tar.gz &>> $LOGFILE
-execute_cmd "mv gotty /usr/bin/" 'Installing gotty util'
 
 # Enable Services
 execute_cmd "systemctl enable mysqld --now" "Enabling Database service"

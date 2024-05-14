@@ -1712,7 +1712,7 @@ function reporting_html_event_report_group($table, $item, $pdf=0)
             $table1->head[3] = __('Name');
             $table1->head[4] = __('Agent');
             $table1->head[5] = __('Severity');
-            $table1->head[6] = __('Val. by');
+            $table1->head[6] = __('Validated by');
             $table1->head[7] = __('Timestamp');
         } else {
             $table1->head[0] = __('Status');
@@ -1720,7 +1720,7 @@ function reporting_html_event_report_group($table, $item, $pdf=0)
             $table1->head[2] = __('Name');
             $table1->head[3] = __('Agent');
             $table1->head[4] = __('Severity');
-            $table1->head[5] = __('Val. by');
+            $table1->head[5] = __('Validated by');
             $table1->head[6] = __('Timestamp');
         }
 
@@ -1801,7 +1801,11 @@ function reporting_html_event_report_group($table, $item, $pdf=0)
                     'id_user',
                     $event['id_usuario']
                 );
-                $data[] = io_safe_output($user_name);
+                if (isset($event['id_usuario']) === true && empty($event['id_usuario']) === false) {
+                    $data[] = io_safe_output($user_name).' ('.$event['id_usuario'].')';
+                } else {
+                    $data[] = '';
+                }
             }
 
             if ($item['show_summary_group']) {
@@ -3845,7 +3849,7 @@ function reporting_html_event_report_agent($table, $item, $pdf=0)
 
         $table1->head[2] = __('Name');
         $table1->head[4] = __('Severity');
-        $table1->head[5] = __('Val. by');
+        $table1->head[5] = __('Validated by');
         $table1->head[6] = __('Timestamp');
         if ((bool) $item['show_custom_data'] === true) {
             $table1->head[7] = __('Custom data');
@@ -3904,7 +3908,11 @@ function reporting_html_event_report_agent($table, $item, $pdf=0)
                 $data[] = '<i>'.__('System').'</i>';
             } else {
                 $user_name = db_get_value('fullname', 'tusuario', 'id_user', $event['validated_by']);
-                $data[] = io_safe_output($user_name);
+                if (isset($event['id_usuario']) === true && empty($event['id_usuario']) === false) {
+                    $data[] = io_safe_output($user_name).' ('.$event['id_usuario'].')';
+                } else {
+                    $data[] = '';
+                }
             }
 
             if ($item['show_summary_group']) {
@@ -4107,7 +4115,7 @@ function reporting_html_historical_data($table, $item, $pdf=0)
 
         // Center every row
         foreach ($table1->data[0] as $k => $v) {
-            for ($i = 0; $i < count($table1->data); $i++){
+            for ($i = 0; $i < count($table1->data); $i++) {
                 $table1->cellstyle[$i][$k] = 'text-align: center;';
             }
         }
@@ -4190,7 +4198,7 @@ function reporting_html_database_serialized($table, $item, $pdf=0)
 
         // Center every row
         foreach ($table1->data[0] as $k => $v) {
-            for ($i = 0; $i < count($table1->data); $i++){
+            for ($i = 0; $i < count($table1->data); $i++) {
                 $table1->cellstyle[$i][$k] = 'text-align: center;';
             }
         }
@@ -6435,7 +6443,7 @@ function reporting_html_sql($table, $item, $pdf=0)
 
             // Center every row
             foreach ($table2->data[0] as $k => $v) {
-                for ($i = 0; $i < count($table2->data); $i++){
+                for ($i = 0; $i < count($table2->data); $i++) {
                     $table2->cellstyle[$i][$k] = 'text-align: center;';
                 }
             }
@@ -7886,6 +7894,12 @@ function reporting_html_ncm_list($table, $item, $pdf=0)
  */
 function reporting_html_ncm_backups($table, $item, $pdf=0)
 {
+    global $config;
+
+    if ($config['style'] === 'pandora_black') {
+        ui_require_css_file('pandora_black');
+    }
+
     ui_require_css_file('diff2html.min');
     ui_require_css_file('highlight.min');
     ui_require_css_file('highlight/vs.min');

@@ -69,38 +69,41 @@ function api_execute(
 
     if (empty($url) === true) {
         $url = 'http://'.$ip.$pandora_url.'/include/api.php?';
+    } else {
+        $url_schema = parse_url($url);
+        $url = $url_schema['scheme'].'://'.$url_schema['host'].$pandora_url.'/include/api.php?';
+    }
 
-        if (empty($op) === false) {
-            $data['op'] = $op;
-        }
+    if (empty($op) === false) {
+        $data['op'] = $op;
+    }
 
-        if (empty($op2) === false) {
-            $data['op2'] = $op2;
-        }
+    if (empty($op2) === false) {
+        $data['op2'] = $op2;
+    }
 
-        if (empty($id) === false) {
-            $data['id'] = $id;
-        }
+    if (empty($id) === false) {
+        $data['id'] = $id;
+    }
 
-        if (empty($id2) === false) {
-            $data['id2'] = $id2;
-        }
+    if (empty($id2) === false) {
+        $data['id2'] = $id2;
+    }
 
-        if (empty($return_type) === false) {
-            $data['return_type'] = $return_type;
-        }
+    if (empty($return_type) === false) {
+        $data['return_type'] = $return_type;
+    }
 
-        if (empty($other) === false) {
-            $data['other_mode'] = $other_mode;
-            $data['other'] = $other;
-        }
+    if (empty($other) === false) {
+        $data['other_mode'] = $other_mode;
+        $data['other'] = $other;
+    }
 
-        // If token is not reported,use old method.
-        if (empty($token) === true) {
-            $data['apipass'] = $apipass;
-            $data['user'] = $user;
-            $data['pass'] = $password;
-        }
+    // If token is not reported,use old method.
+    if (empty($token) === true) {
+        $data['apipass'] = $apipass;
+        $data['user'] = $user;
+        $data['pass'] = $password;
     }
 
     $url_protocol = parse_url($url)['scheme'];

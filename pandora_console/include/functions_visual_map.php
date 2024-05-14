@@ -1664,7 +1664,7 @@ function visual_map_print_item(
     echo '<div id="'.$id.'" class="'.$class.'" '.'style="z-index: '.$z_index.';'.'position: absolute; '.'top: '.$top.'px; '.'left: '.$left.'px;'.'display: inline-block; '.$sizeStyle.'">';
 
     if ($link) {
-        echo "<a href=\"$url\">";
+        echo '<a href="#" onClick="redirectNode(\''.$url.'\')">';
     }
 
     // for clean link text from bbdd only edit_visualmap
@@ -3221,6 +3221,10 @@ function visual_map_get_image_status_element($layoutData, $status=false)
                 $img .= '_warning.png';
             break;
 
+            case 33:
+                $img = 'images/broken_loop.svg';
+            break;
+
             case 3:
                 // Unknown.
             default:
@@ -3886,10 +3890,28 @@ function visual_map_translate_module_status($module_status)
  *
  * @return integer The status of the given layout.
  */
-function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
-{
+function visual_map_get_layout_status(
+    $layout_id,
+    $status_data=[],
+    $depth=0,
+    $exclude_recursive=[],
+    &$num_elements_by_status=[
+        VISUAL_MAP_STATUS_CRITICAL_BAD   => 0,
+        VISUAL_MAP_STATUS_CRITICAL_ALERT => 0,
+        VISUAL_MAP_STATUS_NORMAL         => 0,
+        VISUAL_MAP_STATUS_WARNING        => 0,
+        VISUAL_MAP_STATUS_UNKNOWN        => 0,
+        VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
+        VISUAL_MAP_STATUS_LOOPING        => 0,
+    ]
+) {
     global $config;
 
+    if (in_array($layout_id, $exclude_recursive) === true) {
+        return VISUAL_MAP_STATUS_LOOPING;
+    }
+
+    $exclude_recursive[] = $layout_id;
     // TODO: Implement this limit into the setup.
     if ($depth > 10) {
         return VISUAL_MAP_STATUS_UNKNOWN;
@@ -3951,15 +3973,6 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
         sort_by_column($valid_layout_items, 'id_metaconsole');
     }
 
-    $num_elements_by_status = [
-        VISUAL_MAP_STATUS_CRITICAL_BAD   => 0,
-        VISUAL_MAP_STATUS_CRITICAL_ALERT => 0,
-        VISUAL_MAP_STATUS_NORMAL         => 0,
-        VISUAL_MAP_STATUS_WARNING        => 0,
-        VISUAL_MAP_STATUS_UNKNOWN        => 0,
-        VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
-    ];
-
     $meta_connected_to = null;
 
     foreach ($valid_layout_items as $layout_item_data) {
@@ -4018,7 +4031,9 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
                         $status = visual_map_get_layout_status(
                             $layout_item_data['id_layout_linked'],
                             $layout_item_data,
-                            ($depth + 1)
+                            ($depth + 1),
+                            $exclude_recursive,
+                            $num_elements_by_status
                         );
                     } else if (!empty($layout_item_data['id_agente_modulo'])) {
                         // Module.
@@ -4085,6 +4100,10 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
 
     if (isset($status_data['linked_layout_status_type']) === true) {
         // Status calculation.
+        if (isset($num_elements_by_status[VISUAL_MAP_STATUS_LOOPING]) === true && empty($num_elements_by_status[VISUAL_MAP_STATUS_LOOPING]) === false) {
+            return VISUAL_MAP_STATUS_LOOPING;
+        }
+
         switch ($status_data['linked_layout_status_type']) {
             default:
             case 'default':

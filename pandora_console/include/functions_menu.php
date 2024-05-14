@@ -171,7 +171,7 @@ function menu_print_menu(&$menu)
         $sec2 = 'godmode/users/token_list';
     } else if ($sec2 === 'godmode/servers/modificar_server' && check_acl($config['id_user'], 0, 'AW') && (bool) check_acl($config['id_user'], 0, 'PM') === false) {
         $sec2 = 'enterprise/godmode/servers/list_satellite';
-    }else if ($sec2 === 'enterprise/godmode/snmpconsole/snmp_trap_editor_form') {
+    } else if ($sec2 === 'enterprise/godmode/snmpconsole/snmp_trap_editor_form') {
         $sec2 = 'enterprise/godmode/snmpconsole/snmp_trap_editor';
     } else {
         $sec2 = (string) get_parameter('sec2');

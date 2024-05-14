@@ -4940,7 +4940,8 @@ class AgentWizard extends HTML
                     '.1.3.6.1.4.1.9.5.1.4.1.1.11.1',
                     $value
                 );
-                if ($valueTranslated === false && $value !== '_generic_') {
+
+                if ($valueTranslated === false) {
                     $duplexMismatchOID = null;
                 } else {
                     $duplexMismatchOID = '.1.3.6.1.4.1.9.5.1.4.1.1.10.1';

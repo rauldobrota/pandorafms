@@ -1066,7 +1066,7 @@ function openSoundEventsDialog(settings, dialog_parameters) {
       resizable: false,
       modal: false,
       width: 600,
-      height: 600,
+      height: 700,
       dialogClass: "modal-sound",
       open: function() {
         $.ajax({
@@ -1102,24 +1102,8 @@ function openSoundEventsDialog(settings, dialog_parameters) {
               if (mode == 0) {
                 action = true;
               }
-              if ($("#button-start-search").hasClass("play")) {
-                $("#modal-sound").css({
-                  height: "500px"
-                });
-                $("#modal-sound")
-                  .parent()
-                  .css({
-                    height: "550px"
-                  });
-              } else {
-                $("#modal-sound").css({
-                  height: "450px"
-                });
-                $("#modal-sound")
-                  .parent()
-                  .css({
-                    height: "500px"
-                  });
+              if (!$("#button-start-search").hasClass("play")) {
+                $("#progressbar_time").empty();
               }
 
               action_events_sound(action, settings);
