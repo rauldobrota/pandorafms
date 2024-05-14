@@ -14,7 +14,7 @@ Pandora FMS has a "commercial" solution, with different features, oriented to co
 
 ### How to install Pandora FMS
 
-Installing Pandora FMS from sources is a complex task. Please visit our wiki and follow all the steps described for a proper installation. https://pandorafms.com/manual/
+Installing Pandora FMS from sources is a complex task. Please read the **extras/deploy/INSTALL.md** file follow all the steps described for a proper installation.
 
 ### What is Pandora FMS?
 
@@ -44,15 +44,3 @@ Pandora FMS is a monitoring tool that not only measures if a parameter is right 
 - Very high capacity (Thousands of devices)
 - Multitenant, several levels of ACL management.
 
-### Screenshots
-
-![screenshot 1](http://wolf359.artica.es/public_images/captura-pantalla-pandora3.png)
-<br />
-<br />
-![screenshot 2](http://wolf359.artica.es/public_images/pandora6.0sp3-monitor-view.png)
-<br />
-<br />
-![screenshot 3](http://wolf359.artica.es/public_images/pandora6.0sp3-agentview.png)
-<br />
-<br />
-![screenshot 4](http://wolf359.artica.es/public_images/pandora6.0sp3-sample-visual-console.png)
