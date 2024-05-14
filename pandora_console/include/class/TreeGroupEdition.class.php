@@ -91,39 +91,22 @@ class TreeGroupEdition extends TreeGroup
      */
     protected function getProcessedGroups()
     {
-        $processed_groups = [];
         // Index and process the groups.
-        $groups = $this->getGroupCounters();
-
-        // If user have not permissions in parent, set parent node to 0 (all)
-        // Avoid to do foreach for admins.
-        if (users_can_manage_group_all('AR') === false) {
-            foreach ($groups as $id => $group) {
-                if (isset($this->userGroups[$groups[$id]['parent']]) === false) {
-                    $groups[$id]['parent'] = 0;
+        $groups = $this->getGroups();
+        foreach ($groups as $id => $group) {
+            if (isset($groups[$id]['parent']) === true
+                && ($groups[$id]['parent'] != 0)
+            ) {
+                $parent = $groups[$id]['parent'];
+                // Parent exists.
+                if (isset($groups[$parent]['children']) === false) {
+                    $groups[$parent]['children'] = [];
                 }
-            }
-        }
 
-        // Build the group hierarchy.
-        if (isset($this->filter['show_full_hirearchy']) === false
-            || (isset($this->filter['show_full_hirearchy']) === true && (bool) $this->filter['show_full_hirearchy'] === true)
-        ) {
-            foreach ($groups as $id => $group) {
-                if (isset($groups[$id]['parent']) === true
-                    && ($groups[$id]['parent'] != 0)
-                ) {
-                    $parent = $groups[$id]['parent'];
-                    // Parent exists.
-                    if (isset($groups[$parent]['children']) === false) {
-                        $groups[$parent]['children'] = [];
-                    }
-
-                    // Store a reference to the group into the parent.
-                    $groups[$parent]['children'][] = &$groups[$id];
-                    // This group was introduced into a parent.
-                    $groups[$id]['have_parent'] = true;
-                }
+                // Store a reference to the group into the parent.
+                $groups[$parent]['children'][] = &$groups[$id];
+                // This group was introduced into a parent.
+                $groups[$id]['have_parent'] = true;
             }
         }
 
@@ -162,120 +145,27 @@ class TreeGroupEdition extends TreeGroup
      *
      * @return mixed
      */
-    protected function getGroupCounters()
+    protected function getGroups()
     {
-        $messages = [
-            'confirm' => __('Confirm'),
-            'cancel'  => __('Cancel'),
-            'messg'   => __('Are you sure?'),
-        ];
-
         $group_acl = '';
-        $search_agent = '';
-        $status_agent = '';
-        $inner_agent = '';
-
-        if ((bool) is_metaconsole() === true) {
-            if (users_can_manage_group_all('AR') === false) {
-                $user_groups_str = implode(',', $this->userGroupsArray);
-                $group_acl = sprintf(
-                    ' AND tgrupo.id_grupo IN (%s) ',
-                    $user_groups_str
-                );
-            }
-
-            if (isset($this->filter['searchAgent']) === true && empty($this->filter['searchAgent']) === false
-                || isset($this->filter['statusAgent']) === true && strlen($this->filter['statusAgent']) > 0
-            ) {
-                $inner_agent = 'INNER JOIN tmetaconsole_agent ON tgrupo.id_grupo = tmetaconsole_agent.id_grupo';
-            }
-
-            if (isset($this->filter['searchAgent']) === true && empty($this->filter['searchAgent']) === false) {
-                $search_agent = ' AND tmetaconsole_agent.alias LIKE "%'.$this->filter['searchAgent'].'%" ';
-            }
-
-            if (isset($this->filter['statusAgent']) === true && strlen($this->filter['statusAgent']) > 0) {
-                switch ($this->filter['statusAgent']) {
-                    case AGENT_STATUS_NORMAL:
-                        $status_agent = ' AND (
-                            tmetaconsole_agent.critical_count = 0
-                            AND tmetaconsole_agent.warning_count = 0
-                            AND tmetaconsole_agent.unknown_count = 0 
-                            AND tmetaconsole_agent.normal_count > 0)';
-                    break;
-
-                    case AGENT_STATUS_WARNING:
-                        $status_agent = ' AND (
-                            tmetaconsole_agent.critical_count = 0 
-                            AND tmetaconsole_agent.warning_count > 0
-                            AND tmetaconsole_agent.total_count > 0)';
-                    break;
-
-                    case AGENT_STATUS_CRITICAL:
-                        $status_agent = ' AND tmetaconsole_agent.critical_count > 0';
-                    break;
-
-                    case AGENT_STATUS_UNKNOWN:
-                        $status_agent = ' AND (
-                            tmetaconsole_agent.critical_count = 0 
-                            AND tmetaconsole_agent.warning_count = 0 
-                            AND tmetaconsole_agent.unknown_count > 0)';
-                    break;
-
-                    case AGENT_STATUS_NOT_NORMAL:
-                        $status_agent = ' AND (
-                            tmetaconsole_agent.normal_count <> total_count
-                            OR tmetaconsole_agent.total_count = notinit_count)';
-                    break;
-
-                    case AGENT_STATUS_NOT_INIT:
-                        $status_agent = ' AND (
-                            tmetaconsole_agent.total_count = 0
-                            OR tmetaconsole_agent.total_count = notinit_count)';
-                    break;
-
-                    default:
-                        // Nothing to do.
-                    break;
-                }
-            }
-
-            $sql = sprintf(
-                'SELECT tgrupo.id_grupo AS gid,
-                tgrupo.nombre as name,
-                tgrupo.parent,
-                tgrupo.icon
-                FROM tgrupo
-                %s
-                WHERE 1=1
-                %s
-                %s
-                %s ',
-                $inner_agent,
-                $search_agent,
-                $status_agent,
-                $group_acl
-            );
-        } else {
-            if (users_can_manage_group_all('AR') === false) {
-                $user_groups_str = implode(',', $this->userGroupsArray);
-                $group_acl = sprintf(
-                    'AND id_grupo IN (%s)',
-                    $user_groups_str
-                );
-            }
-
-            $sql = sprintf(
-                'SELECT id_grupo AS gid,
-                nombre as name,
-                parent,
-                icon
-                FROM tgrupo
-                WHERE 1=1 
-                %s ',
-                $group_acl
+        if (users_can_manage_group_all('AR') === false) {
+            $user_groups_str = implode(',', $this->userGroupsArray);
+            $group_acl = sprintf(
+                'AND id_grupo IN (%s)',
+                $user_groups_str
             );
         }
+
+        $sql = sprintf(
+            'SELECT id_grupo AS gid,
+            nombre as name,
+            parent,
+            icon
+            FROM tgrupo
+            WHERE 1=1 
+            %s',
+            $group_acl
+        );
 
         $stats = db_get_all_rows_sql($sql);
         $group_stats = [];
@@ -290,6 +180,12 @@ class TreeGroupEdition extends TreeGroup
                 $group_stats[$group['gid']]
             );
             if (is_management_allowed() === true) {
+                $messages = [
+                    'confirm' => __('Confirm'),
+                    'cancel'  => __('Cancel'),
+                    'messg'   => __('Are you sure?'),
+                ];
+
                 $group_stats[$group['gid']]['delete']['messages'] = $messages;
                 $group_stats[$group['gid']]['edit']   = 1;
             }

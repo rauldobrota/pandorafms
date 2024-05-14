@@ -163,33 +163,47 @@ class TreeGroup extends Tree
             // Filter by group name. This should be done after rerieving
             // the items cause we need the possible items descendants.
             if (empty($this->filter['searchGroup']) === false) {
-                // Save the groups which intersect with the user groups.
-                $groups = db_get_all_rows_filter(
-                    'tgrupo',
-                    ['nombre' => '%'.$this->filter['searchGroup'].'%']
-                );
-                if ($groups === false) {
-                    $groups = [];
-                }
-
-                $userGroupsACL = $this->userGroupsACL;
-                $ids_hash = array_reduce(
-                    $groups,
-                    function ($userGroups, $group) use ($userGroupsACL) {
-                        $group_id = $group['id_grupo'];
-                        if (isset($userGroupsACL[$group_id]) === true) {
-                            $userGroups[$group_id] = $userGroupsACL[$group_id];
+                if (isset($this->filter['searchHirearchy']) === true
+                    && (bool) $this->filter['searchHirearchy'] === true
+                ) {
+                    $result = array_filter(
+                        $processed_items,
+                        function ($group) {
+                            return self::getFullHirearchyGroups(
+                                $group,
+                                $this->filter['searchGroup']
+                            );
                         }
+                    );
+                } else {
+                    // Save the groups which intersect with the user groups.
+                    $groups = db_get_all_rows_filter(
+                        'tgrupo',
+                        ['nombre' => '%'.$this->filter['searchGroup'].'%']
+                    );
+                    if ($groups === false) {
+                        $groups = [];
+                    }
 
-                        return $userGroups;
-                    },
-                    []
-                );
+                    $userGroupsACL = $this->userGroupsACL;
+                    $ids_hash = array_reduce(
+                        $groups,
+                        function ($userGroups, $group) use ($userGroupsACL) {
+                            $group_id = $group['id_grupo'];
+                            if (isset($userGroupsACL[$group_id]) === true) {
+                                $userGroups[$group_id] = $userGroupsACL[$group_id];
+                            }
 
-                $result = self::extractGroupsWithIDs(
-                    $processed_items,
-                    $ids_hash
-                );
+                            return $userGroups;
+                        },
+                        []
+                    );
+
+                    $result = self::extractGroupsWithIDs(
+                        $processed_items,
+                        $ids_hash
+                    );
+                }
 
                 $processed_items = ($result === false) ? [] : $result;
             }
@@ -200,7 +214,7 @@ class TreeGroup extends Tree
                     $processed_items,
                     $this->filter['groupID'],
                     'group',
-                    $this->strictACL
+                    false
                 );
 
                 $processed_items = ($result === false) ? [] : [$result];
@@ -584,6 +598,24 @@ class TreeGroup extends Tree
     }
 
 
+    protected function getFullHirearchyGroups($group, $search)
+    {
+        if (stripos($group['name'], $search) !== false) {
+            return true;
+        } else {
+            if (isset($group['children']) === true && empty($group['children']) === false) {
+                foreach ($group['children'] as $group_child) {
+                    if ($this->getFullHirearchyGroups($group_child, $search) === true) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     private static function extractItemWithID($items, $item_id, $item_type='group', $strictACL=false)
     {
         foreach ($items as $item) {
@@ -622,7 +654,7 @@ class TreeGroup extends Tree
     protected function getDisplayHierarchy()
     {
         if (isset($this->filter['searchHirearchy']) === false) {
-            $this->filter['searchHirearchy'] = '';
+            $this->filter['searchHirearchy'] = false;
         }
 
         return $this->filter['searchHirearchy'] ||
