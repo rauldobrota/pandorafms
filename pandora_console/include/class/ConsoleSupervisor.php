@@ -2600,7 +2600,7 @@ class ConsoleSupervisor
             $this->notify(
                 [
                     'type'              => 'NOTIF.API.ACCESS',
-                    'title'             => __('Cannot access the Pandora FMS API '),
+                    'title'             => __('Cannot access the Pandora FMS API'),
                     'message'           => __('Please check the configuration, some components may fail due to this misconfiguration in '.$server_name.' ('.$config['public_url'].')'),
                     'icon_notification' => self::ICON_ERROR,
                 ]
@@ -3078,7 +3078,7 @@ class ConsoleSupervisor
                 $this->notify(
                     [
                         'type'              => 'NOTIF.HAMASTER.MESSAGE',
-                        'title'             => __('Desynchronized operation on the node '.$node['host']),
+                        'title'             => __('Desynchronized operation on the node %s', $node['host']),
                         'message'           => __($message),
                         'url'               => '__url__/index.php?sec=gservers&sec2=enterprise/godmode/servers/new_HA_cluster',
                         'icon_notification' => self::ICON_ERROR,

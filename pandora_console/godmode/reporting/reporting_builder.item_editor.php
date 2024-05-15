@@ -3823,7 +3823,7 @@ if (is_metaconsole() === true) {
             <td>
                 <span id="row_event_graph_by_agent">
                 <?php
-                echo __('By agent ');
+                echo __('By agent').' ';
                 html_print_checkbox_switch(
                     'event_graph_by_agent',
                     true,
@@ -3833,7 +3833,7 @@ if (is_metaconsole() === true) {
                 </span>
                 <span id="row_event_graph_by_user">
                 <?php
-                echo __('By user validator ');
+                echo __('By user validator').' ';
                 html_print_checkbox_switch(
                     'event_graph_by_user_validator',
                     true,
@@ -3843,7 +3843,7 @@ if (is_metaconsole() === true) {
                 </span>
                 <span id="row_event_graph_by_criticity">
                 <?php
-                echo __('By criticity ');
+                echo __('By criticity').' ';
                 html_print_checkbox_switch(
                     'event_graph_by_criticity',
                     true,
@@ -3853,7 +3853,7 @@ if (is_metaconsole() === true) {
                 </span>
                 <span id="row_event_graph_by_validated">
                 <?php
-                echo __('Validated vs unvalidated ');
+                echo __('Validated vs unvalidated').' ';
                 html_print_checkbox_switch(
                     'event_graph_validated_vs_unvalidated',
                     true,

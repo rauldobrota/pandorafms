@@ -4090,7 +4090,7 @@ function series_type_graph_array($data, $show_elements_graph)
                     if ($show_elements_graph['unit']) {
                         $name_legend = $show_elements_graph['labels'][$value['agent_module_id']];
                         $name_legend .= ' / ';
-                        $name_legend .= __('Unit ').' ';
+                        $name_legend .= __('Unit').' ';
                         $name_legend .= $show_elements_graph['unit'].': ';
                     } else {
                         if (isset($show_elements_graph['from_interface']) === true
@@ -4109,7 +4109,7 @@ function series_type_graph_array($data, $show_elements_graph)
                                 $name_legend .= ' / ';
                                 $name_legend .= $value['module_name'];
                                 $name_legend .= ' / ';
-                                $name_legend .= __('Unit ').' ';
+                                $name_legend .= __('Unit').' ';
                                 $name_legend .= $value['unit'].': ';
                             }
                         } else {
@@ -4123,7 +4123,7 @@ function series_type_graph_array($data, $show_elements_graph)
                             $name_legend .= ' / ';
                             $name_legend .= $value['module_name'];
                             $name_legend .= ' / ';
-                            $name_legend .= __('Unit ').' ';
+                            $name_legend .= __('Unit').' ';
                             $name_legend .= $value['unit'].'Baseline ';
                         } else {
                             $name_legend = $value['agent_alias'];
@@ -4168,7 +4168,7 @@ function series_type_graph_array($data, $show_elements_graph)
                                 $name_legend .= ' / ';
                                 $name_legend .= $value['module_name'];
                                 $name_legend .= ' / ';
-                                $name_legend .= __('Unit ').' ';
+                                $name_legend .= __('Unit').' ';
                                 $name_legend .= $value['unit'].': ';
                             } else {
                                 $name_legend .= $value['agent_alias'];
@@ -4252,7 +4252,7 @@ function series_type_graph_array($data, $show_elements_graph)
                     $name_legend .= ' / ';
                     $name_legend .= $value['module_name'];
                     $name_legend .= ' / ';
-                    $name_legend .= __('Unit ').' ';
+                    $name_legend .= __('Unit').' ';
                     $name_legend .= $show_elements_graph['unit'].': ';
                 } else {
                     $name_legend .= $value['agent_alias'];
@@ -4329,7 +4329,7 @@ function series_type_graph_array($data, $show_elements_graph)
                         $name_legend .= __('of module').' ';
                         $name_legend .= $value['agent_alias'].' / ';
                         $name_legend .= $value['module_name'].' / ';
-                        $name_legend .= __('Unit ').' ';
+                        $name_legend .= __('Unit').' ';
                         $name_legend .= $show_elements_graph['unit'].': ';
                     } else {
                         $name_legend = __('Percentil').' ';

@@ -398,7 +398,7 @@ class OrderInterpreter extends Wizard
             foreach ($this->pages_menu as $key => $value) {
                 if (preg_match(
                     '/.*'.io_safe_output($text).'.*/i',
-                    __('GO TO '.$value['name'])
+                    __('GO TO %s', $value['name'])
                 ) && $value['acl']
                 ) {
                     if ($iterator <= 9 && $this->canShowItem($enterprise, $this->pages_menu[$key]['url'])) {

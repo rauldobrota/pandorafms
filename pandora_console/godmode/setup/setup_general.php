@@ -50,7 +50,7 @@ if (is_ajax()) {
 }
 
 echo "<div id='dialog' title='".__('Enforce https Information')."' class='invisible'>";
-echo "<p class='center'>".__('If SSL is not properly configured you will lose access to ').get_product_name().__(' Console').'</p>';
+echo "<p class='center'>".__('If SSL is not properly configured you will lose access to').' '.get_product_name().' '.__('Console').'</p>';
 echo '</div>';
 
 $performance_variables_control = (array) json_decode(io_safe_output($config['performance_variables_control']));
@@ -112,7 +112,7 @@ html_print_div(
     [
         'id'      => 'force_public_url_dialog',
         'class'   => 'invisible',
-        'content' => __('If public URL is not properly configured you will lose access to ').get_product_name().__(' Console'),
+        'content' => __('If public URL is not properly configured you will lose access to').' '.get_product_name().' '.__('Console'),
     ]
 );
 

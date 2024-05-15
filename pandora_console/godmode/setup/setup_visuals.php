@@ -2202,7 +2202,7 @@ html_print_table($table_vc);
 echo '</fieldset>';
 
 echo '<fieldset class="margin-bottom-10">';
-echo '<legend>'.__('Reports configuration ').ui_print_help_icon('reports_configuration_tab', true).'</legend>';
+echo '<legend>'.__('Reports configuration').' '.ui_print_help_icon('reports_configuration_tab', true).'</legend>';
 html_print_table($table_report);
 echo '</fieldset>';
 

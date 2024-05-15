@@ -2283,7 +2283,7 @@ function reporting_event_report_group(
     }
 
     if (!empty($content['style']['event_filter_exclude'])) {
-        $return['subtitle'] .= ' ('.__('Exclude ').$content['style']['event_filter_exclude'].')';
+        $return['subtitle'] .= ' ('.__('Exclude %s', $content['style']['event_filter_exclude']).')';
     }
 
     $return['description'] = $content['description'];

@@ -396,7 +396,7 @@ class GroupsStatusMapWidget extends Widget
                 'name'            => $row['estado'],
                 'value'           => $row['total_modules'],
                 'color'           => $color,
-                'tooltip_content' => $row['total_modules'].__(' Modules(%s)', $name_status),
+                'tooltip_content' => __('%s Modules(%s)', $row['total_modules'], $name_status),
                 'link'            => 'index.php?sec=view&sec2=operation/agentes/status_monitor&refr=0&ag_group='.$row['id_grupo'].'&ag_freestring=&module_option=1&ag_modulename=&moduletype=&datatype=&status='.$row['estado'].'&sort_field=&sort=none&pure=',
             ];
             $names[$row['id_grupo']] = $row['nombre'];

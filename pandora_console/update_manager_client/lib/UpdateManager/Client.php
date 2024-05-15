@@ -2243,7 +2243,7 @@ class Client
             $pct = (90 / $total_updates);
             do {
                 $this->listUpdates();
-                $this->globalTask = __('Updating to '.$this->nextUpdate);
+                $this->globalTask = __('Updating to %s', $this->nextUpdate);
                 $rc = $this->updateNextVersion();
                 if ($rc === false) {
                     // Failed to upgrade to next version.
