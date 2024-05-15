@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pandora-fms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 17:36+0200\n"
+"POT-Creation-Date: 2024-05-15 18:49+0200\n"
 "PO-Revision-Date: 2015-09-22 20:39+0000\n"
 "Last-Translator: nil <slerena@gmail.com>\n"
 "Language-Team: English (Australia) <en_AU@li.org>\n"
@@ -7965,6 +7965,7 @@ msgstr "Ignore new GIS data:"
 #: ../../include/functions_snmp.php:390
 #: ../../operation/netflow/nf_live_view.php:393
 #: ../../operation/users/user_edit.php:430
+#: ../../update_manager_client/views/register.php:172
 msgid "Yes"
 msgstr "Yes"
 
@@ -31031,6 +31032,12 @@ msgstr "Error processing alert(s)"
 msgid "All fields required"
 msgstr ""
 
+#: ../../include/functions_register.php:203
+#: ../../update_manager_client/views/register.php:109
+#, fuzzy
+msgid "Confirmation Required"
+msgstr "Configuration"
+
 #: ../../include/functions_register.php:205
 msgid "Are you sure you don't want to configure a base email?"
 msgstr ""
@@ -39359,6 +39366,11 @@ msgid ""
 "You will need to update your system manually, through source code or RPM\n"
 "            packages to be up to date with latest updates."
 msgstr ""
+
+#: ../../update_manager_client/views/register.php:125
+#, fuzzy
+msgid "Registration process result"
+msgstr "Plug-in registration"
 
 #: ../../update_manager_client/views/register.php:216
 msgid "Unsuccessful subscription"

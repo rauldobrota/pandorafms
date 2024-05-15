@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 18:20+0200\n"
-"PO-Revision-Date: 2024-05-15 18:20+0200\n"
+"POT-Creation-Date: 2024-05-15 18:49+0200\n"
+"PO-Revision-Date: 2024-05-15 18:40+0200\n"
 "Last-Translator: Laura Cano <Unknown>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -8231,6 +8231,7 @@ msgstr "Ignorar nuevos datos GIS"
 #: ../../include/functions_snmp.php:390
 #: ../../operation/netflow/nf_live_view.php:393
 #: ../../operation/users/user_edit.php:430
+#: ../../update_manager_client/views/register.php:172
 msgid "Yes"
 msgstr "Sí"
 
@@ -31227,6 +31228,12 @@ msgstr "Correo electrónico para la recepción de alertas"
 msgid "All fields required"
 msgstr "Todos los campos requeridos"
 
+#: ../../include/functions_register.php:203
+#: ../../update_manager_client/views/register.php:109
+#, fuzzy
+msgid "Confirmation Required"
+msgstr "Asistente de configuración"
+
 #: ../../include/functions_register.php:205
 msgid "Are you sure you don't want to configure a base email?"
 msgstr "¿Está seguro de que no desea configurar un correo base?"
@@ -38410,7 +38417,7 @@ msgstr "No actualizado"
 
 #: ../../operation/reporting/graph_analytics.php:342
 msgid "Created from Graph analytics. Filter:"
-msgstr "Creado con Graph analytics. Filtro:"
+msgstr "Creado a partir de Análisis de gráficos. Filtrar:"
 
 #: ../../operation/reporting/graph_analytics.php:610
 #: ../../operation/reporting/graph_analytics.php:628
@@ -38438,7 +38445,7 @@ msgstr "Exportar a gráfico personalizado"
 #: ../../operation/reporting/graph_analytics.php:809
 #: ../../operation/menu.php:489
 msgid "Graph analytics"
-msgstr "Graph analytics"
+msgstr "Análisis de gráficos"
 
 #: ../../operation/reporting/graph_analytics.php:995
 msgid "Delete filter?"
@@ -39240,6 +39247,11 @@ msgid ""
 msgstr ""
 "Deberá actualizar su sistema manualmente a través del código fuente o de los "
 "paquetes RPM para estar al día con las últimas actualizaciones."
+
+#: ../../update_manager_client/views/register.php:125
+#, fuzzy
+msgid "Registration process result"
+msgstr "ID de registro"
 
 #: ../../update_manager_client/views/register.php:216
 msgid "Unsuccessful subscription"

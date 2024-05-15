@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pandora-fms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 17:36+0200\n"
+"POT-Creation-Date: 2024-05-15 18:49+0200\n"
 "PO-Revision-Date: 2023-06-15 10:27+0900\n"
 "Last-Translator: Junichi Satoh <junichi@rworks.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -8184,6 +8184,7 @@ msgstr "新たな GIS データを無視する:"
 #: ../../include/functions_snmp.php:390
 #: ../../operation/netflow/nf_live_view.php:393
 #: ../../operation/users/user_edit.php:430
+#: ../../update_manager_client/views/register.php:172
 msgid "Yes"
 msgstr "はい"
 
@@ -31051,6 +31052,12 @@ msgstr "アラート受信メールアドレス"
 msgid "All fields required"
 msgstr "全フィールドが必須です"
 
+#: ../../include/functions_register.php:203
+#: ../../update_manager_client/views/register.php:109
+#, fuzzy
+msgid "Confirmation Required"
+msgstr "%s 設定ウィザード"
+
 #: ../../include/functions_register.php:205
 msgid "Are you sure you don't want to configure a base email?"
 msgstr "基本メールを設定しなくて良いですか？"
@@ -39172,6 +39179,11 @@ msgid ""
 msgstr ""
 "ソースコードまたは RPM を使用して、システムを手動で更新する必要があります\n"
 "            パッケージはアップデートで最新になります。"
+
+#: ../../update_manager_client/views/register.php:125
+#, fuzzy
+msgid "Registration process result"
+msgstr "登録 ID"
 
 #: ../../update_manager_client/views/register.php:216
 msgid "Unsuccessful subscription"

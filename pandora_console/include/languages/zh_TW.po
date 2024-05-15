@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pandora-fms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 17:36+0200\n"
+"POT-Creation-Date: 2024-05-15 18:49+0200\n"
 "PO-Revision-Date: 2015-10-26 11:04+0000\n"
 "Last-Translator: Rockworld <sumoisrock@gmail.com>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -7838,6 +7838,7 @@ msgstr ""
 #: ../../include/functions_snmp.php:390
 #: ../../operation/netflow/nf_live_view.php:393
 #: ../../operation/users/user_edit.php:430
+#: ../../update_manager_client/views/register.php:172
 msgid "Yes"
 msgstr ""
 
@@ -29962,6 +29963,12 @@ msgstr ""
 msgid "All fields required"
 msgstr ""
 
+#: ../../include/functions_register.php:203
+#: ../../update_manager_client/views/register.php:109
+#, fuzzy
+msgid "Confirmation Required"
+msgstr "資訊"
+
 #: ../../include/functions_register.php:205
 msgid "Are you sure you don't want to configure a base email?"
 msgstr ""
@@ -37882,6 +37889,10 @@ msgstr ""
 msgid ""
 "You will need to update your system manually, through source code or RPM\n"
 "            packages to be up to date with latest updates."
+msgstr ""
+
+#: ../../update_manager_client/views/register.php:125
+msgid "Registration process result"
 msgstr ""
 
 #: ../../update_manager_client/views/register.php:216

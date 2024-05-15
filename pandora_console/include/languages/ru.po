@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pandora-fms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 17:36+0200\n"
+"POT-Creation-Date: 2024-05-15 18:49+0200\n"
 "PO-Revision-Date: 2021-11-02 16:44+0100\n"
 "Last-Translator: Svetlana Titovskaia <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -8306,6 +8306,7 @@ msgstr "Игнорировать новые ГИС данные:"
 #: ../../include/functions_snmp.php:390
 #: ../../operation/netflow/nf_live_view.php:393
 #: ../../operation/users/user_edit.php:430
+#: ../../update_manager_client/views/register.php:172
 msgid "Yes"
 msgstr "Да"
 
@@ -31609,6 +31610,12 @@ msgstr "Электронная почта для получения предуп
 msgid "All fields required"
 msgstr "Все поля обязательны"
 
+#: ../../include/functions_register.php:203
+#: ../../update_manager_client/views/register.php:109
+#, fuzzy
+msgid "Confirmation Required"
+msgstr "%s помощник настройки"
+
 #: ../../include/functions_register.php:205
 msgid "Are you sure you don't want to configure a base email?"
 msgstr "Вы уверены, что не хотите настраивать базовый email?"
@@ -39873,6 +39880,11 @@ msgid ""
 msgstr ""
 "Вам нужно будет обновить систему вручную, с помощью исходного кода или RPM\n"
 "            пакеты, чтобы быть в курсе последних обновлений."
+
+#: ../../update_manager_client/views/register.php:125
+#, fuzzy
+msgid "Registration process result"
+msgstr "Регистрационный идентификатор:"
 
 #: ../../update_manager_client/views/register.php:216
 msgid "Unsuccessful subscription"

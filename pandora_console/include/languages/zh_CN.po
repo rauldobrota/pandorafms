@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pandora-fms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 17:36+0200\n"
+"POT-Creation-Date: 2024-05-15 18:49+0200\n"
 "PO-Revision-Date: 2021-11-02 23:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
@@ -8104,6 +8104,7 @@ msgstr "忽略新的 GIS 数据："
 #: ../../include/functions_snmp.php:390
 #: ../../operation/netflow/nf_live_view.php:393
 #: ../../operation/users/user_edit.php:430
+#: ../../update_manager_client/views/register.php:172
 msgid "Yes"
 msgstr "是"
 
@@ -30965,6 +30966,12 @@ msgstr "用于接收警报的电子邮件"
 msgid "All fields required"
 msgstr "所需的所有字段"
 
+#: ../../include/functions_register.php:203
+#: ../../update_manager_client/views/register.php:109
+#, fuzzy
+msgid "Confirmation Required"
+msgstr "%s配置向导"
+
 #: ../../include/functions_register.php:205
 msgid "Are you sure you don't want to configure a base email?"
 msgstr "您确定不想配置基本电子邮件吗？"
@@ -39119,6 +39126,11 @@ msgid ""
 msgstr ""
 "您需要通过源代码或 RPM 手动更新系统\n"
 "            要与最新更新保持最新更新的包。"
+
+#: ../../update_manager_client/views/register.php:125
+#, fuzzy
+msgid "Registration process result"
+msgstr "注册 ID："
 
 #: ../../update_manager_client/views/register.php:216
 msgid "Unsuccessful subscription"
