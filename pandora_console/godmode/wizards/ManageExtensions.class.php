@@ -267,7 +267,7 @@ class ManageExtensions extends HTML
                 ],
                 [
                     'link'     => '',
-                    'label'    => _('Manage disco packages'),
+                    'label'    => __('Manage disco packages'),
                     'selected' => 1,
                 ],
             ]

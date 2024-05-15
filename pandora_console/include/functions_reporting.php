@@ -8185,7 +8185,7 @@ function reporting_sql_auxiliary($report, $content, $pdf=false)
         }
     } else {
         $return['correct'] = 0;
-        $return['error'] = __('Illegal query: Due to security restrictions, there are some tokens or words you cannot use: *, delete, drop, alter, modify, password, pass, insert or update.');
+        $return['error'] = __('Illegal query: due to security restrictions, there are some tokens or words you cannot use: *, delete, drop, alter, modify, password, pass, insert or update.');
     }
 
     return $return;

@@ -2398,7 +2398,7 @@ $(document).ready (function () {
     $("#button-interval_del_btn").click( function()  {
         confirmDialog({
             title: "<?php echo __('Delete interval'); ?>",
-            message: "<?php echo __('This action is not reversible. Are you sure'); ?>",
+            message: "<?php echo __('This action is not reversible. Are you sure?'); ?>",
             onAccept: function() {
                 var interval_selected = $('#intervals option:selected').val();
                 $('#hidden-interval_to_delete').val(interval_selected);

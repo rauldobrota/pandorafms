@@ -948,18 +948,15 @@ if ($edit_capable === true) {
         var maintenanceMode = visualConsoleManager.visualConsole.props.maintenanceMode;
         var msg = '';
         if(maintenanceMode == null) {
-            msg = '<?php echo __('Are you sure you wish to set the visual console in maintenance mode'); ?>';
-            msg += '?';
+            msg = '<?php echo __('Are you sure you wish to set the visual console in maintenance mode?'); ?>';
         } else if (maintenanceMode.user === '<?php echo $config['id_user']; ?>') {
-            msg += '<?php echo __('Are you sure you wish to disable maintenance mode'); ?>';
-            msg += '?';
+            msg += '<?php echo __('Are you sure you wish to disable maintenance mode?'); ?>';
         } else {
             msg = '<?php echo __('The visual console was set to maintenance mode'); ?>';
             msg += ' ' + '<span title="'+maintenanceMode.date+'">' + maintenanceMode.timestamp + '</span>';
             msg += ' ' + '<?php echo __('ago by user'); ?>';
             msg += ' ' + maintenanceMode.user;
-            msg += '. ' + '<?php echo __('Are you sure you wish to disable maintenance mode'); ?>';
-            msg += '?';
+            msg += '. ' + '<?php echo __('Are you sure you wish to disable maintenance mode?'); ?>';
         }
         
         confirmDialog({
@@ -1129,7 +1126,7 @@ if ($edit_capable === true) {
     $('#button-button_delete').click(function (event){
         confirmDialog({
             title: "<?php echo __('Delete'); ?>",
-            message: "<?php echo __('Are you sure'); ?>"+"?",
+            message: "<?php echo __('Are you sure?'); ?>",
             onAccept: function() {
                 visualConsoleManager.visualConsole.elements.forEach(item => {
                     if (item.meta.isSelected === true) {

@@ -4210,7 +4210,7 @@ function series_type_graph_array($data, $show_elements_graph)
                             $config['csv_decimal_separator'],
                             $config['csv_decimal_separator'] == ',' ? '.' : ','
                         )
-                    ).' '.$value['unit'].'</span>&nbsp;<span class="legend-font-small">'._('Avg.').' </span><span class="bolder">'.remove_right_zeros(
+                    ).' '.$value['unit'].'</span>&nbsp;<span class="legend-font-small">'.__('Avg.').' </span><span class="bolder">'.remove_right_zeros(
                         number_format(
                             $value['avg'],
                             $config['graph_precision'],
@@ -4280,7 +4280,7 @@ function series_type_graph_array($data, $show_elements_graph)
                             $config['thousand_separator']
                         )
                     ).' '.$value['unit'];
-                    $data_return['legend'][$key] .= '</span>&nbsp;<span class="legend-font-small">'._('Avg:').' </span><span class="bolder">';
+                    $data_return['legend'][$key] .= '</span>&nbsp;<span class="legend-font-small">'.__('Avg:').' </span><span class="bolder">';
                     $data_return['legend'][$key] .= remove_right_zeros(
                         number_format(
                             $value['avg'],

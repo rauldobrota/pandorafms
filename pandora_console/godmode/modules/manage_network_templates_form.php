@@ -142,7 +142,7 @@ if (isset($_GET['create']) || isset($_GET['update'])) {
             // Will return either 0 (in case of error) or an int
         }
     } else {
-        ui_print_result_message(false, '', _('Cannot create a template without name'));
+        ui_print_result_message(false, '', __('Cannot create a template without name'));
     }
 } else if ($id_np > 0) {
     // Profile exists

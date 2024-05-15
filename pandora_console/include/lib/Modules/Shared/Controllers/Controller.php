@@ -113,7 +113,7 @@ abstract class Controller
             $file_stream = Stream::create($stream);
         } catch (\Throwable $th) {
             throw new ForbiddenActionException(
-                __('Error download file: ').$th->getMessage(),
+                __('Error download file').': '.$th->getMessage(),
                 empty($th->getCode()) === true ? HttpCodesEnum::BAD_REQUEST : $th->getCode()
             );
         }

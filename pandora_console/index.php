@@ -448,7 +448,7 @@ if (isset($config['id_user']) === false) {
         } else if (($config['auth'] === 'saml') && ($login_button_saml)) {
             $saml_user_id = enterprise_hook('saml_process_user_login');
             if (!$saml_user_id) {
-                $config['auth_error'] = __('saml error');
+                $config['auth_error'] = __('SAML error');
                 $login_failed = true;
                 include_once 'general/login_page.php';
                 while (ob_get_length() > 0) {
@@ -1521,7 +1521,7 @@ echo html_print_input_hidden(
 // Connection lost alert.
 set_js_value('check_conexion_interval', $config['check_conexion_interval']);
 set_js_value('title_conexion_interval', __('Connection with console has been lost'));
-set_js_value('status_conexion_interval', __('Connection status: '));
+set_js_value('status_conexion_interval', __('Connection status').': ');
 ui_require_javascript_file('connection_check');
 set_js_value('absolute_homeurl', ui_get_full_url(false, false, false, false));
 $conn_title = __('Connection with console has been lost');

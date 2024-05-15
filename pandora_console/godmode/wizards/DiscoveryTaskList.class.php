@@ -1178,7 +1178,7 @@ class DiscoveryTaskList extends HTML
             }
 
             if (empty($table->data)) {
-                $content = '<div class="nf">'.__('Server').' '.$server_name.' '.__('has no discovery tasks assigned').'</div>';
+                $content = '<div class="nf">'.__('Server %s has no discovery tasks assigned', $server_name).'</div>';
                 $return = false;
             } else {
                 $content = html_print_table($table, true);
@@ -1327,7 +1327,7 @@ class DiscoveryTaskList extends HTML
     {
         $result = '<div class="flex">';
         $result .= '<div class="subtitle">';
-        $result .= '<span>'._('Overall Progress').'</span>';
+        $result .= '<span>'.__('Overall Progress').'</span>';
         $result .= '<div class="mrgn_top_25px">';
         $result .= progress_circular_bar(
             $task['id_rt'],

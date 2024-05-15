@@ -405,7 +405,7 @@ $table->data[$i][] = html_print_label_input_block(
 );
 
 $table->data[$i++][] = html_print_label_input_block(
-    __('Enable Feedback').ui_print_help_tip(__(' It enables the \'give feedback\' window in the help menu at the top right.'), true),
+    __('Enable Feedback').ui_print_help_tip(__('It enables the \'give feedback\' window in the help menu at the top right.'), true),
     html_print_checkbox_switch_extended(
         'activate_feedback',
         true,
@@ -557,7 +557,7 @@ $table->data[$i][] = html_print_label_input_block(
     )
 );
 $table->data[$i++][] = html_print_label_input_block(
-    __('Referrer security').ui_print_help_tip(__('When it is active, the source of the requests is checked. If the user comes from a URL external to Pandora FMS, the source of the activity will be considered suspicious.'), true),
+    __('Referer security').ui_print_help_tip(__('When it is active, the source of the requests is checked. If the user comes from a URL external to Pandora FMS, the source of the activity will be considered suspicious.'), true),
     html_print_checkbox_switch(
         'referer_security',
         1,
@@ -720,7 +720,7 @@ $table->data[$i++][] = html_print_label_input_block(
 );
 
 $help_tip = ui_print_help_tip(
-    __('If there is any event “In process” with a specific additional ID and a “New” event with that additional ID is received, it will be created as “In process.” New events will also inherit the Event Custom ID from the old event.'),
+    __('If there is any event "In process" with a specific additional ID and a "New" event with that additional ID is received, it will be created as "In process." New events will also inherit the Event Custom ID from the old event.'),
     true
 );
 

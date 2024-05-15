@@ -223,7 +223,7 @@ global $config;
                                                     result.innerHTML = umErrorMsg(r);
                                                 } else {
                                                     result.innerHTML = umErrorMsg(
-                                                        '<?php echo __('Failed to update:'); ?> RC'+e
+                                                        '<?php echo __('Failed to update'); ?> RC'+e
                                                     );
                                                 }
                                             } else {

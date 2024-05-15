@@ -427,7 +427,7 @@ class OrderInterpreter extends Wizard
             echo '</ul>';
             if ($iterator > 10) {
                 echo '<div class="more_results"><span class="">
-                  + '.$more_results.' '.__('results found').'</span></div>';
+                  + '.$more_results.' '.__('Results found').'</span></div>';
             }
 
             if ($iterator === 0) {

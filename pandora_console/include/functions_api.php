@@ -14599,7 +14599,7 @@ function api_get_module_graph($id_module, $thrash2, $other, $thrash4)
     }
 
     if (is_nan($graph_seconds) || $graph_seconds <= 0) {
-        // returnError('error_module_graph', __(''));
+        // returnError('error_module_graph', '');
         return;
     }
 

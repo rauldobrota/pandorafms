@@ -12,12 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+
 /**
  * @package    Include
  * @subpackage Clippy
  */
-
-
 function clippy_start_page()
 {
     $return_tours = [];
@@ -36,7 +35,7 @@ function clippy_start_page()
     $return_tours['tours']['monitoring_server_step_3']['steps'][] = [
         'element'  => "img[alt='Modules']",
         'position' => 'left',
-        'intro'    => __('Click in this tab..'),
+        'intro'    => __('Click in this tab'),
     ];
     $return_tours['tours']['monitoring_server_step_3']['conf'] = [];
     $return_tours['tours']['monitoring_server_step_3']['conf']['show_bullets'] = 0;

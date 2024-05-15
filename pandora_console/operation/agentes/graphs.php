@@ -257,12 +257,12 @@ $table->data[1][1] = html_print_label_input_block(
 );
 
 $table->data[1][2] = html_print_label_input_block(
-    __('Show alerts').ui_print_help_tip(__('the combined graph does not show the alerts into this graph'), true),
+    __('Show alerts').ui_print_help_tip(__('The combined graph does not show the alerts into this graph'), true),
     html_print_checkbox('draw_alerts', 1, (bool) $draw_alerts, true)
 );
 
 $graph_option_one_or_several = [
-    0 => __('several graphs for each module'),
+    0 => __('Several graphs for each module'),
     1 => __('One combined graph'),
 ];
 

@@ -1907,7 +1907,7 @@ class ConsoleSupervisor
             $this->notify(
                 [
                     'type'              => 'NOTIF.PHP.CHROMIUM',
-                    'title'             => __('chromium is not installed'),
+                    'title'             => __('Chromium is not installed'),
                     'message'           => __('To be able to create images of the graphs for PDFs, please install the chromium extension. For that, it is necessary to follow these steps:'),
                     'url'               => $url,
                     'icon_notification' => self::ICON_HEADSUP,
@@ -1970,7 +1970,7 @@ class ConsoleSupervisor
                 [
                     'type'              => 'NOTIF.PHP.VERSION.SUPPORT',
                     'title'             => __('PHP UPDATE REQUIRED'),
-                    'message'           => __('You should update your PHP version because it will be out of official support').'<br>'.__('Current PHP version: ').PHP_VERSION,
+                    'message'           => __('You should update your PHP version because it will be out of official support').'<br>'.__('Current PHP version').': '.PHP_VERSION,
                     'url'               => $url,
                     'icon_notification' => self::ICON_HEADSUP,
                 ]
@@ -2016,7 +2016,7 @@ class ConsoleSupervisor
                 [
                     'type'              => 'NOTIF.MYSQL.VERSION',
                     'title'             => __('MYSQL UPDATE REQUIRED'),
-                    'message'           => __('You should update your MYSQL version because it will be out of official support').'<br>'.__('Current MYSQL version: ').$mysql_version,
+                    'message'           => __('You should update your MYSQL version because it will be out of official support').'<br>'.__('Current MYSQL version: %s', $mysql_version),
                     'url'               => $url,
                     'icon_notification' => self::ICON_HEADSUP,
                 ]

@@ -129,7 +129,7 @@ $table->data[2][0] = html_print_label_input_block(
 );
 
 $table->data[2][1] = html_print_label_input_block(
-    __('Ignore new GIS data: '),
+    __('Ignore new GIS data').': ',
     '<div class="flex mrgn_top_5px">'.__('Yes').' '.html_print_radio_button_extended(
         'update_gis_data',
         0,

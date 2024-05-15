@@ -2548,7 +2548,7 @@ if ($drawConsoleSound === true) {
                 ]
             );
             $output .= '<span class="text-discovered-alerts">';
-            $output .= __('Congrats! there’s nothing to show');
+            $output .= __('Congrats! there\'s nothing to show');
             $output .= '</span>';
             $output .= '</div>';
             $output .= '<div class="elements-discovered-alerts"><ul></ul></div>';

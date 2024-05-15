@@ -380,7 +380,7 @@ $modules_select = html_print_select(
     false
 );
 
-$row[] = '<b>'._('Modules').'</b>';
+$row[] = '<b>'.__('Modules').'</b>';
 $row[] = $modules_select;
 
 $table->rowstyle['agents-modules-row'] = 'vertical-align: top; display: none';

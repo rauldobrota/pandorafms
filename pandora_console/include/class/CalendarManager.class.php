@@ -953,10 +953,7 @@ class CalendarManager
                     if ($specialDay->save() === true) {
                         $success = true;
                     } else {
-                        $reason = \__(
-                            'Failed saving special day: ',
-                            $config['dbconnection']->error
-                        );
+                        $reason = \__('Failed saving special day: %s', $config['dbconnection']->error);
                     }
                 }
             } catch (\Exception $e) {

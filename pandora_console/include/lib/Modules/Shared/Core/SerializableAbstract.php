@@ -59,12 +59,12 @@ abstract class SerializableAbstract implements JsonSerializable
         foreach ($params as $field => $value) {
             // Not valid parameters.
             if (method_exists($this, 'set'.ucfirst($field)) === false) {
-                throw new BadRequestException(__('Field').': '.$field.' '.__('is not a valid parameter'));
+                throw new BadRequestException(__('Field: %s is not a valid parameter', $field));
             }
 
             // Read only parameters.
             if (isset($this->fieldsReadOnly()[$field]) === true) {
-                throw new BadRequestException(__('Field').': '.$field.' '.__('is a read only parameter'));
+                throw new BadRequestException(__('Field: %s is a read only parameter', $field));
             }
 
             $this->{'set'.ucfirst($field)}($value ?? null);

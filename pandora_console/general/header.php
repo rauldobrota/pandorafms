@@ -396,7 +396,7 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         <div id="msg-header" class="invisible"></div>
             <a href="https://pandorafms.com/manual" target="_blank">'.__('Pandora documentation').'</a>';
         if (enterprise_installed() === true) {
-            $modal_box .= '<a href="https://support.pandorafms.com/" target="_blank">'.__('Enterprise support ').'</a>';
+            $modal_box .= '<a href="https://support.pandorafms.com/" target="_blank">'.__('Enterprise support').' </a>';
             $modal_box .= '<a href="#" id="feedback-header">'.__('Give us feedback').'</a>';
         } else {
             $modal_box .= '<a href="https://pandorafms.com/community/forums/" target="_blank">'.__('Community Support').'</a>';
