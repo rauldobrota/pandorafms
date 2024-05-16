@@ -909,6 +909,11 @@ if (is_ajax()) {
             $license_expired = true;
         }
 
+        $text = (enterprise_installed()) ? 'Enterprise' : 'Community';
+        if ($license === 'PANDORA-ENTERPRISE-FREE') {
+            $text = 'FREE';
+        }
+
         include_once $config['homedir'].'/include/class/Diagnostics.class.php';
         $d = new Diagnostics;
         $db_health = json_decode($d->getDatabaseHealthStatus());
@@ -971,7 +976,7 @@ if (is_ajax()) {
                                 </th>
                                 <th style="width: 60%; text-align: left; border: 0px;">
                                     <h1>'.$product_name.'</h1>
-                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.(enterprise_installed() ? 'Enterprise' : 'Community').'</span></p>
+                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.$text.'</span></p>
                                     <p><span>'.__('Current package').'</span> '.$config['current_package'].'</p>
                                     <p><span>'.__('MR version').'</span> MR'.$config['MR'].'</p>                                    
                                     <p><span>Build</span>'.$build_version.'</p>';
@@ -1292,6 +1297,11 @@ if (is_ajax()) {
             $license_expired = true;
         }
 
+        $text = (enterprise_installed()) ? 'Enterprise' : 'Community';
+        if ($license === 'PANDORA-ENTERPRISE-FREE') {
+            $text = 'FREE';
+        }
+
         $lts_name = '';
         if (empty($config['lts_name']) === false) {
             $lts_name = ' <i>'.$config['lts_name'].'</i>';
@@ -1317,7 +1327,7 @@ if (is_ajax()) {
                                 </th>
                                 <th style="width: 60%; text-align: left; border: 0px;">
                                     <h1>'.$product_name.'</h1>
-                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.(enterprise_installed() ? 'Enterprise' : 'Community').'</span></p>
+                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.$text.'</span></p>
                                     <p><span>'.__('MR version').'</span> MR'.$config['MR'].'</p>
                                     <p><span>Build</span>'.$build_version.'</p>';
         if (enterprise_installed() === true && $license !== 'PANDORA-ENTERPRISE-FREE') {

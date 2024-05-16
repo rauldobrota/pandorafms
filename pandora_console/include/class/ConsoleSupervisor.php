@@ -1082,6 +1082,21 @@ class ConsoleSupervisor
         global $config;
 
         if (license_enterprise_free() === true) {
+            if (isset($config['limit_exceeded']) === true && (int) $config['limit_exceeded'] === 1) {
+                update_config_token('limit_exceeded', 0);
+
+                $message = __('When the limit is exceeded the system automatically deactivates the latest agents and modules exceeding license.');
+
+                $this->notify(
+                    [
+                        'type'    => 'NOTIF.LICENSE.LIMITED',
+                        'title'   => __('You have exceeded the limit of the free version'),
+                        'message' => $message,
+                        'url'     => '__url__/index.php?sec=gagente&sec2=godmode/agentes/modificar_agente',
+                    ]
+                );
+            }
+
             return true;
         }
 
