@@ -712,6 +712,29 @@ if ($login_screen === 'disabled_access_node') {
     echo '</div>';
 }
 
+if (empty($process_error_message) === true
+    && isset($config['pending_sync_process_message']) === true
+    && $login_screen === 'login'
+) {
+    echo '<div id="pending_sync_process" title="'.__('Centralized user in metaconsole').'">';
+        echo '<div class="content_alert">';
+            echo '<div class="icon_message_alert">';
+                echo html_print_image('images/icono_logo_pandora.png', true, ['alt' => __('Pending synchronization process'), 'border' => 0]);
+            echo '</div>';
+            echo '<div class="content_message_alert">';
+                echo '<div class="text_message_alert">';
+                    echo '<h1>'.__('Access granted').'</h1>';
+                    echo '<p>'.$config['pending_sync_process_message'].'</p>';
+                echo '</div>';
+                echo '<br>';
+                echo '<div class="button_message_alert">';
+                    html_print_submit_button('Ok', 'hide-sync-process', false, ['class' => 'mini float-right']);
+                echo '</div>';
+            echo '</div>';
+        echo '</div>';
+    echo '</div>';
+}
+
 switch ($login_screen) {
     case 'error_dbconfig':
     case 'error_authconfig':
@@ -966,6 +989,24 @@ html_print_div(['id' => 'forced_title_layer', 'class' => 'forced_title_layer', '
                     $("#login_failed" ).dialog('close');
                     $("#login_correct_pass").dialog('close');
                 });
+
+                if ($('#pending_sync_process').length > 0) {
+                    $('#pending_sync_process').dialog({
+                        resizable: true,
+                        draggable: true,
+                        modal: true,
+                        height: 230,
+                        width: 530,
+                        overlay: {
+                            opacity: 0.5,
+                            background: "black"
+                        }
+                    });
+                }
+
+                $('#button-hide-sync-process').click(function() {
+                    $('#pending_sync_process').dialog('close')
+                })
             });
             $('#nick').focus();
         break;
