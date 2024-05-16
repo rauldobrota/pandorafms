@@ -91,7 +91,7 @@ if ($license_data !== ENTERPRISE_NOT_HOOK && $license !== 'PANDORA-ENTERPRISE-FR
         $limit = db_get_value('count(*)', 'tagente_modulo', 'disabled', 0);
     }
 
-    if (($limit * 1.1) > $license_data['limit']) {
+    if ($limit > ($license_data['limit'] * 1.1)) {
         ui_print_warning_message(
             __(
                 'You cannot use update manager %s. You are exceding monitoring limits by %s elements. Please update your license or disable enterprise section by moving enterprise directory to another location and try again.',
