@@ -7,13 +7,18 @@ use PandoraFMS\Modules\Groups\Services\DeleteGroupService;
 
 final class DeleteGroupAction
 {
+
+
     public function __construct(
         private DeleteGroupService $deleteGroupService
     ) {
     }
 
+
     public function __invoke(Group $group): void
     {
         $this->deleteGroupService->__invoke($group);
     }
+
+
 }

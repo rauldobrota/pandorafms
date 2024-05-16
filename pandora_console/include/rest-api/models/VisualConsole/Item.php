@@ -1859,6 +1859,30 @@ class Item extends CachedModel
                 $save = array_merge($dataModelEncode, $dataEncode);
 
                 if (!empty($save['label'])) {
+                    // Multi-span problem with TinyMCE. Do not delete.
+                    $dom = new \DOMDocument();
+                    $dom->loadHTML(io_safe_output($save['label']));
+
+                    // XPath object.
+                    $xpath = new \DOMXPath($dom);
+
+                    // Find all span tags with style attribute.
+                    $span_nodes = $xpath->query('//span[@style]');
+
+                    if ($span_nodes->length > 1) {
+                        $style = '';
+                        foreach ($span_nodes as $span) {
+                            $style .= $span->getAttribute('style');
+                        }
+
+                        $last_span = $span_nodes[($span_nodes->length - 1)];
+
+                        // Set style.
+                        $last_span->setAttribute('style', $style);
+
+                        $save['label'] = io_safe_input($dom->saveHTML());
+                    }
+
                     $save['label'] = io_safe_output(io_safe_input(str_replace("'", "\'", $save['label'])));
                 }
 
@@ -2416,10 +2440,10 @@ class Item extends CachedModel
             foreach ($fields as $k => $v) {
                 if (isset($v['id']) === true && isset($v['name']) === true) {
                     // Modern environments use id-name format.
-                    $rs[$v['id']] = $v;
+                    $rs[$v['id']] = io_safe_output($v);
                 } else {
                     // In MC environments is key-value.
-                    $rs[$k] = $v;
+                    $rs[$k] = io_safe_output($v);
                 }
             }
 
@@ -2630,6 +2654,18 @@ class Item extends CachedModel
      */
     public static function checkLayoutAlertsRecursive(array $item, array $visitedLayouts=[])
     {
+        static $cache = [];
+
+        if (isset($cache[$item['id_layout_linked']]) === true && empty($item['id_layout_linked']) === false) {
+            return $cache[$item['id_layout_linked']];
+        }
+
+        if (in_array($item['id_layout'], $visitedLayouts) === true) {
+            // Item has no linked layout or it has already been visited (avoid infinite loop caused by circular references).
+            $cache[$item['id_layout']] = false;
+            return false;
+        }
+
         if (isset($item['type']) === true) {
             $excludedItemTypes = [
                 22,
@@ -2644,6 +2680,7 @@ class Item extends CachedModel
             ];
 
             if (in_array($item['type'], $excludedItemTypes) === true) {
+                $cache[$item['id_layout']] = false;
                 return false;
             }
         }
@@ -2688,13 +2725,9 @@ class Item extends CachedModel
 
             // Item has a triggered alert.
             if ($firedAlert !== false) {
+                $cache[$item['id_layout']] = true;
                 return true;
             }
-        }
-
-        if ($linkedLayoutID === 0 || in_array($linkedLayoutID, $visitedLayouts) === true) {
-            // Item has no linked layout or it has already been visited (avoid infinite loop caused by circular references).
-            return false;
         }
 
         $filter = ['id_layout' => $linkedLayoutID];
@@ -2713,15 +2746,18 @@ class Item extends CachedModel
 
         if ($linkedLayoutItems === false) {
             // There are no items in the linked visual console. Nothing to check.
+            $cache[$item['id_layout']] = false;
             return false;
         }
 
         foreach ($linkedLayoutItems as $linkedLayoutItem) {
             if (self::checkLayoutAlertsRecursive($linkedLayoutItem, $visitedLayouts)) {
+                $cache[$item['id_layout']] = true;
                 return true;
             }
         }
 
+        $cache[$item['id_layout']] = false;
         return false;
     }
 

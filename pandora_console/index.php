@@ -662,6 +662,7 @@ if (isset($config['id_user']) === false) {
             db_logon($nick_in_db, $_SERVER['REMOTE_ADDR']);
             $_SESSION['id_usuario'] = $nick_in_db;
             $config['id_user'] = $nick_in_db;
+            $_SESSION['logged'] = true;
             config_prepare_expire_time_session(true);
 
             // Check if connection goes through F5 balancer. If it does, then
@@ -755,24 +756,19 @@ if (isset($config['id_user']) === false) {
         header('Location: '.ui_get_full_url('index.php'.$redirect_url));
         exit;
         // Always exit after sending location headers.
-    } else if (isset($_GET['loginhash']) === true || isset($_POST['loginhash']) === true) {
-        // Hash login process.
-        $loginhash_data = get_parameter('loginhash_data', '');
-        $loginhash_user = str_rot13(get_parameter('loginhash_user', ''));
-
-        if ($config['loginhash_pwd'] != ''
-            && $loginhash_data == md5(
-                $loginhash_user.io_output_password($config['loginhash_pwd'])
-            )
-        ) {
-            db_logon($loginhash_user, $_SERVER['REMOTE_ADDR']);
-            $_SESSION['id_usuario'] = $loginhash_user;
-            $config['id_user'] = $loginhash_user;
+    } else if (isset($_POST['auth_token']) === true && (bool) $config['JWT_signature'] !== false) {
+        include_once $config['homedir'].'/include/class/JWTRepository.class.php';
+        $jwt = new JWTRepository($config['JWT_signature']);
+        if ($jwt->setToken($_POST['auth_token']) && $jwt->validate()) {
+            $id_user = $jwt->payload()->get('id_user');
+            db_logon($id_user, $_SERVER['REMOTE_ADDR']);
+            $_SESSION['id_usuario'] = $id_user;
+            $config['id_user'] = $id_user;
         } else {
             include_once 'general/login_page.php';
             db_pandora_audit(
                 AUDIT_LOG_USER_REGISTRATION,
-                'Loginhash failed',
+                'Login token failed',
                 'system'
             );
             while (ob_get_length() > 0) {
@@ -961,33 +957,17 @@ if (isset($config['id_user']) === false) {
         exit('</html>');
     }
 } else {
-    if (isset($_GET['loginhash_data'])) {
-        $loginhash_data = get_parameter('loginhash_data', '');
-        $loginhash_user = str_rot13(get_parameter('loginhash_user', ''));
-        $iduser = $_SESSION['id_usuario'];
-        unset($_SESSION['id_usuario']);
-        unset($iduser);
-
-        if ($config['loginhash_pwd'] != ''
-            && $loginhash_data == md5(
-                $loginhash_user.io_output_password($config['loginhash_pwd'])
-            )
-        ) {
-            db_logon($loginhash_user, $_SERVER['REMOTE_ADDR']);
-            $_SESSION['id_usuario'] = $loginhash_user;
-            $config['id_user'] = $loginhash_user;
-        } else {
-            include_once 'general/login_page.php';
-            db_pandora_audit(
-                AUDIT_LOG_USER_REGISTRATION,
-                'Loginhash failed',
-                'system'
-            );
-            while (ob_get_length() > 0) {
-                ob_end_flush();
-            }
-
-            exit('</html>');
+    if (isset($_POST['auth_token']) === true && (bool) $config['JWT_signature'] !== false) {
+        include_once $config['homedir'].'/include/class/JWTRepository.class.php';
+        $jwt = new JWTRepository($config['JWT_signature']);
+        if ($jwt->setToken($_POST['auth_token']) && $jwt->validate()) {
+            $iduser = $_SESSION['id_usuario'];
+            unset($_SESSION['id_usuario']);
+            unset($iduser);
+            $id_user = $jwt->payload()->get('id_user');
+            db_logon($id_user, $_SERVER['REMOTE_ADDR']);
+            $_SESSION['id_usuario'] = $id_user;
+            $config['id_user'] = $id_user;
         }
     }
 
@@ -1563,6 +1543,9 @@ clippy_start($sec2);
 while (ob_get_length() > 0) {
     ob_end_flush();
 }
+
+// Results search header.
+echo '<div id="result_order" class="result_order"></div>';
 
 db_print_database_debug();
 echo '</html>';

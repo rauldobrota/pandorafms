@@ -1,6 +1,7 @@
 /* globals $, GridStack, load_modal, TreeController, forced_title_callback, createVisualConsole, UndefineTinyMCE*/
 // eslint-disable-next-line no-unused-vars
 function show_option_dialog(settings) {
+  $("#modal-config-widget").html("");
   load_modal({
     target: $("#modal-update-dashboard"),
     form: "form-update-dashboard",
@@ -22,12 +23,6 @@ function show_option_dialog(settings) {
       page: settings.url,
       method: "updateDashboard",
       dataType: "json"
-    },
-    oncancel: {
-      reload: true
-    },
-    onclose: {
-      reload: true
     },
     ajax_callback: update_dashboard
   });
@@ -237,6 +232,9 @@ function initialiceLayout(data) {
             });
 
             if (!$("#checkbox-edit-mode").is(":checked")) {
+              $("#add-widget")
+                .parent()
+                .addClass("invisible_important");
               $(".add-widget").hide();
             } else {
               $(".new-widget-message").hide();
@@ -280,6 +278,8 @@ function initialiceLayout(data) {
         });
 
         $("#configure-widget-" + id).click(function() {
+          widgetId =
+            widgetId === 0 ? $("#hidden-widget_id_" + id).val() : widgetId;
           getSizeModalConfiguration(id, widgetId);
         });
 
@@ -329,7 +329,20 @@ function initialiceLayout(data) {
       },
       dataType: "json",
       success: function(data) {
-        addCell(data.cellId, 0, 0, 4, 4, true, 0, 2000, 0, 2000, 0, true);
+        addCell(
+          data.cellId,
+          0,
+          0,
+          4,
+          4,
+          true,
+          0,
+          2000,
+          0,
+          2000,
+          original_widgetId,
+          true
+        );
       },
       error: function(xhr, textStatus, errorMessage) {
         console.log("ERROR" + errorMessage + textStatus + xhr);
@@ -467,10 +480,6 @@ function initialiceLayout(data) {
   function configurationWidget(cellId, widgetId, size) {
     var reload = 0;
     var overlay = false;
-    if (widgetId == 46) {
-      reload = 1;
-      overlay = true;
-    }
     title = $("#hidden-widget_name_" + cellId).val();
     load_modal({
       target: $("#modal-config-widget"),
@@ -543,6 +552,9 @@ function initialiceLayout(data) {
       grid.resizable(".grid-stack-item", true);
       grid.float(false);
       $(".header-options").show();
+      $("#add-widget")
+        .parent()
+        .removeClass("invisible_important");
       $(".add-widget").show();
       $(".new-widget-message").hide();
       $("#container-layout").addClass("container-layout");
@@ -552,6 +564,9 @@ function initialiceLayout(data) {
       grid.resizable(".grid-stack-item", false);
       grid.float(true);
       $(".header-options").hide();
+      $("#add-widget")
+        .parent()
+        .addClass("invisible_important");
       $(".add-widget").hide();
       $(".new-widget-message").show();
       $("#container-layout").removeClass("container-layout");
@@ -770,6 +785,9 @@ function initialiceLayout(data) {
             });
 
             if (!$("#checkbox-edit-mode").is(":checked")) {
+              $("#add-widget")
+                .parent()
+                .addClass("invisible_important");
               $(".add-widget").hide();
             } else {
               $(".new-widget-message").hide();
@@ -801,6 +819,8 @@ function initialiceLayout(data) {
         });
 
         $("#configure-widget-" + cellId).click(function() {
+          widgetId =
+            widgetId === 0 ? $("#hidden-widget_id_" + cellId).val() : widgetId;
           getSizeModalConfiguration(cellId, widgetId);
         });
 
@@ -1701,4 +1721,17 @@ function show_projection_period() {
   } else {
     $("#div_projection_period").hide();
   }
+}
+
+// Paused and resume if edit mode is checked.
+// eslint-disable-next-line no-unused-vars
+function paused_resume_dashboard_countdown() {
+  $("#checkbox-edit-mode").on("click", function() {
+    let isChecked = $("#checkbox-edit-mode").is(":checked");
+    if (isChecked) {
+      $("#refrcounter").countdown("pause");
+    } else {
+      $("#refrcounter").countdown("resume");
+    }
+  });
 }

@@ -8,6 +8,8 @@ services:
     image: pandorafms/pandorafms-percona-base
     restart: always
     #command: ["mysqld", "--innodb-buffer-pool-size=900M"] 
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
     environment:
       MYSQL_ROOT_PASSWORD: pandora
       MYSQL_DATABASE: pandora

@@ -1500,12 +1500,10 @@ class Manager
             $ITSM = new ITSM();
             $result = $ITSM->pingItsmtoPandora($path);
         } catch (Throwable $e) {
-            echo $e->getMessage();
-            $result = false;
-            exit;
+            $result = $e->getMessage();
         }
 
-        echo json_encode(['valid' => ($result !== false) ? 1 : 0]);
+        echo json_encode($result);
         exit;
     }
 

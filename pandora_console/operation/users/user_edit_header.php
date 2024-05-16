@@ -79,30 +79,49 @@ if (is_metaconsole()) {
 } else {
     $urls['main'] = 'index.php?sec=gusuarios&sec2=godmode/users/user_list';
     $urls['notifications'] = 'index.php?sec=workspace&amp;sec2=operation/users/user_edit_notifications';
-    $buttons = [
-        'main'          => [
-            'active' => $_GET['sec2'] === 'godmode/users/user_list&tab=user&pure=0',
-            'text'   => "<a href='{$urls['main']}'>".html_print_image(
-                'images/user.svg',
-                true,
-                [
-                    'title' => __('User management'),
-                    'class' => 'main_menu_icon invert_filter',
-                ]
-            ).'</a>',
-        ],
-        'notifications' => [
-            'active' => $_GET['sec2'] === 'operation/users/user_edit_notifications',
-            'text'   => "<a href='{$urls['notifications']}'>".html_print_image(
-                'images/alert@svg.svg',
-                true,
-                [
-                    'title' => __('User notifications'),
-                    'class' => 'main_menu_icon invert_filter',
-                ]
-            ).'</a>',
-        ],
-    ];
+    $buttons = [];
+
+    if ((bool) check_acl($config['id_user'], 0, 'PM') === true) {
+        $buttons = [
+            'main'          => [
+                'active' => $_GET['sec2'] === 'godmode/users/user_list&tab=user&pure=0',
+                'text'   => "<a href='{$urls['main']}'>".html_print_image(
+                    'images/user.svg',
+                    true,
+                    [
+                        'title' => __('User management'),
+                        'class' => 'main_menu_icon invert_filter',
+                    ]
+                ).'</a>',
+            ],
+            'notifications' => [
+                'active' => $_GET['sec2'] === 'operation/users/user_edit_notifications',
+                'text'   => "<a href='{$urls['notifications']}'>".html_print_image(
+                    'images/alert@svg.svg',
+                    true,
+                    [
+                        'title' => __('User notifications'),
+                        'class' => 'main_menu_icon invert_filter',
+                    ]
+                ).'</a>',
+            ],
+        ];
+    } else {
+        $buttons = [
+            'notifications' => [
+                'active' => $_GET['sec2'] === 'operation/users/user_edit_notifications',
+                'text'   => "<a href='{$urls['notifications']}'>".html_print_image(
+                    'images/alert@svg.svg',
+                    true,
+                    [
+                        'title' => __('User notifications'),
+                        'class' => 'main_menu_icon invert_filter',
+                    ]
+                ).'</a>',
+            ],
+        ];
+    }
+
     $tab_name = 'User Management';
 
     $helpers = '';

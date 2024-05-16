@@ -164,8 +164,12 @@ function shutdown($memory)
     unset($memory->reserve);
 
     $error = error_get_last();
-    if (isset($error['type']) === true && $error['type'] === 1) {
-        echo __('You have no memory for this operation, increase the memory limit.');
+    if (isset($error['type'])) {
+        if ($error['type'] === E_ERROR) {
+            if (strpos($error['message'], 'Allowed memory size') !== false) {
+                echo __('You have no memory for this operation, increase the memory limit.');
+            }
+        }
     }
 }
 
@@ -201,14 +205,21 @@ function reporting_make_reporting_data(
         $contents = io_safe_output($report['contents']);
     } else {
         $report = io_safe_output(db_get_row('treport', 'id_report', $id_report));
-        $contents = io_safe_output(
-            db_get_all_rows_field_filter(
-                'treport_content',
-                'id_report',
-                $id_report,
-                db_escape_key_identifier('order')
-            )
+
+        $contents = db_get_all_rows_field_filter(
+            'treport_content',
+            'id_report',
+            $id_report,
+            db_escape_key_identifier('order')
         );
+
+        foreach ($contents as $key_content => $content) {
+            foreach ($content as $key_item => $item) {
+                if ($key_item !== 'macros_definition') {
+                    $contents[$key_content][$key_item] = io_safe_output($item);
+                }
+            }
+        }
     }
 
     $datetime = strtotime($date.' '.$time);
@@ -2725,7 +2736,8 @@ function reporting_event_report_module(
         $ttl,
         $id_server,
         $metaconsole_dbtable,
-        $filter_event_filter_exclude
+        $filter_event_filter_exclude,
+        $content['id_agent_module']
     );
 
     if (empty($data)) {
@@ -3165,7 +3177,7 @@ function reporting_modules_inventory($report, $content)
             $module_row_data[$i]['id_tag'][] = $row['tags'];
         }
 
-        if (array_key_exists('id_group', $row) === true) {
+        if (array_key_exists('group_id', $row) === true) {
             $module_row_data[$i]['group_id'][] = $row['group_id'];
         }
 
@@ -3348,8 +3360,8 @@ function reporting_inventory($report, $content, $type)
                 $date,
                 '',
                 false,
-                'csv',
                 false,
+                'csv',
                 '',
                 [],
                 $inventory_regular_expression
@@ -3363,12 +3375,13 @@ function reporting_inventory($report, $content, $type)
                 $date,
                 '',
                 false,
-                'hash',
                 false,
+                'hash',
                 '',
                 [],
                 $inventory_regular_expression
             );
+
         break;
     }
 
@@ -3804,10 +3817,18 @@ function reporting_end_of_life($report, $content)
 
     $return['data'] = [];
 
-    $external_source = json_decode(
-        $content['external_source'],
-        true
-    );
+    if (isset($content['external_source']) === true && $content['external_source'] !== 'null') {
+        $external_source = json_decode(
+            $content['external_source'],
+            true
+        );
+    } else {
+        $external_source = [
+            'end_of_life_date' => $content['end_of_life_date'],
+            'os_selector'      => $content['os_selector'],
+            'os_version'       => $content['os_version'],
+        ];
+    }
 
     $servers_ids = [0];
 
@@ -3843,26 +3864,38 @@ function reporting_end_of_life($report, $content)
         );
 
         $es_os_version = $external_source['os_version'];
+        $os_selector_name = db_get_value('name', 'tconfig_os', 'id_os', (int) $external_source['os_selector']);
 
         $es_limit_eol_datetime = DateTime::createFromFormat('Y/m/d', $external_source['end_of_life_date']);
 
         // Post-process returned agents to filter agents using correctly formatted fields.
+        $agents_tmp = [];
         foreach ($agents as $idx => $agent) {
+            if (empty($agent['os_version']) === true) {
+                $agent['os_version'] = '.*';
+            }
+
             // Must perform this query and subsequent operations in each iteration (note this is costly) since OS version field may contain HTML entities in BD and decoding can't be fully handled with mysql methods when doing a REGEXP.
-            $result_end_of_life = db_get_value_sql('SELECT end_of_support FROM tconfig_os_version WHERE "'.io_safe_output($agent['os_version']).'" REGEXP version AND "'.io_safe_output($agent['name']).'" REGEXP product');
+            $result_end_of_life = db_get_value_sql('SELECT end_of_support FROM tconfig_os_version');
             $agent_eol_datetime = DateTime::createFromFormat('Y/m/d', $result_end_of_life);
 
-            if ((preg_match('/'.$es_os_version.'/i', $agent['os_version']) || $es_os_version === '') && $result_end_of_life !== false && ($es_limit_eol_datetime === false || $es_limit_eol_datetime >= $agent_eol_datetime)) {
+            if ((preg_match('/'.$es_os_version.'/i', $agent['os_version']) || $es_os_version === '')
+                && $os_selector_name === io_safe_output($agent['name'])
+                && $result_end_of_life !== false
+                && ($es_limit_eol_datetime === false || $es_limit_eol_datetime >= $agent_eol_datetime)
+            ) {
                 // Agent matches an existing OS version.
                 $agents[$idx]['end_of_life'] = $result_end_of_life;
+                $agents_tmp[] = $agents[$idx];
             } else {
                 // Set agent to be filtered out.
                 $agents[$idx] = null;
             }
         }
 
-        if ($agents !== false) {
-            $agents = array_filter($agents);
+        // TODO:
+        if ($agents_tmp !== false) {
+            $agents = $agents_tmp;
         }
 
         if (is_metaconsole() === true) {
@@ -4109,6 +4142,13 @@ function reporting_exception(
                         );
                     break;
 
+                    case 'sum':
+                        $min = reporting_get_agentmodule_data_sum(
+                            $exceptions[$i]['id_agent_module'],
+                            $content['period']
+                        );
+                    break;
+
                     default:
                         // Default.
                     break;
@@ -4159,6 +4199,10 @@ function reporting_exception(
 
                     case 'min':
                         $value = reporting_get_agentmodule_data_min($exc['id_agent_module'], $content['period']);
+                    break;
+
+                    case 'sum':
+                        $value = reporting_get_agentmodule_data_sum($exc['id_agent_module'], $content['period']);
                     break;
                 }
             }
@@ -5767,10 +5811,17 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
     if (isset($content['macros_definition']) === true
         && empty($content['macros_definition']) === false
     ) {
-        $macros = json_decode(
-            io_safe_output($content['macros_definition']),
-            true
-        );
+        $macros = json_decode($content['macros_definition'], true);
+        if ($macros === null && json_last_error() !== JSON_ERROR_NONE) {
+            $return['data'] = ui_print_error_message(
+                __('Error decoded json macros definition'),
+                '',
+                true
+            );
+
+            return reporting_check_structure_content($return);
+        }
+
         if (empty($macros) === false && is_array($macros) === true) {
             foreach ($macros as $key_macro => $data_macro) {
                 switch ($data_macro['type']) {
@@ -5779,7 +5830,7 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
                         $patterns[] = addslashes(
                             '/_'.$data_macro['name'].'_/'
                         );
-                        $substitutions[] = $data_macro['value'];
+                        $substitutions[] = io_safe_output($data_macro['value']);
                     break;
 
                     case 1:
@@ -5795,7 +5846,7 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
                             $error_reporting = error_reporting();
                             error_reporting(0);
                             $value_query = db_get_value_sql(
-                                trim($data_macro['value'], ';')
+                                trim(io_safe_output($data_macro['value']), ';')
                             );
 
                             if ($value_query === false) {
@@ -5821,7 +5872,7 @@ function reporting_custom_render($report, $content, $type='dinamic', $pdf=0)
                             $error_reporting = error_reporting();
                             error_reporting(0);
                             $data_query = db_get_all_rows_sql(
-                                trim($data_macro['value'], ';')
+                                trim(io_safe_output($data_macro['value']), ';')
                             );
 
                             error_reporting($error_reporting);
@@ -6108,7 +6159,7 @@ function reporting_alert_get_fired($id_agent_module, $id_alert_template_module, 
 
         $datelimit = ($datetime - $period);
 
-    $empty = '----------------------------';
+    $empty = '';
     if (empty($firedTimes)) {
         $firedTimes = [];
         $firedTimes[0]['timestamp'] = $empty;
@@ -6172,7 +6223,7 @@ function reporting_alert_report_group($report, $content)
 
     $agent_modules = alerts_get_agent_modules(
         $content['id_group'],
-        (((string) $content['id_group'] === '0') ? true : $content['recursion'])
+        (((string) $content['id_group'] === '0') ? true : (bool) $content['recursion'])
     );
 
     if (empty($alerts)) {
@@ -6409,7 +6460,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6421,7 +6472,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6433,7 +6484,7 @@ function reporting_alert_report_agent($report, $content)
                     $data_action[$naction]['name'] = $action['name'];
                     $fired = $action['fired'];
                     if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                        $data_action[$naction]['fired'] = '----------------------------';
+                        $data_action[$naction]['fired'] = '';
                     } else {
                         $data_action[$naction]['fired'] = $fired;
                     }
@@ -6584,7 +6635,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6596,7 +6647,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6608,7 +6659,7 @@ function reporting_alert_report_module($report, $content)
                 $data_action[$naction]['name'] = $action['name'];
                 $fired = $action['fired'];
                 if ($fired == 0 || ($fired <= $datelimit || $fired > $datetime)) {
-                    $data_action[$naction]['fired'] = '----------------------------';
+                    $data_action[$naction]['fired'] = '';
                 } else {
                     $data_action[$naction]['fired'] = $fired;
                 }
@@ -6667,14 +6718,17 @@ function reporting_sql_graph(
     $type_sql_graph
 ) {
     global $config;
+    $layout = false;
 
     switch ($type_sql_graph) {
         case 'sql_graph_hbar':
         default:
+            $layout = ['padding' => ['right' => '40']];
             $return['type'] = 'sql_graph_hbar';
         break;
 
         case 'sql_graph_vbar':
+            $layout = ['padding' => ['top' => '40']];
             $return['type'] = 'sql_graph_vbar';
         break;
 
@@ -6749,7 +6803,8 @@ function reporting_sql_graph(
                 $only_image,
                 ui_get_full_url(false, false, false, false),
                 $ttl,
-                $content['top_n_value']
+                $content['top_n_value'],
+                $layout
             );
         break;
 
@@ -11706,7 +11761,8 @@ function reporting_get_module_detailed_event(
     $ttl=1,
     $id_server=false,
     $metaconsole_dbtable=false,
-    $filter_event_filter_exclude=false
+    $filter_event_filter_exclude=false,
+    $id_agent=false
 ) {
     global $config;
 
@@ -11729,7 +11785,7 @@ function reporting_get_module_detailed_event(
 
     foreach ($id_modules as $id_module) {
         $event['data'] = events_get_agent(
-            false,
+            $id_agent,
             (int) $period,
             (int) $date,
             $history,

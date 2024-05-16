@@ -471,6 +471,8 @@ function createVisualConsole(
       // Start an interval to update the Visual Console.
       updateVisualConsole(props.id, updateInterval, updateInterval);
     }
+
+    normalizeStylesVC();
   } catch (error) {
     console.log("[ERROR]", "[VISUAL-CONSOLE-CLIENT]", error.message);
   }
@@ -2061,4 +2063,10 @@ function center_labels() {
         .css("text-align", "center");
     }
   });
+}
+
+function normalizeStylesVC() {
+  $(".visual-console-container-dashboard h1").addClass("unbootstrap");
+  $(".visual-console-container-dashboard h2").addClass("unbootstrap");
+  $(".visual-console-container-dashboard .graph").addClass("unbootstrap");
 }

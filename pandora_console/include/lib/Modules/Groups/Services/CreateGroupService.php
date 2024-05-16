@@ -9,12 +9,15 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class CreateGroupService
 {
+
+
     public function __construct(
         private Audit $audit,
         private GroupRepository $groupRepository,
         private GroupValidation $groupValidation
     ) {
     }
+
 
     public function __invoke(Group $group): Group
     {
@@ -30,4 +33,6 @@ final class CreateGroupService
 
         return $group;
     }
+
+
 }

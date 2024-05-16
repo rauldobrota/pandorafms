@@ -219,7 +219,9 @@ echo '<div id="aux" class="invisible"></div>';
                                     $('#aux').text('<?php echo __('Not deleted. Error deleting data'); ?>');
                                 } else {
                                     $('#aux').dialog('close');
-                                    location.reload();
+                                    let url = new URL(window.location.href);
+                                    url.searchParams.set('message', r.url_message)
+                                    window.location.href = url.href;
                                 }
                             },
                             error: function(e) {

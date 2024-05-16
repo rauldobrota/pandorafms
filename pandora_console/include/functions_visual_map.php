@@ -1664,7 +1664,7 @@ function visual_map_print_item(
     echo '<div id="'.$id.'" class="'.$class.'" '.'style="z-index: '.$z_index.';'.'position: absolute; '.'top: '.$top.'px; '.'left: '.$left.'px;'.'display: inline-block; '.$sizeStyle.'">';
 
     if ($link) {
-        echo "<a href=\"$url\">";
+        echo '<a href="#" onClick="redirectNode(\''.$url.'\')">';
     }
 
     // for clean link text from bbdd only edit_visualmap
@@ -3221,6 +3221,10 @@ function visual_map_get_image_status_element($layoutData, $status=false)
                 $img .= '_warning.png';
             break;
 
+            case 33:
+                $img = 'images/broken_loop.svg';
+            break;
+
             case 3:
                 // Unknown.
             default:
@@ -3886,10 +3890,28 @@ function visual_map_translate_module_status($module_status)
  *
  * @return integer The status of the given layout.
  */
-function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
-{
+function visual_map_get_layout_status(
+    $layout_id,
+    $status_data=[],
+    $depth=0,
+    $exclude_recursive=[],
+    &$num_elements_by_status=[
+        VISUAL_MAP_STATUS_CRITICAL_BAD   => 0,
+        VISUAL_MAP_STATUS_CRITICAL_ALERT => 0,
+        VISUAL_MAP_STATUS_NORMAL         => 0,
+        VISUAL_MAP_STATUS_WARNING        => 0,
+        VISUAL_MAP_STATUS_UNKNOWN        => 0,
+        VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
+        VISUAL_MAP_STATUS_LOOPING        => 0,
+    ]
+) {
     global $config;
 
+    if (in_array($layout_id, $exclude_recursive) === true) {
+        return VISUAL_MAP_STATUS_LOOPING;
+    }
+
+    $exclude_recursive[] = $layout_id;
     // TODO: Implement this limit into the setup.
     if ($depth > 10) {
         return VISUAL_MAP_STATUS_UNKNOWN;
@@ -3951,15 +3973,6 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
         sort_by_column($valid_layout_items, 'id_metaconsole');
     }
 
-    $num_elements_by_status = [
-        VISUAL_MAP_STATUS_CRITICAL_BAD   => 0,
-        VISUAL_MAP_STATUS_CRITICAL_ALERT => 0,
-        VISUAL_MAP_STATUS_NORMAL         => 0,
-        VISUAL_MAP_STATUS_WARNING        => 0,
-        VISUAL_MAP_STATUS_UNKNOWN        => 0,
-        VISUAL_MAP_STATUS_WARNING_ALERT  => 0,
-    ];
-
     $meta_connected_to = null;
 
     foreach ($valid_layout_items as $layout_item_data) {
@@ -4018,7 +4031,9 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
                         $status = visual_map_get_layout_status(
                             $layout_item_data['id_layout_linked'],
                             $layout_item_data,
-                            ($depth + 1)
+                            ($depth + 1),
+                            $exclude_recursive,
+                            $num_elements_by_status
                         );
                     } else if (!empty($layout_item_data['id_agente_modulo'])) {
                         // Module.
@@ -4085,6 +4100,10 @@ function visual_map_get_layout_status($layout_id, $status_data=[], $depth=0)
 
     if (isset($status_data['linked_layout_status_type']) === true) {
         // Status calculation.
+        if (isset($num_elements_by_status[VISUAL_MAP_STATUS_LOOPING]) === true && empty($num_elements_by_status[VISUAL_MAP_STATUS_LOOPING]) === false) {
+            return VISUAL_MAP_STATUS_LOOPING;
+        }
+
         switch ($status_data['linked_layout_status_type']) {
             default:
             case 'default':
@@ -4177,95 +4196,102 @@ function visual_map_create_internal_name_item(
     $idData=''
 ) {
     $text = '';
+    switch ($type) {
+        case 'box_item':
+        case BOX_ITEM:
+            $text = __('Box');
+        break;
 
-    if (empty($label)) {
-        switch ($type) {
-            case 'box_item':
-            case BOX_ITEM:
-                $text = __('Box');
-            break;
+        case 'module_graph':
+        case MODULE_GRAPH:
+            $text = __('Module graph');
+        break;
 
-            case 'module_graph':
-            case MODULE_GRAPH:
-                $text = __('Module graph');
-            break;
+        case 'clock':
+        case CLOCK:
+            $text = __('Clock');
+        break;
 
-            case 'clock':
-            case CLOCK:
-                $text = __('Clock');
-            break;
+        case 'bars_graph':
+        case BARS_GRAPH:
+            $text = __('Bars graph');
+        break;
 
-            case 'bars_graph':
-            case BARS_GRAPH:
-                $text = __('Bars graph');
-            break;
+        case 'auto_sla_graph':
+        case AUTO_SLA_GRAPH:
+            $text = __('Event history graph');
+        break;
 
-            case 'auto_sla_graph':
-            case AUTO_SLA_GRAPH:
-                $text = __('Event history graph');
-            break;
+        case 'percentile_bar':
+        case PERCENTILE_BAR:
+            $text = __('Percentile bar');
+        break;
 
-            case 'percentile_bar':
-            case PERCENTILE_BAR:
-                $text = __('Percentile bar');
-            break;
+        case 'circular_progress_bar':
+        case CIRCULAR_PROGRESS_BAR:
+            $text = __('Circular progress bar');
+        break;
 
-            case 'circular_progress_bar':
-            case CIRCULAR_PROGRESS_BAR:
-                $text = __('Circular progress bar');
-            break;
+        case 'interior_circular_progress_bar':
+        case CIRCULAR_INTERIOR_PROGRESS_BAR:
+            $text = __('Circular progress bar (interior)');
+        break;
 
-            case 'interior_circular_progress_bar':
-            case CIRCULAR_INTERIOR_PROGRESS_BAR:
-                $text = __('Circular progress bar (interior)');
-            break;
+        case 'static_graph':
+        case STATIC_GRAPH:
+            $text = __('Static Image').' - '.$image;
+        break;
 
-            case 'static_graph':
-            case STATIC_GRAPH:
-                $text = __('Static Image').' - '.$image;
-            break;
+        case 'simple_value':
+        case SIMPLE_VALUE:
+            $text = __('Simple Value');
+        break;
 
-            case 'simple_value':
-            case SIMPLE_VALUE:
-                $text = __('Simple Value');
-            break;
+        case 'label':
+        case LABEL:
+            $text = __('Label');
+        break;
 
-            case 'label':
-            case LABEL:
-                $text = __('Label');
-            break;
+        case GROUP_ITEM:
+        case 'group_item':
+            $text = __('Group').' - ';
+        break;
 
-            case GROUP_ITEM:
-            case 'group_item':
-                $text = __('Group').' - ';
-            break;
+        case COLOR_CLOUD:
+        case 'color_cloud':
+            $text = __('Color cloud').' - ';
+        break;
 
-            case COLOR_CLOUD:
-            case 'color_cloud':
-                $text = __('Color cloud').' - ';
-            break;
+        case 'icon':
+        case ICON:
+            $text = __('Icon').' - '.$image;
+        break;
 
-            case 'icon':
-            case ICON:
-                $text = __('Icon').' - '.$image;
-            break;
-        }
+        case BASIC_CHART:
+            $text = __('Basic chart').' - '.$image;
+        break;
 
-        if (!empty($agent)) {
-            $text .= ' ('.ui_print_truncate_text($agent, 'agent_small', false);
+        case ODOMETER:
+            $text = __('Odometer').' - '.$image;
+        break;
 
-            $moduleName = io_safe_output(db_get_value('nombre', 'tagente_modulo', 'id_agente_modulo', $id_module));
-            if (!empty($moduleName)) {
-                $text .= ' - '.ui_print_truncate_text($moduleName, 'module_small', false);
-            }
-
-            $text .= ')';
-        }
-
-        $text .= ' ('.$idData.')';
-    } else {
-        $text = $label;
+        default:
+            $text = __('Not assigned');
+        break;
     }
+
+    if (!empty($agent)) {
+        $text .= ' ('.ui_print_truncate_text($agent, 'agent_small', false);
+
+        $moduleName = io_safe_output(db_get_value('nombre', 'tagente_modulo', 'id_agente_modulo', $id_module));
+        if (!empty($moduleName)) {
+            $text .= ' - '.ui_print_truncate_text($moduleName, 'module_small', false);
+        }
+
+        $text .= ')';
+    }
+
+    $text .= ' ('.$idData.')';
 
     return io_safe_output($text);
 }
@@ -4273,30 +4299,29 @@ function visual_map_create_internal_name_item(
 
 function visual_map_get_items_parents($idVisual)
 {
-    // Avoid the sort by 'label' in the query cause oracle cannot sort by columns with CLOB type
     $items = db_get_all_rows_filter('tlayout_data', ['id_layout' => $idVisual]);
-    if ($items == false) {
-        $items = [];
-    } else {
-        // Sort by label
-        sort_by_column($items, 'label');
-    }
 
     $return = [];
     foreach ($items as $item) {
+        if ($item['type'] == LINE_ITEM) {
+            continue;
+        }
+
         $agent = null;
         if ($item['id_agent'] != 0) {
             $agent = io_safe_output(agents_get_alias($item['id_agent']));
         }
 
-        $return[$item['id']] = visual_map_create_internal_name_item(
-            $item['label'],
+        $text = visual_map_create_internal_name_item(
+            ($item['type'] != COLOR_CLOUD) ? $item['label'] : null,
             $item['type'],
             $item['image'],
             $agent,
             $item['id_agente_modulo'],
             $item['id']
         );
+
+        $return[$item['id']] = $text;
     }
 
     return $return;

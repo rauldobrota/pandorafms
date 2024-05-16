@@ -8,18 +8,25 @@ use PandoraFMS\Modules\Authentication\Repositories\TokenRepository;
 
 final class GetUserTokenService
 {
+
+
     public function __construct(
         private TokenRepository $tokenRepository,
     ) {
     }
 
+
     public function __invoke(string $uuid): Token
     {
         $tokenFilter = new TokenFilter();
-        /** @var Token $entityFilter */
+        /*
+            @var Token $entityFilter
+        */
         $entityFilter = $tokenFilter->getEntityFilter();
         $entityFilter->setUuid($uuid);
 
         return $this->tokenRepository->getOne($tokenFilter);
     }
+
+
 }

@@ -303,9 +303,15 @@ function flot_area_graph(
         }
     }
 
+    $extra_styles = '';
+    if (isset($params['extra_styles']) === true && empty($params['extra_styles']) === false) {
+        $extra_styles = $params['extra_styles'];
+    }
+
     $return .= 'graph'.$params['adapt_key']."'
 				style='".$width.';
-				height: '.$params['height']."px;'></div>";
+				height: '.$params['height'].'px;
+                '.$extra_styles."'></div>";
 
     $legend_top = 10;
     if (empty($params['show_legend']) === false) {
@@ -344,6 +350,22 @@ function flot_area_graph(
 
     // Trick to get translated string from javascript.
     $return .= html_print_input_hidden('unknown_text', __('Unknown'), true);
+    if (isset($array_events_alerts)) {
+        $user_timezone = user_get_timezone();
+        if (isset($user_timezone) && $user_timezone !== '') {
+            foreach ($array_events_alerts as $key_event_alert => $event_alert) {
+                foreach ($event_alert as $key => $row) {
+                    if (isset($row['timestamp']) === true) {
+                        $timezone = new DateTimeZone($user_timezone);
+                        $date = new DateTime();
+                        $date->setTimestamp($row['utimestamp']);
+                        $date->setTimezone($timezone);
+                        $array_events_alerts[$key_event_alert][$key]['timestamp'] = $date->format('Y-m-d H:i:s');
+                    }
+                }
+            }
+        }
+    }
 
     $values = json_encode($array_data);
 

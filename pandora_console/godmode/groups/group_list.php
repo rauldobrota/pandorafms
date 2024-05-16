@@ -437,7 +437,7 @@ if ($is_management_allowed === true
     $icon = (string) get_parameter('icon');
     $id_parent = (int) get_parameter('id_parent');
     $group_pass = (string) get_parameter('group_pass');
-    $alerts_disabled = (bool) get_parameter('alerts_disabled');
+    $alerts_disabled = (bool) get_parameter_switch('alerts_enabled', 0);
     $custom_id = (string) get_parameter('custom_id');
     $description = (string) get_parameter('description');
     $contact = (string) get_parameter('contact');
@@ -459,7 +459,7 @@ if ($is_management_allowed === true
                     'nombre'      => $name,
                     'icon'        => $icon,
                     'parent'      => $id_parent,
-                    'disabled'    => $alerts_disabled,
+                    'disabled'    => !$alerts_disabled,
                     'custom_id'   => $custom_id,
                     'description' => $description,
                     'contact'     => $contact,
@@ -493,7 +493,7 @@ if ($is_management_allowed === true && $update_group === true) {
     $id_parent = (int) get_parameter('id_parent');
     $description = (string) get_parameter('description');
     $group_pass = (string) get_parameter('group_pass');
-    $alerts_enabled = (bool) get_parameter('alerts_enabled');
+    $alerts_enabled = (bool) get_parameter_switch('alerts_enabled', 0);
     $custom_id = (string) get_parameter('custom_id');
     $propagate = (bool) get_parameter('propagate');
     $description = (string) get_parameter('description');
@@ -720,6 +720,11 @@ if ($is_management_allowed === true
 
             $result = db_process_sql_delete(
                 'tgrupo',
+                ['id_grupo' => $id_group]
+            );
+
+            $result_user_profile = db_process_sql_delete(
+                'tusuario_perfil',
                 ['id_grupo' => $id_group]
             );
 
@@ -1103,7 +1108,7 @@ if ($tab == 'tree') {
 
 
             // Reporting_get_group_stats.
-            $table->data[$key][3] = ($group['disabled']) ? __('Disabled') : __('Enabled');
+            $table->data[$key][3] = ($group['disabled'] === '1') ? __('Disabled') : __('Enabled');
             $table->data[$key][4] = $group['parent_name'];
             $table->data[$key][5] = $group['description'];
             if ($is_management_allowed === true) {
@@ -1128,7 +1133,7 @@ if ($tab == 'tree') {
                     $confirm_message = __('The child groups will be updated to use the parent id of the deleted group').'. '.$confirm_message;
                 }
 
-                $table->data[$key][6] .= '<a href="'.$url_delete.'" onClick="if (!confirm(\' '.$confirm_message.'\')) return false;">'.html_print_image(
+                $table->data[$key][6] .= '<a href="'.$url_delete.'" onClick="event.preventDefault(); return preprocessDeletion('.$group['id_grupo'].', \''.$url_delete.'\',\''.$confirm_message.'\');">'.html_print_image(
                     'images/delete.svg',
                     true,
                     [
@@ -1214,7 +1219,6 @@ $tab = 'group_edition';
     });
 
     $('#button-filter').on('click', function(event) {
-        console.log('here');
         event.preventDefault();
 
         load_tree(show_full_hirearchy, show_not_init_agents, show_not_init_modules);
@@ -1314,5 +1318,39 @@ $tab = 'group_edition';
             });
     }
 
+    function preprocessDeletion(group_id, delete_URL, confirm_text) {
+        var parameters = {};
+        parameters['page'] = 'include/ajax/group';
+        parameters['method'] = 'checkGroupIsLinkedToElement';
+        parameters['group_id'] = group_id;
+        parameters['table_name'] = 'tusuario_perfil';
+        parameters['field_name'] = 'id_grupo';
+
+        $.ajax({
+                type: "POST",
+                url: "<?php echo ui_get_full_url('ajax.php', false, false, false); ?>",
+                data: parameters,
+                success: function(data) {
+                    if (data.result == '1') {
+                        confirmDialog({
+                            title: '<?php echo __('Are you sure?'); ?>',
+                            message: '<?php echo __('There are user profiles assigned to this group which will be deleted. Note that a user with no associated profiles will not be able to log in. Please ensure you want to proceed with the deletion.'); ?>',
+                            onAccept: function() {
+                                window.location.assign(delete_URL);
+                            }
+                        });
+                    } else {
+                        if (!confirm(confirm_text)) {
+                            return false;
+                        } else {
+                            window.location.assign(delete_URL);
+                        }
+                    }
+                },
+                dataType: "json"
+            });
+
+            return true;
+        }
     
 </script>

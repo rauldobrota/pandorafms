@@ -36,6 +36,7 @@ $ajaxPage = $config['homedir'].'/operation/snmpconsole/snmp_view';
 $filter_alert = get_parameter('filter_alert', -1);
 $filter_severity = get_parameter('filter_severity', -1);
 $filter_free_search = get_parameter('filter_free_search', '');
+$filter_alias_search = get_parameter('filter_alias_search', '');
 $filter_status = get_parameter('filter_status', 0);
 $filter_group_by = get_parameter('filter_group_by', 0);
 $filter_hours_ago = get_parameter('filter_hours_ago', 8);
@@ -54,7 +55,8 @@ try {
         $filter_group_by,
         $filter_hours_ago,
         $filter_trap_type,
-        $refr
+        $refr,
+        $filter_alias_search
     );
 } catch (Exception $e) {
     if ((bool) is_ajax() === true) {

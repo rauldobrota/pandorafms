@@ -4,7 +4,7 @@
 %global __os_install_post %{nil}
 %define name        pandorafms_agent_linux
 %define version     7.0NG.776
-%define release     240325
+%define release     240516
 
 Summary:            Pandora FMS Linux agent, PERL version
 Name:               %{name}
@@ -53,11 +53,13 @@ mkdir -p $RPM_BUILD_ROOT/usr/share/man/man1/
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/
 cp -aRf * $RPM_BUILD_ROOT%{prefix}/pandora_agent/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/tentacle_client $RPM_BUILD_ROOT/usr/bin/
+cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/tentacle_server $RPM_BUILD_ROOT/usr/bin/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent $RPM_BUILD_ROOT/usr/bin/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent_exec $RPM_BUILD_ROOT/usr/bin/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/pandora_agent_daemon $RPM_BUILD_ROOT/etc/rc.d/init.d/pandora_agent_daemon
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/man/man1/pandora_agent.1.gz $RPM_BUILD_ROOT/usr/share/man/man1/
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/man/man1/tentacle_client.1.gz $RPM_BUILD_ROOT/usr/share/man/man1/
+cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/man/man1/tentacle_server.1.gz $RPM_BUILD_ROOT/usr/share/man/man1/
 
 cp -aRf $RPM_BUILD_ROOT%{prefix}/pandora_agent/Linux/pandora_agent.conf $RPM_BUILD_ROOT/usr/share/pandora_agent/pandora_agent.conf.rpmnew
 
@@ -164,9 +166,11 @@ exit 0
 %defattr(755,root,root)
 /usr/bin/pandora_agent_exec
 /usr/bin/tentacle_client
+/usr/bin/tentacle_server
 /etc/rc.d/init.d/pandora_agent_daemon
 
 %defattr(644,root,root)
 /usr/share/man/man1/pandora_agent.1.gz
 /usr/share/man/man1/tentacle_client.1.gz
+/usr/share/man/man1/tentacle_server.1.gz
 %config(noreplace) %{_sysconfdir}/logrotate.d/pandora_agent

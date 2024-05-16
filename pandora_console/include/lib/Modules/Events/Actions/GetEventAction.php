@@ -7,13 +7,18 @@ use PandoraFMS\Modules\Events\Services\GetEventService;
 
 final class GetEventAction
 {
+
+
     public function __construct(
         private GetEventService $getEventService
     ) {
     }
 
+
     public function __invoke(int $idEvent): Event
     {
         return $this->getEventService->__invoke($idEvent);
     }
+
+
 }

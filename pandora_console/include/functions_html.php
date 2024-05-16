@@ -16,7 +16,7 @@
  * @package    Include
  * @subpackage HTML
  */
-
+use PandoraFMS\Enterprise\Metaconsole\Node;
 if (!isset($config)) {
     $working_dir = getcwd();
     $working_dir = str_replace('\\', '/', $working_dir);
@@ -774,6 +774,7 @@ function html_print_select(
     $order=false,
     $custom_id=null,
     $placeholder='',
+    $select2_container_class=false
 ) {
     $output = "\n";
 
@@ -1010,6 +1011,10 @@ function html_print_select(
             ui_require_javascript_file('select2.min');
         }
 
+        if ($placeholder === '' && $select2_multiple_enable === true) {
+            $placeholder = __('Select one or more elements');
+        }
+
         $output .= '<script type="text/javascript">';
         $output .= '$("#'.$id.'").select2({
             closeOnSelect: '.(($select2_multiple_enable === true) ? 'false' : 'true').',
@@ -1183,6 +1188,12 @@ function html_print_select(
                         }
                     }
                     });';
+        $output .= '</script>';
+    }
+
+    if ($select2_container_class !== false) {
+        $output .= '<script>';
+        $output .= '$("#'.$id.'").data("select2").$container.addClass("'.$select2_container_class.'")';
         $output .= '</script>';
     }
 
@@ -1675,34 +1686,56 @@ function html_print_select_multiple_modules_filtered(array $data):string
     );
     $output .= '</div>';
 
+    $agent_class = '';
     if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
-        $output .= '<div>';
+        $output .= '<div class="agents-modules-multiple-search-bar">';
 
-        $output .= '<div>';
-        $output .= html_print_input(
-            [
-                'type'        => 'text',
-                'name'        => 'agent-searchBar-'.$uniqId,
-                'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
-                'placeholder' => __('Type to search agents'),
-                'return'      => true,
-            ]
-        );
+        if (isset($data['searchBarAgents']) === false) {
+            $data['searchBarAgents'] = true;
+        }
 
-        $output .= '</div>';
+        if (isset($data['searchBarModules']) === false) {
+            $data['searchBarModules'] = true;
+        }
 
-        $output .= '<div>';
-        $output .= html_print_input(
-            [
-                'type'        => 'text',
-                'name'        => 'module-searchBar-'.$uniqId,
-                'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
-                'return'      => true,
-                'placeholder' => __('Type to search modules'),
-            ]
-        );
+        if ($data['searchBarAgents'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'label_class' => 'font-title-font',
+                    'label'       => __('Filter agent'),
+                    'name'        => 'agent-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
+                    'placeholder' => __('Type to search agents'),
+                    'return'      => true,
+                ]
+            );
 
-        $output .= '</div>';
+            $output .= '</div>';
+        } else {
+            $agent_class = 'custom-graph-editor-agents-module-filter';
+            $output .= '<div></div>';
+        }
+
+        if ($data['searchBarModules'] === true) {
+            $output .= '<div>';
+            $output .= html_print_input(
+                [
+                    'type'        => 'text',
+                    'label_class' => 'font-title-font',
+                    'label'       => __('Filter module'),
+                    'name'        => 'module-searchBar-'.$uniqId,
+                    'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
+                    'return'      => true,
+                    'placeholder' => __('Type to search modules'),
+                ]
+            );
+
+            $output .= '</div>';
+        } else {
+            $output .= '<div></div>';
+        }
 
         $output .= '</div>';
     }
@@ -1759,6 +1792,7 @@ function html_print_select_multiple_modules_filtered(array $data):string
                 'style'       => 'min-width: 200px;max-width:200px;',
                 'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
                 'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'input_class' => $agent_class,
             ]
         );
     } else {
@@ -1775,6 +1809,7 @@ function html_print_select_multiple_modules_filtered(array $data):string
                 'style'       => 'min-width: 200px;max-width:200px;',
                 'script'      => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().')',
                 'placeholder' => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'input_class' => $agent_class,
             ]
         );
     }
@@ -1851,6 +1886,301 @@ function html_print_select_multiple_modules_filtered(array $data):string
 
 
 /**
+ * Form multiple inputs for slect groups.
+ *
+ * @param array $data Data inputs.
+ *
+ * @return string Html output.
+ */
+function html_print_select_multiple_modules_filtered_formated(array $data):string
+{
+    if (is_ajax() === true) {
+        ui_require_javascript_file(
+            'multiselect_filtered',
+            'include/javascript/',
+            true
+        );
+        ui_require_css_file(
+            'multiselect_filtered',
+            'include/styles/',
+            true
+        );
+    } else {
+        ui_require_javascript_file('multiselect_filtered');
+        ui_require_css_file('multiselect_filtered');
+    }
+
+    $uniqId = $data['uniqId'];
+
+    $return_all_group = isset($data['mReturnAllGroup']) ? $data['mReturnAllGroup'] : true;
+
+    // Group.
+    $output = '<div class="w98p">';
+    $output .= html_print_input(
+        [
+            'label'          => __('Group'),
+            'label_class'    => 'font-title-font',
+            'name'           => 'filtered-module-group-'.$uniqId,
+            'returnAllGroup' => $return_all_group,
+            'privilege'      => 'AR',
+            'type'           => 'select_groups',
+            'return'         => true,
+            'script'         => 'fmAgentChange(\''.$uniqId.'\')',
+            'selected'       => $data['mGroup'],
+        ]
+    );
+
+    // Groups module.
+    $module_groups = db_get_all_rows_sql(
+        'SELECT * FROM tmodule_group ORDER BY name'
+    );
+    $module_groups = array_reduce(
+        $module_groups,
+        function ($carry, $item) {
+            $carry[$item['id_mg']] = $item['name'];
+            return $carry;
+        }
+    );
+
+    $output .= html_print_input(
+        [
+            'label'         => __('Module group'),
+            'label_class'   => 'font-title-font',
+            'type'          => 'select',
+            'fields'        => $module_groups,
+            'name'          => 'filtered-module-module-group-'.$uniqId,
+            'selected'      => $data['mModuleGroup'],
+            'return'        => true,
+            'nothing'       => __('All'),
+            'nothing_value' => 0,
+            'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
+        ]
+    );
+    $output .= '</div>';
+    $output .= '<div class="recursive-modules mrgn_lft_20px_important">';
+
+    // Recursion.
+    $output .= html_print_input(
+        [
+            'label'       => __('Recursion'),
+            'label_class' => 'font-title-font',
+            'type'        => 'switch',
+            'name'        => 'filtered-module-recursion-'.$uniqId,
+            'value'       => (empty($data['mRecursion']) === true) ? false : true,
+            'checked'     => (empty($data['mRecursion']) === true) ? false : true,
+            'return'      => true,
+            'id'          => 'filtered-module-recursion-'.$uniqId,
+            'onchange'    => 'fmAgentChange(\''.$uniqId.'\')',
+        ]
+    );
+
+    $commonModules = 0;
+    if (empty($data['mShowCommonModules']) === false) {
+        $commonModules = 1;
+    }
+
+    $output .= html_print_input(
+        [
+            'label'       => __('Only common modules'),
+            'label_class' => 'font-title-font',
+            'type'        => 'switch',
+            'checked'     => $commonModules,
+            'value'       => $commonModules,
+            'name'        => 'filtered-module-show-common-modules-'.$uniqId,
+            'id'          => 'filtered-module-show-common-modules-'.$uniqId,
+            'return'      => true,
+            'onchange'    => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
+        ]
+    );
+
+    $output .= '</div>';
+
+    if (empty($data['searchBar']) === false && $data['searchBar'] === true) {
+        $output .= '<div>';
+
+        $output .= '<div>';
+        $output .= html_print_input(
+            [
+                'type'        => 'text',
+                'name'        => 'agent-searchBar-'.$uniqId,
+                'onKeyUp'     => 'searchAgent(\''.$uniqId.'\')',
+                'placeholder' => __('Type to search agents'),
+                'return'      => true,
+            ]
+        );
+
+        $output .= '</div>';
+
+        $output .= '<div>';
+        $output .= html_print_input(
+            [
+                'type'        => 'text',
+                'name'        => 'module-searchBar-'.$uniqId,
+                'onKeyUp'     => 'searchModule(\''.$uniqId.'\')',
+                'return'      => true,
+                'placeholder' => __('Type to search modules'),
+            ]
+        );
+
+        $output .= '</div>';
+
+        $output .= '</div>';
+    }
+
+    $output .= '<div class="w98p">';
+    // Agent.
+    $agents = agents_get_group_agents(
+        // Id_group.
+        $data['mGroup'],
+        // Search.
+        false,
+        // Case.
+        'lower',
+        // NoACL.
+        false,
+        // ChildGroups.
+        false,
+        // Serialized.
+        false,
+        // Separator.
+        '|',
+        // Add_alert_bulk_op.
+        false,
+        // Force_serialized.
+        false,
+        // Meta_fields.
+        ($data['mMetaFields'] ?? is_metaconsole())
+    );
+
+    if ((empty($agents)) === true || $agents == -1) {
+        $agents = [];
+    }
+
+    if ($data['mShowSelectedOtherGroups']) {
+        $selected_agents = explode(',', $data['mAgents']);
+        foreach ($selected_agents as $agent_id) {
+            if (!array_key_exists($agent_id, $agents)) {
+                $agents[$agent_id] = agents_get_alias($agent_id);
+            }
+        }
+    }
+
+    if (is_metaconsole() === true) {
+        $output .= html_print_input(
+            [
+                'label'         => __('Agents'),
+                'label_class'   => 'font-title-font',
+                'type'          => 'select',
+                'fields'        => $agents,
+                'name'          => 'filtered-module-agents-'.$uniqId,
+                'selected'      => explode(',', $data['mAgents']),
+                'return'        => true,
+                'multiple'      => true,
+                'style'         => 'min-width: 200px;max-width:200px;',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
+                'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'truncate_size' => 300,
+            ]
+        );
+    } else {
+        $output .= html_print_input(
+            [
+                'label'         => __('Agents'),
+                'label_class'   => 'font-title-font',
+                'type'          => 'select_from_sql',
+                'sql'           => 'SELECT `id_agente`,`alias` FROM tagente',
+                'name'          => 'filtered-module-agents-'.$uniqId,
+                'selected'      => explode(',', $data['mAgents']),
+                'return'        => true,
+                'multiple'      => true,
+                'style'         => 'min-width: 200px;max-width:200px;',
+                'script'        => 'fmModuleChange(\''.$uniqId.'\', '.(int) is_metaconsole().', true)',
+                'placeholder'   => (isset($data['placeholderAgents']) === true) ? $data['placeholderAgents'] : '',
+                'truncate_size' => 300,
+            ]
+        );
+    }
+
+    if (empty($data['mAgents']) === false
+        && empty($data['mModuleGroup'] === false)
+    ) {
+        $all_modules = get_modules_agents(
+            $data['mModuleGroup'],
+            explode(',', $data['mAgents']),
+            !$commonModules,
+            !is_metaconsole(),
+            is_metaconsole(),
+            false
+        );
+    } else {
+        $all_modules = [];
+    }
+
+    $mModules = $data['mModules'];
+    if (is_array($data['mModules']) === false) {
+        $mModules = explode(
+            ',',
+            $data['mModules']
+        );
+    } else {
+        if (is_metaconsole()) {
+            foreach ($data['mModules'] as $row) {
+                $exp = explode('|', $row);
+                if (empty($exp[0]) === false) {
+                    if (is_numeric($exp[1]) === false) {
+                        if (is_metaconsole() === true) {
+                            $node = new Node($exp[0]);
+                            $node->connect();
+                        }
+
+                        $module = explode('&#x20;&raquo;&#x20;', $exp[1]);
+                        $id_agente = db_get_sql(sprintf('SELECT id_agente FROM tagente WHERE nombre = "%s"', $module[1]));
+                        $id_agente_modulo = db_get_sql(sprintf('SELECT id_agente_modulo FROM tagente_modulo WHERE nombre = "%s" AND id_agente = %s', $module[2], $id_agente));
+                        $array = [
+                            $exp[0].'|'.$id_agente_modulo => $exp[0].'|'.$id_agente_modulo,
+                        ];
+                        $mModules = array_merge($mModules, $array);
+                        if (is_metaconsole() === true) {
+                            $node->disconnect();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $result = [];
+    // Clean double safe input.
+    foreach ($mModules as $name) {
+        $result[] = io_safe_output($name);
+    }
+
+    $output .= html_print_input(
+        [
+            'label'         => __('Modules'),
+            'label_class'   => 'font-title-font',
+            'type'          => 'select',
+            'fields'        => $all_modules,
+            'name'          => 'filtered-module-modules-'.$uniqId,
+            'selected'      => $result,
+            'return'        => true,
+            'multiple'      => true,
+            'style'         => 'max-width:98%;',
+            'input_class'   => 'flex-colum-center-important',
+            'truncate_size' => 300,
+        ]
+    );
+
+    $output .= '</div>';
+    if ($data['return'] === false) {
+        echo $output;
+    }
+
+    return $output;
+}
+
+
+/**
  * Prints an array of fields in a popup menu of a form based on a SQL query.
  * The first and second columns of the query will be used.
  *
@@ -1892,6 +2222,7 @@ function html_print_select_from_sql(
     $class='',
     $required=false,
     $placeholder='',
+    $title=false,
 ) {
     global $config;
 
@@ -1904,7 +2235,7 @@ function html_print_select_from_sql(
     foreach ($result as $row) {
         $id = array_shift($row);
         $value = array_shift($row);
-        $fields[$id] = $value;
+        $fields[$id] = io_safe_output($value);
     }
 
     return html_print_select(
@@ -1939,7 +2270,8 @@ function html_print_select_from_sql(
         '',
         false,
         null,
-        $placeholder
+        $placeholder,
+        $title
     );
 }
 
@@ -2197,7 +2529,8 @@ function html_print_extended_select_for_time(
     $no_change=false,
     $allow_zero=0,
     $units=null,
-    $script_input=''
+    $script_input='',
+    $units_select2=false
 ) {
     global $config;
     $admin = is_user_admin($config['id_user']);
@@ -2286,8 +2619,20 @@ function html_print_extended_select_for_time(
 
     echo '</div>';
 
-    echo '<div id="'.$uniq_name.'_manual" class="w100p inline_flex">';
-        html_print_input_text($uniq_name.'_text', $selected, '', $size, 255, false, $readonly, false, '', $class, $script_input);
+    echo '<div id="'.$uniq_name.'_manual" class="inline_flex">';
+        html_print_input_text(
+            $uniq_name.'_text',
+            $selected,
+            '',
+            $size,
+            255,
+            false,
+            $readonly,
+            false,
+            '',
+            $class.(($units_select2 === true) ? ' w100p' : ''),
+            $script_input
+        );
 
         html_print_input_hidden($name, $selected, false, $uniq_name);
         html_print_select(
@@ -2311,9 +2656,9 @@ function html_print_extended_select_for_time(
             false,
             false,
             false,
-            false
+            $units_select2
         );
-        echo ' <a href="javascript:">'.html_print_image(
+        echo '&nbsp&nbsp<a href="javascript:">'.html_print_image(
             'images/logs@svg.svg',
             true,
             [
@@ -2324,6 +2669,7 @@ function html_print_extended_select_for_time(
             ]
         ).'</a>';
     echo '</div>';
+
     echo "<script type='text/javascript'>
 		$(document).ready (function () {
 			period_select_init('".$uniq_name."', ".(($allow_zero) ? 1 : 0).");
@@ -2344,6 +2690,18 @@ function html_print_extended_select_for_time(
             }, 100);
         }
 	</script>";
+
+    if ($units_select2 === true) {
+        echo '
+        <script>
+            $(document).ready (function () {
+                $("#'.$uniq_name.'_units").select2();
+                $("#'.$uniq_name.'_units").data("select2").$container.addClass("mrgn_lft_10px_imp");
+            });
+        </script>
+        ';
+    }
+
     $returnString = ob_get_clean();
 
     if ($return) {
@@ -2351,6 +2709,174 @@ function html_print_extended_select_for_time(
     } else {
         echo $returnString;
     }
+}
+
+
+/**
+ * Render agent/module interval-specific time selection set of inputs
+ * from html_print_extended_select_for_time with additional structure and
+ * behavior associated (establishes a limit of at least 60 seconds to be
+ * selected and displays notice when this limit is actively selected).
+ *
+ * @param string  $name          Select form name.
+ * @param mixed   $selected      Current selected value. Can be a single value or an array of selected values (in combination with multiple).
+ * @param string  $script        Javascript onChange (select) code.
+ * @param string  $nothing       Label when nothing is selected.
+ * @param mixed   $nothing_value Value when nothing is selected.
+ * @param integer $size          Size of the input.
+ * @param boolean $return        Whether to return an output string or echo now (optional, echo by default).
+ * @param boolean $select_style  Wherter to assign to combo a unique name (to have more than one on same page, like dashboard).
+ * @param boolean $unique_name   Uunique name value.
+ * @param string  $class         Class value.
+ * @param boolean $readonly      Readonly value.
+ * @param string  $custom_fields Custom fields value.
+ * @param string  $style_icon    Style icon value.
+ * @param boolean $no_change     No change value.
+ * @param boolean $allow_zero    Allow the use of the value zero.
+
+ * @return string HTML code if return parameter is true.
+ */
+function html_print_select_agentmodule_interval(
+    $name,
+    $selected='',
+    $script='',
+    $nothing='',
+    $nothing_value='0',
+    $size=false,
+    $return=false,
+    $select_style=false,
+    $unique_name=true,
+    $class='',
+    $readonly=false,
+    $custom_fields=false,
+    $style_icon='',
+    $no_change=false,
+    $allow_zero=0,
+    $units=null,
+    $script_input=''
+) {
+    global $config;
+
+    include_once $config['homedir'].'/include/functions_clippy.php';
+
+    $output = '<div style="display: inline-flex;">';
+    $output .= html_print_extended_select_for_time(
+        $name,
+        $selected,
+        $script,
+        $nothing,
+        $nothing_value,
+        $size,
+        $return,
+        $select_style,
+        $unique_name,
+        $class,
+        $readonly
+    );
+
+    $unique_id = '';
+
+    if ($unique_name === true) {
+        $pattern = '/'.$name.'([a-fA-F0-9]+)_default/';
+
+        if (preg_match($pattern, $output, $matches)) {
+            // Obtain the unique ID of the generated input.
+            $unique_id = $matches[1];
+            $name .= $unique_id;
+        }
+    }
+
+    $output .= html_print_div(
+        [
+            'id'      => 'agent_module_interval_clippy'.$unique_id,
+            'class'   => 'invisible flex align-self-center',
+            'content' => clippy_context_help('agent_module_interval'),
+        ],
+        true
+    );
+
+    $output .= "<script type='text/javascript'>
+		$(document).ready (function () {
+            // Trigger first check.
+            $('#text-".$name."_text').trigger('change');
+
+            $('#text-".$name."_text').on('keyup change', function() {
+                var unit_multiplier = parseInt($('#".$name."_units').val());
+                var numeric_value = parseInt($(this).val());
+
+                if (unit_multiplier <= 0 || numeric_value <= 0) {
+                    return;
+                }
+
+                var curr_secs = numeric_value * unit_multiplier;
+
+                if (curr_secs === 60) {
+                    $('#agent_module_interval_clippy".$unique_id."').show();
+                } else {
+                    $('#agent_module_interval_clippy".$unique_id."').hide();
+                }
+            });
+
+            $('.".$name."_toggler').on('click', function() {
+                if ($('#".$name."_default').css('display') != 'none') {
+                    $('#agent_module_interval_clippy".$unique_id."').hide();
+                } else {
+                    $('#text-".$name."_text').trigger('change');
+                }
+            });
+
+            $('#".$name."_units').on('input change', function() {
+                var numeric_value = parseInt($('#text-".$name."_text').val());
+                var unit_multiplier = parseInt($(this).val());
+
+                if (unit_multiplier <= 0 || numeric_value <= 0) {
+                    return;
+                }
+
+                var curr_secs = numeric_value * unit_multiplier;
+
+                if (curr_secs== 60) {
+                    $('#agent_module_interval_clippy".$unique_id."').show();
+                } else {
+                    $('#agent_module_interval_clippy".$unique_id."').hide();
+                }
+            });
+
+            $('#text-".$name."_text').on('change', function() {
+                checkMinValue($(this));
+            });
+
+            $('#".$name."_units').on('input change', function() {
+                checkMinValue($('#text-".$name."_text'));
+            });
+
+
+        });
+
+        function checkMinValue(that) {
+            if (isNaN(that.val()) === true) {
+                return;
+            }
+
+            var unit_multiplier = parseInt($('#".$name."_units').val());
+            var numeric_value = parseInt(that.val());
+
+            if (unit_multiplier <= 0 || numeric_value <= 0) {
+                return;
+            }
+
+            var curr_secs = numeric_value * unit_multiplier;
+
+            if (curr_secs < 60) {
+                // Override value to minimum limited seconds (60).
+                that
+                    .val((60 / unit_multiplier))
+                    .trigger('change');
+            }
+        }
+	</script>";
+    $output .= '</div>';
+    return $output;
 }
 
 
@@ -2964,13 +3490,19 @@ function html_print_anchor(
  *
  * The element will have an id like: "password-$name"
  *
- * @param string  $name      Input name.
- * @param string  $value     Input value.
- * @param string  $alt       Alternative HTML string (optional).
- * @param integer $size      Size of the input (optional).
- * @param integer $maxlength Maximum length allowed (optional).
- * @param boolean $return    Whether to return an output string or echo now (optional, echo by default).
- * @param boolean $disabled  Disable the button (optional, button enabled by default).
+ * @param string  $name           Input name.
+ * @param string  $value          Input value.
+ * @param string  $alt            Alternative HTML string (optional).
+ * @param integer $size           Size of the input (optional).
+ * @param integer $maxlength      Maximum length allowed (optional).
+ * @param boolean $return         Whether to return an output string or echo now (optional, echo by default).
+ * @param boolean $disabled       Disable the button (optional, button enabled by default).
+ * @param boolean $required       Whether the input is required (optional, not required by default).
+ * @param string  $class          Additional CSS classes for the input (optional).
+ * @param string  $autocomplete   Autocomplete attribute value (optional, off by default).
+ * @param boolean $hide_div_eye   Whether to hide the div with the eye icon (optional, false by default).
+ * @param string  $div_class      Additional CSS classes for the div (optional).
+ * @param boolean $not_show_value Whether to not show the value in the input (optional, false by default), FOR USE THIS VALUE YOU NEED CONTROL THE INPUT 'password_changed'.
  *
  * @return string HTML code if return parameter is true.
  */
@@ -2986,7 +3518,8 @@ function html_print_input_password(
     $class='',
     $autocomplete='off',
     $hide_div_eye=false,
-    $div_class=''
+    $div_class='',
+    $not_show_value=false,
 ) {
     if ($maxlength == 0) {
         $maxlength = 255;
@@ -3017,7 +3550,40 @@ function html_print_input_password(
         }
     }
 
-    return '<div class="relative container-div-input-password '.$div_class.'">'.html_print_input_text_extended($name, $value, 'password-'.$name, $alt, $size, $maxlength, $disabled, '', $attr, $return, true, '', $autocomplete, false, $hide_div_eye).'</div>';
+    $extra_output = '';
+    if ($not_show_value === true) {
+        $unique_id = 'flag_password_'.uniqid();
+        $extra_output = html_print_input_hidden($name.'_password_changed', 0, true, false, false, $unique_id);
+        $attr['class'] .= ' bg-image-none';
+        $extra_output .= '<script>
+            $("#show-hide-password-'.$name.'").hide();
+            const exist_'.$unique_id.' = '.((empty($value) === false) ? 'true' : 'false').';
+            $("#password-'.$name.'").on("focus", function(e) {
+                if ($("#'.$unique_id.'").val() === "0") {
+                    $(this).val("");
+                }
+            });
+
+            $("#password-'.$name.'").on("focusout", function(e) {
+                if ($("#'.$unique_id.'").val() === "0" && $(this).val() === "" && exist_'.$unique_id.' === true) {
+                    $(this).val("*****");
+                }
+            });
+
+            $("#password-'.$name.'").on("keyup", function(e) {
+                $("#'.$unique_id.'").val(1);
+                if ($(this).val() === "") {
+                    $(this).addClass("bg-image-none");
+                    $("#show-hide-password-'.$name.'").hide();
+                } else {
+                    $(this).removeClass("bg-image-none");
+                    $("#show-hide-password-'.$name.'").show();
+                }
+            });
+        </script>';
+    }
+
+    return '<div class="relative container-div-input-password '.$div_class.'">'.html_print_input_text_extended($name, $value, 'password-'.$name, $alt, $size, $maxlength, $disabled, '', $attr, $return, true, '', $autocomplete, false, $hide_div_eye).'</div>'.$extra_output;
 }
 
 
@@ -3059,7 +3625,8 @@ function html_print_input_text(
     $disabled=false,
     $list='',
     $placeholder=null,
-    $pattern=null
+    $pattern=null,
+    $id=false
 ) {
     if ($maxlength == 0) {
         $maxlength = 255;
@@ -3117,7 +3684,7 @@ function html_print_input_text(
     return html_print_input_text_extended(
         $name,
         $value,
-        'text-'.$name,
+        (($id === false) ? 'text-'.$name : $id),
         $alt,
         $size,
         $maxlength,
@@ -4127,6 +4694,10 @@ function html_print_table(&$table, $return=false)
                 $headStyle = ' style = "'.$table->headstyle[$key].'" ';
             } else {
                 $headStyle = '';
+            }
+
+            if (isset($table->headStyle[$heading])) {
+                $headStyle = ' style = "'.$table->headStyle[$heading].'" ';
             }
 
             $output .= '<th class="'.$table->headclass[$key].'" '.$headColspan.$headStyle.' scope="col">'.$heading.'</th>';
@@ -5719,6 +6290,7 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 ((isset($data['class']) === true) ? $data['class'] : ''),
                 ((isset($data['required']) === true) ? $data['required'] : false),
                 ((isset($data['placeholder']) === true) ? $data['placeholder'] : null),
+                ((isset($data['title']) === true) ? $data['title'] : false),
             );
         break;
 
@@ -5853,7 +6425,8 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 ((isset($data['no_change']) === true) ? $data['no_change'] : ''),
                 ((isset($data['allow_zero']) === true) ? $data['allow_zero'] : ''),
                 ((isset($data['units']) === true) ? $data['units'] : null),
-                ((isset($data['script_input']) === true) ? $data['script_input'] : '')
+                ((isset($data['script_input']) === true) ? $data['script_input'] : ''),
+                ((isset($data['units_select2']) === true) ? $data['units_select2'] : '')
             );
         break;
 
@@ -6104,6 +6677,10 @@ function html_print_input($data, $wrapper='div', $input_only=false)
             $output .= html_print_select_multiple_modules_filtered($data);
         break;
 
+        case 'select_multiple_modules_filtered_formated':
+            $output .= html_print_select_multiple_modules_filtered_formated($data);
+        break;
+
         case 'datalist':
             $output .= html_print_datalist(
                 $data['name'],
@@ -6138,7 +6715,12 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 false,
                 true,
                 true,
-                true
+                true,
+                '',
+                false,
+                null,
+                '',
+                'select2-multiselect-widget-width select2-multiselect-text-wrap'
             );
             $output .= '</li>';
 
@@ -6206,7 +6788,12 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 false,
                 true,
                 true,
-                true
+                true,
+                '',
+                false,
+                null,
+                '',
+                'select2-multiselect-widget-width select2-multiselect-text-wrap'
             );
             $output .= '</li>';
 
@@ -6366,6 +6953,11 @@ function html_print_input($data, $wrapper='div', $input_only=false)
                 (isset($data['time_end']) === true) ? $data['time_end'] : '',
                 (isset($data['date_text']) === true) ? $data['date_text'] : SECONDS_1DAY,
                 (isset($data['class']) === true) ? $data['class'] : 'w100p',
+                (isset($data['date_format_php']) === true) ? $data['date_format_php'] : 'Y/m/d',
+                (isset($data['time_format_php']) === true) ? $data['time_format_php'] : 'H:i:s',
+                (isset($data['date_format_js']) === true) ? $data['date_format_js'] : 'yy/mm/dd',
+                (isset($data['time_format_js']) === true) ? $data['time_format_js'] : 'HH/mm/ss',
+                (isset($data['id']) === true) ? $data['id'] : '',
             );
         break;
 
@@ -7348,7 +7940,9 @@ function html_print_select_date_range(
     $date_format_php='Y/m/d',
     $time_format_php='H:i:s',
     $date_format_js='yy/mm/dd',
-    $time_format_js='HH:mm:ss'
+    $time_format_js='HH:mm:ss',
+    $id='',
+    $units_selected='1',
 ) {
     global $config;
 
@@ -7399,7 +7993,7 @@ function html_print_select_date_range(
     $fields['chose_range'] = __('Chose start/end date period');
     $fields['none'] = __('None');
 
-    $output = html_print_input_hidden('custom_date', $custom_date, true);
+    $output = html_print_input_hidden('custom_date', $custom_date, true, false, false, 'hidden-custom_date'.$id);
     $output .= '<div id="'.$name.'_default" class="wauto inline_flex" '.$display_default.'>';
         $output .= html_print_select(
             $fields,
@@ -7419,13 +8013,101 @@ function html_print_select_date_range(
         $table->data = [];
         $table->class = 'table-adv-filter';
         $table->data[0][0] = '<div><div><div><span class="font-title-font">'.__('From').':</span></div>';
-            $table->data[0][0] .= html_print_input_text('date_init', $date_init, '', 12, 10, true).' ';
-            $table->data[0][0] .= html_print_input_text('time_init', $time_init, '', 10, 7, true).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'date_init',
+                $date_init,
+                '',
+                12,
+                10,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-date_init'.$id : false,
+            ).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'time_init',
+                $time_init,
+                '',
+                10,
+                7,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-time_init'.$id : false,
+            ).' ';
         $table->data[0][0] .= '</div>';
         $table->data[0][0] .= '<div><div><span class="font-title-font">'.__('to').':</span></div>';
-            $table->data[0][0] .= html_print_input_text('date_end', $date_end, '', 12, 10, true).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'date_end',
+                $date_end,
+                '',
+                12,
+                10,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-date_end'.$id : false,
+            ).' ';
         $table->data[0][0] .= '<div id="'.$name.'_manual" class="w100p inline_line">';
-            $table->data[0][0] .= html_print_input_text('time_end', $time_end, '', 10, 7, true).' ';
+            $table->data[0][0] .= html_print_input_text(
+                'time_end',
+                $time_end,
+                '',
+                10,
+                7,
+                true,
+                false,
+                false,
+                '',
+                '',
+                '',
+                'off',
+                false,
+                '',
+                '',
+                '',
+                false,
+                '',
+                null,
+                null,
+                (empty($id) === false) ? 'text-time_end'.$id : false,
+            ).' ';
             $table->data[0][0] .= ' <a href="javascript:">'.html_print_image(
                 'images/logs@svg.svg',
                 true,
@@ -7455,7 +8137,7 @@ function html_print_select_date_range(
         $output .= html_print_select(
             $units,
             $name.'_units',
-            '1',
+            $units_selected,
             '',
             '',
             0,
@@ -7496,13 +8178,13 @@ function html_print_select_date_range(
                     $('#".$name."_range').show();
                     $('#".$name."_default').hide();
                     $('#".$name."_extend').hide();
-                    $('#hidden-custom_date').val('1');
+                    $('#hidden-custom_date".$id."').val('1');
                     $('.filter_label_position_before').addClass('filter_label_position_after');
                 } else if ($(this).val() === 'custom') {
                     $('#".$name."_range').hide();
                     $('#".$name."_default').hide();
                     $('#".$name."_extend').show();
-                    $('#hidden-custom_date').val('2');
+                    $('#hidden-custom_date".$id."').val('2');
                     $('.filter_label_position_before').removeClass('filter_label_position_after');
                 } else {
                     $('.filter_label_position_before').removeClass('filter_label_position_after');
@@ -7520,8 +8202,8 @@ function html_print_select_date_range(
             $('#".$name."_range').show();
             $('#".$name."_default').hide();
             $('#".$name."_extend').hide();
-            position_top_init = $('#text-date_init').offset().top + $('#text-date_init').outerHeight();
-            position_top_end = $('#text-date_end').offset().top + $('#text-date_end').outerHeight();
+            position_top_init = $('[id^=text-date_init".$id."]').offset().top + $('[id^=text-date_init".$id."]').outerHeight();
+            position_top_end = $('[id^=text-date_end".$id."]').offset().top + $('[id^=text-date_end".$id."]').outerHeight();
             if(def_state_range){
                 $('#".$name."_range').show();
             } else {
@@ -7547,7 +8229,7 @@ function html_print_select_date_range(
             $('#".$name."_range').hide();
             $('#".$name."_extend').hide();
             $('#".$name."').val('".SECONDS_1DAY."').trigger('change');
-            $('#hidden-custom_date').val('0');
+            $('#hidden-custom_date".$id."').val('0');
         }
 
         $('#text-date').datepicker({
@@ -7557,7 +8239,7 @@ function html_print_select_date_range(
             showAnim: 'slideDown'
         });
 
-        $('[id^=text-time_init]').timepicker({
+        $('[id^=text-time_init".$id."]').timepicker({
             showSecond: true,
             timeFormat: '".$time_format_js."',
             timeOnlyTitle: '".__('Choose time')."',
@@ -7569,7 +8251,7 @@ function html_print_select_date_range(
             closeText: '".__('Close')."'
         });
 
-        $('[id^=text-date_init]').datepicker ({
+        $('[id^=text-date_init".$id."]').datepicker ({
             dateFormat: '".$date_format_js."',
             changeMonth: true,
             changeYear: true,
@@ -7578,9 +8260,9 @@ function html_print_select_date_range(
             beforeShowDay: function (date) {
                 show_datepicker = 'date_init';
                 var date_now = date.getTime();
-                var date_ini_split = $('[id^=text-date_init]').val().split('/');
+                var date_ini_split = $('[id^=text-date_init".$id."]').val().split('/');
                 var date_ini = new Date(date_ini_split[1]+'/'+date_ini_split[2]+'/'+date_ini_split[0]).getTime();
-                var date_end_split = $('[id^=text-date_end]').val().split('/');
+                var date_end_split = $('[id^=text-date_end".$id."]').val().split('/');
                 var date_end = new Date(date_end_split[1]+'/'+date_end_split[2]+'/'+date_end_split[0]).getTime();
                 if (date_now > date_ini && date_now < date_end) {
                     return [true, 'ui-date-range-in', 'prueba'];
@@ -7591,7 +8273,7 @@ function html_print_select_date_range(
             }
         });
 
-        $('[id^=text-date_end]').datepicker ({
+        $('[id^=text-date_end".$id."]').datepicker ({
             dateFormat: '".$date_format_js."',
             changeMonth: true,
             changeYear: true,
@@ -7600,9 +8282,9 @@ function html_print_select_date_range(
             beforeShowDay: function (date) {
                 show_datepicker = 'date_end';
                 var date_now = date.getTime();
-                var date_ini_split = $('[id^=text-date_init]').val().split('/');
+                var date_ini_split = $('[id^=text-date_init".$id."]').val().split('/');
                 var date_ini = new Date(date_ini_split[1]+'/'+date_ini_split[2]+'/'+date_ini_split[0]).getTime();
-                var date_end_split = $('[id^=text-date_end]').val().split('/');
+                var date_end_split = $('[id^=text-date_end".$id."]').val().split('/');
                 var date_end = new Date(date_end_split[1]+'/'+date_end_split[2]+'/'+date_end_split[0]).getTime();
                 if (date_now > date_ini && date_now < date_end) {
                     return [true, 'ui-date-range-in', 'prueba'];
@@ -7610,10 +8292,10 @@ function html_print_select_date_range(
                     return [true, 'ui-datepicker-current-day', ''];
                 }
                 return [true, '', ''];
-            }
+            },
         });
 
-        $('[id^=text-time_end]').timepicker({
+        $('[id^=text-time_end".$id."]').timepicker({
             showSecond: true,
             timeFormat: '".$time_format_js."',
             timeOnlyTitle: '".__('Choose time')."',

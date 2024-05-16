@@ -594,7 +594,7 @@ class ITSM
      *
      * @return boolean
      */
-    public function pingItsmtoPandora(string $path): bool
+    public function pingItsmtoPandora(string $path): array
     {
         global $config;
 
@@ -603,12 +603,12 @@ class ITSM
             [],
             [
                 'path'       => $path,
-                'apiPass'    => $config['api_password'],
-                'serverAuth' => $config['server_unique_identifier'],
+                'apiPass'    => md5($config['api_password']),
+                'serverAuth' => md5($config['server_unique_identifier']),
             ]
         );
 
-        return (bool) $result['valid'];
+        return $result;
     }
 
 

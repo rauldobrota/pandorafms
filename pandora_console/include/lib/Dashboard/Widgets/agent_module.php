@@ -179,7 +179,7 @@ class AgentModuleWidget extends Widget
 
         // This forces at least a first configuration.
         $this->configurationRequired = false;
-        if (isset($this->values['mModules']) === false) {
+        if (isset($this->values['mModules']) === false || (isset($this->values['mModules']) === true && empty($this->values['mModules'][0]) === true)) {
             $this->configurationRequired = true;
         }
 
@@ -297,10 +297,10 @@ class AgentModuleWidget extends Widget
         }
 
         $inputs[] = [
-            'class'     => 'flex flex-row',
-            'id'        => 'select_multiple_modules_filtered',
+            'class'     => 'flex-colum-center-important',
+            'id'        => 'select_multiple_modules_filtered_formated',
             'arguments' => [
-                'type'                     => 'select_multiple_modules_filtered',
+                'type'                     => 'select_multiple_modules_filtered_formated',
                 'uniqId'                   => $this->cellId,
                 'mGroup'                   => (isset($this->values['mGroup']) === true) ? $this->values['mGroup'] : $mgroup,
                 'mRecursion'               => (isset($this->values['mRecursion']) === true) ? $this->values['mRecursion'] : '',
@@ -514,6 +514,10 @@ class AgentModuleWidget extends Widget
             $array_names = [];
 
             foreach ($allModules as $module_name) {
+                if (is_numeric($module_name)) {
+                    $module_name = io_safe_output(modules_get_agentmodule_name($module_name));
+                }
+
                 $file_name = ui_print_truncate_text(
                     \io_safe_output($module_name),
                     'module_small',
@@ -744,13 +748,17 @@ class AgentModuleWidget extends Widget
                     $fullname = $item[1];
                     if ($this->values['mShowCommonModules'] !== 'on') {
                         $item = explode('&#x20;&raquo;&#x20;', $fullname);
-                        $name = $item[1];
+                        $name = $item[2];
                         $carry['modules_selected'][$serverId][$name] = null;
                         $carry['modules'][$name] = null;
                     } else {
                         $carry['modules'][$fullname] = null;
                     }
                 } else {
+                    if (is_numeric($item) === true) {
+                        $item = modules_get_agentmodule_name($item);
+                    }
+
                     $carry['modules'][$item] = null;
                 }
 
@@ -817,14 +825,15 @@ class AgentModuleWidget extends Widget
                     }
 
                     $key_name_module = $module->name();
-
-                    if ($this->values['mTypeShow'] === '1') {
-                        $mod = $module->toArray();
-                        $mod['datos'] = $module->lastValue();
-                        $module_last_value = modules_get_agentmodule_data_for_humans($mod);
-                        $visualData[$agent_id]['modules'][$key_name_module] = $module_last_value;
-                    } else {
-                        $visualData[$agent_id]['modules'][$key_name_module] = $module->getStatus()->estado();
+                    if (array_key_exists($key_name_module, $allModules) === true) {
+                        if ($this->values['mTypeShow'] === '1') {
+                            $mod = $module->toArray();
+                            $mod['datos'] = $module->lastValue();
+                            $module_last_value = modules_get_agentmodule_data_for_humans($mod);
+                            $visualData[$agent_id]['modules'][$key_name_module] = $module_last_value;
+                        } else {
+                            $visualData[$agent_id]['modules'][$key_name_module] = $module->getStatus()->estado();
+                        }
                     }
                 }
 

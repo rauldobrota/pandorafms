@@ -30,6 +30,7 @@
 // Config functions.
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/functions.php';
+require_once __DIR__.'/class/JWTRepository.class.php';
 enterprise_include_once('include/functions_config.php');
 
 use PandoraFMS\Core\DBMaintainer;
@@ -205,10 +206,6 @@ function config_update_config()
 
                     if (config_update_value('chromium_path', (string) get_parameter('chromium_path'), true) === false) {
                         $error_update[] = __('Chromium config directory');
-                    }
-
-                    if (config_update_value('loginhash_pwd', (string) get_parameter('loginhash_pwd'), true, true) === false) {
-                        $error_update[] = __('Auto login (hash) password');
                     }
 
                     if (config_update_value('timesource', (string) get_parameter('timesource'), true) === false) {
@@ -505,10 +502,6 @@ function config_update_config()
                             $error_update[] = __('Enable Update Manager');
                         }
 
-                        if (config_update_value('legacy_database_ha', get_parameter('legacy_database_ha'), true) === false) {
-                            $error_update[] = __('Legacy database HA');
-                        }
-
                         if (config_update_value('agent_vulnerabilities', get_parameter('agent_vulnerabilities'), true) === false) {
                             $error_update[] = __('agent_vulnerabilities');
                         }
@@ -710,8 +703,10 @@ function config_update_config()
                         $error_update[] = __('Admin LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
-                        $error_update[] = __('Admin LDAP password');
+                    if ((bool) get_parameter('ldap_admin_pass_password_changed', false) === true) {
+                        if (config_update_value('ldap_admin_pass', get_parameter('ldap_admin_pass'), true, true) === false) {
+                            $error_update[] = __('Admin LDAP password');
+                        }
                     }
 
                     if (config_update_value('ldap_search_timeout', (int) get_parameter('ldap_search_timeout', 5), true) === false) {
@@ -746,8 +741,10 @@ function config_update_config()
                         $error_update[] = __('Admin secondary LDAP login');
                     }
 
-                    if (config_update_value('ldap_admin_pass_secondary', get_parameter('ldap_admin_pass_secondary'), true, true) === false) {
-                        $error_update[] = __('Admin secondary LDAP password');
+                    if ((bool) get_parameter('ldap_admin_pass_secondary_password_changed', false) === true) {
+                        if (config_update_value('ldap_admin_pass_secondary', get_parameter('ldap_admin_pass_secondary'), true, true) === false) {
+                            $error_update[] = __('Admin LDAP password secondary');
+                        }
                     }
 
                     if (config_update_value('fallback_local_auth', get_parameter('fallback_local_auth'), true) === false) {
@@ -1263,6 +1260,10 @@ function config_update_config()
                         $error_update[] = __('Default line menu items for the Visual Console');
                     }
 
+                    if (config_update_value('vc_text_margin', (int) get_parameter('vc_text_margin', 1), true) === false) {
+                        $error_update[] = __('Default text margin for the Visual Console');
+                    }
+
                     if (config_update_value('vc_line_thickness', (int) get_parameter('vc_line_thickness'), true) === false) {
                         $error_update[] = __('Default line thickness for the Visual Console');
                     }
@@ -1441,6 +1442,10 @@ function config_update_config()
                         $error_update[] = __(
                             'Default height of the chart image'
                         );
+                    }
+
+                    if (config_update_value('tabs_menu', get_parameter('tabs_menu', 'both'), true) === false) {
+                        $error_update[] = __('Tabs menu');
                     }
 
                     // --------------------------------------------------
@@ -1901,7 +1906,7 @@ function config_update_config()
                     }
                 break;
 
-                case 'ehorus':
+                case 'pandorarc':
                     if (config_update_value('ehorus_enabled', (int) get_parameter('ehorus_enabled', 0), true) === false) {
                         $error_update[] = __('Enable eHorus');
                     }
@@ -1970,6 +1975,27 @@ function config_update_config()
                     $ITSM_agents_sync = (int) get_parameter('ITSM_agents_sync', $config['ITSM_agents_sync']);
                     if (config_update_value('ITSM_agents_sync', $ITSM_agents_sync, true) === false) {
                         $error_update[] = __('Pandora ITSM API agents sync');
+                    }
+
+                    $ITSM_mode_agents_sync = (int) get_parameter(
+                        'ITSM_mode_agents_sync',
+                        $config['ITSM_mode_agents_sync']
+                    );
+                    if (config_update_value('ITSM_mode_agents_sync', $ITSM_mode_agents_sync, true) === false) {
+                        $error_update[] = __('Pandora ITSM mode agents to synch');
+                    }
+
+                    $ITSM_groups_agents_sync = get_parameter(
+                        'ITSM_groups_agents_sync',
+                        null
+                    );
+
+                    if (empty($ITSM_groups_agents_sync) === false) {
+                        $ITSM_groups_agents_sync = json_encode($ITSM_groups_agents_sync);
+                    }
+
+                    if (config_update_value('ITSM_groups_agents_sync', $ITSM_groups_agents_sync, true) === false) {
+                        $error_update[] = __('Pandora ITSM groups agents to synch');
                     }
 
                     $incident_default_group = (int) get_parameter('default_group', $config['default_group']);
@@ -2199,10 +2225,6 @@ function config_process_config()
         config_update_value('events_per_query', 5000);
     }
 
-    if (!isset($config['loginhash_pwd'])) {
-        config_update_value('loginhash_pwd', (rand(0, 1000) * rand(0, 1000)).'pandorahash', false, true);
-    }
-
     if (!isset($config['trap2agent'])) {
         config_update_value('trap2agent', 0);
     }
@@ -2426,10 +2448,6 @@ function config_process_config()
         config_update_value('enable_update_manager', 1);
     }
 
-    if (!isset($config['legacy_database_ha'])) {
-        config_update_value('legacy_database_ha', 0);
-    }
-
     if (!isset($config['disabled_newsletter'])) {
         config_update_value('disabled_newsletter', 0);
     }
@@ -2468,6 +2486,10 @@ function config_process_config()
 
     if (!isset($config['number_modules_queue'])) {
         config_update_value('number_modules_queue', 500);
+    }
+
+    if (!isset($config['JWT_signature'])) {
+        config_update_value('JWT_signature', 1);
     }
 
     if (!isset($config['eastern_eggs_disabled'])) {
@@ -2911,6 +2933,10 @@ function config_process_config()
 
     if (!isset($config['vc_menu_items'])) {
         config_update_value('vc_menu_items', 10);
+    }
+
+    if (!isset($config['vc_text_margin'])) {
+        config_update_value('vc_text_margin', 1);
     }
 
     if (!isset($config['ser_menu_items'])) {
@@ -3923,6 +3949,14 @@ function config_process_config()
         config_update_value('ITSM_agents_sync', 20);
     }
 
+    if (!isset($config['ITSM_mode_agents_sync'])) {
+        config_update_value('ITSM_mode_agents_sync', 0);
+    }
+
+    if (!isset($config['ITSM_groups_agents_sync'])) {
+        config_update_value('ITSM_groups_agents_sync', null);
+    }
+
     // Module Library.
     if (!isset($config['module_library_user'])) {
         config_update_value('module_library_user', '');
@@ -3942,6 +3976,10 @@ function config_process_config()
 
     if (isset($config['control_session_timeout']) === false) {
         config_update_value('control_session_timeout', 'check_activity');
+    }
+
+    if (isset($config['tabs_menu']) === false) {
+        config_update_value('tabs_menu', 'both');
     }
 
     // Finally, check if any value was overwritten in a form.
@@ -4186,4 +4224,14 @@ function config_prepare_session()
 
     ini_set('post_max_size', $config['max_file_size']);
     ini_set('upload_max_filesize', $config['max_file_size']);
+}
+
+
+function config_prepare_jwt_signature()
+{
+    global $config;
+    if (is_metaconsole() === true && $config['JWT_signature'] == 1) {
+        $signature = JWTRepository::generateSignature();
+        JWTRepository::syncSignatureWithNodes($signature);
+    }
 }

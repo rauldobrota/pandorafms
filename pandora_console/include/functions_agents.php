@@ -1544,7 +1544,9 @@ function agents_get_modules(
     $indexed=true,
     $get_not_init_modules=true,
     $force_tags=false,
-    $filter_include_sql=true
+    $filter_include_sql=true,
+    $pagination=false,
+    $offset=0,
 ) {
     global $config;
 
@@ -1717,7 +1719,17 @@ function agents_get_modules(
         $sql_tags_join,
         $where
     );
-    $result = db_get_all_rows_sql($sql);
+
+    $limit = '';
+    if ($pagination === true && isset($config['paginate_module']) === true) {
+        if ($offset === 0) {
+            $limit = ' LIMIT '.$config['block_size'].' OFFSET 0';
+        } else {
+            $limit = ' LIMIT '.$config['block_size'].' OFFSET '.$offset;
+        }
+    }
+
+    $result = db_get_all_rows_sql($sql.$limit);
 
     if (empty($result)) {
         return [];
@@ -2311,27 +2323,36 @@ function agents_get_agent_with_ip($ip_address)
 /**
  * Get all IP addresses of an agent
  *
- * @param int Agent id
+ * @param int  Agent id
+ * @param bool Order by id
  *
  * @return array Array with the IP address of the given agent or an empty array.
  */
-function agents_get_addresses($id_agent)
-{
+function agents_get_addresses(
+    $id_agent,
+    $order_by_id=false
+) {
+    $order_clause = ($order_by_id === true) ? 'ORDER BY taddress.id_a DESC' : '';
+
     if (is_array($id_agent)) {
         $sql = sprintf(
             'SELECT ip
 			FROM taddress_agent, taddress
 			WHERE taddress_agent.id_a = taddress.id_a
-				AND id_agent IN (%s)',
-            implode(',', $id_agent)
+				AND id_agent IN (%s)
+            %s',
+            implode(',', $id_agent),
+            $order_clause
         );
     } else {
         $sql = sprintf(
             'SELECT ip
 			FROM taddress_agent, taddress
 			WHERE taddress_agent.id_a = taddress.id_a
-				AND id_agent = %d',
-            $id_agent
+				AND id_agent = %d
+            %s',
+            $id_agent,
+            $order_clause
         );
     }
 
@@ -3324,7 +3345,7 @@ function agents_update_gis(
  *
  * @return array A list of network interfaces information by agents.
  */
-function agents_get_network_interfaces($agents=false, $agents_filter=false)
+function agents_get_network_interfaces($agents=false, $agents_filter=false, $pagination=false, $offset=0, $count=false)
 {
     global $config;
 
@@ -3423,8 +3444,17 @@ function agents_get_network_interfaces($agents=false, $agents_filter=false)
             $columns,
             $filter,
             true,
-            false
+            false,
+            false,
+            true,
+            $pagination,
+            $offset
         );
+
+        if ($count === true) {
+            return (count($modules) ?? 0);
+        }
+
         if (!empty($modules)) {
             $interfaces = [];
 
@@ -4746,7 +4776,10 @@ function get_resume_agent_concat($id_agente, $all_groups, $agent)
             'force_checks',
             false,
             'window.location.assign("'.$url.'&amp;flag_agent=1")',
-            [ 'mode' => 'link' ],
+            [
+                'mode'  => 'link',
+                'class' => 'mrgn_lft_20px ',
+            ],
             true
         );
     }
@@ -4925,7 +4958,7 @@ function get_resume_agent_concat($id_agente, $all_groups, $agent)
         $module_score = modules_get_agentmodule_id(io_safe_input('Hardening - Score'), $agent['id_agente']);
         $hardening = '';
         if (is_array($module_score) === true && key_exists('id_agente_modulo', $module_score) == true) {
-            $raw_data_score = modules_get_raw_data($module_score['id_agente_modulo'], 0, time());
+            $raw_data_score = modules_get_raw_data($module_score['id_agente_modulo'], 0, time(), false);
             $hardening = format_numeric($raw_data_score[0]['datos'], 2);
             $data = [];
             $data[0] = '<b>'.__('Hardening').'</b>';

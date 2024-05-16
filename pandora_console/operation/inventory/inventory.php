@@ -46,6 +46,7 @@ $date_init_less = (strtotime(date('Y/m/d')) - SECONDS_1DAY);
 $date_init = get_parameter('date_init', date(DATE_FORMAT, $date_init_less));
 $time_init = get_parameter('time_init', date(TIME_FORMAT, $date_init_less));
 $datetime_init = strtotime($date_init.' '.$time_init);
+$date_units = get_parameter('utimestamp_units');
 if ($custom_date === '1') {
     if ($datetime_init >= $datetime_end) {
         $datetime_init = $date_init_less;
@@ -55,7 +56,6 @@ if ($custom_date === '1') {
     $date_end = date('Y/m/d H:i:s', $datetime_end);
     $period = ($datetime_end - $datetime_init);
 } else if ($custom_date === '2') {
-    $date_units = get_parameter('utimestamp_units');
     $date_end = date('Y/m/d H:i:s');
     $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - ((int) $date_text * (int) $date_units)));
     $period = (strtotime($date_end) - strtotime($date_init));
@@ -85,12 +85,13 @@ if ($custom_date === '1') {
     }
 } else {
     $date_end = date('Y/m/d H:i:s');
-    $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - $range));
+    $date_init = date('Y/m/d H:i:s', (strtotime($date_end) - (int) $range));
     $period = (strtotime($date_end) - strtotime($date_init));
 }
 
 $date_init = strtotime($date_init);
 $utimestamp = strtotime($date_end);
+$status_agent = (int) get_parameter('status', -1);
 
 if (is_ajax() === true) {
     $get_csv_url = (bool) get_parameter('get_csv_url');
@@ -180,6 +181,8 @@ if (is_ajax() === true) {
         $order = get_datatable_order();
         $id_agent = (int) get_parameter('id_agent', 0);
         $id_group = (int) get_parameter('id_group', 0);
+        $utimestamp = (int) get_parameter('utimestamp', 0);
+        $period = (int) get_parameter('period', 0);
 
         if (isset($filter['value']) === false) {
             $filter['value'] = '';
@@ -192,12 +195,14 @@ if (is_ajax() === true) {
             'order'      => $order,
             'id_agent'   => $id_agent,
             'id_group'   => $id_group,
-            'utimestamp' => strtotime($utimestamp),
+            'utimestamp' => $utimestamp,
             'period'     => $period,
+            'status'     => $status_agent,
         ];
 
-        $data = get_data_basic_info_sql($params);
-        $count = get_data_basic_info_sql($params, true);
+        $data = get_inventory_basic_info_sql($params);
+        // Aca se retorna
+        $count = get_inventory_basic_info_sql($params, true);
 
         try {
             ob_start();
@@ -449,6 +454,8 @@ if ($is_metaconsole === true) {
         if ($inventory_id_agent > 0) {
             $sql .= ' AND id_agente = '.$inventory_id_agent;
             $agents_node = [$inventory_id_agent => $inventory_id_agent];
+        } else {
+            $agents_node = [-1 => true];
         }
 
         $result_module = db_get_all_rows_sql($sql);
@@ -462,8 +469,8 @@ if ($is_metaconsole === true) {
                 $export,
                 false,
                 $order_by_agent,
-                $server,
-                $pagination_url_parameters
+                $date_init,
+                $status_agent
             );
 
             $data_tmp['server_name'] = $connection['server_name'];
@@ -495,6 +502,8 @@ if ($is_metaconsole === true) {
             if ($inventory_id_agent > 0) {
                 $sql .= ' AND id_agente = '.$inventory_id_agent;
                 $agents_node = [$inventory_id_agent => $inventory_id_agent];
+            } else {
+                $agents_node = [-1 => true];
             }
 
             $result = db_get_all_rows_sql($sql);
@@ -510,8 +519,8 @@ if ($is_metaconsole === true) {
                         $export,
                         false,
                         $order_by_agent,
-                        $server,
-                        $pagination_url_parameters
+                        $date_init,
+                        $status_agent
                     );
 
                     $data_tmp['server_name'] = $server['server_name'];
@@ -759,10 +768,34 @@ if (is_metaconsole() === false) {
             date('H:i:s', $date_init),
             date('Y/m/d', $utimestamp),
             date('H:i:s', $utimestamp),
-            $date_text
+            $date_text,
+            'w100p',
+            'Y/m/d',
+            'H:i:s',
+            'yy/mm/dd',
+            'HH:mm:ss',
+            '',
+            $date_units
         )
     );
 }
+
+$table->data[2][0] = html_print_label_input_block(
+    __('Status agent'),
+    html_print_select(
+        [
+            -1 => __('All'),
+            0  => __('Enabled'),
+            1  => __('Disabled'),
+        ],
+        'status',
+        $status_agent,
+        '',
+        '',
+        0,
+        true
+    )
+);
 
 $searchForm .= html_print_table($table, true);
 $searchForm .= html_print_div(
@@ -1054,12 +1087,17 @@ if ($inventory_module !== 'basic') {
             }
         }
     } else {
-        // Single agent selected.
-        if ($inventory_id_agent > 0 && isset($agents[$inventory_id_agent]) === true) {
-            $agents = [$inventory_id_agent => $agents[$inventory_id_agent]];
+        if ($inventory_id_agent > 0) {
+            // Single agent selected.
+            if ($inventory_id_agent > 0 && isset($agents[$inventory_id_agent]) === true) {
+                $agents = [$inventory_id_agent => $agents[$inventory_id_agent]];
+            }
+
+            $agents_ids = array_keys($agents);
+        } else {
+            $agents_ids = [-1];
         }
 
-        $agents_ids = array_keys($agents);
         if (count($agents_ids) > 0) {
             $rows = inventory_get_datatable(
                 $agents_ids,
@@ -1068,7 +1106,9 @@ if ($inventory_module !== 'basic') {
                 $inventory_search_string,
                 $export,
                 false,
-                $order_by_agent
+                $order_by_agent,
+                $date_init,
+                $status_agent
             );
         }
 
@@ -1275,6 +1315,7 @@ if ($inventory_module !== 'basic') {
                             'no_sortable_columns'         => [],
                             'data_element'                => $data,
                             'searching'                   => true,
+                            'dom_elements'                => 'rtipB',
                             'order'                       => [
                                 'field'     => $columns[0],
                                 'direction' => 'asc',
@@ -1355,6 +1396,9 @@ if ($inventory_module !== 'basic') {
                 'id_agent'            => $id_agente,
                 'id_group'            => $inventory_id_group,
                 'search'              => $search,
+                'status'              => $status_agent,
+                'utimestamp'          => (($range !== 'none') ? $utimestamp : 0),
+                'period'              => $period,
             ],
             'zeroRecords'  => __('Agent info not found'),
             'emptyTable'   => __('Agent info not found'),

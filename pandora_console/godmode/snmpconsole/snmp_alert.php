@@ -786,7 +786,7 @@ if ($create_alert || $update_alert) {
             2,
             2,
             $custom_value,
-            'class="w100p" required="required"',
+            'class="w100p"',
             true
         )
     );
@@ -806,7 +806,7 @@ if ($create_alert || $update_alert) {
             255,
             true,
             false,
-            true
+            false
         )
     );
     echo '</td>';

@@ -1026,11 +1026,18 @@ if (is_ajax() === true) {
             return;
         }
 
-        $data = networkmap_refresh_holding_area($networkmap_id, $x, $y);
+        $filter = db_get_value('filter', 'tmap', 'id', $networkmap_id);
+        $filter = json_decode($filter, true);
 
-        if (!empty($data)) {
-            $return['correct'] = true;
-            $return['holding_area'] = $data;
+        if (isset($filter['empty_map']) === false
+            || (isset($filter['empty_map']) === true && $filter['empty_map'] !== 1)
+        ) {
+            $data = networkmap_refresh_holding_area($networkmap_id, $x, $y);
+
+            if (!empty($data)) {
+                $return['correct'] = true;
+                $return['holding_area'] = $data;
+            }
         }
 
         ob_end_clean();
@@ -1765,18 +1772,18 @@ if (is_ajax() === true) {
 
             if ($linked) {
                 if ($adopt) {
-                    $img = 'images/policies_brick.png';
+                    $img = 'images/policies_brick.svg';
                     $title = __('(Adopt) ').$name_policy;
                 } else {
-                    $img = 'images/policies_mc.png';
+                    $img = 'images/policy@svg.svg';
                         $title = $name_policy;
                 }
             } else {
                 if ($adopt) {
-                    $img = 'images/policies_not_brick.png';
+                    $img = 'images/policies_not_brick.svg';
                     $title = __('(Unlinked) (Adopt) ').$name_policy;
                 } else {
-                    $img = 'images/unlinkpolicy.png';
+                    $img = 'images/unlinkpolicy.svg';
                     $title = __('(Unlinked) ').$name_policy;
                 }
             }

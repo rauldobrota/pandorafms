@@ -45,25 +45,34 @@ if (!$policies || !$searchpolicies) {
         switch ($policie['status']) {
             case POLICY_UPDATED:
                 $status = html_print_image(
-                    'images/policies_ok.png',
+                    'images/policies_ok.svg',
                     true,
-                    ['title' => __('Policy updated')]
+                    [
+                        'title' => __('Policy updated'),
+                        'class' => 'main_menu_icon',
+                    ]
                 );
             break;
 
             case POLICY_PENDING_DATABASE:
                 $status = html_print_image(
-                    'images/policies_error_db.png',
+                    'images/policies_error_db.svg',
                     true,
-                    ['title' => __('Pending update policy only database')]
+                    [
+                        'title' => __('Pending update policy only database'),
+                        'class' => 'main_menu_icon',
+                    ]
                 );
             break;
 
             case POLICY_PENDING_ALL:
                 $status = html_print_image(
-                    'images/policies_error.png',
+                    'images/policies_error.svg',
                     true,
-                    ['title' => __('Pending update policy')]
+                    [
+                        'title' => __('Pending update policy'),
+                        'class' => 'main_menu_icon',
+                    ]
                 );
             break;
         }

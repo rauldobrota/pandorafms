@@ -36,7 +36,7 @@ use Encode::Locale;
 Encode::Locale::decode_argv;
 
 # version: define current version
-my $version = "7.0NG.776 Build 240325";
+my $version = "7.0NG.776 Build 240516";
 
 # save program name for logging
 my $progname = basename($0);
@@ -1228,11 +1228,11 @@ sub param_error ($$) {
 }
 
 ###############################################################################
-# Print a 'not exists' error and exit the program.
+# Print a 'does not exist' error and exit the program.
 ###############################################################################
 sub notexists_error ($$) {
-    print (STDERR "[ERROR] Error: The $_[0] '$_[1]' not exists.\n\n");
-    logger( $conf, "($progname) [ERROR] Error: The $_[0] '$_[1]' not exists.", 10);
+    print (STDERR "[ERROR] Error: The $_[0] '$_[1]' does not exist.\n\n");
+    logger( $conf, "($progname) [ERROR] Error: The $_[0] '$_[1]' does not exist.", 10);
     exit 1;
 }
 
@@ -3404,9 +3404,14 @@ sub cli_agent_update_custom_fields() {
 		}
 	}
 
+	if(!defined($new_value)) {
+		print_log "[ERROR] Error updating field '$field' no new value has been provided\n\n";
+		exit;
+	}
+
 	print_log "\n[INFO] Updating field '$field' in agent with ID '$id_agent'\n\n";
 
-	my $result = 	pandora_agent_update_custom_field ($dbh, $new_value, $custom_field, $id_agent);
+	my $result = 	pandora_update_agent_custom_field ($dbh, $new_value, $custom_field, $id_agent);
 
 	if($result == "0E0"){
 			print_log "[ERROR] Error updating field '$field'\n\n";
@@ -3428,6 +3433,8 @@ sub cli_agent_update() {
 
 	my @id_agents;
 	my $id_agent;
+
+	$new_value = safe_input($new_value);
 
 	if (defined $use_alias and $use_alias eq 'use_alias') {
 		@id_agents = get_agent_ids_from_alias($dbh,$agent_name);
@@ -3459,6 +3466,10 @@ sub cli_agent_update() {
 		$new_value = $id_parent;
 	}
 	elsif($field eq 'agent_name') {
+		if (!$new_value) {
+			print_log "[ERROR] Agent name cannot be empty\n\n";
+			exit;
+		}
 		my $agent_exists = get_agent_id($dbh,$new_value);
 		non_exist_check($agent_exists,'agent',$new_value);
 		$field = 'nombre';
@@ -4104,7 +4115,7 @@ sub cli_exec_from_file() {
 		elsif($c == 3) {
 			$file = $opt;
 			if(!(-e $file)) {
-				print_log "[ERROR] File '$file' not exists or cannot be opened\n\n";
+				print_log "[ERROR] File '$file' does not exist or cannot be opened\n\n";
 				exit;
 			}
 		}
@@ -4952,7 +4963,7 @@ sub cli_validate_alert() {
 	if (defined $use_alias and $use_alias eq 'use_alias') {
 		my @id_agents = get_agent_ids_from_alias($dbh,$agent_id);
 			if(!@id_agents) {
-				print (STDERR "[ERROR] Error: The agent '$agent_id' not exists.\n\n");
+				print (STDERR "[ERROR] Error: The agent '$agent_id' does not exist.\n\n");
 		}
 
 		foreach my $id (@id_agents) {
@@ -5761,8 +5772,8 @@ sub cli_get_agents() {
 	}
 	
 	if($os_name ne '') {
-		$id_os = get_os_id($dbh, $os_name);
-		exist_check($id_os,'operative system',$os_name);
+		$id_os = get_os_id($dbh, safe_input($os_name));
+		exist_check($id_os,'operative system', $os_name);
 		
 		$condition .= " AND id_os = $id_os ";
 	}
@@ -5946,7 +5957,7 @@ sub cli_get_bad_conf_files() {
 					$missings++;
 				}
 				elsif ($result  == -1) {
-					print_log "[WARN] File not exists /conf/".$file."\n\n";
+					print_log "[WARN] File does not exist /conf/".$file."\n\n";
 					$bad_files++;
 					last;
 				}
@@ -6155,7 +6166,7 @@ sub cli_create_group() {
 	$icon = '' unless defined($icon);
 	$description = '' unless defined($description);
 
-	$group_id = pandora_create_group ($group_name, $icon, $parent_group_id, 0, 0, '', 0, $description, $dbh);
+	$group_id = pandora_create_group ($group_name, $icon, $parent_group_id, 0, 0, '', 0, safe_input($description), $dbh);
 	
 	if($group_id == -1) {
 		print_log "[ERROR] A problem has been ocurred creating group '$group_name'\n\n";
@@ -6180,7 +6191,7 @@ sub cli_create_group() {
 				eval {
 					$group_id_nodo = db_insert ($dbh_metaconsole, 'id_grupo', 'INSERT INTO tgrupo (id_grupo, nombre, icon, parent, propagate, disabled,
 							custom_id, id_skin, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', $group_name, safe_input($group_name), $icon, 
-							$parent_group_id, 0, 0, '', 0, $description);
+							$parent_group_id, 0, 0, '', 0, safe_input($description));
 				};
 				if ($@) {
 					print_log "[ERROR] Problems with IDS and doesn't created group\n\n";
@@ -6282,15 +6293,15 @@ sub cli_update_group() {
 					
 				if(defined($icon)){
 					if(defined($description)){
-						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? , description=? WHERE id_grupo=?',$group_name,$parent_group_id,$icon,$description,$group_id);
+						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? , description=? WHERE id_grupo=?',safe_input($group_name),$parent_group_id,$icon, safe_input($description) ,$group_id);
 					}else{
-						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? WHERE id_grupo=?',$group_name,$parent_group_id,$icon,$group_id);
+						db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? , icon=? WHERE id_grupo=?',safe_input($group_name),$parent_group_id,$icon,$group_id);
 					}
 				}else{
-					db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? WHERE id_grupo=?',$group_name,$parent_group_id,$group_id);
+					db_do ($dbh,'UPDATE tgrupo SET nombre=? , parent=? WHERE id_grupo=?',safe_input($group_name),$parent_group_id,$group_id);
 				}
 			}else{
-				db_do ($dbh,'UPDATE tgrupo SET nombre=? WHERE id_grupo=?',$group_name,$group_id);
+				db_do ($dbh,'UPDATE tgrupo SET nombre=? WHERE id_grupo=?',safe_input($group_name),$group_id);
 			}
 			print_log "[INFO] Updated group '$group_id'\n\n";
 		}
@@ -7910,7 +7921,7 @@ sub pandora_manage_main ($$$) {
 					'values' => [
 						'unknown','alert_fired','alert_recovered','alert_ceased',
 						'alert_manual_validation','recon_host_detected','system',
-						'error','new_agent','going_up_warning','going_up_critical','going_down_warning',
+						'error','new_agent','going_up_warning','going_up_critical','going_down_warning','going_unknown',
 						'going_down_normal','going_down_critical','going_up_normal','configuration_change'
 					]
 				},

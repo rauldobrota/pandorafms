@@ -48,16 +48,17 @@ if ($check_web) {
     if ($status_webserver === '1') {
         $name = array_keys(servers_get_names())[0];
         $id_group = get_parameter('id_group', 4);
+        $agent_name = get_parameter('module_name', 'Web monitoring');
 
         $array_other['data'] = [
-            'Web monitoring',
+            $agent_name,
             '',
             2,
             $id_group,
             0,
             30,
             30,
-            9,
+            11,
             $name,
             0,
             0,
@@ -144,6 +145,11 @@ if ($create_net_scan) {
 }
 
 if ($create_mail_alert) {
+    if ((bool) check_acl($config['id_user'], 0, 'LM') === false) {
+        ui_print_error_message(__('Unauthorized'));
+        return;
+    }
+
     include_once '../functions_alerts.php';
     $id_action = db_get_row_filter('talert_actions', ['name' => 'Email to '.$config['id_user']], 'id')['id'];
     if (!$id_action) {

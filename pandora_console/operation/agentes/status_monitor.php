@@ -1389,7 +1389,15 @@ if ($autosearch) {
         if ($result === false) {
             $result = [];
         } else {
-            $tablePagination = ui_pagination($count, false, $offset, 0, true, 'offset', false);
+            $tablePagination = ui_pagination(
+                $count,
+                'index.php?sec='.$section.'&sec2=operation/agentes/status_monitor&refr='.$refr.'&ag_group='.$ag_group.'&ag_freestring='.$ag_freestring.'&module_option='.$module_option.'&ag_modulename='.$ag_modulename.'&moduletype='.$moduletype.'&datatype='.$datatype.'&status='.$status.'&sort_field='.$sortField.'&sort='.$sort.'&pure='.$config['pure'].$ag_custom_fields_params,
+                $offset,
+                0,
+                true,
+                'offset',
+                false
+            );
         }
     } else {
         // For each server defined and not disabled.
@@ -1460,7 +1468,15 @@ if ($autosearch) {
                 $show_count = true;
             }
 
-            $tablePagination = ui_pagination($count_modules, false, $offset, 0, true, 'offset', $show_count);
+            $tablePagination = ui_pagination(
+                $count_modules,
+                'index.php?sec='.$section.'&sec2=operation/agentes/status_monitor&refr='.$refr.'&ag_group='.$ag_group.'&ag_freestring='.$ag_freestring.'&module_option='.$module_option.'&ag_modulename='.$ag_modulename.'&moduletype='.$moduletype.'&datatype='.$datatype.'&status='.$status.'&sort_field='.$sortField.'&sort='.$sort.'&pure='.$config['pure'].$ag_custom_fields_params,
+                $offset,
+                0,
+                true,
+                'offset',
+                $show_count
+            );
         }
 
         // Get number of elements of the pagination.
@@ -1613,7 +1629,7 @@ if (empty($result) === false) {
         $table->align[11] = 'left';
     }
 
-    if (check_acl($config['id_user'], 0, 'AR')) {
+    if (check_acl($config['id_user'], 0, 'AW')) {
         $actions_list = true;
         $table->head[12] = __('Actions');
         $table->align[12] = 'left';
@@ -1682,24 +1698,31 @@ if (empty($result) === false) {
 
                     if ($linked) {
                         if ($adopt) {
-                            $img = 'images/policies_brick.png';
+                            $img = 'images/policies_brick.svg';
                             $title = __('(Adopt) ').$policyInfo['name_policy'];
                         } else {
-                            $img = 'images/policies_mc.png';
+                            $img = 'images/policy@svg.svg';
                             $title = $policyInfo['name_policy'];
                         }
                     } else {
                         if ($adopt) {
-                            $img = 'images/policies_not_brick.png';
+                            $img = 'images/policies_not_brick.svg';
                             $title = __('(Unlinked) (Adopt) ').$policyInfo['name_policy'];
                         } else {
-                            $img = 'images/unlinkpolicy.png';
+                            $img = 'images/unlinkpolicy.svg';
                             $title = __('(Unlinked) ').$policyInfo['name_policy'];
                         }
                     }
 
                     if (is_metaconsole()) {
-                        $data[0] = '<a href="?sec=gmodules&sec2=advanced/policymanager&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
+                        $data[0] = '<a href="?sec=gmodules&sec2=advanced/policymanager&id='.$policyInfo['id_policy'].'">'.html_print_image(
+                            $img,
+                            true,
+                            [
+                                'title' => $title,
+                                'class' => 'main_menu_icon',
+                            ]
+                        ).'</a>';
                     } else {
                         $data[0] = '<a href="?sec=gmodules&sec2=enterprise/godmode/policies/policies&id='.$policyInfo['id_policy'].'">'.html_print_image($img, true, ['title' => $title]).'</a>';
                     }
@@ -1714,26 +1737,8 @@ if (empty($result) === false) {
         if (in_array('agent', $show_fields) || is_metaconsole()) {
             $agent_alias = !empty($row['agent_alias']) ? $row['agent_alias'] : $row['agent_name'];
 
-            // TODO: Calculate hash access before to use it more simply like other sections. I.E. Events view
             if (is_metaconsole() === true) {
-                echo "<form id='agent-redirection-".$inc_id."' method='POST' target='_blank' action='".$row['server_url'].'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$row['id_agent']."'>";
-                html_print_input_hidden(
-                    'loginhash',
-                    'auto',
-                    false
-                );
-                html_print_input_hidden(
-                    'loginhash_data',
-                    $row['hashdata'],
-                    false
-                );
-                html_print_input_hidden(
-                    'loginhash_user',
-                    str_rot13($row['user']),
-                    false
-                );
-                echo '</form>';
-                $agent_link = "<a target='_blank' href='".$row['server_url'].'index.php?sec=estado&sec2=operation/agentes/ver_agente&loginhash=auto&loginhash_data='.$row['hashdata'].'&loginhash_user='.str_rot13($row['user']).'&id_agente='.$row['id_agent']."'>";
+                $agent_link = '<a target="_blank" href="#" onclick="redirectNode(\''.$row['server_url'].'index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente='.$row['id_agent'].'\',\'_self\')">';
 
                 $agent_alias = ui_print_truncate_text(
                     $agent_alias,
@@ -1766,18 +1771,20 @@ if (empty($result) === false) {
                         $show_edit_icon = false;
                     }
 
-                    $url_edit_module = $row['server_url'].'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$row['id_agent'].'&'.'tab=module&'.'id_agent_module='.$row['id_agente_modulo'].'&'.'edit_module=1'.'&loginhash=auto&loginhash_data='.$row['hashdata'].'&loginhash_user='.str_rot13($row['user']);
+                    $url_edit_module = $row['server_url'].'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&id_agente='.$row['id_agent'].'&'.'tab=module&'.'id_agent_module='.$row['id_agente_modulo'].'&'.'edit_module=1';
                 } else {
                     $url_edit_module = 'index.php?'.'sec=gagente&'.'sec2=godmode/agentes/configurar_agente&'.'id_agente='.$row['id_agent'].'&'.'tab=module&'.'id_agent_module='.$row['id_agente_modulo'].'&'.'edit_module=1';
                 }
             }
         }
 
+        $url_edit_module = ($url_edit_module ?? '#');
         if (in_array('module_name', $show_fields) === true || is_metaconsole() === true) {
             $data[3] = html_print_anchor(
                 [
                     'target'  => '_blank',
-                    'href'    => ($url_edit_module ?? '#'),
+                    'href'    => '#',
+                    'onClick' => ((is_metaconsole() === true) ? 'redirectNode(\''.$url_edit_module.'\',\'_self\')' : ''),
                     'content' => ui_print_truncate_text($row['module_name'], 'module_small', false, true, true),
                 ],
                 true
@@ -2263,46 +2270,15 @@ if (empty($result) === false) {
         }
 
         if (check_acl_one_of_groups($config['id_user'], $agent_groups, 'AW')) {
-            $table->cellclass[][2] = 'action_buttons';
+            $table->cellclass[][12] = 'table_action_buttons';
 
             if (is_metaconsole() === true) {
-                echo "<form id='agent-edit-redirection-".$inc_id."' target='_blank' method='POST' action='".$row['server_url']."index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&tab=module&edit_module=1'>";
-                html_print_input_hidden(
-                    'id_agente',
-                    $row['id_agent'],
-                    false
-                );
-                html_print_input_hidden(
-                    'id_agent_module',
-                    $row['id_agente_modulo'],
-                    false
-                );
-                html_print_input_hidden(
-                    'loginhash',
-                    'auto',
-                    false
-                );
-                html_print_input_hidden(
-                    'loginhash_data',
-                    $row['hashdata'],
-                    false
-                );
-                html_print_input_hidden(
-                    'loginhash_user',
-                    str_rot13($row['user']),
-                    false
-                );
-
-                echo '</form>';
-
                 $url_edit_module = $row['server_url'];
                 $url_edit_module .= 'index.php?sec=gagente&sec2=godmode/agentes/configurar_agente&';
                 $url_edit_module .= '&id_agente='.$row['id_agent'];
                 $url_edit_module .= '&tab=module&id_agent_module='.$row['id_agente_modulo'].'&edit_module=1';
-                $url_edit_module .= '&loginhash=auto&loginhash_data='.$row['hashdata'];
-                $url_edit_module .= '&loginhash_user='.str_rot13($row['user']);
 
-                $agent_link = "<a href='".$url_edit_module."'>";
+                $agent_link = '<a href="#" onclick="redirectNode(\''.$url_edit_module.'\',\'_self\')">';
 
                 $agent_alias = ui_print_truncate_text(
                     $agent_alias,
@@ -2377,10 +2353,22 @@ if (empty($result) === false) {
             $show_count = true;
         }
 
-        $tablePagination = ui_pagination($count_modules, false, $offset, 0, true, 'offset', $show_count);
+        $tablePagination = ui_pagination(
+            $count_modules,
+            'index.php?sec='.$section.'&sec2=operation/agentes/status_monitor&refr='.$refr.'&ag_group='.$ag_group.'&ag_freestring='.$ag_freestring.'&module_option='.$module_option.'&ag_modulename='.$ag_modulename.'&moduletype='.$moduletype.'&datatype='.$datatype.'&status='.$status.'&sort_field='.$sortField.'&sort='.$sort.'&pure='.$config['pure'].$ag_custom_fields_params,
+            $offset,
+            0,
+            true,
+            'offset',
+            $show_count
+        );
     }
 } else {
-    ui_print_info_message(['no_close' => true, 'message' => __('Please apply a filter to display the data')]);
+    if (get_parameter('ag_group', false) !== false) {
+        ui_print_info_message(['no_close' => true, 'message' => __('There are no monitors with these features or status')]);
+    } else {
+        ui_print_info_message(['no_close' => true, 'message' => __('Please apply a filter to display the data')]);
+    }
 }
 
 if (isset($tablePagination) === false) {

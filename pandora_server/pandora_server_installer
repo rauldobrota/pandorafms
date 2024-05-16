@@ -9,7 +9,7 @@
 # **********************************************************************
 
 PI_VERSION="7.0NG.776"
-PI_BUILD="240325"
+PI_BUILD="240516"
 
 MODE=$1
 if [ $# -gt 1 ]; then
@@ -263,11 +263,9 @@ install () {
 			echo "  Recommended: p5-DBI p5-NetAddr-IP p5-XML-Simple p5-XML-Twig p5-HTML-Parser p5-DBD-mysql p5-Socket6 p5-IO-Socket-INET6 p5-JSON"
 			echo "  Optional: nmap"
 			echo " "
-			echo "  And install Geo::IP manually."
-			echo " "
 			echo "To get them from source through CPAN do"
 			echo " "
-			echo "	$ cpan Time::Local DBI Socket6 XML::Simple XML::Twig IO::Socket Time::HiRes NetAddr::IP HTML::Entities IO::Socket::INET6 JSON Geo::IP"
+			echo "	$ cpan Time::Local DBI Socket6 XML::Simple XML::Twig IO::Socket Time::HiRes NetAddr::IP HTML::Entities IO::Socket::INET6 JSON"
 			echo " "
 			rm output
 			exit 1
@@ -346,6 +344,8 @@ install () {
 	chmod 2770 $DESTDIR$PANDORA_SPOOL/data_in/commands
 	mkdir $DESTDIR$PANDORA_SPOOL/data_in/discovery 2> /dev/null
 	chmod 2770 $DESTDIR$PANDORA_SPOOL/data_in/discovery
+	mkdir $DESTDIR$PANDORA_SPOOL/data_in/agent 2> /dev/null
+	chmod 2770 $DESTDIR$PANDORA_SPOOL/data_in/agent
 	mkdir -p $DESTDIR$PANDORA_LOG 2> /dev/null	
 	chown -R pandora:apache $DESTDIR$PANDORA_LOG 2> /dev/null
 	chmod 2774 $DESTDIR$PANDORA_LOG 2> /dev/null
@@ -437,6 +437,28 @@ install () {
 		then
 			echo cp $TENTACLE_CFG_FILE_DIST $DESTDIR$TENTACLE_CFG_DIR
 			cp $TENTACLE_CFG_FILE_DIST $DESTDIR$TENTACLE_CFG_DIR
+
+			# Add agents deployment filters if not added yet
+			filter_changed=0
+			tentacle_filters=$(grep -E '^\s*filters\s*.*$' "$DESTDIR$TENTACLE_CFG_FILE" | sed 's/\\/\\\\/g')
+			if ! [[ $tentacle_filters =~ \.\*\\\\\.agent_setup\\\\\.exe:agent ]]
+			then
+				sed -i -e "s/$tentacle_filters/$tentacle_filters;.*\\\\.agent_setup\\\\.exe:agent/" "$DESTDIR$TENTACLE_CFG_FILE"
+				filter_changed=1
+			fi
+			tentacle_filters=$(grep -E '^\s*filters\s*.*$' "$DESTDIR$TENTACLE_CFG_FILE" | sed 's/\\/\\\\/g')
+			if ! [[ $tentacle_filters =~ \.\*\\\\\.agent_setup\\\\\.tar\\\\\.gz:agent ]]
+			then
+				sed -i -e "s/$tentacle_filters/$tentacle_filters;.*\\\\.agent_setup\\\\.tar\\\\.gz:agent/" "$DESTDIR$TENTACLE_CFG_FILE"
+				filter_changed=1
+			fi
+
+			if [ $filter_changed -eq 1 ]
+			then
+				echo "Tentacle filter updated for agent deployment feature."
+				echo "Please restart 'tentacle_serverd' service."
+			fi
+
 		else
 			echo cp $TENTACLE_CFG_FILE_DIST $DESTDIR$TENTACLE_CFG_FILE
 			cp $TENTACLE_CFG_FILE_DIST $DESTDIR$TENTACLE_CFG_FILE

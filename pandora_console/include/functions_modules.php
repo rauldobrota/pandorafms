@@ -484,10 +484,13 @@ function modules_delete_agent_module($id_agent_module)
 
     db_process_sql_delete('tgraph_source', $where);
     db_process_sql_delete('treport_content', $where);
-    db_process_sql_delete(
+    // Disabled delete events when module is deleted.
+    /*
+        db_process_sql_delete(
         'tevento',
         ['id_agentmodule' => $id_agent_module]
-    );
+        );
+    */
     $where = ['id_agente_modulo' => $id_agent_module];
     db_process_sql_delete('tlayout_data', $where);
     db_process_sql_delete('tagente_estado', $where);
@@ -1145,12 +1148,12 @@ function modules_get_table_data(?int $id_agent_module, ?int $id_type)
 }
 
 
-function modules_get_raw_data($id_agent_module, $date_init, $date_end)
+function modules_get_raw_data($id_agent_module, $date_init, $date_end, $search_in_history_db=true)
 {
     $table = modules_get_table_data($id_agent_module, null);
 
     $datelimit = ($date_init - $date_end);
-    $search_in_history_db = db_search_in_history_db($datelimit);
+    $search_in_history_db = (($search_in_history_db === true) ? db_search_in_history_db($datelimit) : false);
 
     $data = db_get_all_rows_sql(
         '

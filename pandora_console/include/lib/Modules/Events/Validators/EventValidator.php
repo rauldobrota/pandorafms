@@ -13,11 +13,13 @@ class EventValidator extends Validator
     public const VALIDSTATUS = 'ValidStatus';
     public const VALIDTYPE = 'ValidType';
 
+
     protected function isValidSeverity($section): bool
     {
         $result = EventSeverityEnum::get(strtoupper($section));
         return empty($result) === true ? false : true;
     }
+
 
     protected function isValidStatus($status): bool
     {
@@ -25,9 +27,12 @@ class EventValidator extends Validator
         return empty($result) === true ? false : true;
     }
 
+
     protected function isValidType($type): bool
     {
         $result = EventTypeEnum::get(strtoupper($type));
         return empty($result) === true ? false : true;
     }
+
+
 }

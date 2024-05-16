@@ -148,7 +148,6 @@ $table_behaviour->data[$row][] = html_print_label_input_block(
     __('Display text when proc modules have state critical'),
     html_print_input_text('render_proc_fail', $config['render_proc_fail'], '', 25, 25, true)
 );
-$row++;
 
 if (enterprise_installed() === true) {
     $row++;
@@ -161,6 +160,29 @@ if (enterprise_installed() === true) {
         html_print_input_text('service_item_padding_size', $config['service_item_padding_size'], '', 5, 5, true, false, false, 'onChange="change_servicetree_nodes_padding()"')
     );
 }
+
+$row++;
+// Tabs menus.
+$tabs_menu_options = [];
+$tabs_menu_options['both'] = __('Show both (tabs and menu)');
+$tabs_menu_options['icons'] = __('Show only icons');
+$tabs_menu_options['menu'] = __('Show only menu');
+$table_behaviour->data[$row][] = html_print_label_input_block(
+    __('Tabs menu'),
+    html_print_select(
+        $tabs_menu_options,
+        'tabs_menu',
+        $config['tabs_menu'],
+        '',
+        '',
+        '',
+        true,
+        false,
+        false,
+        '',
+        false
+    )
+);
 
 
 // ----------------------------------------------------------------------
@@ -575,7 +597,7 @@ if (enterprise_installed() === true) {
                     $config['custom_splash_login'],
                     '',
                     __('Default'),
-                    'default',
+                    'default.png',
                     true,
                     false,
                     true,
@@ -1279,10 +1301,9 @@ $table_chars->data[$row][] = html_print_label_input_block(
             'content' => html_print_div(
                 [
                     'class'   => '',
-                    'content' => __('Area').'&nbsp;'.html_print_radio_button(
+                    'content' => __('Area').'&nbsp;'.html_print_checkbox_switch(
                         'type_module_charts',
                         'area',
-                        '',
                         $config['type_module_charts'] == 'area',
                         true
                     ),
@@ -1291,10 +1312,9 @@ $table_chars->data[$row][] = html_print_label_input_block(
             ).html_print_div(
                 [
                     'class'   => '',
-                    'content' => __('Line').'&nbsp;'.html_print_radio_button(
+                    'content' => __('Line').'&nbsp;'.html_print_checkbox_switch(
                         'type_module_charts',
                         'line',
-                        '',
                         $config['type_module_charts'] != 'area',
                         true
                     ),
@@ -1439,7 +1459,7 @@ $table_vc->data[$row][] = html_print_label_input_block(
 
 $table_vc->data[$row][] = html_print_label_input_block(
     __('Number of favorite visual consoles to show in the menu'),
-    "<input ' value=".$config['vc_menu_items']." size='5' name='vc_menu_items' min='0' max='25'>"
+    '<input value="'.$config['vc_menu_items'].'" size="5" name="vc_menu_items" min="0" max="25">'
 );
 $row++;
 
@@ -1456,6 +1476,12 @@ $table_vc->data[$row][] = html_print_label_input_block(
 );
 
 $table_vc->data[$row][] = html_print_label_input_block(
+    __('Visual console default text margin (em)'),
+    '<input value="'.$config['vc_text_margin'].'" name="vc_text_margin" min="0" max="100" step="0.1">'
+);
+$row++;
+
+$table_vc->data[$row][] = html_print_label_input_block(
     __('Lock screen orientation when viewing on mobile devices'),
     html_print_checkbox_switch(
         'mobile_view_orientation_vc',
@@ -1464,7 +1490,6 @@ $table_vc->data[$row][] = html_print_label_input_block(
         true
     )
 );
-$row++;
 
 $table_vc->data[$row][] = html_print_label_input_block(
     __('Display item frame on alert triggered').ui_print_help_tip(__('It displays an orange box around items that have triggered an alert.'), true),

@@ -182,8 +182,10 @@ class WelcomeWindow extends Wizard
                     })
                 }
             },
+            closeOnEscape: true,
             onload: () => {
                 $(document).ready(function () {
+                    $(".ui-dialog-titlebar-close").hide();
                     var buttonpane = $("div[aria-describedby='welcome_modal_window'] .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix");
                     $(buttonpane).append(`
                     <div class="welcome-wizard-buttons">
@@ -376,6 +378,8 @@ class WelcomeWindow extends Wizard
             'class'    => 'modal',
         ];
 
+        $output = '';
+
         if (check_acl($config['id_user'], 0, 'PM')) {
             $flag_um = false;
             $flag_cm = false;
@@ -470,7 +474,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_update_manager_class) === false) ? $btn_update_manager_class : 'invisible_important',
@@ -498,7 +502,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_configure_mail_class) === false) ? $btn_configure_mail_class : 'invisible_important',
@@ -526,7 +530,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_servers_up_class) === false) ? $btn_servers_up_class : 'invisible_important',
@@ -554,7 +558,7 @@ class WelcomeWindow extends Wizard
                         ],
                         [
                             'arguments' => [
-                                'label'      => __('Cancel'),
+                                'label'      => __('Change'),
                                 'type'       => 'button',
                                 'attributes' => [
                                     'class' => (empty($btn_license_valid_class) === false) ? $btn_license_valid_class : 'invisible_important',
@@ -588,6 +592,18 @@ class WelcomeWindow extends Wizard
             if ($flag_um === false || $flag_cm === false || $flag_su === false || $flag_lv === false) {
                 $flag_task = true;
             }
+        } else {
+            $output .= html_print_div(
+                [
+                    'class'   => 'flex-column-start welcome-message-no-pm',
+                    'content' => '
+                    <h2>'.__('Hi!').'</h2>
+                    <p class="mrgn_btn_5px">'.__('It seems you are new to Pandora FMS.').'<br />
+                    '.__('If you want to watch videos on how to use Pandora FMS, you can visit our ').'<a href="https://www.youtube.com/@PandoraFMS" target="_blank"><b>'.__('YouTube channel.').'</b></a></p>
+                    <p class="mrgn_top_5px">'.__('Are you familiar with ').'<a href="https://pandorafms.com/es/producto/elearning/" target="_blank"><b>'.__('our eLearning system?').'</b></a>'.__(' It\'s completely free for PAO (Operation) and PAT (Administration) courses. Learn how to use Pandora FMS at your own pace.').'</p>',
+                ],
+                true
+            );
         }
 
         // Task to do.
@@ -608,12 +624,20 @@ class WelcomeWindow extends Wizard
             ],
         ];
 
-        $fields['load_demo_data'] = __('Load demo data');
-        $fields['wizard_agent'] = __('Agent installation wizard');
-        $fields['check_web'] = __('Create WEB monitoring');
-        $fields['check_connectivity'] = __('Create network monitoring');
-        $fields['check_net'] = __('Discover my network');
-        $fields['check_mail_alert'] = __('Create email alert');
+        if (users_is_admin() === true) {
+            $fields['load_demo_data'] = __('Load demo data');
+        }
+
+        if ((bool) check_acl($config['id_user'], 0, 'AW') === true) {
+            $fields['wizard_agent'] = __('Agent installation wizard');
+            $fields['check_web'] = __('Create WEB monitoring');
+            $fields['check_connectivity'] = __('Create network monitoring');
+            $fields['check_net'] = __('Discover my network');
+        }
+
+        if ((bool) check_acl($config['id_user'], 0, 'LM') === true) {
+            $fields['check_mail_alert'] = __('Create email alert');
+        }
 
         $inputs[] = [
             'wrapper'       => 'div',
@@ -647,10 +671,16 @@ class WelcomeWindow extends Wizard
             ],
         ];
 
-        $output = $this->printForm(
+        $output = html_print_div(
             [
-                'form'   => $form,
-                'inputs' => $inputs,
+                'content' => $output.$this->printForm(
+                    [
+                        'form'   => $form,
+                        'inputs' => $inputs,
+                    ],
+                    true
+                ),
+                'class'   => 'column-left w50p',
             ],
             true
         );

@@ -12,7 +12,11 @@
 }
 
 .is-maintenance :nth-child(1) {
-  display: none;
+  display: none !important;
+}
+
+.is-maintenance .vc-item-nl-arrow {
+  display: none !important;
 }
 
 .visual-console-item {
@@ -440,6 +444,10 @@ li#li-image-item label img {
 .discovery.modal * {
   font-weight: normal;
   color: #343434;
+}
+
+.discovery.modal .tox-tinymce * {
+  color: var(--text-color);
 }
 
 .discovery.modal select {

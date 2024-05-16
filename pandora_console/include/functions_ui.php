@@ -301,8 +301,7 @@ function ui_print_message($message, $class='', $attributes='', $return=false, $t
 
         if (empty($message['no_close']) === false) {
             // Workaround.
-            $no_close_bool = false;
-            // $no_close_bool = (bool) $message['no_close'];
+            $no_close_bool = (bool) $message['no_close'];
         }
 
         if (empty($message['force_style']) === false) {
@@ -436,7 +435,7 @@ function ui_print_message($message, $class='', $attributes='', $return=false, $t
         $_SESSION['info_box_count']++;
     }
 
-    $position = (20 + ((int) $_SESSION['info_box_count'] * 100));
+    $position = (20 + (int) $_SESSION['info_box_count'] + 120);
 
     $output = html_print_div(
         [
@@ -1165,16 +1164,10 @@ function ui_format_alert_row(
     global $config;
 
     if (!isset($alert['server_data'])) {
-        $server_name = '';
         $server_id = '';
-        $url_hash = '';
-        $console_url = '';
     } else {
         $server_data = $alert['server_data'];
-        $server_name = $server_data['server_name'];
         $server_id = $server_data['id'];
-        $console_url = $server_data['server_url'].'/';
-        $url_hash = metaconsole_get_servers_url_hash($server_data);
     }
 
     $actionText = '';
@@ -1337,7 +1330,7 @@ function ui_format_alert_row(
         } else {
             $module_linked = policies_is_module_linked($alert['id_agent_module']);
             if ($module_linked === '0') {
-                $img = 'images/unlinkpolicy.png';
+                $img = 'images/unlinkpolicy.svg';
             } else {
                 $img = 'images/policy@svg.svg';
             }
@@ -1445,13 +1438,13 @@ function ui_format_alert_row(
         if (is_metaconsole() === true) {
             // Do not show link if user cannot access node
             if ((bool) can_user_access_node() === true) {
-                $hashdata = metaconsole_get_server_hashdata($server);
-                $url = $server['server_url'].'/index.php?sec=estado&sec2=operation/agentes/ver_agente&amp;loginhash=auto&loginhash_data='.$hashdata.'&loginhash_user='.str_rot13($config['id_user']).'&id_agente='.$agente['id_agente'];
+                $url = $server['server_url'].'/index.php?sec=estado&sec2=operation/agentes/ver_agente&amp;&id_agente='.$agente['id_agente'];
                 $data[$index['agent_name']] .= html_print_anchor(
                     [
-                        'href'    => $url,
+                        'href'    => '#',
                         'content' => '<span class="bolder" title="'.$agente['nombre'].'">'.$agente['alias'].'</span>',
                         'target'  => '_blank',
+                        'onClick' => 'redirectNode(\''.$url.'\');',
                     ],
                     true
                 );
@@ -1502,14 +1495,41 @@ function ui_format_alert_row(
         metaconsole_restore_db();
     }
 
-    if (empty($actions) === false || $actionDefault != '') {
-        $actionText = '<div><ul class="action_list">';
+    $actionText = '';
+
+    if ($actionDefault !== '' && $actionDefault !== false) {
+        $actionDefault_name = db_get_sql(
+            sprintf(
+                'SELECT name FROM talert_actions WHERE id = %d',
+                $actionDefault
+            )
+        );
         foreach ($actions as $action) {
-            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li>'.$action['name'];
+            if ($actionDefault_name === $action['name']) {
+                $hide_actionDefault = true;
+            } else {
+                $hide_actionDefault = false;
+            }
+        }
+
+        if ($hide_actionDefault !== true) {
+            $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
+        }
+    }
+
+    if (empty($actions) === false || $actionDefault != '') {
+        $actionText .= '<div><ul class="action_list">';
+        foreach ($actions as $action) {
+            $actionText .= '<div class="mrgn_btn_5px" ><span class="action_name"><li class="">';
+            $actionText .= '<div class="flex_center mrgn_top-22px">';
+            $actionText .= '<div class="mrgn_lft_0px_imp">';
+            $actionText .= $action['name'];
             if ($action['fires_min'] != $action['fires_max']) {
                 $actionText .= ' ('.$action['fires_min'].' / '.$action['fires_max'].')';
             }
 
+            $actionText .= '</div>';
+            $actionText .= '<div class="flex_center table_action_buttons mrgn_lft_0px_imp">';
             $actionText .= ui_print_help_tip(__('The default actions will be executed every time that the alert is fired and no other action is executed'), true);
             // Is possible manage actions if have LW permissions in the agent group of the alert module.
             if (is_metaconsole() === true) {
@@ -1520,7 +1540,7 @@ function ui_format_alert_row(
                         [
                             'alt'   => __('Delete action'),
                             'title' => __('Delete action'),
-                            'class' => 'main_menu_icon invert_filter vertical_baseline',
+                            'class' => 'main_menu_icon invert_filter vertical_baseline action_button_hidden',
                         ]
                     ).'</a>';
                 }
@@ -1534,7 +1554,7 @@ function ui_format_alert_row(
                         true,
                         [
                             'title'   => __('Update action'),
-                            'class'   => 'main_menu_icon invert_filter',
+                            'class'   => 'main_menu_icon invert_filter action_button_hidden',
                             'onclick' => 'show_display_update_action(\''.$action['original_id'].'\',\''.$alert['id'].'\',\''.$alert['id_agent_module'].'\',\''.$action['original_id'].'\',\''.$alert['agent_name'].'\')',
                         ]
                     );
@@ -1542,32 +1562,15 @@ function ui_format_alert_row(
                 }
             }
 
+            $actionText .= '</div>';
+            $actionText .= '</div>';
+
             $actionText .= '<div id="update_action-div-'.$alert['id'].'" class="invisible">';
             $actionText .= '</div>';
             $actionText .= '</li></span></div>';
         }
 
         $actionText .= '</ul></div>';
-
-        if ($actionDefault !== '' && $actionDefault !== false) {
-            $actionDefault_name = db_get_sql(
-                sprintf(
-                    'SELECT name FROM talert_actions WHERE id = %d',
-                    $actionDefault
-                )
-            );
-            foreach ($actions as $action) {
-                if ($actionDefault_name === $action['name']) {
-                    $hide_actionDefault = true;
-                } else {
-                    $hide_actionDefault = false;
-                }
-            }
-
-            if ($hide_actionDefault !== true) {
-                $actionText .= $actionDefault_name.' <i>('.__('Default').')</i>';
-            }
-        }
     }
 
     $data[$index['action']] = $actionText;
@@ -2945,14 +2948,14 @@ function ui_print_help_tip(
     $text_title = (strlen($text) >= 60) ? substr($text, 0, 60).'...' : $text;
 
     $id = random_int(1, 99999);
-    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" >';
-    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.$text.'</span></div>';
+    $output = '<div id="div_tip_'.$id.'" class="tip" style="'.$style.'" onclick="open_tip('.$id.')">';
+    $output .= '<div id="tip_dialog_'.$id.'" class="invisible margin-15" data-title="'.__('Help').'"><span class="font_13px">'.io_safe_output($text).'</span></div>';
     $output .= html_print_image(
         $img,
         true,
         [
-            'title' => $text_title,
-            'class' => $blink === true ? 'blink' : '',
+            'title' => io_safe_output($text_title),
+            'class' => ($blink === true) ? 'blink' : '',
             'style' => 'width: 16px; height: 16px;',
         ],
         false,
@@ -3536,7 +3539,7 @@ function ui_print_status_sets(
     }
 
     if (empty($title) === false) {
-        $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
+        // $options['title'] = (empty($extra_info) === true) ? $title : $title.'&#10'.$extra_info;
         $options['data-title'] = (empty($extra_info) === true) ? $title : $title.'<br>'.$extra_info;
         $options['data-use_title_for_force_title'] = 1;
         if (isset($options['class']) === true) {
@@ -4273,6 +4276,12 @@ function ui_print_datatable(array $parameters)
     $js = '<script>';
     $js .= 'var dt = '.$json_data.';';
     $js .= 'var config = '.$json_config.';';
+    if (isset($parameters['data_element']) === true) {
+        $js .= 'var preload_elements = true;';
+    } else {
+        $js .= 'var preload_elements = false;';
+    }
+
     $js .= '</script>';
 
     $js .= '<script>';
@@ -4630,10 +4639,12 @@ function ui_toggle(
         $imageRotate = $rotateB;
         $style .= 'height:0;position:absolute;';
         $original = $img_b;
+        $data_close = 'true';
     } else {
         $imageRotate = $rotateA;
         $style .= 'height:auto;position:relative;';
         $original = $img_a;
+        $data_close = 'false';
     }
 
     $header_class = '';
@@ -4652,7 +4663,7 @@ function ui_toggle(
 
     // Link to toggle.
     $output = '<div class="'.$main_class.'" id="'.$id.'" '.$toggl_attr.'>';
-    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'">';
+    $output .= '<div class="'.$header_class.'" '.(($disableToggle === false) ? 'style="cursor: pointer;" ' : '').' id="tgl_ctrl_'.$uniqid.'" data-close="'.$data_close.'">';
     if ($reverseImg === false) {
         if ($switch === true) {
             if (empty($switch_name) === true) {
@@ -4767,6 +4778,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', '".$position_div."');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateA."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', true);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'false');\n";
         $output .= $class_table;
         $output .= "			    }\n";
         $output .= "			    else {\n";
@@ -4775,6 +4787,7 @@ function ui_toggle(
         $output .= "				    $('#tgl_div_".$uniqid."').css('position', 'absolute');\n";
         $output .= "				    $('#image_".$uniqid."').attr('style', 'rotate: ".$rotateB."');\n";
         $output .= "				    $('#checkbox-".$switch_name."').prop('checked', false);\n";
+        $output .= "				    $('#tgl_ctrl_".$uniqid."').attr('data-close', 'true');\n";
         $output .= "			    }\n";
         $output .= "		    });\n";
         $output .= "	    }\n";
@@ -5407,7 +5420,7 @@ function ui_print_page_header(
 
     if (is_metaconsole() === true) {
         if ($help != '') {
-            $buffer .= "<div class='head_help'>".ui_print_help_icon($help, true, '', 'images/help_30.png').'</div>';
+            $buffer .= "<div class='head_help rounded-icon-header'>".ui_print_help_icon($help, true, '', 'images/help@header.svg').'</div>';
         }
     }
 
@@ -5419,6 +5432,19 @@ function ui_print_page_header(
 
     if (is_array($options)) {
         $buffer .= '<div id="menu_tab"><ul class="mn">';
+
+        $menu_dots_class = 'menu-dots-hide';
+        if (isset($dots) === true && $dots !== '' && $config['tabs_menu'] !== 'icons') {
+            $menu_dots_class = 'menu-dots-show';
+        }
+
+        if (isset($dots) === true && $dots !== '') {
+            $buffer .= '<li class="nomn menu-dots-li '.$menu_dots_class.'">';
+            $buffer .= '<div id="menu_dots">'.$dots.'</div>';
+            $buffer .= '</li>';
+        }
+
+        $tabs_class = '';
         foreach ($options as $key => $option) {
             if (empty($option)) {
                 continue;
@@ -5428,6 +5454,13 @@ function ui_print_page_header(
                 // $buffer .= '</li>';
             } else {
                 if (is_array($option)) {
+                    if ($config['tabs_menu'] === 'menu' && (isset($dots) === true && $dots !== '')) {
+                        $tabs_class = 'tabs-hide';
+                        if (isset($option['active']) === true && (bool) $option['active'] === true) {
+                            $tabs_class = 'tabs-show';
+                        }
+                    }
+
                     $class = 'nomn';
                     if (isset($option['active'])) {
                         if ($option['active']) {
@@ -5444,7 +5477,7 @@ function ui_print_page_header(
                         $class .= ($godmode) ? ' tab_godmode' : ' tab_operation';
                     }
 
-                    $buffer .= '<li class="'.$class.' ">';
+                    $buffer .= '<li class="'.$class.' '.$tabs_class.'">';
                     $buffer .= $option['text'];
                     if (isset($option['sub_menu'])) {
                         $buffer .= $option['sub_menu'];
@@ -5460,11 +5493,19 @@ function ui_print_page_header(
         }
 
         $buffer .= '</ul>';
-        if (isset($dots) === true) {
-            $buffer .= '<div id="menu_dots">'.$dots.'</div>';
-        }
-
         $buffer .= '</div>';
+
+        if (is_metaconsole() === false) {
+            $buffer .= '
+            <script>
+                menuTabsShowHide();
+                
+                $(window).on("resize", function() {
+                menuTabsShowHide();
+                });
+            </script>
+        ';
+        }
     } else {
         if ($options != '') {
             $buffer .= '<div id="menu_tab"><ul class="mn"><li>';
@@ -5826,7 +5867,7 @@ function ui_print_agent_autocomplete_input($parameters)
         $hidden_input_idagent_value = $parameters['hidden_input_idagent_value'];
     }
 
-    $size = 30;
+    $size = 100;
     // Default value.
     if (isset($parameters['size'])) {
         $size = $parameters['size'];
@@ -6252,14 +6293,14 @@ function ui_print_agent_autocomplete_input($parameters)
     $javascript_function_change .= '
         function setInputBackground(inputId, image) {
             $("#"+inputId)
-            .attr("style", "background-image: url(\'"+image+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+            .attr("style", "background-image: url(\'"+image+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
         }
 
         $(document).ready(function () {
             $("#'.$input_id.'").focusout(function (e) {
                 setTimeout(() => {
                     let iconImage = "'.$icon_image.'";
-                    $("#'.$input_id.'").attr("style", "background-image: url(\'"+iconImage+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+                    $("#'.$input_id.'").attr("style", "background-image: url(\'"+iconImage+"\'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
                 }, 100);
             });
         });
@@ -6426,25 +6467,25 @@ function ui_print_agent_autocomplete_input($parameters)
 				switch (item.filter) {
 					default:
 					case \'agent\':
-						return $("<li style=\'background: #DFFFC4;\'></li>")
+						return $("<li style=\'background: #DFFFC4;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Agent').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'address\':
-						return $("<li style=\'background: #F7CFFF;\'></li>")
+						return $("<li style=\'background: #F7CFFF;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Address').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'description\':
-						return $("<li style=\'background: #FEFCC6;\'></li>")
+						return $("<li style=\'background: #FEFCC6;\' class=\'agent-autocomplete-li-text-color\' title=\''.__('Description').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
 						break;
 					case \'alias\':
-						return $("<li style=\"'.$background_results.'\"></li>")
+						return $("<li style=\"'.$background_results.'\" title=\''.__('Alias').'\'></li>")
 							.data("item.autocomplete", item)
 							.append(text)
 							.appendTo(ul);
@@ -6533,7 +6574,7 @@ function ui_print_agent_autocomplete_input($parameters)
 			if (select_item_click) {
                 select_item_click = 0;
                 $("#'.$input_id.'")
-                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
 				return;
 			} else {
                 // Clear selectbox if item is not selected.
@@ -6548,7 +6589,7 @@ function ui_print_agent_autocomplete_input($parameters)
 
 			//Set loading
 			$("#'.$input_id.'")
-                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+                .attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
 			var term = input_value; //Word to search
 			
 			'.$javascript_change_ajax_params_text.'
@@ -6565,7 +6606,7 @@ function ui_print_agent_autocomplete_input($parameters)
 				success: function (data) {
 						if (data.length < 2) {
 							//Set icon
-							$("#'.$input_id.'").attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$inputStyles.'");
+							$("#'.$input_id.'").attr("style", "background-image: url(\"'.$spinner_image.'\"); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$inputStyles.'");
 							return;
 						}
 
@@ -6615,7 +6656,7 @@ function ui_print_agent_autocomplete_input($parameters)
 
 						//Set icon
 						$("#'.$input_id.'")
-                            .attr("style", "background: url(\"'.$icon_image.'\") 97% center no-repeat; background-size: 20px; width:100%; '.$inputStyles.'")
+                            .attr("style", "background: url(\"'.$icon_image.'\") 97% center no-repeat; background-size: 20px; width:'.$size.'%; '.$inputStyles.'")
 						return;
 					}
 				});
@@ -6634,7 +6675,7 @@ function ui_print_agent_autocomplete_input($parameters)
     }
 
     $attrs = [];
-    $attrs['style'] = 'background-image: url('.$icon_image.'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:100%; '.$text_color.' '.$inputStyles.'';
+    $attrs['style'] = 'background-image: url('.$icon_image.'); background-repeat: no-repeat; background-position: 97% center; background-size: 20px; width:'.$size.'%; '.$text_color.' '.$inputStyles.'';
 
     if (!$disabled_javascript_on_blur_function) {
         $attrs['onblur'] = $javascript_on_blur_function_name.'()';
@@ -7303,7 +7344,7 @@ function ui_print_message_dialog($title, $text, $id='', $img='', $text_button=''
  *
  * @return null
  */
-function ui_query_result_editor($name='default')
+function ui_query_result_editor($name='default', $button_in_action_buttons=true)
 {
     $editorSubContainer = html_print_div(
         [
@@ -7379,9 +7420,22 @@ function ui_query_result_editor($name='default')
         ]
     );
 
-    $execute_button = html_print_submit_button(__('Execute query'), 'execute_query', false, ['icon' => 'update'], true);
-    html_print_action_buttons($execute_button);
+    $execute_button = html_print_submit_button(
+        __('Execute query'),
+        'execute_query',
+        false,
+        [
+            'icon'  => 'update',
+            'class' => 'float-right',
+        ],
+        true
+    );
 
+    if ($button_in_action_buttons === true) {
+        html_print_action_buttons($execute_button);
+    } else {
+        echo $execute_button;
+    }
 }
 
 
@@ -8322,4 +8376,32 @@ function ui_print_status_secmon_div($status, $title=false)
         $title = ($title === false) ? __('critical') : $title;
         return ui_print_div('group_view_crit '.$class, $title);
     }
+}
+
+
+function ui_print_empty_view($title, $message, $img_name, $buttons=false)
+{
+    $img = html_print_image(
+        'images/empty_views/'.$img_name,
+        true,
+        [
+            'title' => __('Empty view image'),
+            'class' => '',
+        ]
+    );
+
+    $output = '
+        <div class="empty-view">
+            <div class="empty-view-img-text">
+                    '.$img.'
+                <div class="empty-view-text">
+                    <span>'.$title.'</span>
+                    <span>'.$message.'</span>
+                </div>
+            </div>
+            '.($buttons !== false ? '<div class="empty-view-buttons">'.$buttons.'</div>' : '').'
+        </div>
+    ';
+
+    return $output;
 }

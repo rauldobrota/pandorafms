@@ -238,7 +238,7 @@ class TopNWidget extends Widget
         // Module.
         $inputs[] = [
             'label'     => __('Module').ui_print_help_tip(
-                __('Case insensitive regular expression or string for module name. For example: .*usage.* will match: cpu_usage, vram usage.'),
+                __('Case insensitive regular expression or string for module name. For example: %s will match: cpu_usage, vram usage.', '.*usage.*'),
                 true
             ),
             'arguments' => [
@@ -262,6 +262,7 @@ class TopNWidget extends Widget
                 'style_icon'    => 'flex-grow: 0',
                 'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
                 'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
             ],
         ];
 

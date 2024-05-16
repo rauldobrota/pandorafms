@@ -9,15 +9,18 @@ use PandoraFMS\Modules\Shared\Repositories\Repository;
 
 class EventFilterRepository
 {
+
+
     public function __construct(
         private Repository $repository,
         private EventFilterDataMapper $eventFilterDataMapper
     ) {
     }
 
+
     /**
      * @return EventFilter[],
-    */
+     */
     public function list(EventFilterFilter $eventFilterFilter): array
     {
         return $this->repository->__list(
@@ -25,6 +28,7 @@ class EventFilterRepository
             $this->eventFilterDataMapper
         );
     }
+
 
     public function count(EventFilterFilter $eventFilterFilter): int
     {
@@ -34,6 +38,7 @@ class EventFilterRepository
         );
     }
 
+
     public function getOne(EventFilterFilter $eventFilterFilter): EventFilter
     {
         return $this->repository->__getOne(
@@ -42,11 +47,13 @@ class EventFilterRepository
         );
     }
 
+
     public function create(EventFilter $eventFilter): EventFilter
     {
         $id = $this->repository->__create($eventFilter, $this->eventFilterDataMapper);
         return $eventFilter->setIdEventFilter($id);
     }
+
 
     public function update(EventFilter $eventFilter): EventFilter
     {
@@ -57,9 +64,11 @@ class EventFilterRepository
         );
     }
 
+
     public function delete(int $id): void
     {
         $this->repository->__delete($id, $this->eventFilterDataMapper);
     }
+
 
 }

@@ -6,9 +6,12 @@ use PandoraFMS\Modules\Shared\Exceptions\ForbiddenACLException;
 
 class Management
 {
-    public function __construct(
-    ) {
+
+
+    public function __construct()
+    {
     }
+
 
     public function isManagementAllowed(string $class): void
     {
@@ -29,4 +32,6 @@ class Management
             );
         }
     }
+
+
 }

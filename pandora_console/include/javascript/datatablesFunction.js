@@ -1,4 +1,4 @@
-/* global $ */
+/* global $, preload_elements */
 
 var dt = dt;
 var config = config;
@@ -420,8 +420,10 @@ $(document).ready(function() {
 
 $(function() {
   $(document).on("preInit.dt", function(ev, settings) {
-    $(`#${dt.id}_wrapper  div.dataTables_length`).hide();
-    $(`#${dt.id}_wrapper  div.dataTables_filter`).hide();
-    $(`#${dt.id}_wrapper  div.dt-buttons`).hide();
+    if (preload_elements === false) {
+      $(`#${dt.id}_wrapper  div.dataTables_length`).hide();
+      $(`#${dt.id}_wrapper  div.dataTables_filter`).hide();
+      $(`#${dt.id}_wrapper  div.dt-buttons`).hide();
+    }
   });
 });

@@ -75,8 +75,8 @@ if (isset($text) === false) {
 }
 
 $directory = (string) get_parameter('directory');
-$directory = str_replace('&lt;', '', $text);
-$directory = str_replace('&gt;', '', $text);
+$directory = str_replace('&lt;', '', $directory);
+$directory = str_replace('&gt;', '', $directory);
 if (empty($directory) === true) {
     $directory = $fallback_directory;
 } else {
@@ -121,6 +121,7 @@ if ($upload_file === true) {
             MIME_TYPES['jpg'],
             MIME_TYPES['png'],
             MIME_TYPES['gif'],
+            MIME_TYPES['svg'],
         ]
     );
 }

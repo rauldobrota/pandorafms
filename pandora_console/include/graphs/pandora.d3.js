@@ -985,18 +985,30 @@ function sunburst(recipient, data, width, height, tooltip = true) {
     .attr("x", function(d) {
       if (typeof d.show_name != "undefined" && d.show_name) {
         if (calculate_angle(d) < 20) {
-          return (d.name.length + 15) * -1;
+          return (d.name.length + 10) * -1;
         } else {
-          return (d.name.length + 25) * -1;
+          return (d.name.length + 20) * -1;
         }
       }
     })
-    .attr("dx", "6") // margin
+    // margin
+    .attr("dx", function(d) {
+      if (d.type === "central_service") {
+        return "";
+      }
+      return "6";
+    })
     .attr("dy", function(d) {
       if (d.type === "central_service") {
-        return "-7em";
+        return "";
       }
       return ".35em";
+    }) // vertical-align
+    .attr("y", function(d) {
+      if (d.type === "central_service") {
+        return "-11.75%";
+      }
+      return "";
     }) // vertical-align
     .attr("opacity", function(d) {
       if (typeof d.show_name != "undefined" && d.show_name) {
@@ -1007,7 +1019,7 @@ function sunburst(recipient, data, width, height, tooltip = true) {
     })
     .text(function(d) {
       if (d.name.length > 20) {
-        var resta = d.name.length - 12;
+        var resta = d.name.length - 17;
         var string = d.name.slice(
           d.name.length / 2 - resta / 2,
           d.name.length / 2 + resta / 2

@@ -52,6 +52,11 @@ if (! check_acl($config['id_user'], 0, 'RW')
     exit;
 }
 
+// Get pandora black theme.
+if ($config['style'] === 'pandora_black') {
+    html_print_input_hidden('selected_style_theme', 'pandora_black');
+}
+
 $meta = false;
 if (($config['metaconsole'] == 1) && (defined('METACONSOLE'))) {
     $meta = true;
@@ -1357,12 +1362,12 @@ $class = 'databox filters';
 
                 $result_select = [];
 
-                foreach ($os as $item) {
+                foreach ($os_list as $item) {
                     $result_select[$item['id_os']] = $item['name'];
                 }
 
                 html_print_select(
-                    $os_list,
+                    $result_select,
                     'os_selector',
                     $os_selector,
                     ''
@@ -1454,7 +1459,7 @@ $class = 'databox filters';
             <td class="bolder">
                 <?php
                 echo __('Module').ui_print_help_tip(
-                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: .*usage.* will match: cpu_usage, vram usage in matchine 1.'),
+                    __('Case insensitive regular expression or string for module name. For example: if you use this field with "Module exact match" enabled then this field has to be fulfilled with the literally string of the module name, if not you can use a regular expression. Example: %s will match: cpu_usage, vram usage in machine 1.', '.*usage.*'),
                     true
                 );
                 ?>
@@ -2313,7 +2318,9 @@ if (is_metaconsole() === true) {
                 $params['add_none_module'] = true;
                 $params['use_hidden_input_idagent'] = true;
                 $params['hidden_input_idagent_id'] = 'hidden-id_agent';
+                $params['size'] = 40;
                 if ($meta) {
+                    $params['size'] = 44;
                     $params['use_input_id_server'] = true;
                     $params['input_id_server_id'] = 'hidden-server_id';
                     $params['metaconsole_enabled'] = true;
@@ -2338,7 +2345,7 @@ if (is_metaconsole() === true) {
                 if ($idAgent) {
                     $sql = 'SELECT id_agente_modulo, nombre
 						FROM tagente_modulo
-						WHERE id_agente =  '.$idAgent.' AND  delete_pending = 0';
+						WHERE id_agente = "'.$idAgent.'" AND  delete_pending = 0';
 
                     if ($meta) {
                         $connection = metaconsole_get_connection($server_name);
@@ -2750,14 +2757,16 @@ if (is_metaconsole() === true) {
             <td class="bolder"><?php echo __('Date'); ?></td>
             <td class="mx180px">
                 <?php
-                $dates = enterprise_hook(
-                    'inventory_get_dates',
-                    [
-                        $idAgentModule,
-                        $idAgent,
-                        $group,
-                    ]
-                );
+                if (isset($idAgent) === true) {
+                    $dates = enterprise_hook(
+                        'inventory_get_dates',
+                        [
+                            $idAgentModule,
+                            $idAgent,
+                            $group,
+                        ]
+                    );
+                }
 
                 if ($dates === ENTERPRISE_NOT_HOOK) {
                     $dates = [];
@@ -2860,20 +2869,32 @@ if (is_metaconsole() === true) {
 
                 if (!empty($style_button_create_custom_graph)) {
                     $style_create = [
-                        'mode'  => 'link',
+                        'mode'  => 'mini',
+                        'icon'  => 'next',
+                        'class' => 'mrgn_lft_10px',
                         'style' => 'display:none',
                     ];
                 } else {
-                    $style_create = [ 'mode' => 'link' ];
+                    $style_create = [
+                        'mode'  => 'mini',
+                        'icon'  => 'next',
+                        'class' => 'mrgn_lft_10px',
+                    ];
                 }
 
                 if (!empty($style_button_edit_custom_graph)) {
                     $style_edit = [
-                        'mode'  => 'link',
+                        'mode'  => 'mini',
+                        'icon'  => 'update',
+                        'class' => 'mrgn_lft_10px',
                         'style' => 'display:none',
                     ];
                 } else {
-                    $style_edit = [ 'mode' => 'link' ];
+                    $style_edit = [
+                        'mode'  => 'mini',
+                        'icon'  => 'update',
+                        'class' => 'mrgn_lft_10px',
+                    ];
                 }
 
                 html_print_button(
@@ -6178,7 +6199,12 @@ $(document).ready (function () {
         });
     });
 
-    defineTinyMCE('#textarea_render_definition');
+    var consoleStyle = $("#hidden-selected_style_theme").val();
+    if (consoleStyle == "pandora_black") {
+        defineTinyMCEDark('#textarea_render_definition');
+    } else {
+        defineTinyMCE('#textarea_render_definition');
+    }
 
     $("#checkbox-select_by_group").change(function () {
         var select_by_group  = $('#checkbox-select_by_group').prop('checked');
@@ -6623,26 +6649,6 @@ function create_custom_graph() {
             $("#meta_target_servers").css('display', 'inline');
         }
         else {
-            var hash_data;
-            var params1 = [];
-            params1.push("get_metaconsole_hash_data=1");
-            params1.push("server_name=" + target_server);
-            params1.push("page=include/ajax/reporting.ajax");
-            jQuery.ajax ({
-                data: params1.join ("&"),
-                type: 'POST',
-                url: action=
-                <?php
-                echo '"'.ui_get_full_url(false, false, false, false).'"';
-                ?>
-                + "/ajax.php",
-                async: false,
-                timeout: 10000,
-                success: function (data) {
-                    hash_data = data;
-                }
-            });
-
             var server_url;
             var params1 = [];
             params1.push("get_metaconsole_server_url=1");
@@ -6668,7 +6674,7 @@ function create_custom_graph() {
                 }
             });
 
-            window.location.href = server_url + "/index.php?sec=reporting&sec2=godmode/reporting/graph_builder&create=Create graph" + hash_data;
+            redirectNode(server_url + "/index.php?sec=reporting&sec2=godmode/reporting/graph_builder&create=Create graph", "_self");
         }
         <?php
     } else {
@@ -6697,31 +6703,6 @@ function edit_custom_graph() {
             id_server = agent_server_temp[1];
         }
 
-        var hash_data;
-        var params1 = [];
-        params1.push("get_metaconsole_hash_data=1");
-        params1.push("server_name=" + id_server);
-        params1.push("page=include/ajax/reporting.ajax");
-        jQuery.ajax ({
-            data: params1.join ("&"),
-            type: 'POST',
-            url: action=
-            <?php
-            echo '"'.ui_get_full_url(
-                false,
-                false,
-                false,
-                false
-            ).'"';
-            ?>
-            + "/ajax.php",
-            async: false,
-            timeout: 10000,
-            success: function (data) {
-                hash_data = data;
-            }
-        });
-
         var server_url;
         var params1 = [];
         params1.push("get_metaconsole_server_url=1");
@@ -6747,7 +6728,7 @@ function edit_custom_graph() {
             }
         });
 
-        window.location.href = server_url + "index.php?sec=reporting&sec2=godmode/reporting/graph_builder&edit_graph=1&id=" + id_element_graph + hash_data;        
+        redirectNode(server_url + "index.php?sec=reporting&sec2=godmode/reporting/graph_builder&edit_graph=1&id=" + id_element_graph, "_self");
         <?php
     } else {
         ?>

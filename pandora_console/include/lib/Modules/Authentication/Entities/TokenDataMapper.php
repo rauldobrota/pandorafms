@@ -18,6 +18,7 @@ final class TokenDataMapper extends DataMapperAbstract
     public const VALIDITY = 'validity';
     public const LAST_USAGE = 'last_usage';
 
+
     public function __construct(
         private Repository $repository,
         private Builder $builder,
@@ -28,27 +29,35 @@ final class TokenDataMapper extends DataMapperAbstract
         );
     }
 
+
     public function getClassName(): string
     {
         return Token::class;
     }
 
+
     public function fromDatabase(array $data): Token
     {
-        return $this->builder->build(new Token(), [
-            'idToken'   => $data[self::ID_TOKEN],
-            'label'     => $this->repository->safeOutput($data[self::LABEL]),
-            'uuid'      => $data[self::UUID],
-            'challenge' => $data[self::CHALLENGE],
-            'idUser'    => $data[self::ID_USER],
-            'validity'  => $data[self::VALIDITY],
-            'lastUsage' => $data[self::LAST_USAGE],
-        ]);
+        return $this->builder->build(
+            new Token(),
+            [
+                'idToken'   => $data[self::ID_TOKEN],
+                'label'     => $this->repository->safeOutput($data[self::LABEL]),
+                'uuid'      => $data[self::UUID],
+                'challenge' => $data[self::CHALLENGE],
+                'idUser'    => $data[self::ID_USER],
+                'validity'  => $data[self::VALIDITY],
+                'lastUsage' => $data[self::LAST_USAGE],
+            ]
+        );
     }
+
 
     public function toDatabase(MappeableInterface $data): array
     {
-        /** @var Token $data */
+        /*
+            @var Token $data
+        */
         return [
             self::ID_TOKEN   => $data->getIdToken(),
             self::LABEL      => $this->repository->safeInput($data->getLabel()),
@@ -59,4 +68,6 @@ final class TokenDataMapper extends DataMapperAbstract
             self::LAST_USAGE => $data->getLastUsage(),
         ];
     }
+
+
 }

@@ -120,6 +120,19 @@ function upload_file($upload_file_or_zip, $default_real_directory, $destination_
         $upload_zip  = (bool) get_parameter('upload_zip');
     }
 
+    // Validate file size vs collection_max_size token.
+    if ($_FILES['file']['size']  > (int) $config['collection_max_size']) {
+        $upload_file = false;
+        $config['filemanager']['message'] = ui_print_error_message(
+            __(
+                'File of collection is bigger than the limit (%s bytes)',
+                $config['collection_max_size'],
+                '',
+                true
+            )
+        );
+    }
+
     // Upload file.
     if ($upload_file === true) {
         if (isset($_FILES['file']) === true && empty($_FILES['file']['name']) === false) {
@@ -805,7 +818,7 @@ function filemanager_file_explorer(
 
             // Actions buttons
             // Delete button.
-            $data[4] = '<div class="table_action_buttons flex">';
+            $data[4] = '<div class="table_action_buttons flex flex-end">';
             $typefile = array_pop(explode('.', $fileinfo['name']));
             if (is_writable($fileinfo['realpath']) === true
                 && (is_dir($fileinfo['realpath']) === false || count(scandir($fileinfo['realpath'])) < 3)
@@ -1032,7 +1045,7 @@ function filemanager_file_explorer(
                     false,
                     'show_form_create_folder()',
                     [
-                        'class' => 'margin-right-2 invert_filter secondary',
+                        'class' => 'margin-right-2 primary buttonButton',
                         'icon'  => 'create_directory',
                     ],
                     true,
@@ -1047,7 +1060,7 @@ function filemanager_file_explorer(
                     false,
                     'show_create_text_file()',
                     [
-                        'class' => 'margin-right-2 invert_filter secondary',
+                        'class' => 'margin-right-2 primary buttonButton',
                         'icon'  => 'create_file',
                     ],
                     true,
@@ -1061,7 +1074,7 @@ function filemanager_file_explorer(
                 false,
                 'show_upload_file()',
                 [
-                    'class' => 'margin-right-2 invert_filter secondary',
+                    'class' => 'margin-right-2 primary buttonButton',
                     'icon'  => 'upload_file',
                 ],
                 true,
@@ -1069,7 +1082,7 @@ function filemanager_file_explorer(
             );
 
             // Show Modal Real Path
-            $modal_real_path = "<div><b>Real path to plugin execution is:</b></div>
+            $modal_real_path = "<div><b>Real path is:</b></div>
                                 <div id='real_path'></div>";
 
             if (isset($_SERVER['HTTPS']) === true) {

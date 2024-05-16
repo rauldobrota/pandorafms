@@ -9,11 +9,14 @@ use PandoraFMS\Modules\Shared\Services\Audit;
 
 final class DeleteEventFilterService
 {
+
+
     public function __construct(
         private Audit $audit,
         private EventFilterRepository $eventFilterRepository,
     ) {
     }
+
 
     public function __invoke(EventFilter $eventFilter): void
     {
@@ -26,4 +29,6 @@ final class DeleteEventFilterService
             'Deleted eventFilter '.$nameEventFilter
         );
     }
+
+
 }

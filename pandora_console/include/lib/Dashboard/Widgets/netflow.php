@@ -207,6 +207,7 @@ class Netflow extends Widget
                 'style_icon'    => 'flex-grow: 0',
                 'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
                 'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
             ],
         ];
         $chart_types = netflow_get_chart_types();
@@ -366,8 +367,8 @@ class Netflow extends Widget
                         '',
                         'HTML',
                         0,
-                        ($size['width'] - 50),
-                        ($size['height'] - 20),
+                        ($size['width'] + 120),
+                        ($size['height'] + 120),
                     ),
                 ],
                 true
@@ -388,29 +389,6 @@ class Netflow extends Widget
     {
         return '
             $(document).ready(function(){
-                //Limit 1 week
-                $("#period_select option").each(function(key, element){
-                    if(element.value > 604800){
-                        $(element).remove();
-                    }
-                })
-                $("#period_manual option").each(function(key, element){
-                    if(element.value > 604800){
-                        $(element).remove();
-                    }
-                });
-                $("#period_manual input").on("change", function(e){
-                    if($("#hidden-period").val() > 604800) {
-                        $(this).val(1);
-                        $("#hidden-period").val(604800);
-                        $("#period_manual select option").removeAttr("selected");
-                        setTimeout(() => {
-                            $("#period_default select option[value=\'604800\']").attr("selected", "selected");
-                            $("#period_manual select option[value=\'604800\']").attr("selected", "selected");
-                            $("#period_manual select").val(604800);
-                        }, 500);
-                    }
-                });
                 if($("#chart_type").val() === "usage_map") {
                     $("#data_to_show").show();
                     $("#aggregated").hide();
@@ -462,7 +440,7 @@ class Netflow extends Widget
     public function getSizeModalConfiguration(): array
     {
         $size = [
-            'width'  => 400,
+            'width'  => 600,
             'height' => 530,
         ];
 

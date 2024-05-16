@@ -165,7 +165,7 @@ sub prepare_tree {
   } else {
     $snmp_call{'oid'} = $config->{'oid_base'} . $config->{'x86_indexes'}{'__idx__'}.$ifIndex;
   }
-    
+
   my $raw = snmp_walk(\%snmp_call);
   return $raw if (ref($raw) eq "HASH");
 
@@ -517,6 +517,9 @@ if (!empty($config->{'uniqid'})) {
 $filename =~ tr/./_/;
 $config->{'tmp_file'} = $filename.'.idx' if empty($config->{'tmp_file'});
 $config->{'log'}      = $filename.'.log' if empty($config->{'log'});
+
+# Escape special characters
+$config->{'community'} =~ s/([^\/\w])/\\$1/g;
 
 # Check snmp connectivity
 my $sysobjectid = snmp_get({%{$config}, 'oid' => '.1.3.6.1.2.1.1.2.0'});

@@ -28,7 +28,9 @@
 
 // Begin.
 require_once 'include/functions_clippy.php';
-require_once 'pending_alerts_list.php';
+if ((bool) check_acl($config['id_user'], 0, 'LM') === true) {
+    include 'pending_alerts_list.php';
+}
 
 global $config;
 
@@ -49,8 +51,8 @@ $date = time();
 
 $servers = servers_get_info();
 if ($servers === false) {
-    $server_clippy = clippy_context_help('servers_down');
-    echo "<div class='nf'>".__('There are no servers configured into the database').$server_clippy.'</div>';
+    $no_data_msg = __('There are no servers registered on the database. Please, check the configuration and start the Pandora Server service');
+    ui_print_info_message($no_data_msg);
     return;
 }
 
@@ -133,14 +135,12 @@ foreach ($servers as $server) {
             __('Server has crashed.'),
             true
         );
-    
-    } else if ((int) ($server['disabled'] == 1)){
+    } else if ((int) ($server['disabled'] == 1)) {
         $data[1] = ui_print_status_image(
             STATUS_SERVER_STANDBY,
             __('Server was manually disabled.'),
             true
         );
-
     } else if ((int) ($server['status'] === 0)
         || (($date - $server_keepalive) > ($server['server_keepalive']) * 2)
     ) {

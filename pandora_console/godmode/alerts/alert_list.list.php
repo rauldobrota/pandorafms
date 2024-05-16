@@ -712,9 +712,9 @@ foreach ($simple_alerts as $alert) {
 		WHERE id = '.$alert['id_alert_template']
     );
     if ($default_action != '') {
-        $data[3] .= "<tr><td colspan='2'><ul class='action_list'><li>";
+        $data[3] .= "<tr><td colspan='2'>";
         $data[3] .= db_get_sql("SELECT name FROM talert_actions WHERE id = $default_action").' <em>('.__('Default').')</em>';
-        $data[3] .= '</li></ul></td>';
+        $data[3] .= '</td>';
         $data[3] .= '</tr>';
     }
 
@@ -722,7 +722,7 @@ foreach ($simple_alerts as $alert) {
         $data[3] .= '<tr class="alert_action_list">';
             $data[3] .= '<td>';
                 $data[3] .= '<ul class="action_list inline_line">';
-                $data[3] .= '<li class="inline_line">';
+                $data[3] .= '<li class="">';
         if ($alert['disabled']) {
             $data[3] .= '<font class="action_name italic_a">';
         } else {
@@ -758,7 +758,7 @@ foreach ($simple_alerts as $alert) {
 
         $data[3] .= '</td>';
 
-        $data[3] .= '<td class="flex_center">';
+        $data[3] .= '<td class="flex_center table_action_buttons">';
         $data[3] .= ui_print_help_tip(__('The default actions will be executed every time that the alert is fired and no other action is executed'), true);
         // Is possible manage actions if have LW permissions in the agent group of the alert module
         if (check_acl_one_of_groups($config['id_user'], $all_groups, 'LW')) {
@@ -786,7 +786,7 @@ foreach ($simple_alerts as $alert) {
                 true,
                 [
                     'title'   => __('Update action'),
-                    'class'   => 'main_menu_icon invert_filter',
+                    'class'   => 'main_menu_icon invert_filter action_button_hidden',
                     'onclick' => 'show_display_update_action(\''.$action['id'].'\',\''.$alert['id'].'\',\''.$alert['id_agent_module'].'\',\''.$action_id.'\',\''.$alert['id_agent_module'].'\')',
                 ]
             );
@@ -997,7 +997,7 @@ foreach ($simple_alerts as $alert) {
             } else {
                 $module_linked = policies_is_module_linked($alert['id_agent_module']);
                 if ($module_linked === '0') {
-                    $img = 'images/unlinkpolicy.png';
+                    $img = 'images/unlinkpolicy.svg';
                 } else {
                     $img = 'images/policy@svg.svg';
                 }
@@ -1333,10 +1333,9 @@ function show_display_update_action(id_module_action, alert_id, alert_id_agent_m
                     },
                     open: function() {
                         $(`#update_action-div-${alert_id}`).css('overflow', 'hidden');
-                        //$(`#action_select_ajax-${alert_id}`).select2({
-                        //    tags: true,
-                        //    dropdownParent: $(`#update_action-div-${alert_id}`)
-                        //});
+                        $(`#update_action-div-${alert_id} select`).select2({
+                           dropdownParent: $(this).parent()
+                        });
                     },
                     width: 600,
                     height: 350

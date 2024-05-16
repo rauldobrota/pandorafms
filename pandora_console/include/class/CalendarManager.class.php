@@ -210,6 +210,17 @@ class CalendarManager
 
         if ($op === 'edit' && $action === '') {
             $tab = 'list_edit';
+            $buttons['list_edit'] = [
+                'active' => false,
+                'text'   => '<a href="'.ui_get_full_url($this->url.'&tab_calendar=list&op=edit').'">'.html_print_image(
+                    'images/edit.svg',
+                    true,
+                    [
+                        'title' => __('Edit calendar'),
+                        'class' => 'main_menu_icon invert_filter',
+                    ]
+                ).'</a>',
+            ];
         }
 
         $buttons[$tab]['active'] = true;

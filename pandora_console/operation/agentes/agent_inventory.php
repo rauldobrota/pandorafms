@@ -242,7 +242,7 @@ foreach ($rows as $row) {
 
         if ((bool) $row['block_mode'] === true) {
             $table->head[0] .= '&nbsp;&nbsp;&nbsp;<a href="index.php?sec=estado&sec2=operation/agentes/ver_agente&tab=inventory&id_agente='.$id_agente.'&utimestamp='.$utimestamp.'&id_agent_module_inventory='.$row['id_agent_module_inventory'].'&diff_view=1">'.html_print_image(
-                'images/op_inventory.menu.png',
+                'images/op_inventory.png',
                 true,
                 [
                     'alt'   => __('Diff view'),

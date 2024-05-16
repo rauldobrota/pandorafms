@@ -423,6 +423,7 @@ class BasicChart extends Widget
                 'style_icon'    => 'flex-grow: 0',
                 'script'        => 'check_period_warning(this, \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
                 'script_input'  => 'check_period_warning_manual(\'period\', \''.__('Warning').'\', \''.__('Displaying items with extended historical data can have an impact on system performance. We do not recommend that you use intervals longer than 30 days, especially if you combine several of them in a report, dashboard or visual console.').'\')',
+                'units_select2' => true,
             ],
         ];
 
@@ -641,12 +642,28 @@ class BasicChart extends Widget
             $this->values['period'] = parent::getPeriod();
         }
 
+        $margin = 15;
+        $size['height'] -= $margin;
+        $graph_height = $size['height'];
+        $margin_top = 0;
+        if ((bool) $this->values['showLabel'] === true) {
+            $margin_top = $this->values['sizeLabel'];
+        }
+
+        if ((bool) $this->values['showValue'] === true) {
+            if ($this->values['sizeValue'] > $this->values['sizeLabel']) {
+                $margin_top = $this->values['sizeValue'];
+            }
+        }
+
+        $graph_height -= $margin_top;
+
         $params = [
             'agent_module_id'    => $this->values['moduleId'],
             'period'             => $this->values['period'],
             'show_events'        => false,
             'width'              => '100%',
-            'height'             => $size['height'],
+            'height'             => $graph_height,
             'title'              => $module_name,
             'unit'               => $units_name,
             'only_image'         => false,
@@ -661,6 +678,7 @@ class BasicChart extends Widget
             'backgroundColor'    => 'transparent',
             // 'server_id'          => $metaconsoleId,
             'basic_chart'        => true,
+            'extra_styles'       => 'bottom: -'.($margin_top + $margin - 1).'px; margin-left: 0px;',
             'array_colors'       => [
                 [
                     'border' => '#000000',
@@ -671,7 +689,7 @@ class BasicChart extends Widget
         ];
 
         $graph = \grafico_modulo_sparse($params);
-        $output = '<div class="container-center widget-mrgn-0px">';
+        $output = '<div class="container-center widget-mrgn-0px w100pi basic-chart-widget">';
         if (str_contains($graph, '<img') === false) {
             $output .= '<div class="basic-chart-title">';
             $output .= '<span style="color:'.$this->values['colorLabel'].'; font-size:'.$this->values['sizeLabel'].'px;">';

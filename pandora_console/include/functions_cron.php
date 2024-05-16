@@ -989,3 +989,54 @@ function cron_list_table()
         ui_print_info_message(['no_close' => true, 'message' => __('There are no jobs') ]);
     }
 }
+
+
+/**
+ * GetNextExecutionCron give string and return datetime with the date of the next execution
+ *
+ * @param string $cron String with cron.
+ *
+ * @return DateTime Datetime with the next execution.
+ */
+function GetNextExecutionCron($cron)
+{
+    // Split cron.
+    $cronsplit = preg_split('/\s+/', $cron);
+    // Set dates to use.
+    $current_day = new DateTime();
+    $next_execution = new DateTime();
+
+    // Monthly schedule.
+    if ($cronsplit[2] !== '*') {
+        $next_execution->setDate($current_day->format('Y'), $current_day->format('m'), $cronsplit[2]);
+        $next_execution->setTime($cronsplit[1], $cronsplit[0]);
+        if ($next_execution->format('Y-m-d H:i') <= $current_day->format('Y-m-d H:i')) {
+            $next_execution->setDate($current_day->format('Y'), ($current_day->format('m') + 1), $cronsplit[2]);
+        }
+
+        return $next_execution;
+    }
+
+    // Weekly schedule.
+    if ($cronsplit[4] !== '*') {
+        $next_execution->setISODate($current_day->format('Y'), $current_day->format('W'), $cronsplit[4]);
+        $next_execution->setTime($cronsplit[1], $cronsplit[0]);
+        if ($next_execution->format('Y-m-d H:i') <= $current_day->format('Y-m-d H:i')) {
+            $next_execution->setISODate($current_day->format('Y'), ($current_day->format('W') + 1), $cronsplit[4]);
+        }
+
+        return $next_execution;
+    }
+
+    // Daily schedule.
+    if ($cronsplit[2] === '*' && $cronsplit[3] === '*' && $cronsplit[4] === '*') {
+        $next_execution->setTime($cronsplit[1], $cronsplit[0]);
+        if ($next_execution->format('Y-m-d H:i') <= $current_day->format('Y-m-d H:i')) {
+            $next_execution->setDate($current_day->format('Y'), $current_day->format('m'), ($current_day->format('d') + 1));
+        }
+
+        return $next_execution;
+    }
+
+    return $next_execution;
+}
