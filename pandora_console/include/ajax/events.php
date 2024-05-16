@@ -1205,13 +1205,8 @@ if ($get_response === true) {
 
     if (empty($event_id) === false) {
         try {
-            $target_metaconsole = '';
-            if (is_metaconsole() === true
-                && $server_id > 0
-            ) {
-                $target_metaconsole = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
+            if (is_metaconsole() === true && $server_id > 0) {
                 $node = new Node($server_id);
-                $node->connect();
             }
 
             $event_response['target'] = events_get_response_target(
@@ -1220,28 +1215,13 @@ if ($get_response === true) {
                 $response_parameters,
                 $server_id,
                 ($server_id !== 0) ? $node->server_name() : 'Metaconsole',
-                $target_metaconsole
             );
         } catch (\Exception $e) {
-            // Unexistent agent.
-            if (is_metaconsole() === true
-                && $server_id > 0
-            ) {
-                $node->disconnect();
-            }
-
             return;
-        } finally {
-            if (is_metaconsole() === true
-                && $server_id > 0
-            ) {
-                $node->disconnect();
-            }
         }
     }
 
     echo json_encode($event_response);
-
     return;
 }
 
@@ -1313,23 +1293,29 @@ if ($get_response_massive === true) {
 
 if ($get_row_response_action === true) {
     $response_id = get_parameter('response_id');
-    $response = json_decode(
-        io_safe_output(
-            get_parameter('response', '')
-        ),
+    $server_id = get_parameter('server_id');
+    $event_id = get_parameter('event_id');
+    $response_parameters = (array) json_decode(
+        io_safe_output(get_parameter('response_parameters', '')),
         true
     );
 
-    $end = (bool) get_parameter('end', false);
-    $index = $response['event_id'];
+    $event_response = db_get_row(
+        'tevent_response',
+        'id',
+        $response_id
+    );
+
+    $index = $event_id;
     if (is_metaconsole() === true) {
-        $index .= '-'.$response['server_id'];
+        $index .= '-'.$server_id;
     }
 
     echo get_row_response_action(
-        $response,
-        $response_id,
-        $end,
+        $event_response,
+        $event_id,
+        $server_id,
+        $response_parameters,
         $index
     );
 
@@ -1344,34 +1330,31 @@ if ($perform_event_response === true) {
         return;
     }
 
-    $target = get_parameter('target', '');
-    $response_id = get_parameter('response_id');
+    $response_id = (int) get_parameter('response_id', 0);
     $event_id = (int) get_parameter('event_id');
     $server_id = (int) get_parameter('server_id', 0);
-    $response = json_decode(
-        io_safe_output(
-            get_parameter('response', '')
-        ),
+    $response_parameters = (array) json_decode(
+        io_safe_output(get_parameter('response_parameters', '')),
         true
     );
 
-    $event_response = $response;
+    $event_response = db_get_row(
+        'tevent_response',
+        'id',
+        $response_id
+    );
     if (empty($event_response) === true) {
         echo __('No data');
         return;
     }
 
-    $command = $event_response['target'];
-
-    // Prevent OS command injection.
-    $prev_command = get_events_get_response_target($event_id, $event_response, $server_id);
-
-    if ($command !== $prev_command) {
-        echo __('unauthorized');
-        return;
-    }
-
-    $command_timeout = ($event_response !== false) ? $event_response['command_timeout'] : 90;
+    $command = get_events_get_response_target(
+        $event_id,
+        $event_response,
+        $server_id,
+        $response_parameters
+    );
+    $command_timeout = (empty($event_response['command_timeout']) === false) ? $event_response['command_timeout'] : 90;
     if (enterprise_installed() === true) {
         if ($event_response !== false
             && (int) $event_response['server_to_exec'] !== 0
@@ -1470,21 +1453,33 @@ if ($dialogue_event_response) {
         return;
     }
 
-    $event_id = get_parameter('event_id');
-    $response_id = get_parameter('response_id');
-    $command = get_parameter('target');
-    $event_response = json_decode(
-        io_safe_output(
-            get_parameter('response', '')
-        ),
+    $event_id = (int) get_parameter('event_id', 0);
+    $response_id = (int) get_parameter('response_id', 0);
+    $server_id = (int) get_parameter('server_id', 0);
+    $response_parameters = (array) json_decode(
+        io_safe_output(get_parameter('response_parameters', '')),
         true
+    );
+
+    $event_response = db_get_row(
+        'tevent_response',
+        'id',
+        $response_id
+    );
+    $command = get_events_get_response_target(
+        $event_id,
+        $event_response,
+        $server_id,
+        $response_parameters
     );
 
     switch ($event_response['type']) {
         case 'command':
             echo get_row_response_action(
                 $event_response,
-                $response_id
+                $event_id,
+                $server_id,
+                $response_parameters
             );
         break;
 

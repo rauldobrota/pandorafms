@@ -143,7 +143,14 @@ function execute_response(event_id, server_id) {
       if (response["type"] == "url" && response["new_window"] == 1) {
         window.open(response["target"], "_blank");
       } else {
-        show_response_dialog(response_id, response);
+        var data = {};
+        data.response_id = response_id;
+        data.server_id = server_id;
+        data.event_id = event_id;
+        data.response_parameters = response_parameters;
+        data.modal_width = response["modal_width"];
+        data.modal_height = response["modal_height"];
+        show_response_dialog(data);
       }
     }
   });
@@ -173,12 +180,10 @@ function execute_response_massive(events, response_id, response_parameters) {
 
       // Convert to array.
       var array_data = Object.entries(data.event_response_targets);
-      var total_count = array_data.length;
 
       // Each input checkeds.
       array_data.forEach(function(element, index) {
         var id = element[0];
-        var target = element[1].target;
         var meta = $("#hidden-meta").val();
         var event_id = id;
         var server_id = 0;
@@ -188,25 +193,22 @@ function execute_response_massive(events, response_id, response_parameters) {
           server_id = split_id[1];
         }
 
-        var end = 0;
-        if (total_count - 1 === index) {
-          end = 1;
-        }
-
-        var response = data.event_response;
-        response["event_id"] = event_id;
-        response["server_id"] = server_id;
-        response["target"] = target;
-        if (response["type"] == "url" && response["new_window"] == 1) {
-          window.open(response["target"], "_blank");
+        if (
+          data.event_response["type"] == "url" &&
+          data.event_response["new_window"] == 1
+        ) {
+          window.open(data.event_response["target"], "_blank");
         } else {
           var params = [];
           params.push({ name: "page", value: "include/ajax/events" });
           params.push({ name: "get_row_response_action", value: 1 });
           params.push({ name: "response_id", value: response_id });
-          params.push({ name: "server_id", value: response.server_id });
-          params.push({ name: "end", value: end });
-          params.push({ name: "response", value: JSON.stringify(response) });
+          params.push({ name: "server_id", value: server_id });
+          params.push({ name: "event_id", value: event_id });
+          params.push({
+            name: "response_parameters",
+            value: response_parameters
+          });
 
           jQuery.ajax({
             data: params,
@@ -215,20 +217,17 @@ function execute_response_massive(events, response_id, response_parameters) {
             dataType: "html",
             success: function(data) {
               $(".container-massive-events-response").append(data);
-              response["event_id"] = event_id;
-              response["server_id"] = server_id;
-              response["target"] = target;
-
               var indexstr = event_id;
               if (meta != 0) {
                 indexstr += "-" + server_id;
               }
 
-              perform_response(
-                btoa(JSON.stringify(response)),
-                response_id,
-                indexstr
-              );
+              var info = {};
+              info.response_id = response_id;
+              info.server_id = server_id;
+              info.event_id = event_id;
+              info.response_parameters = JSON.parse(response_parameters);
+              perform_response(btoa(JSON.stringify(info)), indexstr);
             }
           });
         }
@@ -238,15 +237,17 @@ function execute_response_massive(events, response_id, response_parameters) {
 }
 
 //Show the modal window of an event response
-function show_response_dialog(response_id, response) {
+function show_response_dialog(info) {
   var params = [];
   params.push({ name: "page", value: "include/ajax/events" });
   params.push({ name: "dialogue_event_response", value: 1 });
-  params.push({ name: "event_id", value: response.event_id });
-  params.push({ name: "target", value: response.target });
-  params.push({ name: "response_id", value: response_id });
-  params.push({ name: "server_id", value: response.server_id });
-  params.push({ name: "response", value: JSON.stringify(response) });
+  params.push({ name: "event_id", value: info.event_id });
+  params.push({ name: "response_id", value: info.response_id });
+  params.push({ name: "server_id", value: info.server_id });
+  params.push({
+    name: "response_parameters",
+    value: JSON.stringify(info.response_parameters)
+  });
 
   var view = ``;
 
@@ -272,10 +273,10 @@ function show_response_dialog(response_id, response) {
           draggable: true,
           modal: false,
           open: function() {
-            perform_response(btoa(JSON.stringify(response)), response_id, "");
+            perform_response(btoa(JSON.stringify(info)));
           },
-          width: response["modal_width"],
-          height: response["modal_height"],
+          width: info.modal_width,
+          height: info.modal_height,
           buttons: []
         })
         .show();
@@ -284,26 +285,22 @@ function show_response_dialog(response_id, response) {
 }
 
 // Perform a response and put the output into a div
-function perform_response(response, response_id, index = "") {
+function perform_response(info, index = "") {
+  info = JSON.parse(atob(info));
   $("#re_exec_command" + index).hide();
   $("#response_loading_command" + index).show();
   $("#response_out" + index).html("");
 
-  try {
-    response = JSON.parse(atob(response));
-  } catch (e) {
-    console.error(e);
-    return;
-  }
-
   var params = [];
   params.push({ name: "page", value: "include/ajax/events" });
   params.push({ name: "perform_event_response", value: 1 });
-  params.push({ name: "target", value: response["target"] });
-  params.push({ name: "response_id", value: response_id });
-  params.push({ name: "event_id", value: response["event_id"] });
-  params.push({ name: "server_id", value: response["server_id"] });
-  params.push({ name: "response", value: JSON.stringify(response) });
+  params.push({ name: "response_id", value: info.response_id });
+  params.push({ name: "event_id", value: info.event_id });
+  params.push({ name: "server_id", value: info.server_id });
+  params.push({
+    name: "response_parameters",
+    value: JSON.stringify(info.response_parameters)
+  });
 
   jQuery.ajax({
     data: params,
