@@ -1962,7 +1962,7 @@ if ($get_extended_event) {
         metaconsole_restore_db();
     }
 
-    $general = events_page_general($event);
+    $general = events_page_general($event, $filter);
 
     $comments = '<div id="extended_event_comments_page" class="extended_event_pages"></div>';
 
