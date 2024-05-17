@@ -585,23 +585,28 @@ function events_update_status($id_evento, $status, $filter=null)
 
             if ((int) $filter['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
                 $sql = sprintf(
-                    'SELECT tu.id_evento FROM tevento tu INNER JOIN ( %s ) tf
-                    ON tu.id_extra = tf.id_extra
+                    'SELECT te.id_evento FROM tevento te INNER JOIN ( %s ) tf
+                    ON te.id_extra = tf.id_extra
                     AND tf.max_id_evento = %d',
                     $sql,
                     $id_evento
                 );
             } else {
                 $sql = sprintf(
-                    'SELECT tu.id_evento FROM tevento tu INNER JOIN ( %s ) tf
-                    ON tu.estado = tf.estado
-                    AND tu.evento = tf.evento
-                    AND tu.id_agente = tf.id_agente
-                    AND tu.id_agentmodule = tf.id_agentmodule
+                    'SELECT te.id_evento FROM tevento te INNER JOIN ( %s ) tf
+                    ON te.estado = tf.estado
+                    AND te.evento = tf.evento
+                    AND te.id_agente = tf.id_agente
+                    AND te.id_agentmodule = tf.id_agentmodule
                     AND tf.max_id_evento = %d',
                     $sql,
                     $id_evento
                 );
+            }
+
+            $filter_date = get_filter_date($filter);
+            if (is_array($filter_date) === true && count($filter_date) > 0) {
+                $sql .= implode(' ', $filter_date);
             }
 
             $target_ids = db_get_all_rows_sql($sql);
