@@ -175,6 +175,8 @@ class TreeGroup extends Tree
                             );
                         }
                     );
+                    // Reindex result.
+                    $result = array_values($result);
                 } else {
                     // Save the groups which intersect with the user groups.
                     $groups = db_get_all_rows_filter(
