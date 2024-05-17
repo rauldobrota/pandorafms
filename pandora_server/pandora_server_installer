@@ -520,7 +520,7 @@ Type=forking
 User=$USER
 PIDFile=$PID_DIR/pandora_ha.pid
 Restart=always
-ExecStart=${INSTALL_DIR}pandora_ha -d -p $PID_DIR/pandora_ha.pid $PANDORA_CONF
+ExecStart=${INSTALL_DIR}pandora_ha -d -p $PID_DIR/pandora_ha.pid $DESTDIR$PANDORA_CFG_FILE
 
 [Install]
 WantedBy=multi-user.target
