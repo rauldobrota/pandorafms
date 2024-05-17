@@ -499,7 +499,7 @@ install () {
 		chmod +x "$INSTALL_DIR/pandora_ha"
 		;;
 	*)
-		SYSTEMD_DIR=$DESTDIR/etc/systemd/system
+		SYSTEMD_DIR=/etc/systemd/system
 		PID_DIR=$DESTDIR/var/run
 		INSTALL_DIR="$DESTDIR$PREFIX/bin/"
 
