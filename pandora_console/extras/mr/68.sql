@@ -126,7 +126,8 @@ UPDATE `tncm_agent_data_template` SET `vendors` = CONCAT('["', TRIM(BOTH '"' FRO
 UPDATE `tdiscovery_apps` SET `version` = '1.2' WHERE `short_name` = 'pandorafms.oracle';
 -- Update version for plugin mysql
 UPDATE `tdiscovery_apps` SET `version` = '1.2' WHERE `short_name` = 'pandorafms.mysql';
-
+-- Update version for plugin rds
+UPDATE `tdiscovery_apps` SET `version` = '1.1' WHERE `short_name` = 'pandorafms.aws.rds';
 
 SET @widget_id = NULL;
 SELECT @widget_id := `id` FROM `twidget` WHERE `unique_name` = 'GisMap';
