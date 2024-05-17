@@ -2154,3 +2154,14 @@ select option:checked {
 .content-widget .flot-base {
   background-color: unset;
 }
+
+div.rc-ad-view-main {
+  background-image: url(../../images/ehorus/ad/background-dark.svg);
+  background-size: cover;
+  border: 0;
+}
+
+div.rc-ad-view-second-row > div {
+  border: 0;
+  background-color: #525282;
+}
