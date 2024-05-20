@@ -14345,3 +14345,39 @@ div.fixed-bottom-box.tree-view-bottom-modal {
 #container_servicemap #service_map3 {
   min-height: 174px;
 }
+
+/* HACK FOR FIREROX SNMP TRAPS VIEW */
+td.snmp-td:has(a.datos_green),
+td.snmp-td:has(div.datos_green) {
+  background-color: #82b92e;
+}
+
+td.snmp-td:has(a.datos_blue),
+td.snmp-td:has(div.datos_blue) {
+  background-color: #4ca8e0;
+}
+
+td.snmp-td:has(a.datos_grey),
+td.snmp-td:has(div.datos_grey) {
+  background-color: #999999;
+}
+
+td.snmp-td:has(a.datos_yellow),
+td.snmp-td:has(div.datos_yellow) {
+  background-color: #f3b200;
+}
+
+td.snmp-td:has(a.datos_red),
+td.snmp-td:has(div.datos_red) {
+  background-color: #e63c52;
+}
+
+td.snmp-td:has(a.datos_pink),
+td.snmp-td:has(div.datos_pink) {
+  background-color: #fdc4ca;
+}
+
+td.snmp-td:has(a.datos_brown),
+td.snmp-td:has(div.datos_brown) {
+  background-color: #a67c52;
+}
