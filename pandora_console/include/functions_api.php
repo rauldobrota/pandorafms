@@ -435,7 +435,11 @@ function api_get_license($trash1, $trash2, $trash3, $returnType='json')
     if ($license === ENTERPRISE_NOT_HOOK) {
         // Not an enterprise environment?
         if (license_free()) {
-            $license = 'PANDORA_FREE';
+            $license = 'PANDORA-FREE';
+        }
+
+        if (license_enterprise_free() === true) {
+            $license = 'PANDORA-ENTERPRISE-FREE';
         }
 
         returnData(
@@ -492,6 +496,10 @@ function api_get_license_remaining(
         }
 
         return;
+    }
+
+    if (license_enterprise_free() === true) {
+        $license['limit'] = 50;
     }
 
     returnData(

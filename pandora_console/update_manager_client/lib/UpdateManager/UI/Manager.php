@@ -292,21 +292,23 @@ class Manager
      */
     public function register()
     {
-        View::render(
-            'register',
-            [
-                'version'  => $this->umc->getVersion(),
-                'mr'       => $this->umc->getMR(),
-                'error'    => $this->umc->getLastError(),
-                'asset'    => function ($rp) {
-                    echo $this->getUrl($rp);
-                },
-                'authCode' => $this->authCode,
-                'ajax'     => $this->ajaxUrl,
-                'ajaxPage' => $this->ajaxPage,
-                'mode'     => self::MODE_REGISTER,
-            ]
-        );
+        if ($this->umc->getLicense() !== 'PANDORA-ENTERPRISE-FREE') {
+            View::render(
+                'register',
+                [
+                    'version'  => $this->umc->getVersion(),
+                    'mr'       => $this->umc->getMR(),
+                    'error'    => $this->umc->getLastError(),
+                    'asset'    => function ($rp) {
+                        echo $this->getUrl($rp);
+                    },
+                    'authCode' => $this->authCode,
+                    'ajax'     => $this->ajaxUrl,
+                    'ajaxPage' => $this->ajaxPage,
+                    'mode'     => self::MODE_REGISTER,
+                ]
+            );
+        }
     }
 
 

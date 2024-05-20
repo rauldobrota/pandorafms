@@ -9786,6 +9786,12 @@ div.stat-win-spinner img {
   min-height: 350px !important;
 }
 
+p.license_p {
+  font-size: 12pt;
+  margin-left: 50px;
+  text-align: left;
+}
+
 .select2-container--default
   .select2-selection--multiple
   .select2-selection__rendered {

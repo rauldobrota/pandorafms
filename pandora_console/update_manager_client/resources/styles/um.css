@@ -451,6 +451,10 @@ span.warning {
   align-items: center;
   justify-content: space-between;
 }
+
+.ui-dialog-content.ui-widget-content#register_dialog_message {
+  display: inherit;
+}
 /*.ui-dialog-content.ui-widget-content p {
   font-size: 10pt;
   word-break: keep-all;

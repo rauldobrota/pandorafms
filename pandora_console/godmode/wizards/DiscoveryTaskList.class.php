@@ -1926,6 +1926,9 @@ class DiscoveryTaskList extends HTML
 
         // License precheck.
         $license = enterprise_hook('license_get_info');
+        if (empty($license) === false && license_enterprise_free() === true) {
+            $license['limit'] = 50;
+        }
 
         if (is_array($license) === true
             && $n_agents > ($license['limit'] - $license['count_enabled'])

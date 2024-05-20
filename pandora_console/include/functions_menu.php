@@ -900,12 +900,18 @@ if (is_ajax()) {
         global $config;
         global $pandora_version;
         global $build_version;
+        $license = db_get_value_sql('SELECT `value` FROM tupdate_settings WHERE `key` LIKE "customer_key"');
         $product_name = io_safe_output(get_product_name());
         $license_expiry_date = substr($config['license_expiry_date'], 0, 4).'/'.substr($config['license_expiry_date'], 4, 2).'/'.substr($config['license_expiry_date'], 6, 2);
         $license_expired = false;
         $timestamp = strtotime($license_expiry_date);
         if ($timestamp < time() || enterprise_installed() === false) {
             $license_expired = true;
+        }
+
+        $text = (enterprise_installed()) ? 'Enterprise' : 'Community';
+        if ($license === 'PANDORA-ENTERPRISE-FREE') {
+            $text = 'FREE';
         }
 
         include_once $config['homedir'].'/include/class/Diagnostics.class.php';
@@ -970,16 +976,18 @@ if (is_ajax()) {
                                 </th>
                                 <th style="width: 60%; text-align: left; border: 0px;">
                                     <h1>'.$product_name.'</h1>
-                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.(enterprise_installed() ? 'Enterprise' : 'Community').'</span></p>
+                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.$text.'</span></p>
                                     <p><span>'.__('Current package').'</span> '.$config['current_package'].'</p>
                                     <p><span>'.__('MR version').'</span> MR'.$config['MR'].'</p>                                    
                                     <p><span>Build</span>'.$build_version.'</p>';
-        if (enterprise_installed() === true) {
+        if (enterprise_installed() === true && $license !== 'PANDORA-ENTERPRISE-FREE') {
             $dialog .= '<p><span>'.__('Support expires').'</span>'.$license_expiry_date.'</p>';
         }
 
         if ($license_expired === false) {
             $dialog .= '<p>'.__('This system has official support, warranty and official updates.').'</p>';
+        } else if ($license === 'PANDORA-ENTERPRISE-FREE') {
+            $dialog .= '<p><span>'.__('This system has no active support contract.').'</span></p>';
         } else if (enterprise_installed() === true) {
             $dialog .= '<p><span>'.__('This system has no active support contract, and has no support, upgrades or warranty.').'</span></p>';
             $dialog .= '<p><b><a href="https://pandorafms.com/contact/" target="_blank">'.__('Contact Pandora FMS for expand your support contract.').'</a></b></p>';
@@ -1280,12 +1288,18 @@ if (is_ajax()) {
         global $config;
         global $pandora_version;
         global $build_version;
+        $license = db_get_value_sql('SELECT `value` FROM tupdate_settings WHERE `key` LIKE "customer_key"');
         $product_name = io_safe_output(get_product_name());
         $license_expiry_date = substr($config['license_expiry_date'], 0, 4).'/'.substr($config['license_expiry_date'], 4, 2).'/'.substr($config['license_expiry_date'], 6, 2);
         $license_expired = false;
         $timestamp = strtotime($license_expiry_date);
         if ($timestamp < time() || enterprise_installed() === false) {
             $license_expired = true;
+        }
+
+        $text = (enterprise_installed()) ? 'Enterprise' : 'Community';
+        if ($license === 'PANDORA-ENTERPRISE-FREE') {
+            $text = 'FREE';
         }
 
         $lts_name = '';
@@ -1313,15 +1327,17 @@ if (is_ajax()) {
                                 </th>
                                 <th style="width: 60%; text-align: left; border: 0px;">
                                     <h1>'.$product_name.'</h1>
-                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.(enterprise_installed() ? 'Enterprise' : 'Community').'</span></p>
+                                    <p><span>'.__('Version').' '.$pandora_version.$lts_name.' - '.$text.'</span></p>
                                     <p><span>'.__('MR version').'</span> MR'.$config['MR'].'</p>
                                     <p><span>Build</span>'.$build_version.'</p>';
-        if (enterprise_installed() === true) {
+        if (enterprise_installed() === true && $license !== 'PANDORA-ENTERPRISE-FREE') {
             $dialog .= '<p><span>'.__('Support expires').'</span>'.$license_expiry_date.'</p>';
         }
 
         if ($license_expired === false) {
             $dialog .= '<p>'.__('This system has official support, warranty and official updates.').'</p>';
+        } else if ($license === 'PANDORA-ENTERPRISE-FREE') {
+            $dialog .= '<p><span>'.__('This system has no active support contract.').'</span></p>';
         } else if (enterprise_installed() === true) {
             $dialog .= '<p><span>'.__('This system has no active support contract, and has no support, upgrades or warranty.').'</span></p>';
             $dialog .= '<p><b><a href="https://pandorafms.com/contact/" target="_blank">'.__('Contact Pandora FMS for expand your support contract.').'</a></b></p>';
