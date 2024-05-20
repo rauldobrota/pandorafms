@@ -160,51 +160,19 @@ class TreeGroup extends Tree
         $processed_items = $this->getProcessedGroups();
 
         if (empty($processed_items) === false) {
-            // Filter by group name. This should be done after rerieving
-            // the items cause we need the possible items descendants.
             if (empty($this->filter['searchGroup']) === false) {
+                $parentGroup = [
+                    'name'     => '',
+                    'children' => $processed_items,
+                ];
+
                 if (isset($this->filter['searchHirearchy']) === true
                     && (bool) $this->filter['searchHirearchy'] === true
                 ) {
-                    $result = array_filter(
-                        $processed_items,
-                        function ($group) {
-                            return self::getFullHirearchyGroups(
-                                $group,
-                                $this->filter['searchGroup']
-                            );
-                        }
-                    );
-                    // Reindex result.
-                    $result = array_values($result);
+                    self::getFullHierarchyGroups($parentGroup, $this->filter['searchGroup']);
+                    $result = $parentGroup['children'];
                 } else {
-                    // Save the groups which intersect with the user groups.
-                    $groups = db_get_all_rows_filter(
-                        'tgrupo',
-                        ['nombre' => '%'.$this->filter['searchGroup'].'%']
-                    );
-                    if ($groups === false) {
-                        $groups = [];
-                    }
-
-                    $userGroupsACL = $this->userGroupsACL;
-                    $ids_hash = array_reduce(
-                        $groups,
-                        function ($userGroups, $group) use ($userGroupsACL) {
-                            $group_id = $group['id_grupo'];
-                            if (isset($userGroupsACL[$group_id]) === true) {
-                                $userGroups[$group_id] = $userGroupsACL[$group_id];
-                            }
-
-                            return $userGroups;
-                        },
-                        []
-                    );
-
-                    $result = self::extractGroupsWithIDs(
-                        $processed_items,
-                        $ids_hash
-                    );
+                    $result = self::pruneHierarchyGroups($parentGroup, $this->filter['searchGroup']);
                 }
 
                 $processed_items = ($result === false) ? [] : $result;
@@ -580,41 +548,61 @@ class TreeGroup extends Tree
     }
 
 
-    private static function extractGroupsWithIDs($groups, $ids_hash)
-    {
-        $result_groups = [];
-        foreach ($groups as $group) {
-            if (isset($ids_hash[$group['id']])) {
-                $result_groups[] = $group;
-            } else if (!empty($group['children'])) {
-                $result = self::extractGroupsWithIDs($group['children'], $ids_hash);
-
-                // Item found on children
-                if (!empty($result)) {
-                    $result_groups = array_merge($result_groups, $result);
-                }
-            }
-        }
-
-        return $result_groups;
-    }
-
-
-    protected function getFullHirearchyGroups($group, $search)
+    /**
+     * Get all hierarchy groups.
+     *
+     * @param array  $group  Groups.
+     * @param string $search Serach.
+     *
+     * @return boolean
+     */
+    protected static function getFullHierarchyGroups(&$group, $search): bool
     {
         if (stripos($group['name'], $search) !== false) {
             return true;
-        } else {
-            if (isset($group['children']) === true && empty($group['children']) === false) {
-                foreach ($group['children'] as $group_child) {
-                    if ($this->getFullHirearchyGroups($group_child, $search) === true) {
-                        return true;
-                    }
-                }
+        }
+
+        if (empty($group['children'] ?? []) === true) {
+            return false;
+        }
+
+        $has_occurrences = false;
+        $count_children = count($group['children']);
+        for ($i = 0; $i < $count_children; $i++) {
+            if (self::getFullHierarchyGroups($group['children'][$i], $search) === false) {
+                unset($group['children'][$i]);
+            } else {
+                $has_occurrences = true;
             }
         }
 
-        return false;
+        return $has_occurrences;
+    }
+
+
+    /**
+     * Get prune groups.
+     *
+     * @param array  $group  Groups.
+     * @param string $search Serach.
+     *
+     * @return array
+     */
+    protected static function pruneHierarchyGroups($group, $search): array
+    {
+        $matches = [];
+        foreach (($group['children'] ?? []) as $child) {
+            if (stripos($child['name'], $search) !== false) {
+                $matches[] = $child;
+            } else {
+                $matches = [
+                    ...$matches,
+                    ...self::pruneHierarchyGroups($child, $search),
+                ];
+            }
+        }
+
+        return $matches;
     }
 
 
