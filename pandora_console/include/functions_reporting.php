@@ -4540,6 +4540,17 @@ function reporting_exception(
                 } else {
                     $return['chart']['hbar'] .= '</div>';
                 }
+            } else {
+                // Get only table data.
+                foreach ($items as $key => $item) {
+                    $data = [];
+                    $data['agent'] = $item['agent'];
+                    $data['module'] = $item['module'];
+                    $data['operation'] = __($item['operation']);
+                    $data['value'] = $item['value'];
+                    $data['formated_value'] = format_for_graph($item['value'], 2).' '.$item['unit'];
+                    $return['data'][] = $data;
+                }
             }
 
             if ($content['show_resume'] && $i > 0) {
