@@ -246,7 +246,7 @@ $filterTable->data[0][0] = html_print_label_input_block(
 
 $filterTable->data[0][1] = html_print_label_input_block(
     __('Start date'),
-    html_print_select_date_range('date', true)
+    html_print_select_date_range('date', true, $range)
 );
 
 $filterTable->data[1][0] = html_print_label_input_block(
@@ -368,7 +368,7 @@ html_print_action_buttons(
         false,
         [
             'icon'    => 'load',
-            'onclick' => 'blockResumit($(this))',
+            'onclick' => 'export_csv()',
         ],
         true
     )
@@ -729,4 +729,23 @@ function whois(ip) {
         }
     });
 }
+
+function export_csv() {
+    var top = $('#top').val();
+    var custom_date = $('#hidden-custom_date').val();
+    var date = $('#date').val();
+    var date_init = $('#text-date_init').val();
+    var time_init = $('#text-time_init').val();
+    var date_end = $('#text-date_end').val();
+    var time_end = $('#tex-ttime_end').val();
+    var date_text = $('#text-date_text').val();
+    var date_units = $('#date_units').val();
+    var action = $('#action').val();
+    var filter_id = $('#filter_id').val();
+    var filter_name = $('#text-filter_name').val();
+    var advanced_filter = $('#textarea_advanced_filter').val();
+    var params = '&top='+top+'&custom_date='+custom_date+'&date='+date+'&date_init='+date_init+'&time_init='+time_init+'&date_end='+date_end+'&time_end='+time_end+'&date_text='+date_text+'&date_units='+date_units+'&action='+action+'&filter_id='+filter_id+'&filter_name='+filter_name+'&advanced_filter='+advanced_filter;
+    window.location.href = 'index.php?sec=network_traffic&sec2=operation/netflow/netflow_explorer&export_csv=1'+params;
+}
+
 </script>

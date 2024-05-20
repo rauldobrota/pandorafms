@@ -155,3 +155,23 @@ function delete_user_token(int $idToken): bool
 
     return $result;
 }
+
+
+/**
+ * Generate token for use ONLY in pandora.
+ *
+ * @param string $serverUniqueIdentifier Value server_unique_identifier from tconfig.
+ * @param string $apiPassword            Value api_password from tconfig.
+ *
+ * @return string
+ */
+function generate_token_for_system(string $serverUniqueIdentifier='', string $apiPassword=''):string
+{
+    if (empty($serverUniqueIdentifier) === true
+        || empty($apiPassword) === true
+    ) {
+        return '';
+    }
+
+    return md5($serverUniqueIdentifier).md5($apiPassword);
+}

@@ -1550,7 +1550,7 @@ if ($add_comment === true) {
 if ($change_status === true) {
     $event_ids = get_parameter('event_ids');
     $new_status = get_parameter('new_status');
-    $group_rep = (int) get_parameter('group_rep', 0);
+    $filter = get_parameter('filter', []);
     $server_id = 0;
     if (is_metaconsole() === true) {
         $server_id = (int) get_parameter('server_id');
@@ -1564,19 +1564,11 @@ if ($change_status === true) {
             $node->connect();
         }
 
-        if ($group_rep !== 3) {
-            $return = events_change_status(
-                explode(',', $event_ids),
-                $new_status
-            );
-        } else {
-            // Update all elements with same extraid.
-            $return = events_update_status(
-                $event_ids,
-                (int) $new_status,
-                ['group_rep' => $group_rep]
-            );
-        }
+        $return = events_update_status(
+            $event_ids,
+            (int) $new_status,
+            $filter
+        );
     } catch (\Exception $e) {
         // Unexistent agent.
         if (is_metaconsole() === true
@@ -1962,7 +1954,7 @@ if ($get_extended_event) {
         metaconsole_restore_db();
     }
 
-    $general = events_page_general($event);
+    $general = events_page_general($event, $filter);
 
     $comments = '<div id="extended_event_comments_page" class="extended_event_pages"></div>';
 

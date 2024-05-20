@@ -2,7 +2,6 @@
 
 namespace PandoraFMS\Modules\Shared\Middlewares;
 
-use PandoraFMS\Modules\Shared\Services\Config;
 use PandoraFMS\Modules\Authentication\Services\GetUserTokenService;
 use PandoraFMS\Modules\Authentication\Services\UpdateTokenService;
 use PandoraFMS\Modules\Authentication\Services\ValidateServerIdentifierTokenService;
@@ -20,14 +19,20 @@ final class UserTokenMiddleware
         private readonly ValidateUserTokenService $validateUserTokenService,
         private readonly GetUserTokenService $getUserTokenService,
         private readonly UpdateTokenService $updateTokenService,
-        private readonly Timestamp $timestamp,
-        private readonly Config $config
+        private readonly Timestamp $timestamp
     ) {
     }
 
 
     public function check(Request $request): bool
     {
+        global $config;
+
+        // DO NOT REMOVE THIS LINE.
+        // In case a JSON error occurs outside of the API, it will be reset to handle
+        // formatting errors in the parameters.
+        json_encode([]);
+
         $authorization = ($request->getHeader('Authorization')[0] ?? '');
 
         $token = null;
@@ -50,7 +55,7 @@ final class UserTokenMiddleware
                 $validToken = $this->validateUserTokenService->__invoke($uuid, $strToken);
                 $token = $this->getUserTokenService->__invoke($uuid);
                 if ($token !== null && $validToken) {
-                    $this->config->set('id_user', $token->getIdUser());
+                    $config['id_user'] = $token->getIdUser();
                     $oldToken = clone $token;
                     $token->setLastUsage($this->timestamp->getMysqlCurrentTimestamp(0));
                     $this->updateTokenService->__invoke($token, $oldToken);
@@ -70,10 +75,10 @@ final class UserTokenMiddleware
 
             if ($validTokenUiniqueServerIdentifier === true) {
                 $_SESSION['id_usuario'] = 'admin';
-                $this->config->set('id_user', 'admin');
+                $config['id_user'] = 'admin';
             } else {
                 $_SESSION['id_usuario'] = $token->getIdUser();
-                $this->config->set('id_user', $token->getIdUser());
+                $config['id_user'] = $token->getIdUser();
             }
 
             if (session_status() === PHP_SESSION_ACTIVE) {

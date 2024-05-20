@@ -585,23 +585,28 @@ function events_update_status($id_evento, $status, $filter=null)
 
             if ((int) $filter['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
                 $sql = sprintf(
-                    'SELECT tu.id_evento FROM tevento tu INNER JOIN ( %s ) tf
-                    ON tu.id_extra = tf.id_extra
+                    'SELECT te.id_evento FROM tevento te INNER JOIN ( %s ) tf
+                    ON te.id_extra = tf.id_extra
                     AND tf.max_id_evento = %d',
                     $sql,
                     $id_evento
                 );
             } else {
                 $sql = sprintf(
-                    'SELECT tu.id_evento FROM tevento tu INNER JOIN ( %s ) tf
-                    ON tu.estado = tf.estado
-                    AND tu.evento = tf.evento
-                    AND tu.id_agente = tf.id_agente
-                    AND tu.id_agentmodule = tf.id_agentmodule
+                    'SELECT te.id_evento FROM tevento te INNER JOIN ( %s ) tf
+                    ON te.estado = tf.estado
+                    AND te.evento = tf.evento
+                    AND te.id_agente = tf.id_agente
+                    AND te.id_agentmodule = tf.id_agentmodule
                     AND tf.max_id_evento = %d',
                     $sql,
                     $id_evento
                 );
+            }
+
+            $filter_date = get_filter_date($filter);
+            if (is_array($filter_date) === true && count($filter_date) > 0) {
+                $sql .= implode(' ', $filter_date);
             }
 
             $target_ids = db_get_all_rows_sql($sql);
@@ -1158,17 +1163,6 @@ function events_get_all(
 
     // Free search.
     if (empty($filter['search']) === false) {
-        if (isset($config['dbconnection']->server_version) === true
-            && $config['dbconnection']->server_version > 50600
-        ) {
-            // Use "from_base64" requires mysql 5.6 or greater.
-            $custom_data_search = 'from_base64(te.custom_data)';
-        } else {
-            // Custom data is JSON encoded base64, if 5.6 or lower,
-            // user is condemned to use plain search.
-            $custom_data_search = 'te.custom_data';
-        }
-
         $not_search = '';
         $nexo = 'OR';
         $array_search = [
@@ -1176,7 +1170,7 @@ function events_get_all(
             'lower(te.evento)',
             'lower(te.id_extra)',
             'lower(te.source)',
-            'lower('.$custom_data_search.')',
+            'lower(te.custom_data)',
         ];
         if (isset($filter['not_search']) === true
             && empty($filter['not_search']) === false
@@ -4989,7 +4983,7 @@ function events_display_instructions($event_type='', $inst=[], $italic=true, $ev
  *
  * @return string HTML.
  */
-function events_page_general($event)
+function events_page_general($event, $filter=[])
 {
     global $img_sev;
     global $config;
@@ -5092,14 +5086,23 @@ function events_page_general($event)
 
     $data = [];
     $data[0] = __('Repeated');
-    if ($group_rep != 0) {
-        if ($event['event_rep'] <= 1) {
-            $data[1] = '<i>'.__('No').'</i>';
-        } else {
-            $data[1] = sprintf('%d Times', $event['event_rep']);
+
+    // Ticket 13013 This was done on purpose.
+    if ((int) $event['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
+        $counter_extra_id = event_get_counter_extraId($event, $filter);
+        if (empty($counter_extra_id) === false && $counter_extra_id > 1) {
+            $data[1] = sprintf('%d Times', $counter_extra_id);
         }
     } else {
-        $data[1] = '<i>'.__('No').'</i>';
+        if ($group_rep != 0) {
+            if ($event['event_rep'] <= 1) {
+                $data[1] = '<i>'.__('No').'</i>';
+            } else {
+                $data[1] = sprintf('%d Times', $event['event_rep']);
+            }
+        } else {
+            $data[1] = '<i>'.__('No').'</i>';
+        }
     }
 
     $table_general->data[] = $data;

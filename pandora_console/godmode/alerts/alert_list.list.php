@@ -143,7 +143,7 @@ $form_filter .= '<td class="w33p">'.html_print_label_input_block(
 ).'</td>';
 
 $form_filter .= '<td class="w33p">'.html_print_label_input_block(
-    __('Priority'),
+    __('Severity'),
     html_print_select(
         get_priorities(),
         'priority',
