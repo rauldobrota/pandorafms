@@ -48,7 +48,6 @@ Exported Functions:
 
 use strict;
 use warnings;
-use Geo::IP;
 
 # Default lib dir for RPM and DEB packages
 BEGIN { push @INC, '/usr/lib/perl5'; }
@@ -160,7 +159,7 @@ __END__
 
 =head1 DEPENDENCIES
 
-L<PandoraFMS::DB>, L<PandoraFMS::Tools>, L<Geo::IP>
+L<PandoraFMS::DB>, L<PandoraFMS::Tools>
 
 =head1 LICENSE
 
