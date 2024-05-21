@@ -146,12 +146,12 @@ install_startup_script () {
 	[ -d $DESTDIR$INITDIR ] || mkdir -p $DESTDIR$INITDIR
 	cp $SRC $DESTDIR$INITDIR
 
-	[ "$DESTDIR" ] && return
-
 	case $DISTRO in
 	UBUNTU|DEBIAN)
 		echo "Linking startup script to /etc/rc2.d"
 		update-rc.d $SCRIPT_NAME defaults
+		ln -s $DESTDIR$INITDIR/$SCRIPT_NAME /etc/init.d/$SCRIPT_NAME
+		systemctl daemon-reload 2> /dev/null
 		;;
 	SUSE)
 		echo "Creating startup daemons"
@@ -167,7 +167,9 @@ install_startup_script () {
 			INITLV=`grep '[0-9]:initdefault' /etc/inittab | cut -f 2 -d ':'`
 			: ${INITLV:=2}
 			echo "Linking startup script to /etc/rc.d/rc$INITLV.d/S$SPRIO$SCRIPT_NAME"
-			ln -s $INITDIR/$SCRIPT_NAME /etc/rc.d/rc$INITLV.d/S$SPRIO$SCRIPT_NAME
+			ln -s $DESTDIR$INITDIR/$SCRIPT_NAME /etc/rc.d/rc$INITLV.d/S$SPRIO$SCRIPT_NAME
+			ln -s $DESTDIR$INITDIR/$SCRIPT_NAME /etc/init.d/$SCRIPT_NAME
+			systemctl daemon-reload 2> /dev/null
 		fi
 		;;
 	esac
@@ -300,13 +302,15 @@ install () {
 	if [ $? -eq 0 ]; then
 		echo " "
 		echo "User pandora does exist, make sure the SSH directories are correct"
-	elif [ "$DESTDIR" ]
-	then
-		# chown can fail with fakeroot installation
-		echo "User 'pandora' does not exist. All chown operations may fail."
-		echo "You should manualy set proper ownership to $DESTDIR$PANDORA_SPOOL if needed."
-		echo
 	else
+		if [ "$DESTDIR" ]
+		then
+			# chown can fail with fakeroot installation
+			echo "User 'pandora' does not exist. All chown operations may fail."
+			echo "You should manualy set proper ownership to $DESTDIR$PANDORA_SPOOL if needed."
+			echo
+		fi
+
 		echo "Are you sure we can create a standard 'pandora' user locally? [y/N]"
 		read AREYOUSURE
 		if [ "$AREYOUSURE" = "y" ]; then
@@ -495,7 +499,7 @@ install () {
 		chmod +x "$INSTALL_DIR/pandora_ha"
 		;;
 	*)
-		SYSTEMD_DIR=$DESTDIR/etc/systemd/system
+		SYSTEMD_DIR=/etc/systemd/system
 		PID_DIR=$DESTDIR/var/run
 		INSTALL_DIR="$DESTDIR$PREFIX/bin/"
 
@@ -516,7 +520,7 @@ Type=forking
 User=$USER
 PIDFile=$PID_DIR/pandora_ha.pid
 Restart=always
-ExecStart=${INSTALL_DIR}pandora_ha -d -p $PID_DIR/pandora_ha.pid $PANDORA_CONF
+ExecStart=${INSTALL_DIR}pandora_ha -d -p $PID_DIR/pandora_ha.pid $DESTDIR$PANDORA_CFG_FILE
 
 [Install]
 WantedBy=multi-user.target
@@ -530,7 +534,7 @@ EOF
 		[ ! -d $DESTDIR/etc/cron.hourly ] && mkdir -p $DESTDIR/etc/cron.hourly
 		echo "Creating the Cron script to run Pandora DB tool each hour"
 		echo "#!/bin/bash" > $DESTDIR/etc/cron.hourly/pandora_db	
-		echo "perl $PANDORA_HOME/util/pandora_db.pl /etc/pandora/pandora_server.conf" >> $DESTDIR/etc/cron.hourly/pandora_db	
+		echo "perl $DESTDIR$PANDORA_HOME/util/pandora_db.pl $DESTDIR$PANDORA_CFG_FILE" >> $DESTDIR/etc/cron.hourly/pandora_db	
 		chmod +x $DESTDIR/etc/cron.hourly/pandora_db
 	elif [ "$DISTRO" = "FreeBSD" ] || [ "$DISTRO" = "NetBSD" ]
 	then
@@ -562,6 +566,8 @@ EOF
 		[ "$WITHOUT_TENTACLE" = 0 ] && \
 			echo "Define '$TENTACLE_RC_VAR=\"YES\"' in /etc/rc.conf to enable tentacle server daemon."
     fi
+
+    systemctl daemon-reload 2> /dev/null
 }
 
 uninstall () {
