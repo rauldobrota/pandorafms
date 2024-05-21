@@ -127,7 +127,7 @@ $table_details->data[] = $data;
 
 $priorities = get_priorities();
 
-$data[0] = __('Priority');
+$data[0] = __('Severity');
 $data[1] = '<span title="'.$priorities[$template['priority']].'" class="'.get_priority_class($template['priority']).' span_priority">&nbsp</span>'.$priorities[$template['priority']];
 $table_details->data[] = $data;
 

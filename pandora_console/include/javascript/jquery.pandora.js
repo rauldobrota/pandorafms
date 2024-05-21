@@ -176,6 +176,8 @@ $(document).ready(function() {
 
     if (typeof hide_counter == "undefined") hide_counter = 0;
 
+    if (typeof remaining == "undefined") remaining = 30;
+
     let height = 300;
     if (typeof invalid_license != "undefined") height = 350;
 
@@ -194,8 +196,6 @@ $(document).ready(function() {
         },
         open: function() {
           if (hide_counter != 1) {
-            var remaining = 30;
-
             // Timeout counter.
             var count = function() {
               if (remaining > 0) {
@@ -243,6 +243,66 @@ $(document).ready(function() {
 
     $("#ok_buttom").click(function() {
       $("#license_dialog_message").dialog("close");
+    });
+  }
+
+  if ($("#register_dialog_message").length) {
+    function validateEmail(email) {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(String(email).toLowerCase());
+    }
+
+    $("#register_dialog_message").dialog({
+      dialogClass: "no-close",
+      closeOnEscape: false,
+      resizable: false,
+      draggable: true,
+      modal: true,
+      height: "auto",
+      width: 800,
+      overlay: {
+        opacity: 0.5,
+        background: "black"
+      }
+    });
+
+    $("#button-register_buttom").click(function() {
+      if (validateEmail($("#text-license_email").val())) {
+        $.ajax({
+          method: "POST",
+          url: $("#hidden-test").val(),
+          dataType: "json",
+          data: {
+            page: "enterprise/load_enterprise",
+            register_email: 1,
+            email: $("#text-license_email").val()
+          },
+          success: function(data) {
+            if (data.error != null) {
+              $("#register_dialog_result").addClass("error");
+              $("#register_dialog_result_content").html("Unsuccessful register. "+ data.error);
+            } else {
+              $("#register_dialog_result_content").html("Successfully registered with UID: " + data.result);
+            }
+
+            $("#register_dialog_result").dialog({
+              buttons: [
+                {
+                  text: "OK",
+                  class: "submit-next",
+                  click: function() {
+                    $(this).dialog("close");
+                    $("#register_dialog_message").dialog("close");
+                    location.reload();
+                  }
+                }
+              ]
+            });
+          }
+        });
+      } else {
+        $("#text-license_email").css("border", "1px solid red");
+      }
     });
   }
 

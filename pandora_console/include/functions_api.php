@@ -435,7 +435,11 @@ function api_get_license($trash1, $trash2, $trash3, $returnType='json')
     if ($license === ENTERPRISE_NOT_HOOK) {
         // Not an enterprise environment?
         if (license_free()) {
-            $license = 'PANDORA_FREE';
+            $license = 'PANDORA-FREE';
+        }
+
+        if (license_enterprise_free() === true) {
+            $license = 'PANDORA-ENTERPRISE-FREE';
         }
 
         returnData(
@@ -492,6 +496,10 @@ function api_get_license_remaining(
         }
 
         return;
+    }
+
+    if (license_enterprise_free() === true) {
+        $license['limit'] = 50;
     }
 
     returnData(
@@ -13150,9 +13158,16 @@ function api_set_create_event($id, $trash1, $other, $returnType)
 
         if ($other['data'][18] != '') {
             $values['id_extra'] = $other['data'][18];
+
+            $id_extra_db_len = strlen(io_safe_input(io_safe_output($values['id_extra'])));
+            if($id_extra_db_len > 255){
+                returnError('The id_extra field after insertion will exceed the allowed length (255), current length (' . $id_extra_db_len . ')' );
+                return;
+            }
+
             $sql_validation = 'SELECT id_evento,estado,ack_utimestamp,id_usuario,event_custom_id
                 FROM tevento
-                WHERE estado IN (0,2) AND id_extra ="'.$other['data'][18].'";';
+                WHERE estado IN (0,2) AND id_extra ="'.$values['id_extra'].'";';
 
             $validation = db_get_all_rows_sql($sql_validation);
 

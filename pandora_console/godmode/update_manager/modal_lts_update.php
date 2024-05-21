@@ -134,8 +134,8 @@ if ($stop_lts_modal === '0') {
             }],
             open: function(event, ui) {
                 $(".ui-dialog-titlebar-close").hide();
-                $("div.ui-dialog-buttonset").addClass('flex-rr-sb-important');
-                $("div.ui-dialog-buttonset").append(`
+                $(".ui-dialog-buttonpane").children(":first").addClass('flex-rr-sb-important');
+                $(".ui-dialog-buttonpane").children(":first").append(`
                 <div class="welcome-wizard-buttons">
                     <label class="flex-row-center">
                         <input type="checkbox" id="checkbox-no_show_more" class="welcome-wizard-do-not-show"/>

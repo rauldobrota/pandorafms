@@ -83,7 +83,7 @@ $apiPassword = io_output_password(
 $apiTokenValid = false;
 // Try getting bearer token from header.
 // TODO. Getting token from url will be removed.
-$apiToken = (string) getBearerToken();
+$apiToken = (string) io_safe_input(getBearerToken());
 if (empty($apiToken) === true) {
     // Legacy user/pass token.
     // TODO. Revome in future.

@@ -1235,9 +1235,9 @@ if ($step == 2) {
     );
 
     $table->data[2][0] = html_print_label_input_block(
-        __('Priority'),
+        __('Severity'),
         html_print_select(
-            get_priorities(),
+            get_priorities(false, true),
             'priority',
             $priority,
             '',

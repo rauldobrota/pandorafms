@@ -16,7 +16,10 @@
 // Load global vars
 global $config;
 
+ui_require_css_file('pandora-rc', 'include/styles/');
+
 if (!$config['ehorus_enabled']) {
+    echo rc_ad_view();
     return;
 }
 
@@ -213,6 +216,58 @@ $query_data = [
 ];
 $query = http_build_query($query_data);
 $client_url = $config['homeurl'].'operation/agentes/ehorus_client.php?'.$query;
+
+
+function rc_ad_view()
+{
+    $title = __('Forget about distances').':';
+    $title2 = __('operate up to 5 devices for free, as if they were at your side!');
+    $onclick = 'onclick="window.location.href=\'index.php?sec=gsetup&sec2=godmode/setup/setup&section=pandorarc\'"';
+
+    $output = '
+    <div class="rc-ad-view-main">
+        <div class="rc-ad-view-first-row">
+            <div>
+                '.$title.'<br>'.$title2.'
+                <button '.$onclick.'>'.__('Enable Pandora RC for free').'</button>
+            </div>
+            '.html_print_image('images/ehorus/ad/sample.svg', true).'
+        </div>
+
+        <p>'.__('Pandora RC is not currently enabled, here’s what your missing out').':</p>
+
+        <div class="rc-ad-view-second-row">
+            <div>
+                '.html_print_image('images/ehorus/ad/desktop.svg', true).'
+                <span>'.__('Remote access to the server’s Desktop').'.</span>
+            </div>
+
+            <div>
+                '.html_print_image('images/ehorus/ad/cli.svg', true).'
+                <span>'.__('Run commands directly with native CLI').'.</span>
+            </div>
+
+            <div>
+                '.html_print_image('images/ehorus/ad/files.svg', true).'
+                <span>'.__('Upload and manage your files').'.</span>
+            </div>
+
+            <div>
+                '.html_print_image('images/ehorus/ad/multiplatform.svg', true).'
+                <span>'.__('Compatible with all major OS platforms').'.</span>
+            </div>
+
+            <div>
+                '.html_print_image('images/ehorus/ad/process-services.svg', true).'
+                <span>'.__('Manage all your processes and services').'.</span>
+            </div>
+        </div>
+    </div>
+    ';
+
+    return $output;
+}
+
 
 ?>
 

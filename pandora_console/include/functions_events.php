@@ -585,23 +585,28 @@ function events_update_status($id_evento, $status, $filter=null)
 
             if ((int) $filter['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
                 $sql = sprintf(
-                    'SELECT tu.id_evento FROM tevento tu INNER JOIN ( %s ) tf
-                    ON tu.id_extra = tf.id_extra
+                    'SELECT te.id_evento FROM tevento te INNER JOIN ( %s ) tf
+                    ON te.id_extra = tf.id_extra
                     AND tf.max_id_evento = %d',
                     $sql,
                     $id_evento
                 );
             } else {
                 $sql = sprintf(
-                    'SELECT tu.id_evento FROM tevento tu INNER JOIN ( %s ) tf
-                    ON tu.estado = tf.estado
-                    AND tu.evento = tf.evento
-                    AND tu.id_agente = tf.id_agente
-                    AND tu.id_agentmodule = tf.id_agentmodule
+                    'SELECT te.id_evento FROM tevento te INNER JOIN ( %s ) tf
+                    ON te.estado = tf.estado
+                    AND te.evento = tf.evento
+                    AND te.id_agente = tf.id_agente
+                    AND te.id_agentmodule = tf.id_agentmodule
                     AND tf.max_id_evento = %d',
                     $sql,
                     $id_evento
                 );
+            }
+
+            $filter_date = get_filter_date($filter);
+            if (is_array($filter_date) === true && count($filter_date) > 0) {
+                $sql .= implode(' ', $filter_date);
             }
 
             $target_ids = db_get_all_rows_sql($sql);
@@ -631,7 +636,10 @@ function events_update_status($id_evento, $status, $filter=null)
         break;
     }
 
-    $result = db_process_sql($update_sql);
+    $result = false;
+    if (empty($update_sql) === false) {
+        $result = db_process_sql($update_sql);
+    }
 
     if ($result !== false) {
         switch ($status) {
@@ -3827,8 +3835,7 @@ function events_get_response_target(
     array $event_response,
     ?array $response_parameters=null,
     ?int $server_id=0,
-    ?string $server_name='',
-    ?string $target_metaconsole=''
+    ?string $server_name=''
 ) {
     global $config;
 
@@ -3842,9 +3849,6 @@ function events_get_response_target(
 
     $event = db_get_row('tevento', 'id_evento', $event_id);
     $target = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
-    if (empty($target) === true && $target_metaconsole !== '') {
-        $target = io_safe_output($target_metaconsole);
-    }
 
     // Replace parameters response.
     if (isset($response_parameters) === true
@@ -4978,7 +4982,7 @@ function events_display_instructions($event_type='', $inst=[], $italic=true, $ev
  *
  * @return string HTML.
  */
-function events_page_general($event)
+function events_page_general($event, $filter=[])
 {
     global $img_sev;
     global $config;
@@ -5081,14 +5085,23 @@ function events_page_general($event)
 
     $data = [];
     $data[0] = __('Repeated');
-    if ($group_rep != 0) {
-        if ($event['event_rep'] <= 1) {
-            $data[1] = '<i>'.__('No').'</i>';
-        } else {
-            $data[1] = sprintf('%d Times', $event['event_rep']);
+
+    // Ticket 13013 This was done on purpose.
+    if ((int) $event['group_rep'] === EVENT_GROUP_REP_EXTRAIDS) {
+        $counter_extra_id = event_get_counter_extraId($event, $filter);
+        if (empty($counter_extra_id) === false && $counter_extra_id > 1) {
+            $data[1] = sprintf('%d Times', $counter_extra_id);
         }
     } else {
-        $data[1] = '<i>'.__('No').'</i>';
+        if ($group_rep != 0) {
+            if ($event['event_rep'] <= 1) {
+                $data[1] = '<i>'.__('No').'</i>';
+            } else {
+                $data[1] = sprintf('%d Times', $event['event_rep']);
+            }
+        } else {
+            $data[1] = '<i>'.__('No').'</i>';
+        }
     }
 
     $table_general->data[] = $data;
@@ -5994,9 +6007,10 @@ function events_get_criticity_class($criticity)
  */
 function get_row_response_action(
     array $event_response,
-    ?int $response_id,
-    $end=false,
-    $index=null
+    ?int $id_event,
+    ?int $server_id,
+    ?array $response_parameters=[],
+    ?string $index=null
 ) {
     $output = '<div class="container-massive-events-response-cell">';
     $display_command = (bool) $event_response['display_command'];
@@ -6005,7 +6019,7 @@ function get_row_response_action(
     // String command.
     $output .= '<div class="container-massive-events-response-command">';
     $output .= '<b>';
-    $output .= __('Event # %d', $event_response['event_id']);
+    $output .= __('Event # %d', $id_event);
     if (empty($command_str) === false) {
         $output .= ' ';
         $output .= __('Executing command').': ';
@@ -6028,11 +6042,18 @@ function get_row_response_action(
 
     // Butom.
     $output .= '<div id="re_exec_command'.$index.'" style="display:none" class="container-massive-events-response-execute">';
+    $info = [
+        'response_id'         => $event_response['id'],
+        'server_id'           => $server_id,
+        'event_id'            => $id_event,
+        'response_parameters' => $response_parameters,
+    ];
+
     $output .= html_print_button(
         __('Execute again'),
         'btn_str',
         false,
-        'perform_response("'.base64_encode(json_encode($event_response)).'",'.$response_id.',"'.trim($index).'")',
+        'perform_response("'.base64_encode(json_encode($info)).'","'.trim($index).'")',
         [
             'icon' => 'next',
             'mode' => 'mini secondary',
@@ -6063,13 +6084,8 @@ function get_events_get_response_target(
     $response_parameters=[]
 ) {
     try {
-        $target_metaconsole = '';
-        if (is_metaconsole() === true
-            && $server_id > 0
-        ) {
-            $target_metaconsole = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
+        if (is_metaconsole() === true && $server_id > 0) {
             $node = new Node($server_id);
-            $node->connect();
         }
 
         return events_get_response_target(
@@ -6077,24 +6093,10 @@ function get_events_get_response_target(
             $event_response,
             $response_parameters,
             $server_id,
-            ($server_id !== 0) ? $node->server_name() : 'Metaconsole',
-            $target_metaconsole
+            ($server_id !== 0) ? $node->server_name() : 'Metaconsole'
         );
     } catch (\Exception $e) {
-        // Unexistent agent.
-        if (is_metaconsole() === true
-            && $server_id > 0
-        ) {
-            $node->disconnect();
-        }
-
         return '';
-    } finally {
-        if (is_metaconsole() === true
-            && $server_id > 0
-        ) {
-            $node->disconnect();
-        }
     }
 }
 

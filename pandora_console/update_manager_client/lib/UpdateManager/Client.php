@@ -655,6 +655,17 @@ class Client
 
 
     /**
+     * Return license.
+     *
+     * @return string|null
+     */
+    public function getLicense()
+    {
+        return $this->license;
+    }
+
+
+    /**
      * Executes a curl request.
      *
      * @param string $url     Url to be called.

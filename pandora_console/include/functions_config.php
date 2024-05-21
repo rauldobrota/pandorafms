@@ -513,6 +513,10 @@ function config_update_config()
                         if (config_update_value('ipam_ocuppied_warning_treshold', get_parameter('ipam_ocuppied_warning_treshold'), true) === false) {
                             $error_update[] = __('Ipam Ocuppied Manager Warning');
                         }
+
+                        if (config_update_value('metaconsole_base_url', get_parameter('metaconsole_base_url'), true) === false) {
+                            $error_update[] = __('Metaconsole base url');
+                        }
                     }
                 break;
 

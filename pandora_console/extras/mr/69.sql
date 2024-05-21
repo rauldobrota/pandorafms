@@ -7771,5 +7771,13 @@ UPDATE `tdiscovery_apps` SET `version` = '1.5' WHERE `short_name` = 'pandorafms.
 DELETE FROM tevent_response	WHERE name = 'Create&#x20;incident&#x20;from&#x20;event';
 
 UPDATE tconfig_os SET `name` = 'Web&#x20;Server' WHERE `id_os` = 12;
+UPDATE `tncm_script` SET `content` ='set&#x20;cli&#x20;pager&#x20;off&#x20;&#92;n&#x0d;&#x0a;capture:show&#x20;system&#x20;info&#x20;|&#x20;match&#x20;app-version:&#92;n&#x0d;&#x0a;sleep:1&#x0d;&#x0a;exit&#x20;&#92;n'
+WHERE `content`='set&#x20;cli&#x20;pager&#x20;off&#x20;&#92;n&#x0d;&#x0a;capture:show&#x20;system&#x20;info&#x20;|&#x20;match&#x20;app-version:&#92;n&#x0d;&#x0a;sleep:1&#x20;&#x0d;&#x0a;expect:app-version:&#92;s*&#x0d;&#x0a;exit&#x20;&#92;n';
+
+UPDATE `tncm_script` SET `content` ='expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&#x0d;&#x0a;capture:show&#x20;version|match&#x20;Junos:&#92;n&#x0d;&#x0a;quit&#92;n&#x0d;&#x0a;expect:root@%&#x0d;&#x0a;exit&#92;n'
+WHERE `content`= 'expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&#x0d;&#x0a;capture:show&#x20;version|match&#x20;Junos:&#92;n&#x0d;&#x0a;capture:&#x20;&#92;n&#x0d;&#x0a;quit&#92;n&#x0d;&#x0a;expect:root@%&#x0d;&#x0a;exit&#92;n';
+
+UPDATE `tncm_script` SET `content` ='expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&#x0d;&#x0a;capture:show&#x20;version|match&#x20;Junos:&#92;n&#x0d;&#x0a;quit&#92;n&#x0d;&#x0a;expect:root@%&#x0d;&#x0a;exit&#92;n'
+WHERE `content`='expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&#x0d;&#x0a;capture:show&#x20;version|match&#x20;Junos:&#92;n&#x0d;&#x0a;capture:&#x20;&#92;n&#x0d;&#x0a;quit&#92;n&#x0d;&#x0a;expect:root@%&#x0d;&#x0a;exit&#92;n';
 
 COMMIT;
