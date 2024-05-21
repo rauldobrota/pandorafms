@@ -8,7 +8,7 @@ enum EventStatusEnum: int
 {
     use EnumTrait;
 
-case new = 0;
-case VALIDATED = 1;
-case INPROCESS = 2;
-    }
+    case NEW = 0;
+    case VALIDATED = 1;
+    case INPROCESS = 2;
+}
