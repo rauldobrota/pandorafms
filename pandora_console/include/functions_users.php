@@ -197,7 +197,7 @@ function users_get_groups_for_select(
  *
  * @return array
  */
-function get_group_ancestors($group_id, $groups)
+function get_group_ancestors($group_id, $groups, $forceNotPropagate=false)
 {
     if ($group_id == 0) {
         return 0;
@@ -209,8 +209,10 @@ function get_group_ancestors($group_id, $groups)
 
     $parent = $groups[$group_id]['parent'];
 
-    if ($groups[$group_id]['propagate'] == 0) {
-        return $group_id;
+    if ($forceNotPropagate === false) {
+        if ($groups[$group_id]['propagate'] == 0) {
+            return $group_id;
+        }
     }
 
     $r = get_group_ancestors($parent, $groups);
