@@ -18,6 +18,11 @@ ADD COLUMN `stop_lts_modal` TINYINT NOT NULL DEFAULT 0 AFTER `session_max_time_e
 
 ALTER TABLE `tlayout_template` ADD COLUMN `create_from` INT UNSIGNED NOT NULL DEFAULT 0;
 
+DELETE FROM `tlanguage` WHERE `id_language` = 'zh_CN';
+UPDATE `tusuario` SET `language` = 'default' WHERE `language` = 'zh_CN';
+UPDATE `tconfig` SET `value` = 'en_GB' WHERE `token` = 'language' AND `value` = 'zh_CN';
+UPDATE `tconfig` SET `value` = 'Andromeda' WHERE `token` = 'lts_name';
+
 -- START MIGRATION MSSQL --
 SET @current_app_type = 12;
 SET @short_name = 'pandorafms.mssql';
