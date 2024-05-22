@@ -206,14 +206,14 @@ install () {
 			echo -e -n "Files from a previous installation were found in ${GREEN}/usr/lib/perl5/PandoraFMS/${NONE}. " 	
 			read -p "That directory will be deleted in order to preserve integrity. Do you wish to proceed? (y/N): " USERAPPROVAL
 
-			if [ "${USERAPPROVAL,,}" = "y" ]; then
+			if [ "$USERAPPROVAL" = "y" ] || [ "$USERAPPROVAL" = "Y" ]; then
 				rm -rf "/usr/lib/perl5/PandoraFMS"
 				echo -e "Previous PandoraFMS directory deleted successfully"
 			else
 				echo -e -n "Files in ${GREEN}/usr/lib/perl5/PandoraFMS/${NONE} will not be deleted. This may cause issues. " 	
 				read -p "Do you want to proceed with the installation anyway? (y/N): " USERAPPROVAL
 
-				if [ "${USERAPPROVAL,,}" = "y" ]; then
+				if [ "$USERAPPROVAL" = "y" ] || [ "$USERAPPROVAL" = "Y" ]; then
 					echo "Proceeding with the installation anyway. This may cause problems in the future due to the existence of files from previous installations."
 				else
 					echo "Installation aborted. You chose not to proceed."
