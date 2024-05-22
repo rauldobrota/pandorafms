@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-22 12:35+0200\n"
+"POT-Creation-Date: 2024-05-22 14:08+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -218,7 +218,7 @@ msgstr "Pujador d'extensions"
 #: ../../operation/agentes/exportdata.csv.php:74
 #: ../../operation/agentes/exportdata.excel.php:74
 #: ../../operation/agentes/exportdata.php:119
-#: ../../operation/agentes/estado_agente.php:1100
+#: ../../operation/agentes/estado_agente.php:1096
 #: ../../operation/agentes/estado_monitores.php:123
 #: ../../operation/agentes/interface_view.functions.php:500
 #: ../../operation/agentes/ver_agente.php:1239
@@ -460,7 +460,6 @@ msgstr ""
 
 #: ../../extensions/dbmanager.php:124 ../../extensions/module_groups.php:51
 #: ../../godmode/agentes/agent_manager.php:1576
-#: ../../godmode/groups/group_list.php:1296
 #: ../../godmode/massive/massive_copy_modules.php:124
 #: ../../godmode/massive/massive_copy_modules.php:312
 #: ../../godmode/massive/massive_delete_modules.php:428
@@ -1076,7 +1075,7 @@ msgstr "No hi ha cap altre usuari connectat"
 #: ../../include/functions_events.php:254
 #: ../../include/functions_events.php:306
 #: ../../include/functions_reporting_html.php:7293
-#: ../../include/functions_users.php:1105
+#: ../../include/functions_users.php:1107
 #: ../../mobile/include/user.class.php:427
 #: ../../mobile/operation/tactical.php:350
 #: ../../operation/users/user_edit.php:854 ../../operation/search_users.php:71
@@ -1117,7 +1116,7 @@ msgstr "Últim inici de sessió"
 #: ../../mobile/operation/agents.php:418 ../../mobile/operation/agents.php:420
 #: ../../mobile/operation/agents.php:423
 #: ../../operation/agentes/log_sources_status.php:60
-#: ../../operation/agentes/estado_agente.php:1133
+#: ../../operation/agentes/estado_agente.php:1129
 #: ../../operation/agentes/ver_agente.php:1098
 #: ../../operation/gis_maps/ajax.php:239 ../../operation/gis_maps/ajax.php:349
 #: ../../operation/gis_maps/ajax.php:466
@@ -1161,7 +1160,7 @@ msgstr "Informació a mostrar"
 #: ../../godmode/agentes/configurar_agente.php:552
 #: ../../godmode/agentes/configurar_agente.php:556
 #: ../../godmode/agentes/modificar_agente.php:314
-#: ../../godmode/agentes/modificar_agente.php:707
+#: ../../godmode/agentes/modificar_agente.php:703
 #: ../../godmode/agentes/planned_downtime.editor.php:895
 #: ../../godmode/agentes/planned_downtime.editor.php:1360
 #: ../../godmode/alerts/configure_alert_command.php:247
@@ -1303,7 +1302,7 @@ msgstr "Informació a mostrar"
 #: ../../operation/agentes/exportdata.php:334
 #: ../../operation/agentes/group_view.php:246
 #: ../../operation/agentes/estado_agente.php:329
-#: ../../operation/agentes/estado_agente.php:1117
+#: ../../operation/agentes/estado_agente.php:1113
 #: ../../operation/agentes/interface_view.functions.php:37
 #: ../../operation/agentes/pandora_networkmap.view.php:140
 #: ../../operation/agentes/pandora_networkmap.view.php:176
@@ -1387,7 +1386,6 @@ msgstr "Grup de mòduls"
 #: ../../godmode/events/event_edit_filter.php:386
 #: ../../godmode/events/event_edit_filter.php:406
 #: ../../godmode/events/event_edit_filter.php:790
-#: ../../godmode/groups/group_list.php:812
 #: ../../godmode/massive/massive_copy_modules.php:137
 #: ../../godmode/massive/massive_copy_modules.php:324
 #: ../../godmode/massive/massive_delete_modules.php:324
@@ -1463,7 +1461,7 @@ msgstr "Grup de mòduls"
 #: ../../include/functions.php:1214 ../../include/functions.php:1477
 #: ../../include/functions_reporting.php:3533
 #: ../../include/functions_reporting.php:3630
-#: ../../include/functions_users.php:428 ../../include/functions_users.php:686
+#: ../../include/functions_users.php:430 ../../include/functions_users.php:688
 #: ../../mobile/operation/agents.php:56 ../../mobile/operation/alerts.php:65
 #: ../../mobile/operation/alerts.php:72 ../../mobile/operation/events.php:1014
 #: ../../mobile/operation/events.php:1024
@@ -1672,8 +1670,8 @@ msgstr "Vista d'agent/mòdul"
 #: ../../godmode/agentes/module_manager.php:93
 #: ../../godmode/agentes/module_manager.php:108
 #: ../../godmode/agentes/module_manager.php:109
-#: ../../godmode/groups/group_list.php:854
-#: ../../godmode/groups/group_list.php:955
+#: ../../godmode/groups/group_list.php:813
+#: ../../godmode/groups/group_list.php:912
 #: ../../godmode/modules/manage_network_components.php:707
 #: ../../godmode/modules/manage_network_templates_form.php:277
 #: ../../godmode/modules/manage_network_templates_form.php:337
@@ -1741,7 +1739,7 @@ msgstr "No hi ha agents amb mòduls"
 #: ../../godmode/agentes/configurar_agente.php:429
 #: ../../godmode/agentes/configurar_agente.php:436
 #: ../../godmode/agentes/configurar_agente.php:771
-#: ../../godmode/agentes/modificar_agente.php:840
+#: ../../godmode/agentes/modificar_agente.php:836
 #: ../../godmode/agentes/planned_downtime.editor.php:1363
 #: ../../godmode/agentes/planned_downtime.editor.php:1440
 #: ../../godmode/massive/massive_copy_modules.php:226
@@ -1781,7 +1779,7 @@ msgstr "No hi ha agents amb mòduls"
 #: ../../operation/agentes/exportdata.php:360
 #: ../../operation/agentes/group_view.php:184
 #: ../../operation/agentes/group_view.php:241
-#: ../../operation/agentes/estado_agente.php:1124
+#: ../../operation/agentes/estado_agente.php:1120
 #: ../../operation/agentes/graphs.php:202
 #: ../../operation/reporting/graph_analytics.php:892
 #: ../../operation/reporting/graph_analytics.php:915
@@ -1916,7 +1914,7 @@ msgstr "Funcionament"
 #: ../../godmode/agentes/module_manager_editor_common.php:199
 #: ../../godmode/alerts/alert_commands.php:1002
 #: ../../godmode/groups/modu_group_list.php:260
-#: ../../godmode/groups/group_list.php:1032
+#: ../../godmode/groups/group_list.php:989
 #: ../../godmode/modules/module_list.php:97 ../../godmode/setup/os.list.php:74
 #: ../../include/class/AlertsList.class.php:313
 #: ../../include/lib/Dashboard/Widgets/ITSMIncidences.php:298
@@ -2080,8 +2078,8 @@ msgstr "Gràfic clar"
 #: ../../godmode/agentes/planned_downtime.list.php:711
 #: ../../godmode/agentes/planned_downtime.list.php:712
 #: ../../godmode/events/events.php:105 ../../godmode/events/events.php:124
-#: ../../godmode/groups/group_list.php:872
-#: ../../godmode/groups/group_list.php:978
+#: ../../godmode/groups/group_list.php:829
+#: ../../godmode/groups/group_list.php:935
 #: ../../godmode/modules/manage_network_components.php:723
 #: ../../godmode/reporting/reporting_builder.list_items.php:283
 #: ../../godmode/reporting/visual_console_favorite.php:220
@@ -2278,7 +2276,6 @@ msgid "Alerts_Fired"
 msgstr "Alertes_Disparats"
 
 #: ../../extensions/module_groups.php:50
-#: ../../godmode/groups/group_list.php:1291
 #: ../../godmode/massive/massive_copy_modules.php:125
 #: ../../godmode/massive/massive_copy_modules.php:313
 #: ../../godmode/massive/massive_delete_modules.php:429
@@ -2327,7 +2324,6 @@ msgstr "Crític"
 
 #: ../../extensions/module_groups.php:52
 #: ../../godmode/alerts/alert_list.builder.php:350
-#: ../../godmode/groups/group_list.php:1301
 #: ../../godmode/massive/massive_copy_modules.php:126
 #: ../../godmode/massive/massive_copy_modules.php:314
 #: ../../godmode/massive/massive_delete_modules.php:430
@@ -3148,7 +3144,7 @@ msgstr ""
 #: ../../godmode/alerts/alert_actions.php:333
 #: ../../godmode/alerts/alert_templates.php:331
 #: ../../godmode/alerts/alert_templates.php:348
-#: ../../godmode/groups/group_list.php:941
+#: ../../godmode/groups/group_list.php:898
 #: ../../godmode/module_library/module_library_view.php:102
 #: ../../godmode/module_library/module_library_view.php:112
 #: ../../godmode/reporting/visual_console_favorite.php:177
@@ -4178,7 +4174,7 @@ msgstr "Edita el meu usuari"
 #: ../../godmode/agentes/agent_template.php:298
 #: ../../godmode/agentes/fields_manager.php:210
 #: ../../godmode/agentes/inventory_manager.php:266
-#: ../../godmode/agentes/modificar_agente.php:985
+#: ../../godmode/agentes/modificar_agente.php:981
 #: ../../godmode/agentes/module_manager.php:1066
 #: ../../godmode/agentes/module_manager.php:1077
 #: ../../godmode/agentes/module_manager.php:1090
@@ -4197,8 +4193,8 @@ msgstr "Edita el meu usuari"
 #: ../../godmode/events/event_filter.php:218
 #: ../../godmode/groups/modu_group_list.php:284
 #: ../../godmode/groups/modu_group_list.php:287
-#: ../../godmode/groups/group_list.php:1129
-#: ../../godmode/groups/group_list.php:1336
+#: ../../godmode/groups/group_list.php:1086
+#: ../../godmode/groups/group_list.php:1246
 #: ../../godmode/massive/massive_enable_disable_alerts.php:227
 #: ../../godmode/massive/massive_standby_alerts.php:255
 #: ../../godmode/massive/massive_edit_plugins.php:576
@@ -4252,8 +4248,8 @@ msgstr "Edita el meu usuari"
 #: ../../include/class/SatelliteAgent.class.php:1297
 #: ../../include/class/SatelliteCollection.class.php:531
 #: ../../include/class/SatelliteCollection.class.php:573
-#: ../../include/class/TreeGroupEdition.class.php:170
 #: ../../include/class/WelcomeWindow.class.php:174
+#: ../../include/class/TreeGroupEdition.class.php:186
 #: ../../include/lib/Dashboard/Widgets/events_list.php:741
 #: ../../include/lib/ITSM/Manager.php:1315
 #: ../../include/functions_container.php:190
@@ -4317,8 +4313,8 @@ msgstr "Enviar"
 #: ../../include/class/SatelliteAgent.class.php:1303
 #: ../../include/class/SatelliteCollection.class.php:536
 #: ../../include/class/SatelliteCollection.class.php:578
-#: ../../include/class/TreeGroupEdition.class.php:169
 #: ../../include/class/WelcomeWindow.class.php:177
+#: ../../include/class/TreeGroupEdition.class.php:185
 #: ../../include/functions_visual_map_editor.php:926
 #: ../../include/functions_visual_map_editor.php:930
 #: ../../include/functions_register.php:179
@@ -4423,7 +4419,7 @@ msgstr "Nom del mòdul"
 
 #: ../../godmode/agentes/agent_template.php:275
 #: ../../godmode/agentes/planned_downtime.list.php:736
-#: ../../godmode/agentes/modificar_agente.php:706
+#: ../../godmode/agentes/modificar_agente.php:702
 #: ../../godmode/agentes/module_manager.php:700
 #: ../../godmode/agentes/planned_downtime.editor.php:927
 #: ../../godmode/agentes/module_manager_editor_common.php:295
@@ -4481,7 +4477,7 @@ msgstr "Nom del mòdul"
 #: ../../mobile/operation/events.php:683 ../../mobile/operation/events.php:684
 #: ../../mobile/operation/events.php:837 ../../mobile/operation/events.php:1012
 #: ../../mobile/operation/events.php:1013
-#: ../../operation/agentes/estado_agente.php:1121
+#: ../../operation/agentes/estado_agente.php:1117
 #: ../../operation/agentes/ver_agente.php:1223
 #: ../../operation/netflow/nf_live_view.php:563
 #: ../../operation/reporting/graph_viewer.php:401
@@ -4495,7 +4491,7 @@ msgstr "Tipus"
 #: ../../godmode/agentes/pandora_networkmap_empty.editor.php:170
 #: ../../godmode/agentes/planned_downtime.list.php:734
 #: ../../godmode/agentes/inventory_manager.php:238
-#: ../../godmode/agentes/modificar_agente.php:709
+#: ../../godmode/agentes/modificar_agente.php:705
 #: ../../godmode/agentes/module_manager.php:714
 #: ../../godmode/agentes/planned_downtime.editor.php:915
 #: ../../godmode/agentes/agent_manager.php:640
@@ -4507,7 +4503,7 @@ msgstr "Tipus"
 #: ../../godmode/events/event_responses.list.php:67
 #: ../../godmode/events/event_responses.editor.php:141
 #: ../../godmode/groups/configure_group.php:256
-#: ../../godmode/groups/group_list.php:1042
+#: ../../godmode/groups/group_list.php:999
 #: ../../godmode/massive/massive_edit_agents.php:824
 #: ../../godmode/massive/massive_edit_modules.php:855
 #: ../../godmode/massive/massive_edit_plugins.php:494
@@ -4579,7 +4575,7 @@ msgstr "Tipus"
 #: ../../operation/agentes/custom_fields.php:69
 #: ../../operation/agentes/gis_view.php:222
 #: ../../operation/agentes/pandora_networkmap.editor.php:374
-#: ../../operation/agentes/estado_agente.php:1104
+#: ../../operation/agentes/estado_agente.php:1100
 #: ../../operation/agentes/estado_generalagente.php:191
 #: ../../operation/agentes/pandora_networkmap.view.php:146
 #: ../../operation/gis_maps/ajax.php:325 ../../operation/gis_maps/ajax.php:459
@@ -4664,8 +4660,8 @@ msgstr "Acció"
 #: ../../godmode/events/event_filter.php:222
 #: ../../godmode/events/event_filter.php:264
 #: ../../godmode/groups/modu_group_list.php:263
-#: ../../godmode/groups/group_list.php:1140
-#: ../../godmode/groups/group_list.php:1141
+#: ../../godmode/groups/group_list.php:1097
+#: ../../godmode/groups/group_list.php:1098
 #: ../../godmode/modules/manage_inventory_modules.php:342
 #: ../../godmode/modules/manage_inventory_modules.php:385
 #: ../../godmode/modules/manage_network_templates.php:289
@@ -4757,13 +4753,13 @@ msgstr "Suprimeix"
 #: ../../godmode/agentes/fields_manager.php:191
 #: ../../godmode/agentes/planned_downtime.list.php:747
 #: ../../godmode/agentes/configure_field.php:83
-#: ../../godmode/agentes/modificar_agente.php:830
+#: ../../godmode/agentes/modificar_agente.php:826
 #: ../../godmode/agentes/planned_downtime.editor.php:1419
 #: ../../godmode/category/category.php:182
 #: ../../godmode/category/category.php:211
 #: ../../godmode/events/event_responses.list.php:111
-#: ../../godmode/groups/group_list.php:1120
-#: ../../godmode/groups/group_list.php:1121
+#: ../../godmode/groups/group_list.php:1077
+#: ../../godmode/groups/group_list.php:1078
 #: ../../godmode/reporting/reporting_builder.list_items.php:627
 #: ../../godmode/reporting/schedule.php:211
 #: ../../godmode/reporting/reporting_builder.item_editor.php:2909
@@ -4783,7 +4779,7 @@ msgstr "Suprimeix"
 #: ../../include/lib/ITSM/Manager.php:1048
 #: ../../include/lib/ITSM/Manager.php:1297 ../../include/functions_cron.php:917
 #: ../../include/functions_cron.php:942
-#: ../../operation/agentes/estado_agente.php:1338
+#: ../../operation/agentes/estado_agente.php:1334
 #: ../../operation/agentes/pandora_networkmap.php:842
 #: ../../operation/agentes/status_monitor.php:2299
 #: ../../operation/agentes/status_monitor.php:2314
@@ -4948,7 +4944,7 @@ msgstr "No s'ha trobat el mapa de xarxa."
 #: ../../godmode/groups/configure_modu_group.php:82
 #: ../../godmode/groups/modu_group_list.php:261
 #: ../../godmode/groups/configure_group.php:140
-#: ../../godmode/groups/group_list.php:1034
+#: ../../godmode/groups/group_list.php:991
 #: ../../godmode/modules/manage_inventory_modules.php:289
 #: ../../godmode/modules/manage_nc_groups_form.php:72
 #: ../../godmode/modules/manage_network_templates.php:248
@@ -5243,7 +5239,7 @@ msgstr "Interval"
 #: ../../mobile/operation/modules.php:909
 #: ../../operation/agentes/alerts_status.functions.php:122
 #: ../../operation/agentes/estado_agente.php:359
-#: ../../operation/agentes/estado_agente.php:1127
+#: ../../operation/agentes/estado_agente.php:1123
 #: ../../operation/agentes/interface_view.functions.php:517
 #: ../../operation/agentes/status_monitor.php:1595
 #: ../../operation/messages/message_list.php:188
@@ -5668,7 +5664,7 @@ msgstr ""
 #: ../../godmode/agentes/status_monitor_custom_fields.php:273
 #: ../../godmode/events/custom_events.php:234
 #: ../../godmode/wizards/ManageExtensions.class.php:344
-#: ../../include/class/TreeGroupEdition.class.php:168
+#: ../../include/class/TreeGroupEdition.class.php:184
 #: ../../operation/custom_fields/custom_fields_view.php:1172
 msgid "Confirm"
 msgstr "Confirmeu"
@@ -5758,7 +5754,7 @@ msgstr ""
 
 #: ../../godmode/agentes/fields_manager.php:155
 #: ../../godmode/agentes/inventory_manager.php:241
-#: ../../godmode/agentes/modificar_agente.php:710
+#: ../../godmode/agentes/modificar_agente.php:706
 #: ../../godmode/agentes/planned_downtime.editor.php:1372
 #: ../../godmode/alerts/alert_commands.php:1005
 #: ../../godmode/alerts/alert_list.list.php:136
@@ -5767,7 +5763,7 @@ msgstr ""
 #: ../../godmode/alerts/alert_list.builder.php:130
 #: ../../godmode/category/category.php:161
 #: ../../godmode/events/event_responses.list.php:69
-#: ../../godmode/groups/group_list.php:1045
+#: ../../godmode/groups/group_list.php:1002
 #: ../../godmode/massive/massive_delete_policies_alerts.php:202
 #: ../../godmode/massive/massive_delete_policies_alerts_action_external.php:202
 #: ../../godmode/reporting/reporting_builder.item_editor.php:2640
@@ -6484,7 +6480,7 @@ msgid "Copy"
 msgstr "Còpia"
 
 #: ../../godmode/agentes/planned_downtime.list.php:778
-#: ../../godmode/agentes/modificar_agente.php:808
+#: ../../godmode/agentes/modificar_agente.php:804
 #: ../../godmode/agentes/module_manager.php:835
 #: ../../godmode/agentes/planned_downtime.editor.php:930
 #: ../../godmode/agentes/agent_manager.php:1051
@@ -6493,7 +6489,7 @@ msgstr "Còpia"
 #: ../../godmode/massive/massive_edit_modules.php:1366
 #: ../../include/ajax/module.php:1190 ../../include/functions_agents.php:4641
 #: ../../mobile/operation/agent.php:180
-#: ../../operation/agentes/estado_agente.php:1220
+#: ../../operation/agentes/estado_agente.php:1216
 #: ../../operation/search_agents.getdata.php:180
 msgid "Quiet"
 msgstr "Tranquil"
@@ -6605,7 +6601,7 @@ msgstr "Agents i mòduls afectats"
 #: ../../mobile/operation/events.php:303 ../../mobile/operation/events.php:315
 #: ../../mobile/operation/events.php:327 ../../mobile/operation/events.php:435
 #: ../../mobile/operation/events.php:485 ../../mobile/operation/events.php:495
-#: ../../operation/agentes/estado_agente.php:1298
+#: ../../operation/agentes/estado_agente.php:1294
 #: ../../operation/agentes/estado_generalagente.php:185
 #: ../../operation/agentes/estado_generalagente.php:189
 #: ../../operation/agentes/estado_generalagente.php:192
@@ -6972,7 +6968,7 @@ msgstr "No s'ha pogut crear perquè el nom ja existeix"
 #: ../../godmode/agentes/configurar_agente.php:388
 #: ../../godmode/agentes/configurar_agente.php:395
 #: ../../godmode/agentes/modificar_agente.php:83
-#: ../../godmode/agentes/modificar_agente.php:857
+#: ../../godmode/agentes/modificar_agente.php:853
 #: ../../godmode/module_library/module_library_view.php:59
 #: ../../godmode/reporting/visual_console_builder.php:972
 #: ../../godmode/setup/demo.php:201 ../../godmode/setup/setup_visuals.php:401
@@ -6998,7 +6994,7 @@ msgstr "Veure"
 #: ../../godmode/agentes/configurar_agente.php:449
 #: ../../godmode/agentes/configurar_agente.php:456
 #: ../../godmode/agentes/configurar_agente.php:781
-#: ../../godmode/agentes/modificar_agente.php:849
+#: ../../godmode/agentes/modificar_agente.php:845
 #: ../../godmode/alerts/configure_alert_command.php:58
 #: ../../godmode/alerts/configure_alert_action.php:80
 #: ../../godmode/alerts/configure_alert_action.php:100
@@ -7017,7 +7013,7 @@ msgstr "Veure"
 #: ../../godmode/alerts/configure_alert_template.php:165
 #: ../../godmode/groups/tactical.php:181
 #: ../../godmode/groups/configure_group.php:241
-#: ../../godmode/groups/group_list.php:1038
+#: ../../godmode/groups/group_list.php:995
 #: ../../godmode/massive/massive_copy_modules.php:241
 #: ../../godmode/massive/massive_delete_policies_alerts.php:183
 #: ../../godmode/massive/massive_delete_policies_alerts_action_external.php:183
@@ -7036,7 +7032,7 @@ msgstr "Veure"
 #: ../../mobile/operation/agent.php:358 ../../mobile/operation/home.php:72
 #: ../../mobile/operation/agents.php:98 ../../mobile/operation/agents.php:408
 #: ../../mobile/operation/alerts.php:194
-#: ../../operation/agentes/estado_agente.php:1130
+#: ../../operation/agentes/estado_agente.php:1126
 #: ../../operation/agentes/ver_agente.php:1603
 #: ../../operation/agentes/ver_agente.php:1607
 #: ../../operation/agentes/ver_agente.php:2104
@@ -7191,9 +7187,9 @@ msgid "Manage agents"
 msgstr "Gestionar els agents"
 
 #: ../../godmode/agentes/configurar_agente.php:879
-#: ../../godmode/agentes/modificar_agente.php:1068
+#: ../../godmode/agentes/modificar_agente.php:1064
 #: ../../include/class/SnmpConsole.class.php:818
-#: ../../operation/agentes/estado_agente.php:1395
+#: ../../operation/agentes/estado_agente.php:1391
 #: ../../operation/snmpconsole/snmp_statistics.php:195
 msgid "Create agent"
 msgstr "Crear agent"
@@ -7549,7 +7545,7 @@ msgstr ""
 "Filtre de cerca per àlies, nom, descripció, adreça IP o contingut de camps "
 "personalitzats"
 
-#: ../../godmode/agentes/modificar_agente.php:700
+#: ../../godmode/agentes/modificar_agente.php:696
 #: ../../include/class/WelcomeWindow.class.php:846
 #: ../../include/functions_inventory.php:150
 #: ../../include/functions_inventory.php:184
@@ -7558,15 +7554,15 @@ msgstr ""
 msgid "Agent alias"
 msgstr "Àlies d'agent"
 
-#: ../../godmode/agentes/modificar_agente.php:702
+#: ../../godmode/agentes/modificar_agente.php:698
 msgid "Remote agent configuration"
 msgstr "Configuració de l'agent remot"
 
-#: ../../godmode/agentes/modificar_agente.php:702
+#: ../../godmode/agentes/modificar_agente.php:698
 msgid "R"
 msgstr "R"
 
-#: ../../godmode/agentes/modificar_agente.php:704
+#: ../../godmode/agentes/modificar_agente.php:700
 #: ../../godmode/agentes/planned_downtime.editor.php:1361
 #: ../../godmode/agentes/agent_manager.php:579
 #: ../../godmode/massive/massive_edit_agents.php:783
@@ -7584,7 +7580,7 @@ msgstr "R"
 #: ../../include/functions_reporting_html.php:2267
 #: ../../include/functions_reporting_html.php:4912
 #: ../../mobile/operation/agents.php:94 ../../mobile/operation/agents.php:405
-#: ../../operation/agentes/estado_agente.php:1108
+#: ../../operation/agentes/estado_agente.php:1104
 #: ../../operation/gis_maps/ajax.php:297
 #: ../../operation/inventory/inventory.php:1372
 #: ../../operation/search_agents.php:37 ../../operation/tree.php:79
@@ -7592,12 +7588,12 @@ msgstr "R"
 msgid "OS"
 msgstr "OS"
 
-#: ../../godmode/agentes/modificar_agente.php:792
+#: ../../godmode/agentes/modificar_agente.php:788
 #: ../../godmode/agentes/module_manager.php:868
 msgid "Module in scheduled downtime"
 msgstr "Mòdul en temps d'inactivitat programat"
 
-#: ../../godmode/agentes/modificar_agente.php:799
+#: ../../godmode/agentes/modificar_agente.php:795
 #: ../../godmode/agentes/module_manager.php:1081
 #: ../../godmode/agentes/module_manager.php:1094
 #: ../../godmode/agentes/agent_manager.php:1132
@@ -7607,7 +7603,7 @@ msgstr "Mòdul en temps d'inactivitat programat"
 #: ../../godmode/alerts/alert_list.list.php:172
 #: ../../godmode/alerts/alert_view.php:560
 #: ../../godmode/alerts/configure_alert_template.php:1001
-#: ../../godmode/groups/group_list.php:1111
+#: ../../godmode/groups/group_list.php:1068
 #: ../../godmode/massive/massive_edit_agents.php:996
 #: ../../godmode/massive/massive_edit_agents.php:1215
 #: ../../godmode/massive/massive_edit_modules.php:881
@@ -7626,57 +7622,57 @@ msgstr "Mòdul en temps d'inactivitat programat"
 msgid "Disabled"
 msgstr "Inhabilitat"
 
-#: ../../godmode/agentes/modificar_agente.php:878
+#: ../../godmode/agentes/modificar_agente.php:874
 #: ../../include/functions_agents.php:4913
 msgid "Edit remote config"
 msgstr "Edita la configuració remota"
 
-#: ../../godmode/agentes/modificar_agente.php:925
+#: ../../godmode/agentes/modificar_agente.php:921
 msgid "Enable agent"
 msgstr "Activa l'agent"
 
-#: ../../godmode/agentes/modificar_agente.php:927
+#: ../../godmode/agentes/modificar_agente.php:923
 msgid "You are going to enable a cluster agent. Are you sure?"
 msgstr "Activareu un agent de clúster. Estàs segur?"
 
-#: ../../godmode/agentes/modificar_agente.php:930
+#: ../../godmode/agentes/modificar_agente.php:926
 msgid "Disable agent"
 msgstr "Desactiva l'agent"
 
-#: ../../godmode/agentes/modificar_agente.php:932
+#: ../../godmode/agentes/modificar_agente.php:928
 msgid "You are going to disable a cluster agent. Are you sure?"
 msgstr "Desactivareu un agent de clúster. Estàs segur?"
 
-#: ../../godmode/agentes/modificar_agente.php:976
+#: ../../godmode/agentes/modificar_agente.php:972
 msgid "You are going to delete a cluster agent"
 msgstr "Suprimiràs un agent de clúster"
 
-#: ../../godmode/agentes/modificar_agente.php:979
+#: ../../godmode/agentes/modificar_agente.php:975
 #: ../../godmode/agentes/agent_manager.php:1383
 msgid "This agent belongs to the clusters"
 msgstr "Aquest agent pertany als clústers"
 
-#: ../../godmode/agentes/modificar_agente.php:1007
+#: ../../godmode/agentes/modificar_agente.php:1003
 #: ../../godmode/agentes/agent_manager.php:1328
 #: ../../godmode/agentes/agent_manager.php:1390
 msgid "Delete agent"
 msgstr "Suprimeix l'agent"
 
-#: ../../godmode/agentes/modificar_agente.php:1028
+#: ../../godmode/agentes/modificar_agente.php:1024
 #: ../../include/functions_ui.php:2644 ../../include/functions_ui.php:2670
-#: ../../operation/agentes/estado_agente.php:1362
+#: ../../operation/agentes/estado_agente.php:1358
 #: ../../operation/agentes/status_monitor.php:2345
 #, php-format
 msgid "Total items: %s"
 msgstr "Total d'elements: %s"
 
-#: ../../godmode/agentes/modificar_agente.php:1060
+#: ../../godmode/agentes/modificar_agente.php:1056
 #: ../../operation/agentes/group_view.php:606
-#: ../../operation/agentes/estado_agente.php:1387
+#: ../../operation/agentes/estado_agente.php:1383
 msgid "There are no defined agents"
 msgstr "No hi ha agents definits"
 
-#: ../../godmode/agentes/modificar_agente.php:1078
+#: ../../godmode/agentes/modificar_agente.php:1074
 #: ../../include/class/AgentDeployWizard.class.php:706
 msgid "Deploy agent"
 msgstr "Desplega l'agent"
@@ -8609,7 +8605,7 @@ msgstr "Escaneig de vulnerabilitats"
 #: ../../godmode/agentes/module_manager_editor_common.php:732
 #: ../../godmode/agentes/module_manager_editor_common.php:743
 #: ../../godmode/alerts/configure_alert_template.php:1002
-#: ../../godmode/groups/group_list.php:1111
+#: ../../godmode/groups/group_list.php:1068
 #: ../../godmode/massive/massive_edit_agents.php:1214
 #: ../../godmode/modules/manage_network_components_form_wizard.php:249
 #: ../../include/rest-api/models/VisualConsole/Items/StaticGraph.php:395
@@ -8732,7 +8728,6 @@ msgstr ""
 
 #: ../../godmode/agentes/module_manager_editor_common.php:479
 #: ../../godmode/agentes/module_manager_editor_common.php:569
-#: ../../godmode/groups/group_list.php:1311
 #: ../../godmode/massive/massive_copy_modules.php:123
 #: ../../godmode/massive/massive_copy_modules.php:311
 #: ../../godmode/massive/massive_delete_modules.php:427
@@ -10817,7 +10812,7 @@ msgstr "Màx. temps abans de la purga"
 msgid "Database size stats"
 msgstr "Estadístiques de mida de la base de dades"
 
-#: ../../godmode/db/db_main.php:101 ../../godmode/groups/group_list.php:1279
+#: ../../godmode/db/db_main.php:101
 #: ../../include/class/Diagnostics.class.php:634
 #: ../../include/lib/Dashboard/Widgets/tree_view.php:690
 #: ../../include/functions_groups.php:2660
@@ -11714,7 +11709,7 @@ msgid "Update group"
 msgstr "Actualitza el grup"
 
 #: ../../godmode/groups/configure_group.php:93
-#: ../../godmode/groups/group_list.php:1175
+#: ../../godmode/groups/group_list.php:1132
 msgid "Create group"
 msgstr "Crear grup"
 
@@ -11730,7 +11725,7 @@ msgid "Manage agents group"
 msgstr "Gestionar el grup d'agents"
 
 #: ../../godmode/groups/configure_group.php:162
-#: ../../godmode/groups/group_list.php:1036
+#: ../../godmode/groups/group_list.php:993
 #: ../../godmode/modules/module_list.php:98
 #: ../../godmode/reporting/visual_console_builder.elements.php:346
 #: ../../godmode/setup/os.builder.php:274 ../../godmode/setup/os.list.php:78
@@ -11749,7 +11744,7 @@ msgid "You have not access to the parent."
 msgstr "No teniu accés als pares."
 
 #: ../../godmode/groups/configure_group.php:223
-#: ../../godmode/groups/group_list.php:1040
+#: ../../godmode/groups/group_list.php:997
 #: ../../godmode/massive/massive_edit_agents.php:699
 #: ../../godmode/modules/manage_nc_groups_form.php:73
 #: ../../godmode/reporting/visual_console_builder.elements.php:125
@@ -11912,198 +11907,40 @@ msgstr "El grup %s s'ha suprimit als nodes"
 msgid "The group is not empty. It is use in %s."
 msgstr "El grup no està buit. S'utilitza a %s."
 
-#: ../../godmode/groups/group_list.php:789 ../../operation/tree.php:216
+#: ../../godmode/groups/group_list.php:784 ../../operation/tree.php:216
 msgid "Search group"
 msgstr "Grup de cerca"
 
-#: ../../godmode/groups/group_list.php:806
-msgid "Search by agent status"
-msgstr "Cerca per estat de l'agent"
-
-#: ../../godmode/groups/group_list.php:806
-msgid ""
-"Shows the groups that contain an agent with the status that has been searched"
-msgstr "Mostra els grups que contenen un agent amb l'estat que s'ha cercat"
-
-#: ../../godmode/groups/group_list.php:824
-msgid "Search by agent"
-msgstr "Cerca per agent"
-
-#: ../../godmode/groups/group_list.php:824
-msgid "Shows groups that contain an agent matching the search"
-msgstr "Mostra els grups que contenen un agent que coincideix amb la cerca"
-
-#: ../../godmode/groups/group_list.php:839
+#: ../../godmode/groups/group_list.php:799
 msgid "Show full hierarchy"
 msgstr "Mostra la jerarquia completa"
 
-#: ../../godmode/groups/group_list.php:897
-#: ../../godmode/groups/group_list.php:930
-#: ../../godmode/groups/group_list.php:1163
+#: ../../godmode/groups/group_list.php:854
+#: ../../godmode/groups/group_list.php:887
+#: ../../godmode/groups/group_list.php:1120
 msgid "There are no defined groups"
 msgstr "No hi ha grups definits"
 
-#: ../../godmode/groups/group_list.php:990
+#: ../../godmode/groups/group_list.php:947
 msgid "Edit or delete groups can cause problems with synchronization"
 msgstr "Editar o suprimir grups pot causar problemes amb la sincronització"
 
-#: ../../godmode/groups/group_list.php:1127
+#: ../../godmode/groups/group_list.php:1084
 msgid "Are you sure? This group will also be deleted in all the nodes."
 msgstr "Estàs segur? Aquest grup també s'eliminarà a tots els nodes."
 
-#: ../../godmode/groups/group_list.php:1133
+#: ../../godmode/groups/group_list.php:1090
 msgid ""
 "The child groups will be updated to use the parent id of the deleted group"
 msgstr ""
 "Els grups secundaris s'actualitzaran per utilitzar l'identificador principal "
 "del grup suprimit"
 
-#: ../../godmode/groups/group_list.php:1272
+#: ../../godmode/groups/group_list.php:1219
 msgid "Found groups"
 msgstr "Grups trobats"
 
-#: ../../godmode/groups/group_list.php:1280
-#: ../../godmode/module_library/module_library_view.php:159
-#: ../../include/class/Diagnostics.class.php:638
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:691
-#: ../../operation/tree.php:504
-msgid "Total modules"
-msgstr "Mòduls totals"
-
-#: ../../godmode/groups/group_list.php:1281
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:692
-#: ../../include/functions_alerts.php:3470
-#: ../../include/functions_inventory.php:526
-#: ../../include/functions_inventory.php:669
-#: ../../include/functions_reporting_html.php:585
-#: ../../operation/agentes/group_view.php:247
-#: ../../operation/agentes/agent_inventory.php:321 ../../operation/tree.php:505
-msgid "Total"
-msgstr "Total"
-
-#: ../../godmode/groups/group_list.php:1284
-#: ../../godmode/groups/group_list.php:1285
-#: ../../godmode/groups/group_list.php:1286
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:407
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:442
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:695
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:696
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:697
-#: ../../include/functions_graph.php:2699
-#: ../../include/functions_groups.php:2777
-#: ../../include/functions_groups.php:2800
-#: ../../include/functions_reporting.php:12783
-#: ../../include/functions_reporting.php:12804 ../../operation/tree.php:213
-#: ../../operation/tree.php:304 ../../operation/tree.php:508
-#: ../../operation/tree.php:509 ../../operation/tree.php:510
-msgid "Fired alerts"
-msgstr "Alertes disparades"
-
-#: ../../godmode/groups/group_list.php:1289
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:700
-#: ../../operation/custom_fields/custom_fields_view.php:541
-#: ../../operation/tree.php:513
-msgid "Critical agents"
-msgstr "Agents crítics"
-
-#: ../../godmode/groups/group_list.php:1290
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:701
-#: ../../mobile/operation/groups.php:211
-#: ../../operation/custom_fields/custom_fields_view.php:610
-#: ../../operation/tree.php:514
-msgid "Critical modules"
-msgstr "Mòduls crítics"
-
-#: ../../godmode/groups/group_list.php:1294
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:705
-#: ../../operation/custom_fields/custom_fields_view.php:551
-#: ../../operation/tree.php:518
-msgid "Warning agents"
-msgstr "Agents d'alerta"
-
-#: ../../godmode/groups/group_list.php:1295
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:706
-#: ../../mobile/operation/groups.php:208
-#: ../../operation/custom_fields/custom_fields_view.php:621
-#: ../../operation/tree.php:519
-msgid "Warning modules"
-msgstr "Mòduls d'avís"
-
-#: ../../godmode/groups/group_list.php:1299
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:710
-#: ../../include/lib/TacticalView/elements/Configurations.php:214
-#: ../../operation/custom_fields/custom_fields_view.php:571
-#: ../../operation/tree.php:523
-msgid "Unknown agents"
-msgstr "Agents desconeguts"
-
-#: ../../godmode/groups/group_list.php:1300
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:711
-#: ../../mobile/operation/groups.php:199
-#: ../../operation/custom_fields/custom_fields_view.php:643
-#: ../../operation/tree.php:524
-msgid "Unknown modules"
-msgstr "Mòduls desconeguts"
-
-#: ../../godmode/groups/group_list.php:1304
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:715
-#: ../../operation/custom_fields/custom_fields_view.php:581
-#: ../../operation/tree.php:528
-msgid "Not init agents"
-msgstr "No agents inicials"
-
-#: ../../godmode/groups/group_list.php:1305
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:716
-#: ../../mobile/operation/groups.php:202
-#: ../../operation/custom_fields/custom_fields_view.php:654
-#: ../../operation/tree.php:529
-msgid "Not init modules"
-msgstr "No iniciar mòduls"
-
-#: ../../godmode/groups/group_list.php:1306
-#: ../../godmode/massive/massive_copy_modules.php:128
-#: ../../godmode/massive/massive_copy_modules.php:316
-#: ../../godmode/massive/massive_delete_modules.php:432
-#: ../../godmode/massive/massive_edit_modules.php:396
-#: ../../godmode/massive/massive_edit_modules.php:512
-#: ../../godmode/reporting/reporting_builder.item_editor.php:4822
-#: ../../include/ajax/module.php:2363
-#: ../../include/class/ExtensionsDiscovery.class.php:790
-#: ../../include/lib/Dashboard/Widgets/ModulesByStatus.php:323
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:405
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:440
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:717
-#: ../../include/functions_agents.php:5073
-#: ../../include/functions_massive_operations.php:159
-#: ../../include/functions_reporting_html.php:1314
-#: ../../include/functions_reporting_html.php:5929
-#: ../../mobile/operation/modules.php:75
-#: ../../operation/agentes/group_view.php:249
-#: ../../operation/agentes/group_view.php:254
-#: ../../operation/agentes/estado_agente.php:315
-#: ../../operation/agentes/status_monitor.php:579
-#: ../../operation/custom_fields/custom_fields_view.php:180
-#: ../../operation/tree.php:212 ../../operation/tree.php:303
-#: ../../operation/tree.php:530
-msgid "Not init"
-msgstr "No init"
-
-#: ../../godmode/groups/group_list.php:1309
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:720
-#: ../../operation/custom_fields/custom_fields_view.php:561
-#: ../../operation/tree.php:533
-msgid "Normal agents"
-msgstr "Agents normals"
-
-#: ../../godmode/groups/group_list.php:1310
-#: ../../include/lib/Dashboard/Widgets/tree_view.php:721
-#: ../../mobile/operation/groups.php:205
-#: ../../operation/custom_fields/custom_fields_view.php:632
-#: ../../operation/tree.php:534
-msgid "Normal modules"
-msgstr "Mòduls normals"
-
-#: ../../godmode/groups/group_list.php:1337
+#: ../../godmode/groups/group_list.php:1247
 msgid ""
 "There are user profiles assigned to this group which will be deleted. Note "
 "that a user with no associated profiles will not be able to log in. Please "
@@ -12176,6 +12013,33 @@ msgstr "Quan seleccioneu els agents"
 #: ../../godmode/massive/massive_edit_modules.php:566
 msgid "Show unknown and not init modules"
 msgstr "Mostra mòduls desconeguts i no d'inici"
+
+#: ../../godmode/massive/massive_copy_modules.php:128
+#: ../../godmode/massive/massive_copy_modules.php:316
+#: ../../godmode/massive/massive_delete_modules.php:432
+#: ../../godmode/massive/massive_edit_modules.php:396
+#: ../../godmode/massive/massive_edit_modules.php:512
+#: ../../godmode/reporting/reporting_builder.item_editor.php:4822
+#: ../../include/ajax/module.php:2363
+#: ../../include/class/ExtensionsDiscovery.class.php:790
+#: ../../include/lib/Dashboard/Widgets/ModulesByStatus.php:323
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:405
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:440
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:717
+#: ../../include/functions_agents.php:5073
+#: ../../include/functions_massive_operations.php:159
+#: ../../include/functions_reporting_html.php:1314
+#: ../../include/functions_reporting_html.php:5929
+#: ../../mobile/operation/modules.php:75
+#: ../../operation/agentes/group_view.php:249
+#: ../../operation/agentes/group_view.php:254
+#: ../../operation/agentes/estado_agente.php:315
+#: ../../operation/agentes/status_monitor.php:579
+#: ../../operation/custom_fields/custom_fields_view.php:180
+#: ../../operation/tree.php:212 ../../operation/tree.php:303
+#: ../../operation/tree.php:530
+msgid "Not init"
+msgstr "No init"
 
 #: ../../godmode/massive/massive_copy_modules.php:216
 msgid "Copy modules"
@@ -13188,6 +13052,13 @@ msgstr "Veure totes les categories"
 #: ../../views/tacticalView/view.php:254 ../../views/tacticalView/view.php:329
 msgid "More details"
 msgstr "Més detalls"
+
+#: ../../godmode/module_library/module_library_view.php:159
+#: ../../include/class/Diagnostics.class.php:638
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:691
+#: ../../operation/tree.php:504
+msgid "Total modules"
+msgstr "Mòduls totals"
 
 #: ../../godmode/module_library/module_library_view.php:160
 msgid "View in Module Library"
@@ -18566,7 +18437,7 @@ msgstr "URL complet (p. ex., http://192.168.1.20/XXX/api/v2)."
 
 #: ../../godmode/setup/setup_ITSM.php:153
 #: ../../godmode/users/user_management.php:937
-#: ../../include/functions_users.php:1090
+#: ../../include/functions_users.php:1092
 msgid "Token"
 msgstr "Token"
 
@@ -20511,7 +20382,7 @@ msgstr "Configuració d'etiquetes"
 #: ../../godmode/tag/edit_tag.php:76
 #: ../../include/class/TipsWindow.class.php:755
 #: ../../include/class/TipsWindow.class.php:922
-#: ../../include/functions_users.php:1097 ../../operation/search_users.php:47
+#: ../../include/functions_users.php:1099 ../../operation/search_users.php:47
 msgid "Profile"
 msgstr "Perfil"
 
@@ -20970,7 +20841,7 @@ msgid "Manage NCM"
 msgstr "Gestionar NCM"
 
 #: ../../godmode/users/configure_profile.php:341
-#: ../../include/functions_users.php:1124
+#: ../../include/functions_users.php:1126
 msgid "Manage users"
 msgstr "Gestionar usuaris"
 
@@ -22846,13 +22717,13 @@ msgstr "Gestionar grups d'agents"
 msgid "Users management"
 msgstr "Gestió d'usuaris"
 
-#: ../../godmode/menu.php:235 ../../include/functions_users.php:1062
-#: ../../include/functions_users.php:1094
+#: ../../godmode/menu.php:235 ../../include/functions_users.php:1064
+#: ../../include/functions_users.php:1096
 msgid "Profile management"
 msgstr "Gestió de perfils"
 
-#: ../../godmode/menu.php:240 ../../include/functions_users.php:1075
-#: ../../include/functions_users.php:1087
+#: ../../godmode/menu.php:240 ../../include/functions_users.php:1077
+#: ../../include/functions_users.php:1089
 msgid "Token management"
 msgstr "Gestió de fitxes"
 
@@ -29433,6 +29304,21 @@ msgstr "Tipus arbre"
 msgid "Open all groups"
 msgstr "Obre tots els grups"
 
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:407
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:442
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:695
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:696
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:697
+#: ../../include/functions_graph.php:2699
+#: ../../include/functions_groups.php:2777
+#: ../../include/functions_groups.php:2800
+#: ../../include/functions_reporting.php:12783
+#: ../../include/functions_reporting.php:12804 ../../operation/tree.php:213
+#: ../../operation/tree.php:304 ../../operation/tree.php:508
+#: ../../operation/tree.php:509 ../../operation/tree.php:510
+msgid "Fired alerts"
+msgstr "Alertes disparades"
+
 #: ../../include/lib/Dashboard/Widgets/tree_view.php:411
 msgid "Agents status"
 msgstr "Estat dels agents"
@@ -29479,6 +29365,82 @@ msgstr "Mòduls trobats"
 #: ../../operation/tree.php:486
 msgid "Groups found"
 msgstr "S'han trobat grups"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:692
+#: ../../include/functions_alerts.php:3470
+#: ../../include/functions_inventory.php:526
+#: ../../include/functions_inventory.php:669
+#: ../../include/functions_reporting_html.php:585
+#: ../../operation/agentes/group_view.php:247
+#: ../../operation/agentes/agent_inventory.php:321 ../../operation/tree.php:505
+msgid "Total"
+msgstr "Total"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:700
+#: ../../operation/custom_fields/custom_fields_view.php:541
+#: ../../operation/tree.php:513
+msgid "Critical agents"
+msgstr "Agents crítics"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:701
+#: ../../mobile/operation/groups.php:211
+#: ../../operation/custom_fields/custom_fields_view.php:610
+#: ../../operation/tree.php:514
+msgid "Critical modules"
+msgstr "Mòduls crítics"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:705
+#: ../../operation/custom_fields/custom_fields_view.php:551
+#: ../../operation/tree.php:518
+msgid "Warning agents"
+msgstr "Agents d'alerta"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:706
+#: ../../mobile/operation/groups.php:208
+#: ../../operation/custom_fields/custom_fields_view.php:621
+#: ../../operation/tree.php:519
+msgid "Warning modules"
+msgstr "Mòduls d'avís"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:710
+#: ../../include/lib/TacticalView/elements/Configurations.php:214
+#: ../../operation/custom_fields/custom_fields_view.php:571
+#: ../../operation/tree.php:523
+msgid "Unknown agents"
+msgstr "Agents desconeguts"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:711
+#: ../../mobile/operation/groups.php:199
+#: ../../operation/custom_fields/custom_fields_view.php:643
+#: ../../operation/tree.php:524
+msgid "Unknown modules"
+msgstr "Mòduls desconeguts"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:715
+#: ../../operation/custom_fields/custom_fields_view.php:581
+#: ../../operation/tree.php:528
+msgid "Not init agents"
+msgstr "No agents inicials"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:716
+#: ../../mobile/operation/groups.php:202
+#: ../../operation/custom_fields/custom_fields_view.php:654
+#: ../../operation/tree.php:529
+msgid "Not init modules"
+msgstr "No iniciar mòduls"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:720
+#: ../../operation/custom_fields/custom_fields_view.php:561
+#: ../../operation/tree.php:533
+msgid "Normal agents"
+msgstr "Agents normals"
+
+#: ../../include/lib/Dashboard/Widgets/tree_view.php:721
+#: ../../mobile/operation/groups.php:205
+#: ../../operation/custom_fields/custom_fields_view.php:632
+#: ../../operation/tree.php:534
+msgid "Normal modules"
+msgstr "Mòduls normals"
 
 #: ../../include/lib/Dashboard/Widgets/tree_view.php:725
 #: ../../operation/tree.php:538
@@ -36447,12 +36409,12 @@ msgstr "Afegeix un camp"
 msgid "Empty view image"
 msgstr "Imatge de vista buida"
 
-#: ../../include/functions_users.php:938
+#: ../../include/functions_users.php:940
 msgid "NONE"
 msgstr "CAP"
 
-#: ../../include/functions_users.php:1050
-#: ../../include/functions_users.php:1102
+#: ../../include/functions_users.php:1052
+#: ../../include/functions_users.php:1104
 #: ../../operation/users/user_edit_header.php:92
 msgid "User management"
 msgstr "Gestió d'usuaris"
@@ -37369,23 +37331,23 @@ msgstr ""
 msgid "Manage filter"
 msgstr "Gestiona el filtre"
 
-#: ../../operation/agentes/estado_agente.php:1137
+#: ../../operation/agentes/estado_agente.php:1133
 msgid "L.S change"
 msgstr "Canvi de L.S"
 
-#: ../../operation/agentes/estado_agente.php:1141
+#: ../../operation/agentes/estado_agente.php:1137
 msgid "Op"
 msgstr "Op"
 
-#: ../../operation/agentes/estado_agente.php:1228
+#: ../../operation/agentes/estado_agente.php:1224
 msgid "Agent in scheduled downtime"
 msgstr "Agent en temps d'inactivitat programat"
 
-#: ../../operation/agentes/estado_agente.php:1282
+#: ../../operation/agentes/estado_agente.php:1278
 msgid "Remote config"
 msgstr "Configuració remota"
 
-#: ../../operation/agentes/estado_agente.php:1314
+#: ../../operation/agentes/estado_agente.php:1310
 msgid "Agent events"
 msgstr "Esdeveniments de l'agent"
 
@@ -40059,6 +40021,20 @@ msgstr "Pàgina generada a"
 #: ../../index.php:1533
 msgid "Connection status"
 msgstr "Estat de connexió"
+
+#~ msgid "Search by agent status"
+#~ msgstr "Cerca per estat de l'agent"
+
+#~ msgid ""
+#~ "Shows the groups that contain an agent with the status that has been "
+#~ "searched"
+#~ msgstr "Mostra els grups que contenen un agent amb l'estat que s'ha cercat"
+
+#~ msgid "Search by agent"
+#~ msgstr "Cerca per agent"
+
+#~ msgid "Shows groups that contain an agent matching the search"
+#~ msgstr "Mostra els grups que contenen un agent que coincideix amb la cerca"
 
 #~ msgid "Sobre actualizaciÃ³n de revisiÃ³n menor"
 #~ msgstr "Sobre l'actualització de la revisió menor"
