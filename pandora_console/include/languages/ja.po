@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pandora-fms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 20:48+0200\n"
+"POT-Creation-Date: 2024-05-22 12:17+0200\n"
 "PO-Revision-Date: 2024-05-21 20:49+0200\n"
 "Last-Translator: Junichi Satoh <junichi@rworks.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -8754,7 +8754,7 @@ msgid "Min."
 msgstr ""
 
 #: ../../godmode/agentes/module_manager_editor_common.php:1193
-#, no-php-format
+#, php-format
 msgid ""
 "It allows to adjust the lower limit of the dynamic threshold, in percentage. "
 "For example, if the module average value is 60 and the lower critical state "
@@ -13472,7 +13472,7 @@ msgstr "フィルタの最大トラフィック値"
 
 #: ../../godmode/netflow/nf_edit_form.php:415
 #: ../../operation/netflow/nf_live_view.php:445
-#, no-php-format
+#, php-format
 msgid ""
 "Specifies the maximum rate (in bytes/sec) of traffic in the filter. It is "
 "then used to calculate the % of maximum traffic per IP."
@@ -13480,7 +13480,7 @@ msgstr ""
 
 #: ../../godmode/netflow/nf_edit_form.php:421
 #: ../../operation/netflow/nf_live_view.php:459
-#, no-php-format
+#, php-format
 msgid "CRITICAL threshold for the maximum % of traffic for an IP."
 msgstr ""
 
@@ -13492,7 +13492,7 @@ msgid ""
 msgstr "フィルタ内のいずれかの IP がこの % を超えると、障害状態となります。"
 
 #: ../../godmode/netflow/nf_edit_form.php:435
-#, no-php-format
+#, php-format
 msgid "WARNING threshold for the maximum % of traffic for an IP."
 msgstr ""
 
@@ -23751,7 +23751,7 @@ msgid "InnoDB buffer pool size"
 msgstr "InnoDB buffer pool size"
 
 #: ../../include/class/Diagnostics.class.php:872
-#, no-php-format
+#, php-format
 msgid ""
 "It has to be 40% of the server memory not recommended to be greater or less"
 msgstr ""
@@ -28747,7 +28747,7 @@ msgstr "次の場合に障害"
 
 #: ../../include/lib/ClusterViewer/ClusterWizard.php:1055
 #: ../../include/lib/ClusterViewer/ClusterWizard.php:1078
-#, no-php-format
+#, php-format
 msgid "% of balanced modules are down (equal or greater)."
 msgstr ""
 
@@ -37288,7 +37288,7 @@ msgid "New filter name"
 msgstr "新規フィルタ名"
 
 #: ../../operation/netflow/nf_live_view.php:469
-#, no-php-format
+#, php-format
 msgid "WARNING threshold for the maximum % of traffic of an IP."
 msgstr ""
 
