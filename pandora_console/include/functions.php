@@ -2164,6 +2164,21 @@ function get_snmpwalk(
         return [];
     }
 
+    // Check if valid IP or DNS
+    if (filter_var($ip_target, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) === false &&
+        preg_match('/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.(?!-)[A-Za-z0-9-]{1,63}(?<!-))*$/', $ip_target) !== 1
+    ) {
+        return [];
+    }
+
+    // Check if valid OID or MIB and not starting with dash (-)
+    if ((preg_match('/^\.{0,1}(\d+(\.\d+)*){0,1}$/', $base_oid) !== 1 &&
+        preg_match('/^[A-Za-z0-9-:]+(\.[A-Za-z0-9-:]+)*(?<![-:])$/', $base_oid) !== 1) ||
+        preg_match('/^-/', $base_oid) === 1
+    ) {
+        return [];
+    }
+
     // Note: quick_print is ignored
     // Fix for snmp port
     if (!empty($snmp_port)) {
