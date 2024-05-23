@@ -3841,6 +3841,11 @@ function events_get_response_target(
 
     include_once $config['homedir'].'/vendor/autoload.php';
 
+    if (is_metaconsole() === true && (int) $server_id > 0) {
+        $node = new Node($server_id);
+        $node->connect();
+    }
+
     try {
         $eventObjt = new PandoraFMS\Event($event_id);
     } catch (Exception $e) {
@@ -4236,6 +4241,10 @@ function events_get_response_target(
             $server_name,
             $target
         );
+    }
+
+    if (is_metaconsole() === true && $server_id > 0) {
+        $node->disconnect();
     }
 
     return $target;
