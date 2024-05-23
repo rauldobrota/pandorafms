@@ -3958,7 +3958,7 @@ function config_process_config()
     }
 
     if (!isset($config['ITSM_groups_agents_sync'])) {
-        config_update_value('ITSM_groups_agents_sync', null);
+        config_update_value('ITSM_groups_agents_sync', '');
     }
 
     // Module Library.
