@@ -1991,7 +1991,7 @@ function config_update_config()
 
                     $ITSM_groups_agents_sync = get_parameter(
                         'ITSM_groups_agents_sync',
-                        null
+                        ''
                     );
 
                     if (empty($ITSM_groups_agents_sync) === false) {
