@@ -447,7 +447,7 @@ class WelcomeWindow extends Wizard
                 'direct'        => 1,
                 'block_content' => [
                     [
-                        'label'     => __('This is your post-installation status diagnostic:'),
+                        'label'     => __('This is your post-installation status diagnostic'),
                         'arguments' => [
                             'class' => 'first_lbl',
                             'name'  => 'lbl_diagnosis',
@@ -599,8 +599,8 @@ class WelcomeWindow extends Wizard
                     'content' => '
                     <h2>'.__('Hi!').'</h2>
                     <p class="mrgn_btn_5px">'.__('It seems you are new to Pandora FMS.').'<br />
-                    '.__('If you want to watch videos on how to use Pandora FMS, you can visit our ').'<a href="https://www.youtube.com/@PandoraFMS" target="_blank"><b>'.__('YouTube channel.').'</b></a></p>
-                    <p class="mrgn_top_5px">'.__('Are you familiar with ').'<a href="https://pandorafms.com/es/producto/elearning/" target="_blank"><b>'.__('our eLearning system?').'</b></a>'.__(' It\'s completely free for PAO (Operation) and PAT (Administration) courses. Learn how to use Pandora FMS at your own pace.').'</p>',
+                    '.__('If you want to watch videos on how to use Pandora FMS, you can visit our').' <a href="https://www.youtube.com/@PandoraFMS" target="_blank"><b>'.__('YouTube channel.').'</b></a></p>
+                    <p class="mrgn_top_5px">'.__('Are you familiar with').' <a href="https://pandorafms.com/es/producto/elearning/" target="_blank"><b>'.__('our eLearning system?').'</b></a>'.__(' It\'s completely free for PAO (Operation) and PAT (Administration) courses. Learn how to use Pandora FMS at your own pace.').'</p>',
                 ],
                 true
             );
@@ -658,7 +658,7 @@ class WelcomeWindow extends Wizard
                 ],
                 [
                     'arguments' => [
-                        'label'      => __('Let&apos;s do it!'),
+                        'label'      => __('Let\'s do it!'),
                         'type'       => 'button',
                         'attributes' => [
                             'class' => 'secondary',

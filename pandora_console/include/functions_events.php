@@ -6022,7 +6022,7 @@ function get_row_response_action(
     $output .= __('Event # %d', $id_event);
     if (empty($command_str) === false) {
         $output .= ' ';
-        $output .= __('Executing command: ');
+        $output .= __('Executing command').': ';
     }
 
     $output .= '</b>';

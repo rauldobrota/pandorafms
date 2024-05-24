@@ -1060,11 +1060,7 @@ if (empty($agents)) {
     $agents = [];
 }
 
-if ($config['language'] === 'ja'
-    || $config['language'] === 'zh_CN'
-    || $own_info['language'] === 'ja'
-    || $own_info['language'] === 'zh_CN'
-) {
+if ($config['language'] === 'ja' || $own_info['language'] === 'ja') {
     // Adds a custom font size for Japanese and Chinese language.
     $custom_font_size = 'custom_font_size';
 } else {

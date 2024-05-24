@@ -2202,7 +2202,7 @@ html_print_table($table_vc);
 echo '</fieldset>';
 
 echo '<fieldset class="margin-bottom-10">';
-echo '<legend>'.__('Reports configuration ').ui_print_help_icon('reports_configuration_tab', true).'</legend>';
+echo '<legend>'.__('Reports configuration').' '.ui_print_help_icon('reports_configuration_tab', true).'</legend>';
 html_print_table($table_report);
 echo '</fieldset>';
 
@@ -2398,7 +2398,7 @@ $(document).ready (function () {
     $("#button-interval_del_btn").click( function()  {
         confirmDialog({
             title: "<?php echo __('Delete interval'); ?>",
-            message: "<?php echo __('This action is not reversible. Are you sure'); ?>",
+            message: "<?php echo __('This action is not reversible. Are you sure?'); ?>",
             onAccept: function() {
                 var interval_selected = $('#intervals option:selected').val();
                 $('#hidden-interval_to_delete').val(interval_selected);

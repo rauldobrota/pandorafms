@@ -357,7 +357,7 @@ class SecurityHardening extends Widget
             break;
 
             default:
-                $output .= \ui_print_info_message(_('Please, configure this widget before use'), '', true);
+                $output .= \ui_print_info_message(__('Please, configure this widget before use'), '', true);
             break;
         }
 

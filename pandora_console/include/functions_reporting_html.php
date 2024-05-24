@@ -5395,43 +5395,43 @@ function reporting_html_availability($table, $item, $pdf=0)
         if ($item['fields']['total_time']) {
             $table1->head[2] = __('Total time');
         } else {
-            $table1->head[2] = __('');
+            $table1->head[2] = '';
         }
 
         if ($item['fields']['time_failed']) {
             $table1->head[3] = __('Time failed');
         } else {
-            $table1->head[3] = __('');
+            $table1->head[3] = '';
         }
 
         if ($item['fields']['time_in_ok_status']) {
             $table1->head[4] = __('Time OK');
         } else {
-            $table1->head[4] = __('');
+            $table1->head[4] = '';
         }
 
         if ($item['fields']['time_in_warning_status']) {
             $table1->head[5] = __('Time in warning status');
         } else {
-            $table1->head[5] = __('');
+            $table1->head[5] = '';
         }
 
         if ($item['fields']['time_in_unknown_status']) {
             $table1->head[6] = __('Time Unknown');
         } else {
-            $table1->head[6] = __('');
+            $table1->head[6] = '';
         }
 
         if ($item['fields']['time_of_not_initialized_module']) {
             $table1->head[7] = __('Time Not Init Module');
         } else {
-            $table1->head[7] = __('');
+            $table1->head[7] = '';
         }
 
         if ($item['fields']['time_of_downtime']) {
             $table1->head[8] = __('Time Downtime');
         } else {
-            $table1->head[8] = __('');
+            $table1->head[8] = '';
         }
 
         $table1->head[9] = __('% Ok');
@@ -5489,31 +5489,31 @@ function reporting_html_availability($table, $item, $pdf=0)
         if ($item['fields']['total_checks']) {
             $table2->head[2] = __('Total checks');
         } else {
-            $table2->head[2] = __('');
+            $table2->head[2] = '';
         }
 
         if ($item['fields']['checks_failed']) {
             $table2->head[3] = __('Checks failed');
         } else {
-            $table2->head[3] = __('');
+            $table2->head[3] = '';
         }
 
         if ($item['fields']['checks_in_ok_status']) {
             $table2->head[4] = __('Checks OK');
         } else {
-            $table2->head[4] = __('');
+            $table2->head[4] = '';
         }
 
         if ($item['fields']['checks_in_warning_status']) {
             $table2->head[5] = __('Checks Warning');
         } else {
-            $table2->head[5] = __('');
+            $table2->head[5] = '';
         }
 
         if ($item['fields']['unknown_checks']) {
             $table2->head[6] = __('Checks Uknown');
         } else {
-            $table2->head[6] = __('');
+            $table2->head[6] = '';
         }
 
         $table2->headstyle = [];

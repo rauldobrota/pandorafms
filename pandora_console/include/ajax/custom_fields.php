@@ -907,7 +907,7 @@ if (check_login()) {
         if ($id_filter == -1) {
             $result_array['error'] = 1;
             $result_array['msg'] = ui_print_error_message(
-                __('please, select a filter'),
+                __('Please, select a filter'),
                 '',
                 true
             );
@@ -923,7 +923,7 @@ if (check_login()) {
         if ($filters['id_custom_fields'] == '') {
             $result_array['error'] = 1;
             $result_array['msg'] = ui_print_error_message(
-                __('please, select a custom field'),
+                __('Please, select a custom field'),
                 '',
                 true
             );
@@ -980,7 +980,7 @@ if (check_login()) {
         if ($id_filter == -1) {
             $result_array['error'] = 1;
             $result_array['msg'] = ui_print_error_message(
-                __('please, select a filter'),
+                __('Please, select a filter'),
                 '',
                 true
             );

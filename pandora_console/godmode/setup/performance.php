@@ -246,7 +246,7 @@ if ($config['history_db_enabled'] == 1) {
             true
         ).' '.__('ago').'.';
     } else {
-        $table_status->data[1][0] .= __('not executed');
+        $table_status->data[1][0] .= __('Not executed');
     }
 }
 

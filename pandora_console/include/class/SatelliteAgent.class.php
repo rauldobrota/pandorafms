@@ -598,7 +598,7 @@ class SatelliteAgent extends HTML
         if ($this->parseSatelliteConf('save', $values) === false) {
             $this->ajaxMsg('error', __('Error saving agent'));
         } else {
-            $this->ajaxMsg('result', _('Host '.$values['addres'].' added.'));
+            $this->ajaxMsg('result', __('Host %s added.', $values['addres']));
         }
 
         exit;
@@ -640,8 +640,8 @@ class SatelliteAgent extends HTML
                 $this->ajaxMsg(
                     'result',
                     ($values['delete'] === '0')
-                        ? _('Host '.$values['address'].' deleted.')
-                        : _('Host '.$values['address'].' added.'),
+                        ? __('Host %s deleted.', $values['address'])
+                        : __('Host %s added.', $values['address']),
                     true
                 );
             }
@@ -685,8 +685,8 @@ class SatelliteAgent extends HTML
                 $this->ajaxMsg(
                     'result',
                     ($values['disable'] === '0')
-                        ? _('Host '.$values['address'].' disabled.')
-                        : _('Host '.$values['address'].' enabled.'),
+                        ? __('Host %s disabled.', $values['address'])
+                        : __('Host %s enabled.', $values['address']),
                     false,
                     true
                 );

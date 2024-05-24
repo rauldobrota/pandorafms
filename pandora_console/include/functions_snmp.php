@@ -138,7 +138,7 @@ function snmp_get_default_translations()
         'post_process' => '1',
     ];
     $return['1.3.6.1.2.1.1.3.0'] = [
-        'description'  => __('system Up time'),
+        'description'  => __('System Up time'),
         'post_process' => '0.00000011574074',
     ];
 

@@ -48,7 +48,7 @@ if (is_ajax()) {
         echo "<ul class='tooltip_counters'><h3>".__('Counters Module').'</h3>';
         echo "<li><div style='background-color: ".COL_ALERTFIRED.";'></div>".__('Alerts_Fired').': '.$send_tooltip['alerts_module_count'].'</li>';
         echo "<li><div style='background-color: ".COL_CRITICAL.";'></div>".__('Critical').': '.$send_tooltip['critical_module_count'].'</li>';
-        echo "<li><div style='background-color: ".COL_WARNING.";'></div>".__('warning').': '.$send_tooltip['warning_module_count'].'</li>';
+        echo "<li><div style='background-color: ".COL_WARNING.";'></div>".__('Warning').': '.$send_tooltip['warning_module_count'].'</li>';
         echo "<li><div style='background-color: ".COL_UNKNOWN.";'></div>".__('Unknown').': '.$send_tooltip['unknown_module_count'].'</li>';
         echo "<li><div style='background-color: ".COL_NORMAL.";'></div>".__('OK').': '.$send_tooltip['normal_module_count'].'</li>';
         echo "<li><div style='background-color: ".COL_MAINTENANCE.";'></div>".__('Not_init').': '.$send_tooltip['notInit_module_count'].'</li></ul>';

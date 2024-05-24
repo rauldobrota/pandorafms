@@ -505,7 +505,7 @@ $ldap_rows = [];
 // Method.
 $auth_methods = [
     'mysql' => __('Local %s', get_product_name()),
-    'ldap'  => __('ldap'),
+    'ldap'  => __('LDAP'),
 ];
 if (enterprise_installed()  === true) {
     add_enterprise_auth_methods($auth_methods);

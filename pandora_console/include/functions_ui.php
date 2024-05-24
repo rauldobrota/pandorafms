@@ -8363,17 +8363,17 @@ function ui_print_status_secmon_div($status, $title=false)
 {
     $class = 'status_rounded_rectangles forced_title';
     if (($status) === 'normal') {
-        $title = ($title === false) ? __('normal') : $title;
+        $title = ($title === false) ? __('Normal') : $title;
         return ui_print_div('group_view_ok '.$class, $title);
     }
 
     if (($status) === 'warning') {
-        $title = ($title === false) ? __('warning') : $title;
+        $title = ($title === false) ? __('Warning') : $title;
         return ui_print_div('group_view_warn '.$class, $title);
     }
 
     if (($status) === 'critical') {
-        $title = ($title === false) ? __('critical') : $title;
+        $title = ($title === false) ? __('Critical') : $title;
         return ui_print_div('group_view_crit '.$class, $title);
     }
 }

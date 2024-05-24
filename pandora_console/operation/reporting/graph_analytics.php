@@ -922,12 +922,12 @@ $left_content .= '
 ';
 
 $intervals = [];
-$intervals[SECONDS_1HOUR]  = _('Last ').human_time_description_raw(SECONDS_1HOUR, true, 'large');
-$intervals[SECONDS_6HOURS]  = _('Last ').human_time_description_raw(SECONDS_6HOURS, true, 'large');
-$intervals[SECONDS_12HOURS] = _('Last ').human_time_description_raw(SECONDS_12HOURS, true, 'large');
-$intervals[SECONDS_1DAY] = _('Last ').human_time_description_raw(SECONDS_1DAY, true, 'large');
-$intervals[SECONDS_2DAY] = _('Last ').human_time_description_raw(SECONDS_2DAY, true, 'large');
-$intervals[SECONDS_1WEEK] = _('Last ').human_time_description_raw(SECONDS_1WEEK, true, 'large');
+$intervals[SECONDS_1HOUR]  = __('Last').' '.human_time_description_raw(SECONDS_1HOUR, true, 'large');
+$intervals[SECONDS_6HOURS]  = __('Last').' '.human_time_description_raw(SECONDS_6HOURS, true, 'large');
+$intervals[SECONDS_12HOURS] = __('Last').' '.human_time_description_raw(SECONDS_12HOURS, true, 'large');
+$intervals[SECONDS_1DAY] = __('Last').' '.human_time_description_raw(SECONDS_1DAY, true, 'large');
+$intervals[SECONDS_2DAY] = __('Last').' '.human_time_description_raw(SECONDS_2DAY, true, 'large');
+$intervals[SECONDS_1WEEK] = __('Last').' '.human_time_description_raw(SECONDS_1WEEK, true, 'large');
 
 $right_content .= '<div class="interval-div">'.html_print_select(
     $intervals,

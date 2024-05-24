@@ -228,7 +228,7 @@ $row['publicUrl'] = html_print_label_input_block(
 );
 
 $row['agentsSync'] = html_print_label_input_block(
-    __('Number of Agents to synchronize').ui_print_help_tip(
+    __('Number of agents to synchronize').ui_print_help_tip(
         __('Number of agents that will synchronize at the same time, minimum 10 max 1000'),
         true
     ),

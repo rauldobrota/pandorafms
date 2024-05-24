@@ -673,11 +673,7 @@ $custom_font_size = '';
 // ui_pagination($total_agents, "index.php?sec=gagente&sec2=godmode/agentes/modificar_agente&group_id=$ag_group&recursion=$recursion&search=$search&sort_field=$sortField&sort=$sort&disabled=$disabled&os=$os", $offset);
 if ($agents !== false) {
     // Urls to sort the table.
-    if ($config['language'] === 'ja'
-        || $config['language'] === 'zh_CN'
-        || $own_info['language'] === 'ja'
-        || $own_info['language'] === 'zh_CN'
-    ) {
+    if ($config['language'] === 'ja' || $own_info['language'] === 'ja') {
         // Adds a custom font size for Japanese and Chinese language.
         $custom_font_size = 'custom_font_size';
     }

@@ -690,7 +690,7 @@ if (empty($draw) === false) {
         html_print_div(
             [
                 'id'      => 'spinner',
-                'content' => '<p class="loading-text">'.__('Loading netflow data, please wait...').'</p>'.$spinner,
+                'content' => '<p class="loading-text">'.__('Loading netflow data, please wait').'</p>'.$spinner,
                 'class'   => 'invisible',
                 'style'   => 'position: initial;',
             ]

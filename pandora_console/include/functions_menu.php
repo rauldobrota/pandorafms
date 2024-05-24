@@ -705,7 +705,7 @@ function menu_get_sec($with_categories=false)
             }
 
             if ($in_godmode) {
-                $category = __('Administration');
+                $category = __('Management');
             } else {
                 $category = __('Operation');
             }

@@ -106,7 +106,7 @@ $product_name = get_product_name(); ?>
 </div>
 
 <!-- Verification modal.. -->
-<div id="reg_ensure_cancel" title="Confirmation Required" class="invisible">
+<div id="reg_ensure_cancel" title="<?php echo __('Confirmation Required'); ?>" class="invisible">
     <div class="lato font_10pt">
         <?php echo __('Are you sure you don\'t want to use Warp update?'); ?>
         <p>
@@ -122,7 +122,7 @@ $product_name = get_product_name(); ?>
 </div>
 
 <!-- Results modal. -->
-<div id="reg_result" title="Registration process result" class="invisible">
+<div id="reg_result" title="<?php echo __('Registration process result'); ?>" class="invisible">
     <div id="reg_result_content" class="lato font_10pt">
     </div>
 </div>
@@ -169,7 +169,7 @@ $("#submit-cancel_registration").click(function(e) {
         }
       },
       {
-        text: "Yes",
+        text: "<?php echo __('Yes'); ?>",
         class: "submit-next",
         click: function() {
           ajax({

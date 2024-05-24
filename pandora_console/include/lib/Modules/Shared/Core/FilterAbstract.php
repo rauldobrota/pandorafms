@@ -79,7 +79,7 @@ abstract class FilterAbstract extends SerializableAbstract
         foreach ($params as $field => $value) {
             if (method_exists($this, 'set'.ucfirst($field)) === false) {
                 if ($this->getEntityFilter() === null || method_exists($this->getEntityFilter(), 'set'.ucfirst($field)) === false) {
-                    throw new BadRequestException(__('Field').': '.$field.' '.__('is not a valid parameter'));
+                    throw new BadRequestException(__('Field: %s is not a valid parameter', $field));
                 }
             }
 

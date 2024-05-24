@@ -682,14 +682,14 @@ switch ($action) {
     case 'edit_map':
     case 'update_saved':
         if (empty($invalidFields) === true) {
-            $action_button = html_print_submit_button(_('Save map'), 'save_button', false, ['mode' => 'primary', 'icon' => 'next'], true);
+            $action_button = html_print_submit_button(__('Save map'), 'save_button', false, ['mode' => 'primary', 'icon' => 'next'], true);
         } else {
-            $action_button = html_print_submit_button(_('Update map'), 'update_button', false, ['mode' => 'primary', 'icon' => 'next'], true);
+            $action_button = html_print_submit_button(__('Update map'), 'update_button', false, ['mode' => 'primary', 'icon' => 'next'], true);
         }
     break;
 
     case 'new_map':
-        $action_button = html_print_submit_button(_('Save map'), 'save_button', false, ['mode' => 'primary', 'icon' => 'next'], true);
+        $action_button = html_print_submit_button(__('Save map'), 'save_button', false, ['mode' => 'primary', 'icon' => 'next'], true);
     break;
 
     default:

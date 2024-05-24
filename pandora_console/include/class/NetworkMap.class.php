@@ -3120,7 +3120,7 @@ class NetworkMap
             html_print_input_text(
                 'edit_name_node',
                 '',
-                __('name node'),
+                __('Name node'),
                 '20',
                 '50',
                 true
@@ -3132,7 +3132,7 @@ class NetworkMap
             html_print_input_text(
                 'edit_name_fictional_node',
                 '',
-                __('name fictional node'),
+                __('Name fictional node'),
                 '20',
                 '50',
                 true
@@ -3502,7 +3502,7 @@ class NetworkMap
             html_print_input_text(
                 'name_fictional_node',
                 '',
-                __('name fictional node'),
+                __('Name fictional node'),
                 '20',
                 '50',
                 true

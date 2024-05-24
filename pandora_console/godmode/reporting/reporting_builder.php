@@ -190,7 +190,7 @@ if ($schedule_report != '') {
 
     ui_print_result_message(
         $result,
-        __('Your report has been planned, and the system will email you a '.$report_type.' file with the report as soon as its finished'),
+        __('Your report has been planned, and the system will email you a %s file with the report as soon as its finished', $report_type),
         __('An error has ocurred')
     );
     echo '<br>';
