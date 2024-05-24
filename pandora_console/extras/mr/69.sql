@@ -23,6 +23,11 @@ UPDATE `tusuario` SET `language` = 'default' WHERE `language` = 'zh_CN';
 UPDATE `tconfig` SET `value` = 'en_GB' WHERE `token` = 'language' AND `value` = 'zh_CN';
 UPDATE `tconfig` SET `value` = 'Andromeda' WHERE `token` = 'lts_name';
 
+SET @id_token_last_compact_offset = NULL;
+SET @token_name_last_compact_offset = 'last_compact_offset';
+SELECT @id_token_last_compact_offset := `id_config` FROM `tconfig` WHERE `token` = @token_name_last_compact_offset ORDER BY `id_config` DESC LIMIT 1;
+DELETE FROM `tconfig` WHERE `token` = @token_name_last_compact_offset AND `id_config` != @id_token_last_compact_offset;
+
 -- START MIGRATION MSSQL --
 SET @current_app_type = 12;
 SET @short_name = 'pandorafms.mssql';
