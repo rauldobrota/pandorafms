@@ -140,10 +140,7 @@ if ((bool) check_acl($config['id_user'], 0, 'AR') === true
                 $sub['godmode/servers/discovery&wiz=custom']['sub2'] = $sub2;
             }
 
-            if (check_acl($config['id_user'], 0, 'RW')
-                || check_acl($config['id_user'], 0, 'RM')
-                || check_acl($config['id_user'], 0, 'PM')
-            ) {
+            if (users_is_admin($config['id_user']) === true) {
                 $sub['godmode/servers/discovery&wiz=magextensions']['text'] = __('Manage disco packages');
                 $sub['godmode/servers/discovery&wiz=magextensions']['id'] = 'mextensions';
             }
