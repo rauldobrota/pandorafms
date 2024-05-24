@@ -3847,7 +3847,17 @@ function events_get_response_target(
         $eventObjt = new PandoraFMS\Event();
     }
 
+    if (is_metaconsole() === true && (int) $server_id > 0) {
+        $node = new Node($server_id);
+        $node->connect();
+    }
+
     $event = db_get_row('tevento', 'id_evento', $event_id);
+
+    if (is_metaconsole() === true && $server_id > 0) {
+        $node->disconnect();
+    }
+
     $target = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
 
     // Replace parameters response.
@@ -3875,6 +3885,11 @@ function events_get_response_target(
                 );
             }
         }
+    }
+
+    if (is_metaconsole() === true && (int) $server_id > 0) {
+        $node = new Node($server_id);
+        $node->connect();
     }
 
     // Replace macros.
@@ -4236,6 +4251,10 @@ function events_get_response_target(
             $server_name,
             $target
         );
+    }
+
+    if (is_metaconsole() === true && $server_id > 0) {
+        $node->disconnect();
     }
 
     return $target;
