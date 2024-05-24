@@ -3887,6 +3887,11 @@ function events_get_response_target(
         }
     }
 
+    if (is_metaconsole() === true && (int) $server_id > 0) {
+        $node = new Node($server_id);
+        $node->connect();
+    }
+
     // Replace macros.
     if (strpos($target, '_agent_alias_') !== false) {
         $agente_table_name = 'tagente';
@@ -4246,6 +4251,10 @@ function events_get_response_target(
             $server_name,
             $target
         );
+    }
+
+    if (is_metaconsole() === true && $server_id > 0) {
+        $node->disconnect();
     }
 
     return $target;
