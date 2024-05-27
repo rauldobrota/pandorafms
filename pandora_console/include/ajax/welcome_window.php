@@ -39,7 +39,7 @@ $ajaxPage = 'include/ajax/welcome_window';
 $method = get_parameter('method', '');
 
 if ($method === 'loadWelcomeWindow') {
-    unset($config['welcome_state']);
+    $config['welcome_state'] = 0;
 }
 
 

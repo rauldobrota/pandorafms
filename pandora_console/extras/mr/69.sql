@@ -7790,4 +7790,9 @@ WHERE `content`= 'expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&
 UPDATE `tncm_script` SET `content` ='expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&#x0d;&#x0a;capture:show&#x20;version|match&#x20;Junos:&#92;n&#x0d;&#x0a;quit&#92;n&#x0d;&#x0a;expect:root@%&#x0d;&#x0a;exit&#92;n'
 WHERE `content`='expect:root@%&#x0d;&#x0a;cli&#92;n&#x0d;&#x0a;expect:root&gt;&#x0d;&#x0a;capture:show&#x20;version|match&#x20;Junos:&#92;n&#x0d;&#x0a;capture:&#x20;&#92;n&#x0d;&#x0a;quit&#92;n&#x0d;&#x0a;expect:root@%&#x0d;&#x0a;exit&#92;n';
 
+SET @id_token_welcome_state = NULL;
+SET @token_name_welcome_state = 'welcome_state';
+SELECT @id_token_welcome_state := `id_config` FROM `tconfig` WHERE `token` = @token_name_welcome_state ORDER BY `id_config` DESC LIMIT 1;
+DELETE FROM `tconfig` WHERE `token` = @token_name_welcome_state AND `id_config` != @id_token_welcome_state;
+
 COMMIT;
