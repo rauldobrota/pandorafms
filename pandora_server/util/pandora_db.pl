@@ -475,6 +475,7 @@ sub pandora_compactdb {
     my $last_compact_offset = pandora_get_config_value($dbh, "last_compact_offset");
 
     if ($last_compact_offset eq "") {
+				db_do ($dbh, "DELETE FROM tconfig WHERE token = 'last_compact_offset'");
         db_do($dbh, "INSERT INTO tconfig (token, value) VALUES ('last_compact_offset', '0')");
         $last_compact_offset = 0;
     }
