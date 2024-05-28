@@ -468,24 +468,27 @@ sub ha_database_connect_pandora($) {
 		# No luck. Try the next database.
 		next unless defined($dbh);
 
-    # Check if database is disabled.
-    if (defined(get_db_value($dbh, 'SELECT `id` FROM `tdatabase` WHERE `host` = "' . $ha_dbhost . '" AND disabled = 1')))
-    {
-      log_message($conf, 'LOG', "Ignoring disabled host: " . $ha_dbhost);
-      db_disconnect($dbh);
-      next;
-    }
-		eval {
-		   # Get the most recent utimestamp from the database.
-		   $utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
-		   db_disconnect($dbh);
+		# Check if database is disabled.
+		if (defined(get_db_value($dbh, 'SELECT `id` FROM `tdatabase` WHERE `host` = "' . $ha_dbhost . '" AND disabled = 1'))) {
+			log_message($conf, 'LOG', "Ignoring disabled host: " . $ha_dbhost);
+			db_disconnect($dbh);
+			next;
+		}
 
-		   # Did we find a more recent database?
-		   $utimestamp = 0 unless defined($utimestamp);
-		   if ($utimestamp > $max_utimestamp) {
-			   $dbhost = $ha_dbhost;
-			   $max_utimestamp = $utimestamp;
-		   }
+		eval {
+			# Get the most recent utimestamp from the database.
+			$utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
+			db_disconnect($dbh);
+
+			# Did we find a more recent database?
+			# Double check in case the master has updated and replicated its keepalive value.
+			$utimestamp = 0 unless defined($utimestamp);
+			log_message($conf, 'DEBUG', "Utimestamp for $ha_dbhost: $utimestamp Max. utimestamp: $max_utimestamp");
+			if ($utimestamp > $max_utimestamp && ($max_utimestamp == -1 || $utimestamp > ha_get_keepalive($conf, $dbhost))) {
+				log_message($conf, 'DEBUG', "Selected $ha_dbhost as the new master candidate...");
+				$dbhost = $ha_dbhost;
+				$max_utimestamp = $utimestamp;
+			}
 		};
 		log_message($conf, 'WARNING', $@) if ($@);
 	}
@@ -539,6 +542,31 @@ sub ha_restart_pandora($) {
     `$config->{'pandora_service_cmd'} $control_command 2>/dev/null`;
 }
 
+
+###############################################################################
+# Get the server keepalive value for the given host.
+###############################################################################
+sub ha_get_keepalive($$) {
+	my ($conf, $host) = @_;
+	my $utimestamp = -1;
+
+	eval {
+		my $dbh= db_connect('mysql',
+		                 $conf->{'dbname'},
+		                 $host,
+		                 $conf->{'dbport'},
+		                 $conf->{'ha_dbuser'},
+		                 $conf->{'ha_dbpass'});
+		$utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
+		$utimestamp = -1 unless defined($utimestamp);
+		db_disconnect($dbh);
+	};
+    log_message($conf, 'WARNING', $@) if ($@);
+
+	log_message($conf, 'DEBUG', "Most recent timestamp for $host: $utimestamp");
+
+	return $utimestamp;
+}
 
 ###############################################################################
 # Main (Pandora)
