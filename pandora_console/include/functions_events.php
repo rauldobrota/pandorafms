@@ -5362,8 +5362,11 @@ function events_page_comments($event, $groupedComments=[], $filter=null)
                 '<br><br><i>%s</i>',
                 date($config['date_format'], $comm['utimestamp'])
             );
-
-            $data[1] = '<p class="break_word">'.stripslashes(str_replace(['\n', '\r'], '<br/>', $comm['comment'])).'</p>';
+            if (isset($config['events_format_urls']) === true && (bool) $config['events_format_urls'] === true) {
+                $data[1] = io_safe_output($comm['comment']);
+            } else {
+                $data[1] = '<p class="break_word">'.stripslashes(str_replace(['\n', '\r'], '<br/>', $comm['comment'])).'</p>';
+            }
 
             $table_comments->data[] = $data;
         }

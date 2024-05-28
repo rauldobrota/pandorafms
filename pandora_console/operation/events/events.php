@@ -560,16 +560,20 @@ if (is_ajax() === true) {
                         }
 
                         if (empty($tmp->event_custom_id) === false) {
-                            $tmp->event_custom_id = ui_print_truncate_text(
-                                $tmp->event_custom_id,
-                                30,
-                                false,
-                                true,
-                                false,
-                                '&hellip;',
-                                true,
-                                true,
-                            );
+                            if (isset($config['events_format_urls']) === true && (bool) $config['events_format_urls'] === true) {
+                                $tmp->event_custom_id = io_safe_output($tmp->event_custom_id);
+                            } else {
+                                $tmp->event_custom_id = ui_print_truncate_text(
+                                    $tmp->event_custom_id,
+                                    30,
+                                    false,
+                                    true,
+                                    false,
+                                    '&hellip;',
+                                    true,
+                                    true,
+                                );
+                            }
                         }
 
                         if (empty($tmp->module_custom_id) === false) {

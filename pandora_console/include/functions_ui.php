@@ -7270,24 +7270,27 @@ function ui_print_comments($comment, $truncate_limit=255)
 
     $short_comment = substr($comment['comment'], 0, 20);
     $comentario = $comment['comment'];
+    if (isset($config['events_format_urls']) === true && (bool) $config['events_format_urls'] === true) {
+        $comentario = '<i class="forced_title" data-use_title_for_force_title="1" data-title="'.date($config['date_format'], $comment['utimestamp']).'">'.ui_print_timestamp($comment['utimestamp'], true, ['style' => 'font-size: 10px; display: contents;', 'prominent' => 'compact']).'&nbsp;('.$comment['id_user'].'):&nbsp;'.$comment['comment'].'';
+    } else {
+        if (strlen($comentario) >= $truncate_limit) {
+            $comentario = ui_print_truncate_text(
+                $comentario,
+                $truncate_limit,
+                false,
+                true,
+                false,
+                '&hellip;',
+                true,
+                true,
+            );
+        }
 
-    if (strlen($comentario) >= $truncate_limit) {
-        $comentario = ui_print_truncate_text(
-            $comentario,
-            $truncate_limit,
-            false,
-            true,
-            false,
-            '&hellip;',
-            true,
-            true,
-        );
-    }
+        $comentario = '<i class="forced_title" data-use_title_for_force_title="1" data-title="'.date($config['date_format'], $comment['utimestamp']).'">'.ui_print_timestamp($comment['utimestamp'], true, ['style' => 'font-size: 10px; display: contents;', 'prominent' => 'compact']).'&nbsp;('.$comment['id_user'].'):&nbsp;'.$comment['comment'].'';
 
-    $comentario = '<i class="forced_title" data-use_title_for_force_title="1" data-title="'.date($config['date_format'], $comment['utimestamp']).'">'.ui_print_timestamp($comment['utimestamp'], true, ['style' => 'font-size: 10px; display: contents;', 'prominent' => 'compact']).'&nbsp;('.$comment['id_user'].'):&nbsp;'.$comment['comment'].'';
-
-    if (strlen($comentario) > '200px' && $truncate_limit >= 255) {
-        $comentario = '<i class="forced_title" data-use_title_for_force_title="1" data-title="'.date($config['date_format'], $comment['utimestamp']).'">'.ui_print_timestamp($comment['utimestamp'], true, ['style' => 'font-size: 10px; display: contents;', 'prominent' => 'compact']).'&nbsp;('.$comment['id_user'].'):&nbsp;'.$short_comment.'...';
+        if (strlen($comentario) > '200px' && $truncate_limit >= 255) {
+            $comentario = '<i class="forced_title" data-use_title_for_force_title="1" data-title="'.date($config['date_format'], $comment['utimestamp']).'">'.ui_print_timestamp($comment['utimestamp'], true, ['style' => 'font-size: 10px; display: contents;', 'prominent' => 'compact']).'&nbsp;('.$comment['id_user'].'):&nbsp;'.$short_comment.'...';
+        }
     }
 
     return $comentario;
