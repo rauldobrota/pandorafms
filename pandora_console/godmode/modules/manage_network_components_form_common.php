@@ -182,7 +182,7 @@ $table->data[3][0] = html_print_label_input_block(
     ).$dynamic_interval_img.'</div>'
 );
 
-$table->data[3][2] = '<span><em>'.__('Dynamic Min. ').'</em>';
+$table->data[3][2] = '<span><em>'.__('Dynamic Min.').' </em>';
 $table->data[3][2] .= html_print_input_text('dynamic_min', $dynamic_min, '', 10, 255, true);
 $table->data[3][2] .= '<br /><em>'.__('Dynamic Max.').'</em>';
 $table->data[3][2] .= html_print_input_text('dynamic_max', $dynamic_max, '', 10, 255, true);
@@ -192,14 +192,14 @@ $table->data[3][3] .= html_print_checkbox('dynamic_two_tailed', 1, $dynamic_two_
 $table->data[3][1] = html_print_label_input_block(
     '',
     '<div class="inline_flex align-center">'.html_print_label_input_block(
-        __('Dynamic Min. '),
+        __('Dynamic Min.').' ',
         html_print_input_text('dynamic_min', $dynamic_min, '', 10, 255, true, false, false, '', 'w100p mrgn_top_10px'),
         [
             'label_class' => 'font-title-font',
             'div_class'   => 'mrgn_right_10px',
         ]
     ).html_print_label_input_block(
-        __('Dynamic Max. '),
+        __('Dynamic Max.').' ',
         html_print_input_text('dynamic_max', $dynamic_max, '', 10, 255, true, false, false, '', 'w100p mrgn_top_10px'),
         [
             'label_class' => 'font-title-font',

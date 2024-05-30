@@ -751,7 +751,7 @@ class CredentialStore extends Wizard
         $identifier = get_parameter('identifier', null);
 
         if (empty($identifier)) {
-            $this->ajaxMsg('error', __('identifier cannot be empty'), true);
+            $this->ajaxMsg('error', __('Identifier cannot be empty'), true);
         }
 
         if (self::getKey($identifier) === false) {

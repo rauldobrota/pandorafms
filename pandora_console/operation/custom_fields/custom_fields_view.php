@@ -1036,7 +1036,7 @@ function table_datatables(filters, indexed_descriptions, processing){
                                                     return 0;
                                                 }
                                                 var dec_point = "<?php echo $config['csv_decimal_separator']; ?>";
-                                                var thousands_separator = "<?php echo __(''); ?>";
+                                                var thousands_separator = "<?php echo ''; ?>";
                                                 data = js_csv_format_numeric(data ,dec_point, thousands_separator, countDecimals(data));
                                             }
                                             return data;

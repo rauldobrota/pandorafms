@@ -1175,14 +1175,14 @@ if ($config['activate_gis']) {
     );
 
     $table->data[4][0] = html_print_label_input_block(
-        __('Ignore new GIS data:'),
+        __('Ignore new GIS data').':',
         '<div class="flex-row-center">'.$ignore_gis.'</div>'
     );
 }
 
 
 $table->data[5][0] = html_print_label_input_block(
-    __('Quiet:').ui_print_help_tip(
+    __('Quiet').ui_print_help_tip(
         __('The agent still runs but the alerts and events will be stop'),
         true
     ),
@@ -1232,7 +1232,7 @@ $table->data[5][1] = html_print_label_input_block(
 );
 
 $table->data[6][0] = html_print_label_input_block(
-    __('Ignore unknown').ui_print_help_tip(_('This disables the calculation of the unknown state in the agent and any of its modules, so it will never transition to unknown. The state it reflects is the last known status.'), true),
+    __('Ignore unknown').ui_print_help_tip(__('This disables the calculation of the unknown state in the agent and any of its modules, so it will never transition to unknown. The state it reflects is the last known status.'), true),
     html_print_select(
         [
             ''  => __('No change'),

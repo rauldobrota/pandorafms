@@ -286,19 +286,19 @@ class Events extends Element
         foreach ($rows as $key => $row) {
             switch ($row['estado']) {
                 case '2':
-                    $label = _('In process');
+                    $label = __('In process');
                 break;
 
                 case '0':
-                    $label = _('New events');
+                    $label = __('New events');
                 break;
 
                 case '3':
-                    $label = _('Not validated');
+                    $label = __('Not validated');
                 break;
 
                 case '1':
-                    $label = _('Validated events');
+                    $label = __('Validated events');
                 break;
 
                 default:

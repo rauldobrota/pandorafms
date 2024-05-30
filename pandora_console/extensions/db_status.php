@@ -162,12 +162,12 @@ function extension_db_status_execute_checks($db_user, $db_password, $db_host, $d
     $db_name = $db_name[0];
 
     if (!$db_host) {
-        ui_print_error_message(__('A host must be provided'));
+        ui_print_error_message(__('Host must be provided'));
         return;
     }
 
     if (!$db_name) {
-        ui_print_error_message(__('A DB name must be provided'));
+        ui_print_error_message(__('DB name must be provided'));
         return;
     }
 

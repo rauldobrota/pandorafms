@@ -53,7 +53,7 @@ final class UserValidation
             $this->existsUser($user->getIdUser());
         } else {
             if ($user->getIdUser() !== $oldUser->getIdUser()) {
-                throw new BadRequestException(__('idUser cannot be updated'));
+                throw new BadRequestException(__('IdUser cannot be updated'));
             }
         }
 
@@ -302,7 +302,7 @@ final class UserValidation
     private function validateIdUser(User $user): void
     {
         if ($user->getIdUser() === false) {
-            throw new BadRequestException(__('idUser is missing'));
+            throw new BadRequestException(__('IdUser is missing'));
         }
 
         // Cannot have blanks.

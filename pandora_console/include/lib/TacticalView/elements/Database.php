@@ -91,7 +91,7 @@ class Database extends Element
             $image_status = html_print_image('images/status_check@svg.svg', true);
             $text = html_print_div(
                 [
-                    'content' => __('Everything’s OK!'),
+                    'content' => __('Everything\'s OK!'),
                     'class'   => 'status-text',
                 ],
                 true

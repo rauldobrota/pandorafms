@@ -88,7 +88,7 @@ class NewsBoard extends Element
                         </p>
                         
                         <p>'.__('Our interface is user-friendly,').'
-                        <br>'.__("Customize your dashboard, it's easy.").'
+                        <br>'.__("Customize your dashboard, it's easy!").'
                         <br>'.__('Set up alerts and gain insights so keen,').'
                         <br>'.__("Optimize your data, like you've never seen.").'
                         </p>

@@ -1046,7 +1046,7 @@ class Events
         $options = [
             'icon'     => 'refresh',
             'icon_pos' => 'right',
-            'text'     => __('Apply Filter'),
+            'text'     => __('Apply filter'),
         ];
         $ui->formAddSubmitButton($options);
         $html = $ui->getEndForm();

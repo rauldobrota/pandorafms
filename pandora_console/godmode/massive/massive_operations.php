@@ -509,7 +509,7 @@ if ($option === 'edit_agents' || $option === 'edit_modules') {
 global $SelectAction;
 
 $SelectAction = '<form id="form_necesario" method="post" id="form_options" action="'.$url.'">';
-$SelectAction .= '<span class="mrgn_lft_10px mrgn_right_10px">'._('Action').'</span>';
+$SelectAction .= '<span class="mrgn_lft_10px mrgn_right_10px">'.__('Action').'</span>';
 $SelectAction .= html_print_select(
     $options,
     'option',

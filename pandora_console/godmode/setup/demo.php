@@ -687,10 +687,6 @@ if ($display_loading === true || $running_create === true || $running_delete ===
     }
 
     $(document).ready (function () {
-        var demo_items_count = <?php echo $demo_items_count; ?>;
-        var agent_count_span_str = '<?php echo __('demo agents currently in the system'); ?>';
-        var agents_str = '<?php echo __('agents'); ?>';
-
         $("#table-adv").hide();
 
         $('#checkbox-toggle_adv_opts').change(function() {

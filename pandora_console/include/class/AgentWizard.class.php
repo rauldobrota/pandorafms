@@ -1659,6 +1659,14 @@ class AgentWizard extends HTML
                                 $k = $matches[1].'_'.$matches[2].'-'.$matches[3];
                             }
                         } else {
+                            if (preg_match('/module-id_plugin/', $k) > 0) {
+                                $result[$value]['id_plugin'] = $data['module-id_plugin-'.$key];
+                            }
+
+                            if (preg_match('/module-id_modulo/', $k) > 0) {
+                                $result[$value]['id_modulo'] = $data['module-id_modulo-'.$key];
+                            }
+
                             if (preg_match('/module-value/', $k) > 0
                                 && empty($data[$k]) === false
                             ) {

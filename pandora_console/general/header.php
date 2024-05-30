@@ -107,9 +107,9 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         if ($check_minor_release_available === true) {
             if (users_is_admin($config['id_user'])) {
                 if ($config['language'] === 'es') {
-                    set_pandora_error_for_header('Hay una o mas revisiones menores en espera para ser actualizadas. <a id="aviable_updates" target="blank" href="https://pandorafms.com/manual/es/documentation/pandorafms/installation/02_anexo_upgrade#version_70ng_rolling_release">'.__('Sobre actualización de revisión menor').'</a>', 'Revisión/es menor/es disponible/s');
+                    set_pandora_error_for_header('Hay una o mas revisiones menores en espera para ser actualizadas. <a id="aviable_updates" target="blank" href="https://pandorafms.com/manual/es/documentation/pandorafms/installation/02_anexo_upgrade#version_70ng_rolling_release">Sobre actualización de revisión menor</a>', 'Revisión/es menor/es disponible/s');
                 } else {
-                    set_pandora_error_for_header('There are one or more minor releases waiting for update. <a id="aviable_updates" target="blank" href="https://pandorafms.com/manual/en/documentation/pandorafms/installation/02_anexo_upgrade#version_70ng_rolling_release">'.__('About minor release update').'</a>', 'minor release/s available');
+                    set_pandora_error_for_header('There are one or more minor releases waiting for update. <a id="aviable_updates" target="blank" href="https://pandorafms.com/manual/en/documentation/pandorafms/installation/02_anexo_upgrade#version_70ng_rolling_release">About minor release update</a>', 'minor release/s available');
                 }
             }
         }
@@ -396,7 +396,7 @@ echo sprintf('<div id="header_table" class="header_table_%s">', $menuTypeClass);
         <div id="msg-header" class="invisible"></div>
             <a href="https://pandorafms.com/manual" target="_blank">'.__('Pandora documentation').'</a>';
         if (enterprise_installed() === true) {
-            $modal_box .= '<a href="https://support.pandorafms.com/" target="_blank">'.__('Enterprise support ').'</a>';
+            $modal_box .= '<a href="https://support.pandorafms.com/" target="_blank">'.__('Enterprise support').' </a>';
             $modal_box .= '<a href="#" id="feedback-header">'.__('Give us feedback').'</a>';
         } else {
             $modal_box .= '<a href="https://pandorafms.com/community/forums/" target="_blank">'.__('Community Support').'</a>';

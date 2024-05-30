@@ -38,7 +38,7 @@ use PandoraFMS::Config;
 use PandoraFMS::DB;
 
 # version: define current version
-my $version = "7.0NG.776 Build 240521";
+my $version = "7.0NG.776 Build 240530";
 
 # Pandora server configuration
 my %conf;
@@ -475,6 +475,7 @@ sub pandora_compactdb {
     my $last_compact_offset = pandora_get_config_value($dbh, "last_compact_offset");
 
     if ($last_compact_offset eq "") {
+				db_do ($dbh, "DELETE FROM tconfig WHERE token = 'last_compact_offset'");
         db_do($dbh, "INSERT INTO tconfig (token, value) VALUES ('last_compact_offset', '0')");
         $last_compact_offset = 0;
     }

@@ -359,31 +359,31 @@ function config_update_config()
                     }
 
                     if (config_update_value('identification_reminder', get_parameter('identification_reminder'), true) === false) {
-                        $error_update[] = __('Identification_reminder');
+                        $error_update[] = __('Identification reminder');
                     }
 
                     if (config_update_value('include_agents', (bool) get_parameter('include_agents'), true) === false) {
-                        $error_update[] = __('Include_agents');
+                        $error_update[] = __('Include agents');
                     }
 
                     if (config_update_value('alias_as_name', get_parameter('alias_as_name'), true) === false) {
-                        $error_update[] = __('alias_as_name');
+                        $error_update[] = __('Alias as name');
                     }
 
                     if (config_update_value('keep_in_process_status_extra_id', get_parameter('keep_in_process_status_extra_id'), true) === false) {
-                        $error_update[] = __('keep_in_process_status_extra_id');
+                        $error_update[] = __('Keep in process status extra id');
                     }
 
                     if (config_update_value('show_experimental_features', get_parameter('show_experimental_features'), true) === false) {
-                        $error_update[] = __('show_experimental_features');
+                        $error_update[] = __('Show experimental features');
                     }
 
                     if (config_update_value('eastern_eggs_disabled', get_parameter('eastern_eggs_disabled'), true) === false) {
-                        $error_update[] = __('eastern_eggs_disabled');
+                        $error_update[] = __('Easter eggs disabled');
                     }
 
                     if (config_update_value('number_modules_queue', get_parameter('number_modules_queue'), true) === false) {
-                        $error_update[] = __('number_modules_queue');
+                        $error_update[] = __('Number modules queue');
                     }
 
                     if (config_update_value('console_log_enabled', get_parameter('console_log_enabled'), true) === false) {
@@ -1912,35 +1912,35 @@ function config_update_config()
 
                 case 'pandorarc':
                     if (config_update_value('ehorus_enabled', (int) get_parameter('ehorus_enabled', 0), true) === false) {
-                        $error_update[] = __('Enable eHorus');
+                        $error_update[] = __('Enable Ehorus');
                     }
 
                     if (config_update_value('ehorus_user_level_conf', (int) get_parameter('ehorus_user_level_conf', 0), true) === false) {
-                        $error_update[] = __('eHorus user login');
+                        $error_update[] = __('Ehorus user login');
                     }
 
                     if (config_update_value('ehorus_user', (string) get_parameter('ehorus_user', $config['ehorus_user']), true) === false) {
-                        $error_update[] = __('eHorus user');
+                        $error_update[] = __('Ehorus user');
                     }
 
                     if (config_update_value('ehorus_pass', (string) get_parameter('ehorus_pass', $config['ehorus_pass']), true, true) === false) {
-                        $error_update[] = __('eHorus password');
+                        $error_update[] = __('Ehorus password');
                     }
 
                     if (config_update_value('ehorus_hostname', (string) get_parameter('ehorus_hostname', $config['ehorus_hostname']), true) === false) {
-                        $error_update[] = __('eHorus API hostname');
+                        $error_update[] = __('Ehorus API hostname');
                     }
 
                     if (config_update_value('ehorus_port', (int) get_parameter('ehorus_port', $config['ehorus_port']), true) === false) {
-                        $error_update[] = __('eHorus API port');
+                        $error_update[] = __('Ehorus API port');
                     }
 
                     if (config_update_value('ehorus_req_timeout', (int) get_parameter('ehorus_req_timeout', $config['ehorus_req_timeout']), true) === false) {
-                        $error_update[] = __('eHorus request timeout');
+                        $error_update[] = __('Ehorus request timeout');
                     }
 
                     if (config_update_value('ehorus_custom_field', (string) get_parameter('ehorus_custom_field', $config['ehorus_custom_field']), true) === false) {
-                        $error_update[] = __('eHorus id custom field');
+                        $error_update[] = __('Ehorus id custom field');
                     }
                 break;
 
@@ -1991,7 +1991,7 @@ function config_update_config()
 
                     $ITSM_groups_agents_sync = get_parameter(
                         'ITSM_groups_agents_sync',
-                        null
+                        ''
                     );
 
                     if (empty($ITSM_groups_agents_sync) === false) {
@@ -3958,7 +3958,7 @@ function config_process_config()
     }
 
     if (!isset($config['ITSM_groups_agents_sync'])) {
-        config_update_value('ITSM_groups_agents_sync', null);
+        config_update_value('ITSM_groups_agents_sync', '');
     }
 
     // Module Library.

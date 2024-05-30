@@ -376,7 +376,7 @@ class AgentDeployWizard
             $instructions_url = 'https://pandorafms.com/manual/en/documentation/pandorafms/installation/05_configuration_agents';
         }
 
-        $instructions_link = '<a class="green-link" style="font-size: 15px;" href="'.$instructions_url.'" target="_blank">'.__('view the following instructions').'</a>';
+        $instructions_link = '<a class="green-link" style="font-size: 15px;" href="'.$instructions_url.'" target="_blank">'.__('View the following instructions').'</a>';
 
         $more_info_link = html_print_div(
             [

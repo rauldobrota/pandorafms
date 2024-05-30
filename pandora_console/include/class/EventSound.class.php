@@ -495,7 +495,7 @@ class EventSound extends HTML
                 $('#file-sound').change(function(){
                     var ext = $('#file-sound').val().split('.').pop().toLowerCase();
                     if($.inArray(ext, ['wav']) == -1) {
-                        alert('<?php __('invalid extension'); ?>');
+                        alert('<?php __('Invalid extension'); ?>');
                         $('#file-sound').val('');
                     }
                 });

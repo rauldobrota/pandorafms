@@ -238,7 +238,7 @@ if (isset($_GET['modified']) && !$view_mode) {
         $user_info = $upd_info;
     } else {
         if (!$error_msg) {
-            $error_msg = __('Error updating passwords: ').($config['auth_error'] ?? '');
+            $error_msg = __('Error updating passwords').': '.($config['auth_error'] ?? '');
         }
 
         $user_auth_error = $config['auth_error'];
@@ -639,7 +639,7 @@ $skin = '';
         }
     }
 
-    $autorefresh_show = '<p class="edit_user_labels">'._('Autorefresh').ui_print_help_tip(
+    $autorefresh_show = '<p class="edit_user_labels">'.__('Autorefresh').ui_print_help_tip(
         __('This will activate autorefresh in selected pages'),
         true
     ).'</p>';
@@ -840,12 +840,12 @@ $skin = '';
 
         // Title.
         $row = [];
-        $row['control'] = '<p class="edit_user_labels">'.__('eHorus user configuration').': </p>';
+        $row['control'] = '<p class="edit_user_labels">'.__('Ehorus user configuration').': </p>';
         $table_remote->data['ehorus_user_level_conf'] = $row;
 
-        // Enable/disable eHorus for this user.
+        // Enable/disable Ehorus for this user.
         $row = [];
-        $row['name'] = __('eHorus user acces enabled');
+        $row['name'] = __('Ehorus user access enabled');
         $row['control'] = html_print_checkbox_switch('ehorus_user_level_enabled', 1, $user_info['ehorus_user_level_enabled'], true);
         $table_remote->data['ehorus_user_level_enabled'] = $row;
 

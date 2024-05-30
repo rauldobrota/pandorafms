@@ -3847,7 +3847,17 @@ function events_get_response_target(
         $eventObjt = new PandoraFMS\Event();
     }
 
+    if (is_metaconsole() === true && (int) $server_id > 0) {
+        $node = new Node($server_id);
+        $node->connect();
+    }
+
     $event = db_get_row('tevento', 'id_evento', $event_id);
+
+    if (is_metaconsole() === true && $server_id > 0) {
+        $node->disconnect();
+    }
+
     $target = io_safe_output(db_get_value('target', 'tevent_response', 'id', $event_response['id']));
 
     // Replace parameters response.
@@ -3875,6 +3885,11 @@ function events_get_response_target(
                 );
             }
         }
+    }
+
+    if (is_metaconsole() === true && (int) $server_id > 0) {
+        $node = new Node($server_id);
+        $node->connect();
     }
 
     // Replace macros.
@@ -4236,6 +4251,10 @@ function events_get_response_target(
             $server_name,
             $target
         );
+    }
+
+    if (is_metaconsole() === true && $server_id > 0) {
+        $node->disconnect();
     }
 
     return $target;
@@ -5343,8 +5362,11 @@ function events_page_comments($event, $groupedComments=[], $filter=null)
                 '<br><br><i>%s</i>',
                 date($config['date_format'], $comm['utimestamp'])
             );
-
-            $data[1] = '<p class="break_word">'.stripslashes(str_replace(['\n', '\r'], '<br/>', $comm['comment'])).'</p>';
+            if (isset($config['events_format_urls']) === true && (bool) $config['events_format_urls'] === true) {
+                $data[1] = io_safe_output($comm['comment']);
+            } else {
+                $data[1] = '<p class="break_word">'.stripslashes(str_replace(['\n', '\r'], '<br/>', $comm['comment'])).'</p>';
+            }
 
             $table_comments->data[] = $data;
         }
@@ -6022,7 +6044,7 @@ function get_row_response_action(
     $output .= __('Event # %d', $id_event);
     if (empty($command_str) === false) {
         $output .= ' ';
-        $output .= __('Executing command: ');
+        $output .= __('Executing command').': ';
     }
 
     $output .= '</b>';

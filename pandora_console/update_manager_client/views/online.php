@@ -150,7 +150,6 @@ global $config;
                             blast.setAttribute('disable', true);
                             result.innerHTML = '';
                             umConfirm({
-                                /*message: "<?php echo __('This action will upgrade this console to version '); ?> "+nextUpdateVersion+". <?php echo __('Are you sure?'); ?>",*/
                                 message: "<?php echo '<p>'.$text_for_next_version.'</p>'; ?> ",
                                 title: "<?php echo __('Update to'); ?> "+nextUpdateVersion,
                                 onAccept: function() {
@@ -174,11 +173,11 @@ global $config;
                                             if(e != '504') {
                                                 if (typeof r != "undefined" ) {
                                                     result.innerHTML = umErrorMsg(
-                                                        '<?php echo __('Failed to update to '); ?>' + nextUpdateVersion+' '+r
+                                                        '<?php echo __('Failed to update to'); ?>' + ' ' + nextUpdateVersion+' '+r
                                                     );
                                                 } else {
                                                     result.innerHTML = umErrorMsg(
-                                                        '<?php echo __('Failed to update to '); ?>' + nextUpdateVersion+' RC'+e
+                                                        '<?php echo __('Failed to update to'); ?>' + ' ' + nextUpdateVersion+' RC'+e
                                                     );
                                                 }
                                             } else {
@@ -197,7 +196,6 @@ global $config;
                             blast.setAttribute('disable', true);
                             result.innerHTML = '';
                             umConfirm({
-                                /*message: "<?php echo __('This action will upgrade this console to version '); ?> "+lastUpdateVersion+". <?php echo __('Are you sure?'); ?>",*/
                                 message: "<?php echo '<p>'.$text_for_last_version.'</p>'; ?> ",
                                 title: "<?php echo __('Update to'); ?> "+lastUpdateVersion,
                                 onAccept: function() {
@@ -223,7 +221,7 @@ global $config;
                                                     result.innerHTML = umErrorMsg(r);
                                                 } else {
                                                     result.innerHTML = umErrorMsg(
-                                                        '<?php echo __('Failed to update:'); ?> RC'+e
+                                                        '<?php echo __('Failed to update'); ?> RC'+e
                                                     );
                                                 }
                                             } else {

@@ -138,7 +138,7 @@ $header_title = __('Tree view');
 $header_sub_title = __('Sort the agents by %s');
 switch ($tab) {
     case 'tag':
-        $header_sub_title = sprintf($header_sub_title, __('tags'));
+        $header_sub_title = sprintf($header_sub_title, __('Tags'));
     break;
 
     case 'os':
@@ -146,20 +146,20 @@ switch ($tab) {
     break;
 
     case 'group':
-        $header_sub_title = sprintf($header_sub_title, __('groups'));
+        $header_sub_title = sprintf($header_sub_title, __('Groups'));
     break;
 
     case 'module_group':
-        $header_sub_title = sprintf($header_sub_title, __('module groups'));
+        $header_sub_title = sprintf($header_sub_title, __('Module groups'));
     break;
 
     case 'module':
-        $header_sub_title = sprintf($header_sub_title, __('modules'));
+        $header_sub_title = sprintf($header_sub_title, __('Modules'));
     break;
 
     case 'policies':
         if ($enterpriseEnable) {
-            $header_sub_title = sprintf($header_sub_title, __('policies'));
+            $header_sub_title = sprintf($header_sub_title, __('Policies'));
         }
     break;
 }

@@ -161,7 +161,7 @@ class ManageExtensions extends HTML
     {
         global $config;
 
-        if (! check_acl($config['id_user'], 0, 'AR')) {
+        if (users_is_admin($config['id_user']) === false) {
             db_pandora_audit(
                 AUDIT_LOG_ACL_VIOLATION,
                 'Trying to access Manage disco packages'
@@ -267,7 +267,7 @@ class ManageExtensions extends HTML
                 ],
                 [
                     'link'     => '',
-                    'label'    => _('Manage disco packages'),
+                    'label'    => __('Manage disco packages'),
                     'selected' => 1,
                 ],
             ]

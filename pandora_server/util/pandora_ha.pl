@@ -434,7 +434,8 @@ sub ha_database_connect($) {
 ###############################################################################
 sub ha_database_connect_pandora($) {
 	my $conf = shift;
-	my $dbhost = $conf->{'dbhost'};
+	my $dbhost = "";
+	my $dbhost_ro = 1;
 
 	# Load the list of HA databases.
 	ha_load_databases($conf);
@@ -443,6 +444,9 @@ sub ha_database_connect_pandora($) {
 	my ($dbh, $utimestamp, $max_utimestamp) = (undef, undef, -1);
 
 	foreach my $ha_dbhost (@HA_DB_Hosts) {
+
+		# Assume the database is read-only.
+		my $ha_dbhost_ro = 1;
 
 		# Retry each database ha_connect_retries times.
 		for (my $i = 0; $i < $conf->{'ha_connect_retries'}; $i++) {
@@ -455,6 +459,9 @@ sub ha_database_connect_pandora($) {
 								 $conf->{'ha_dbuser'},
 								 $conf->{'ha_dbpass'});
 				log_message($conf, 'DEBUG', "Connected to database $ha_dbhost");
+
+				# Check if the database is read-only.
+				$ha_dbhost_ro = ha_read_only($conf, $dbh);
 			};
 			log_message($conf, 'WARNING', $@) if ($@);
 
@@ -468,33 +475,37 @@ sub ha_database_connect_pandora($) {
 		# No luck. Try the next database.
 		next unless defined($dbh);
 
-		# Check if database is disabled.
-		if (defined(get_db_value($dbh, 'SELECT `id` FROM `tdatabase` WHERE `host` = "' . $ha_dbhost . '" AND disabled = 1'))) {
-			log_message($conf, 'LOG', "Ignoring disabled host: " . $ha_dbhost);
-			db_disconnect($dbh);
-			next;
-		}
-
 		eval {
-			# Get the most recent utimestamp from the database.
-			$utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
-			db_disconnect($dbh);
+			# Check if the database is disabled.
+			if (defined(get_db_value($dbh, 'SELECT `id` FROM `tdatabase` WHERE `host` = "' . $ha_dbhost . '" AND disabled = 1'))) {
+				log_message($conf, 'LOG', "Ignoring disabled host: " . $ha_dbhost);
+			} else {
 
-			# Did we find a more recent database?
-			# Double check in case the master has updated and replicated its keepalive value.
-			$utimestamp = 0 unless defined($utimestamp);
-			log_message($conf, 'DEBUG', "Utimestamp for $ha_dbhost: $utimestamp Max. utimestamp: $max_utimestamp");
-			if ($utimestamp > $max_utimestamp && ($max_utimestamp == -1 || $utimestamp > ha_get_keepalive($conf, $dbhost))) {
-				log_message($conf, 'DEBUG', "Selected $ha_dbhost as the new master candidate...");
-				$dbhost = $ha_dbhost;
-				$max_utimestamp = $utimestamp;
+				# Get the most recent utimestamps from the databases.
+				$utimestamp = get_db_value($dbh, 'SELECT UNIX_TIMESTAMP(MAX(keepalive)) FROM tserver');
+				$utimestamp = -1 unless defined($utimestamp);
+				$max_utimestamp = ha_get_keepalive($conf, $dbhost);
+				$max_utimestamp = -1 unless defined($utimestamp);
+
+				# Did we find a more recent database? Or a writable database?
+				log_message($conf, 'DEBUG', "Utimestamp for $ha_dbhost (ro $ha_dbhost_ro): $utimestamp Max. utimestamp: $max_utimestamp (ro $dbhost_ro)");
+				if (($max_utimestamp == -1) ||
+					($dbhost_ro == $ha_dbhost_ro && $utimestamp > $max_utimestamp) ||
+					($dbhost_ro == 1 && $ha_dbhost_ro == 0)) {
+					log_message($conf, 'DEBUG', "Selected $ha_dbhost as the new master candidate...");
+					$dbhost = $ha_dbhost;
+					$dbhost_ro = $ha_dbhost_ro;
+				}
 			}
+
+			db_disconnect($dbh);
 		};
 		log_message($conf, 'WARNING', $@) if ($@);
 	}
 
 	# Return a connection to the selected master.
 	eval {
+		$dbhost = $conf->{'dbhost'} unless $dbhost ne "";
 		log_message($conf, 'DEBUG', "Connecting to selected master $dbhost...");
 		$dbh = db_connect('mysql',
 						  $conf->{'dbname'},
@@ -550,6 +561,8 @@ sub ha_get_keepalive($$) {
 	my ($conf, $host) = @_;
 	my $utimestamp = -1;
 
+	return -1 if ($host eq "");
+
 	eval {
 		my $dbh= db_connect('mysql',
 		                 $conf->{'dbname'},
@@ -562,8 +575,6 @@ sub ha_get_keepalive($$) {
 		db_disconnect($dbh);
 	};
     log_message($conf, 'WARNING', $@) if ($@);
-
-	log_message($conf, 'DEBUG', "Most recent timestamp for $host: $utimestamp");
 
 	return $utimestamp;
 }

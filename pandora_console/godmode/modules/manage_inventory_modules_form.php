@@ -174,7 +174,7 @@ $table->data[2][] = html_print_label_input_block(
         100,
         true
     ).ui_print_input_placeholder(
-        __('separate fields with ').SEPARATOR_COLUMN,
+        __('Separate fields with').' '.SEPARATOR_COLUMN,
         true
     )
 );

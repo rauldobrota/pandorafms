@@ -373,7 +373,7 @@ $autorefresh_list_out['operation/dashboard/dashboard'] = 'Dashboard';
 $autorefresh_list_out['operation/visual_console/render_view'] = 'Visual console';
 $autorefresh_list_out['operation/events/events'] = 'Events';
 
-$autorefresh_show = '<p class="edit_user_labels">'._('Autorefresh').ui_print_help_tip(
+$autorefresh_show = '<p class="edit_user_labels">'.__('Autorefresh').ui_print_help_tip(
     __('This will activate autorefresh in selected pages'),
     true
 ).'</p>';

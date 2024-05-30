@@ -12,12 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+
 /**
  * @package    Include
  * @subpackage Clippy
  */
-
-
 function clippy_interval_agent_min()
 {
     $return_tours = [];
@@ -33,7 +32,7 @@ function clippy_interval_agent_min()
     $return_tours['tours']['interval_agent_min']['steps'][] = [
         'init_step_context' => true,
         'intro'             => __('Please note that having agents with a monitoring interval below 300 seconds is not recommended. This will impact seriously in the performance of the server. For example, having 200 agents with one minute interval, is the same than having 1000 agents with a 5 minute interval. The probability of getting unknown modules is higher, and the impact on the server is higher because it requires a shorter response time.'),
-        'title'             => __('Interval Agent.'),
+        'title'             => __('Interval agent.'),
         'img'               => html_print_image(
             'images/info-warning.svg',
             true,

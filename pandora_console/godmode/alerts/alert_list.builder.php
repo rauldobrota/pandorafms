@@ -300,7 +300,7 @@ $(document).ready (function () {
         },
         messages: {
             id_agent_module: { valueNotEquals: "<?php echo __('Please select an item'); ?>!"},
-            template: { valueNotEquals: "<?php echo __('Please select a templete'); ?>!"},
+            template: { valueNotEquals: "<?php echo __('Please select a template'); ?>!"},
             id_agent: { valueNotEquals: "<?php echo __('Please select an agent'); ?>!"},
         }
     });

@@ -962,7 +962,7 @@ $tableAdvancedFilter->data['advancedField_1'][0] = html_print_label_input_block(
 );
 
 $tableAdvancedFilter->data['advancedField_1'][1] = html_print_label_input_block(
-    __('Show monitors...'),
+    __('Show monitors'),
     html_print_select(
         $monitor_options,
         'module_option',

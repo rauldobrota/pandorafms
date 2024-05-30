@@ -305,7 +305,7 @@ class SatelliteCollection extends HTML
         if ($this->parseSatelliteConf('add', $short_name) === false) {
             $this->ajaxMsg('error', __('Error adding collection'));
         } else {
-            $this->ajaxMsg('result', _('Collection '.$short_name.' added.'));
+            $this->ajaxMsg('result', __('Collection %s added.', $short_name));
         }
 
         exit;
@@ -324,7 +324,7 @@ class SatelliteCollection extends HTML
         if ($this->parseSatelliteConf('delete', $short_name) === false) {
             $this->ajaxMsg('error', __('Error deleting collection'));
         } else {
-            $this->ajaxMsg('result', _('Collection '.$short_name.' deleted.'));
+            $this->ajaxMsg('result', __('Collection %s deleted.', $short_name));
         }
 
         exit;

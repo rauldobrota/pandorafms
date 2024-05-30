@@ -424,7 +424,7 @@ class User
         $options = [
             'name'        => 'user',
             'value'       => $this->user,
-            'placeholder' => __('user'),
+            'placeholder' => __('User'),
             // 'autofocus'   => 'autofocus',
             // 'label'       => __('User'),
         ];
@@ -432,7 +432,7 @@ class User
         $options = [
             'name'        => 'password',
             'value'       => '',
-            'placeholder' => __('password'),
+            'placeholder' => __('Password'),
             // 'label'       => __('Password'),
             'required'    => 'required',
         ];

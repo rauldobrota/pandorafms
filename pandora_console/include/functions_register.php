@@ -200,7 +200,7 @@ function config_wiz_modal(
     $output .= '</div>';
 
     // Verification modal.
-    $output .= '<div id="wiz_ensure_cancel" title="Confirmation Required" class="invisible">';
+    $output .= '<div id="wiz_ensure_cancel" title="'.__('Confirmation Required').'" class="invisible">';
     $output .= '<div class="font_12_20">';
     $output .= __('Are you sure you don\'t want to configure a base email?');
     $output .= '<p>';

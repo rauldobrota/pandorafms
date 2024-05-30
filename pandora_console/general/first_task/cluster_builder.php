@@ -46,7 +46,7 @@ $msg = __('A cluster is a group of devices that provide the same service in high
 
 $msg .= __('Depending on how they provide that service, we can find two types:').'<br><br>';
 
-$msg .= __('Clusters to balance the service load: these are  active - active (A/A)  mode clusters. It means that all the nodes (or machines that compose it) are working. They must be working because if one stops working, it will overload the others.').'<br><br>';
+$msg .= __('Clusters to balance the service load: these are active - active (A/A) mode clusters. It means that all the nodes (or machines that compose it) are working. They must be working because if one stops working, it will overload the others.').'<br><br>';
 
 $msg .= __('Clusters to guarantee service: these are active - passive (A/P) mode clusters. It means that one of the nodes (or machines that make up the cluster) will be running (primary) and another will not (secondary). When the primary goes down, the secondary must take over and give the service instead. Although many of the elements of this cluster are active-passive, it will also have active elements in both of them that indicate that the passive node is "online", so that in the case of a service failure in the master, the active node collects this information.');
 

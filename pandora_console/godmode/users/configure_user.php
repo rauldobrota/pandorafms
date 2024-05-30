@@ -400,7 +400,7 @@ if ($create_user === true) {
     // Previously defined.
     $values['autorefresh_white_list'] = $autorefresh_white_list;
 
-    // eHorus user level conf.
+    // Ehorus user level conf.
     if ((bool) $config['ehorus_user_level_conf'] === true) {
         $values['ehorus_user_level_enabled'] = (bool) get_parameter('ehorus_user_level_enabled', false);
         if ($values['ehorus_user_level_enabled'] === true) {
@@ -1417,7 +1417,7 @@ $default_event_filter .= html_print_select(
 ).'</div>';
 
 if (isset($config['ehorus_user_level_conf']) === true && (bool) $config['ehorus_user_level_conf'] === true) {
-    $ehorus = '<div class="label_select_simple"><p class="edit_user_labels">'.__('eHorus user access enabled').'</p>';
+    $ehorus = '<div class="label_select_simple"><p class="edit_user_labels">'.__('Ehorus user access enabled').'</p>';
     $ehorus .= html_print_checkbox_switch(
         'ehorus_user_level_enabled',
         1,
@@ -1425,7 +1425,7 @@ if (isset($config['ehorus_user_level_conf']) === true && (bool) $config['ehorus_
         true
     ).'</div>';
     $ehorus .= '<div class="user_edit_ehorus_outer">';
-    $ehorus .= '<div class="label_select_simple user_edit_ehorus_inner"><p class="edit_user_labels">'.__('eHorus user').'</p>';
+    $ehorus .= '<div class="label_select_simple user_edit_ehorus_inner"><p class="edit_user_labels">'.__('Ehorus user').'</p>';
     $ehorus .= html_print_input_text(
         'ehorus_user_level_user',
         $user_info['ehorus_user_level_user'],
@@ -1434,7 +1434,7 @@ if (isset($config['ehorus_user_level_conf']) === true && (bool) $config['ehorus_
         45,
         true
     ).'</div>';
-    $ehorus .= '<div class="label_select_simple user_edit_ehorus_inner"><p class="edit_user_labels">'.__('eHorus password').'</p>';
+    $ehorus .= '<div class="label_select_simple user_edit_ehorus_inner"><p class="edit_user_labels">'.__('Ehorus password').'</p>';
     $ehorus .= html_print_input_password(
         'ehorus_user_level_pass',
         io_output_password($user_info['ehorus_user_level_pass']),

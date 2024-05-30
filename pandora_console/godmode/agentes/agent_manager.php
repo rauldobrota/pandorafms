@@ -1388,7 +1388,7 @@ ui_require_jquery_file('bgiframe');
 
         confirmDialog({
             title: "<?php echo __('Delete agent'); ?>",
-            message: msg_cluster + "<?php echo __('This action is not reversible. Are you sure'); ?>",
+            message: msg_cluster + "<?php echo __('This action is not reversible. Are you sure?'); ?>",
             onAccept: function() {
                 window.location.assign('index.php?sec=gagente&sec2=godmode/agentes/modificar_agente&borrar_agente='+$idAgente);
             }

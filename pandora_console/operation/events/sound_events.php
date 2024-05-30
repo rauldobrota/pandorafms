@@ -268,7 +268,7 @@ $output = '<div id="tabs-sound-modal" class="ui-widget-dialog-border">';
             ]
         );
         $output .= '<span class="text-discovered-alerts">';
-        $output .= __('Congrats! there’s nothing to show');
+        $output .= __('Congrats! there\'s nothing to show');
         $output .= '</span>';
         $output .= '</div>';
         $output .= '<div class="elements-discovered-alerts" style="max-height:315px !important;"><ul></ul></div>';

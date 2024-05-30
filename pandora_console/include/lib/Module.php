@@ -254,9 +254,7 @@ class Module extends Entity
                 } catch (\Exception $e) {
                     // Unexistent agent.
                     throw new \Exception(
-                        __METHOD__.__(
-                            ' error: Module has no agent assigned.'
-                        )
+                        __METHOD__.' '.__('error: Module has no agent assigned')
                     );
                 }
             }
