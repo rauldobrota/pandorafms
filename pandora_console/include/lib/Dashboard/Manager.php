@@ -399,11 +399,6 @@ class Manager implements PublicLogin
     ):bool {
         global $config;
 
-        if (isset($config['id_user']) === true) {
-            // Already logged in.
-            return true;
-        }
-
         $userFromParams = false;
         // Try to get id_user from parameters if it is missing.
         if (isset($config['id_user']) === false) {
