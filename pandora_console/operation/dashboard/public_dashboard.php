@@ -44,7 +44,7 @@ if ($dashboardId !== null) {
     return;
 }
 
-$id_user = get_parameter('id_user');
+$config['id_user'] = get_parameter('id_user');
 require_once 'dashboard.php';
 
 // Clean session to avoid direct access.
