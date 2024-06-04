@@ -88,7 +88,7 @@ function draw_msg_download(string $type='agent'): string
 
         $footer .= '<i>';
         $footer .= __(
-            'More downloads are available in the “File releases” section of the %s support portal.',
+            'More downloads are available in the "File releases" section of the %s support portal.',
             get_product_name()
         );
 
@@ -250,7 +250,7 @@ function draw_msg_download(string $type='agent'): string
 
         $footer .= '<i>';
         $footer .= __(
-            'More downloads are available in the “File releases” section of the %s support portal.',
+            'More downloads are available in the "File releases" section of the %s support portal.',
             get_product_name()
         );
         $footer .= '</i>';
