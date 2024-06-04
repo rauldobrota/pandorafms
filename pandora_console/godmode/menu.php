@@ -681,7 +681,7 @@ if ((bool) check_acl($config['id_user'], 0, 'PM') === true && (bool) $config['en
 }
 
 if ($access_console_node === true) {
-    // Module library.
+    // Module library and downloads.
     if ((bool) check_acl($config['id_user'], 0, 'AR') === true) {
         $menu_godmode['gmodule_library']['text'] = __('Module library');
         $menu_godmode['gmodule_library']['id'] = 'god-module_library';
@@ -694,6 +694,20 @@ if ($access_console_node === true) {
         $sub['godmode/module_library/module_library_view&tab=categories']['id'] = 'categories';
 
         $menu_godmode['gmodule_library']['sub'] = $sub;
+
+        if (enterprise_installed() === true) {
+            $menu_godmode['gdownloads']['text'] = __('Downloads');
+            $menu_godmode['gdownloads']['id'] = 'god-downloads';
+
+            $sub = [];
+            $sub['godmode/downloads/downloads']['text'] = __('Agents');
+            $sub['godmode/downloads/downloads']['id'] = 'downloads_agent_view';
+
+            $sub['godmode/downloads/downloads&tab=satellite']['text'] = __('Satellite');
+            $sub['godmode/downloads/downloads&tab=satellite']['id'] = 'downloads_satellite_view';
+
+            $menu_godmode['gdownloads']['sub'] = $sub;
+        }
     }
 }
 
