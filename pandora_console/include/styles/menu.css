@@ -373,6 +373,12 @@
   background-size: 18px;
 }
 
+.icon_god-downloads {
+  background-color: #a6adb2;
+  mask: url(../../images/export.svg) no-repeat center center;
+  mask-size: 18px;
+}
+
 #menu_container {
   z-index: 3;
   position: absolute;

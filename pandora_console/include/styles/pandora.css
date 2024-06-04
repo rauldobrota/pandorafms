@@ -11152,6 +11152,16 @@ button div.export {
   height: 1.5rem;
 }
 
+button div.windows {
+  mask: url(../../images/windows_icon.svg) no-repeat center / contain;
+  -webkit-mask: url(../../images/windows_icon.svg) no-repeat center / contain;
+}
+
+button div.linux {
+  mask: url(../../images/linux_icon.svg) no-repeat center / contain;
+  -webkit-mask: url(../../images/linux_icon.svg) no-repeat center / contain;
+}
+
 .status_dot.ok {
   background-color: #82b92e;
 }
@@ -14144,6 +14154,12 @@ button.disabled {
 
 .empty-view-buttons > *:not(:last-child) {
   margin-right: 0;
+}
+
+ul.ul-revert {
+  margin: revert;
+  padding: revert;
+  list-style: revert;
 }
 
 form#submit-plugin {
