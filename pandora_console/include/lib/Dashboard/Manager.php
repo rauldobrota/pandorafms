@@ -356,7 +356,7 @@ class Manager implements PublicLogin
     {
         global $config;
 
-        $str = $config['dbpass'];
+        $str = $config['server_unique_identifier'];
         $str .= $config['id_user'];
         $str .= $other_secret;
         return hash('sha256', $str);

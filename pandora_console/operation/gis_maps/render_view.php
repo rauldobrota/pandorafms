@@ -142,7 +142,7 @@ if ($config['pure'] == 0) {
 if ($has_management_acl === true) {
     $hash = md5($config['dbpass'].$idMap.$config['id_user']);
     $buttons['public_link']['text'] = '<a href="'.ui_get_full_url(
-        'operation/gis_maps/public_console.php?hash='.$hash.'&map_id='.$idMap.'&id_user='.$config['id_user']
+        'operation/gis_maps/public_console.php?hash='.$hash.'&map_id='.$idMap.'&creator_user='.$config['id_user']
     ).'" target="_blank">'.html_print_image('images/item-icon.svg', true, ['title' => __('Show link to public GIS map'), 'class' => 'main_menu_icon invert_filter']).'</a>';
 }
 

@@ -135,9 +135,9 @@ $slides['text'] .= '</a>';
 
 // Public Url.
 $queryPublic = [
-    'hash'    => $hash,
-    'id_user' => $config['id_user'],
-    'pure'    => 1,
+    'hash'         => $hash,
+    'creator_user' => $config['id_user'],
+    'pure'         => 1,
 ];
 $publicUrl = ui_get_full_url(
     'operation/dashboard/public_dashboard.php?'.http_build_query($queryPublic)
