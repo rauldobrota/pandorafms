@@ -157,7 +157,7 @@ if ($aclWrite === true || $aclManage === true) {
     $hash = User::generatePublicHash($visualConsoleId);
 
     $options['public_link']['text'] = '<a href="'.ui_get_full_url(
-        'operation/visual_console/public_console.php?hash='.$hash.'&refr='.$refr.'&id_user='.$config['id_user'],
+        'operation/visual_console/public_console.php?hash='.$hash.'&refr='.$refr.'&creator_user='.$config['id_user'],
         false,
         false,
         false

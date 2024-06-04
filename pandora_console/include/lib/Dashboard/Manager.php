@@ -356,7 +356,7 @@ class Manager implements PublicLogin
     {
         global $config;
 
-        $str = $config['dbpass'];
+        $str = $config['server_unique_identifier'];
         $str .= $config['id_user'];
         $str .= $other_secret;
         return hash('sha256', $str);
@@ -398,11 +398,6 @@ class Manager implements PublicLogin
         string $other_secret=''
     ):bool {
         global $config;
-
-        if (isset($config['id_user']) === true) {
-            // Already logged in.
-            return true;
-        }
 
         $userFromParams = false;
         // Try to get id_user from parameters if it is missing.

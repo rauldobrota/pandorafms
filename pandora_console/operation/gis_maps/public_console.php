@@ -38,7 +38,7 @@ $config['remote_addr'] = $_SERVER['REMOTE_ADDR'];
 
 $hash = get_parameter('hash');
 $idMap = (int) get_parameter('map_id');
-$config['id_user'] = get_parameter('id_user');
+$config['id_user'] = get_parameter('creator_user');
 
 $myhash = md5($config['dbpass'].$idMap.$config['id_user']);
 

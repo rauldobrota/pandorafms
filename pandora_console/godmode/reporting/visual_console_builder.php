@@ -940,7 +940,7 @@ $buttons['consoles_list'] = [
 $buttons['public_link'] = [
     'active' => false,
     'text'   => '<a href="'.ui_get_full_url(
-        'operation/visual_console/public_console.php?hash='.$hash.'&refr='.$refr.'&id_layout='.$idVisualConsole.'&id_user='.$config['id_user'],
+        'operation/visual_console/public_console.php?hash='.$hash.'&refr='.$refr.'&id_layout='.$idVisualConsole.'&creator_user='.$config['id_user'],
         false,
         false,
         false
