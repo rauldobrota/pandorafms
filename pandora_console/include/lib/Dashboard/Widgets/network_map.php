@@ -490,7 +490,7 @@ class NetworkMapWidget extends Widget
                 'zoom_dash'     => $zoom_dash,
                 'id_user'       => $config['id_user'],
                 'auth_class'    => 'PandoraFMS\Dashboard\Manager',
-                'auth_hash'     => Manager::generatePublicHash(),
+                'auth_hash'     => get_parameter('auth_hash', ''),
                 'node'          => $node,
                 'size'          => $size,
             ]

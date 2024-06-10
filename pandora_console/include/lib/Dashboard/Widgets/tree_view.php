@@ -669,7 +669,7 @@ class TreeViewWidget extends Widget
             'page'         => 'include/ajax/tree.ajax',
             'id_user'      => $config['id_user'],
             'auth_class'   => 'PandoraFMS\Dashboard\Manager',
-            'auth_hash'    => Manager::generatePublicHash(),
+            'auth_hash'    => get_parameter('auth_hash', ''),
             'type'         => $tab,
             'cellId'       => $id_cell,
             'ajaxUrl'      => ui_get_full_url('ajax.php', false, false, false),
