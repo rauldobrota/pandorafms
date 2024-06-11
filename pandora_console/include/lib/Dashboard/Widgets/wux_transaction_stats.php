@@ -347,7 +347,7 @@ class WuxStatsWidget extends Widget
                 'view_all_stats' => $view_all_stats,
                 'id_user'        => $config['id_user'],
                 'auth_class'     => 'PandoraFMS\Dashboard\Manager',
-                'auth_hash'      => Manager::generatePublicHash(),
+                'auth_hash'      => get_parameter('auth_hash', ''),
                 'cellId'         => $this->cellId,
             ]
         );
