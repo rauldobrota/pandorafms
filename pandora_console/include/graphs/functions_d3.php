@@ -173,7 +173,7 @@ function d3_sunburst_graph($data, $width=700, $height=700, $return=false, $toolt
     $output = "<div id=\"sunburst\" style='overflow: hidden;'></div>";
     $output .= include_javascript_d3(true);
     $output .= '<style type="text/css">
-					path {
+                    '.$id_container.' path {
 						stroke: #fff;
 						fill-rule: evenodd;
 					}
@@ -384,7 +384,7 @@ function ux_console_phases_donut(
     $output = '<div id='.$recipient_name." style='overflow: hidden;'></div>";
     $output .= include_javascript_d3(true);
     $output .= '<style type="text/css">
-					path {
+                    '.$recipient_name_to_js.' path {
 						stroke: #fff;
 						fill-rule: evenodd;
 					}
@@ -513,7 +513,7 @@ function d3_donut_graph($id, $width, $height, $module_data, $resume_color)
     $output .= '<div id='.$recipient_name." style='overflow: hidden;'></div>";
     $output .= include_javascript_d3(true);
     $output .= '<style type="text/css">
-					path {
+                    '.$recipient_name_to_js.' path {
 						stroke: #fff;
 						fill-rule: evenodd;
 					}
