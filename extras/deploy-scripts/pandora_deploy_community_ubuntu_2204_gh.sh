@@ -345,7 +345,7 @@ execute_cmd "apt install -y $server_dependencies" "Installing Pandora FMS Server
 execute_cmd "installing_docker" "Installing Docker for debug"
 
 # Installing pandora_gotty
-execute_cmd "curl --output pandora_gotty.deb https://github.com/pandorafms/pandorafms/releases/download/tools/pandora_gotty_1.1.0.deb" "Downloading pandora_gotty"
+execute_cmd "curl -L --output pandora_gotty.deb https://github.com/pandorafms/pandorafms/releases/download/tools/pandora_gotty_1.1.0.deb" "Downloading pandora_gotty"
 execute_cmd "apt install -y ./pandora_gotty.deb" "Intalling pandora_gotty"
 
 # create symlink for fping
@@ -466,10 +466,9 @@ execute_cmd "systemctl restart mysql" "Configuring and restarting database engin
 
 #Define packages
 
-PANDORA_SERVER_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_server-7.0NG.772_x86_64.tar.gz"
-PANDORA_CONSOLE_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_console-7.0NG.772.tar.gz"
-PANDORA_AGENT_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_agent_linux-7.0NG.772.tar.gz"
-
+PANDORA_SERVER_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v777-LTS/pandorafms_server-7.0NG.777.tar.gz"
+PANDORA_CONSOLE_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v777-LTS/pandorafms_console-7.0NG.777.tar.gz"
+PANDORA_AGENT_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v777-LTS/pandorafms_agent_linux-7.0NG.777.tar.gz"
 
 # Downloading Pandora Packages
 cd $WORKDIR &>> "$LOGFILE"
@@ -496,11 +495,6 @@ echo -en "${cyan}Installing PandoraFMS Agent...${reset}"
     tar xvzf $WORKDIR/pandorafms_agent_linux-7.0NG.tar.gz &>> "$LOGFILE" && cd unix && ./pandora_agent_installer --install &>> $LOGFILE && cp -a tentacle_client /usr/local/bin/ &>> $LOGFILE && cd $WORKDIR
 check_cmd_status "Error installing PandoraFMS Agent"
 
-# Copy gotty utility
-cd $WORKDIR &>> "$LOGFILE"
-execute_cmd "wget https://firefly.pandorafms.com/pandorafms/utils/gotty_linux_amd64.tar.gz" 'Dowloading gotty util'
-tar xvzf gotty_linux_amd64.tar.gz &>> $LOGFILE
-execute_cmd "mv gotty /usr/bin/" 'Installing gotty util'
 
 # Config servicesa
 #Configure apache2

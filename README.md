@@ -16,6 +16,8 @@ Pandora FMS has a "commercial" solution, with different features, oriented to co
 
 Installing Pandora FMS from sources is a complex task. Please read the **extras/deploy/INSTALL.md** file follow all the steps described for a proper installation.
 
+[Link to INSTALL.md](https://github.com/pandorafms/pandorafms/blob/develop/extras/deploy-scripts/INSTALL.md)
+
 ### What is Pandora FMS?
 
 Pandora FMS is an open source monitoring application whose origin dates back to 2004. It integrates in the same application the monitoring of different infrastructure elements: networks, applications, servers, web, and other specific data sources such as logs, WMI, Netflow or SNMP traps.
