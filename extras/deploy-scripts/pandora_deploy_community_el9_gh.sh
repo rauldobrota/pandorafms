@@ -514,19 +514,21 @@ export MYSQL_PWD=$DBPASS
 
 # packages
 
-[ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_server-7.0NG.772.x86_64.rpm"
-[ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_console-7.0NG.772.noarch.rpm"
-[ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v772-LTS/pandorafms_agent_linux-7.0NG.772.noarch.rpm"
+[ "$PANDORA_SERVER_PACKAGE" ]       || PANDORA_SERVER_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v777-LTS/pandorafms_server-7.0NG.777.x86_64.rpm"
+[ "$PANDORA_CONSOLE_PACKAGE" ]      || PANDORA_CONSOLE_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v777-LTS/pandorafms_console-7.0NG.777.x86_64.rpm"
+[ "$PANDORA_AGENT_PACKAGE" ]        || PANDORA_AGENT_PACKAGE="https://github.com/pandorafms/pandorafms/releases/download/v777-LTS/pandorafms_agent_linux-7.0NG.777_x86_64.tar.gz"
 
 
 # Downloading Pandora Packages
 execute_cmd "curl -LSs --output pandorafms_server-7.0NG.noarch.rpm ${PANDORA_SERVER_PACKAGE}" "Downloading Pandora FMS Server community"
 execute_cmd "curl -LSs --output pandorafms_console-7.0NG.noarch.rpm ${PANDORA_CONSOLE_PACKAGE}" "Downloading Pandora FMS Console community"
-execute_cmd "curl -LSs --output pandorafms_agent_linux-7.0NG.noarch.rpm ${PANDORA_AGENT_PACKAGE}" "Downloading Pandora FMS Agent community"
+execute_cmd "curl -LSs --output pandorafms_agent_linux-7.0NG.tar.gz ${PANDORA_AGENT_PACKAGE}" "Downloading Pandora FMS Agent community"
 
 # Install Pandora
-execute_cmd "dnf install -y $HOME/pandora_deploy_tmp/pandorafms_console*.rpm $HOME/pandora_deploy_tmp/pandorafms_agent*.rpm" "Installing Pandora FMS packages"
-execute_cmd "rpm -i --nodeps $HOME/pandora_deploy_tmp/pandorafms_server-7.0NG.noarch.rpm " "Installing Pandora FMS Server package"
+execute_cmd "dnf install -y $HOME/pandora_deploy_tmp/pandorafms_console*.rpm $HOME/pandora_deploy_tmp/pandorafms_server-7.0NG.noarch.rpm" "Installing Pandora FMS packages"
+
+# Install Pandora Agent
+tar xvfz $HOME/pandora_deploy_tmp/pandorafms_agent_linux-7.0NG.tar.gz &>> $LOGFILE && cd unix && ./pandora_agent_installer --install &>> $LOGFILE ; cd - &>> $LOGFILE
 
 # Enable Services
 execute_cmd "systemctl enable httpd --now" "Enabling HTTPD service"
