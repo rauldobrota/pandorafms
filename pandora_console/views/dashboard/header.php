@@ -41,9 +41,9 @@ if (empty($dashboardId)) {
 }
 
 $queryFull = [
-    'refr' => $refr,
-    'pure' => 1,
-    'hash' => $hash,
+    'dashboardId' => $dashboardId,
+    'refr'        => $refr,
+    'pure'        => 1,
 ];
 $urlFull = $url.'&'.http_build_query($queryFull);
 $fullscreen['text'] = '<a id="full_screen_link" href="'.$urlFull.'">';
