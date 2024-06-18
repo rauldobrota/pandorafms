@@ -64,6 +64,17 @@ To update the condos you should download the tarball package, decompress it and 
 tar xvzf pandorafms_console-7.0NG.772.tar.gz
 cp -R pandora_console /var/www/html/
 ```
+Run in the terminal the MR updater tool
+
+```
+php /var/www/html/pandora_console/godmode/um_client/updateMR.php
+```
+
+Delete deprecated files, run in terminal:
+```
+cd /var/www/html/pandora_console/ && cat extras/delete_files/delete_files.txt  | xargs rm -fr
+```
+
 ##### Server
 
 To update the server is similar just download the tarball package from release section, decompress it, move it to the pandora_server folder and execute the installation script.
