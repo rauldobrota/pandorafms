@@ -92,3 +92,4 @@ tar xvzf pandorafms_agent_linux-7.0NG.tar.gz
 cd unix
 ./pandora_agent_installer --install 
 ```
+
