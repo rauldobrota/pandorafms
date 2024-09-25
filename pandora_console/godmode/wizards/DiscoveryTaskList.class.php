@@ -100,8 +100,10 @@ class DiscoveryTaskList extends HTML
         // Load styles.
         parent::run();
 
-        $deploymentCenter = new DeploymentCenter();
-        echo $deploymentCenter->loadJS();
+        if(enterprise_installed() === true) {
+            $deploymentCenter = new DeploymentCenter();
+            echo $deploymentCenter->loadJS();
+        }
         ui_require_css_file('deployment_list');
 
         html_print_div(
